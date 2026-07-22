@@ -1518,6 +1518,10 @@ build_release_invocation_count_policy: exactly-one
 release_zip_overwrite_policy: forbidden
 recorded_public_safe_fields: source-branch,source-HEAD,repository-relative-zip-path,file-size,SHA256
 day82_release_zip_argument: --release-zip
+day82_evidence_argument_for_acceptance: --evidence-json
+day82_inspection_only_argument: --inspect-zip-only
+day82_release_zip_and_evidence_required_together_for_acceptance: True
+day82_zip_only_acceptance_allowed: False
 day82_actual_zip_open_required: True
 day82_crc_test_required: True
 day82_single_package_root_required: True
@@ -1525,9 +1529,18 @@ day82_required_entries_verified: True
 day82_forbidden_entries_verified: True
 day82_release_package_hygiene_check_required: True
 day82_marker_only_acceptance_allowed: False
+day82_release_sequence: build-once-from-final-committed-Public-source-then-Day81-then-Day82
+day82_obsolete_circular_marker_policy: release_zip_built_once_after_day81-rejected
+day82_required_build_markers: release_zip_built_once_from_final_committed_public_source,release_zip_built_once_before_day82
+day82_same_artifact_binding_fields: zip-path,basename,file-size,SHA256
 day83_same_zip_direct_inspection_required: True
 day83_day82_contract_preserved: True
+day83_evidence_argument_for_acceptance: --evidence-json
+day83_inspection_only_argument: --inspect-zip-only
+day83_release_zip_and_evidence_required_together_for_acceptance: True
+day83_zip_only_acceptance_allowed: False
 day83_marker_only_acceptance_allowed: False
+day83_same_artifact_binding_fields: zip-path,basename,file-size,SHA256,day82-verified-SHA256
 day82_source_tree_synthetic_positive_case: accepted
 day82_source_tree_negative_cases: missing-required-entry,private-evidence-entry,worktree-git-file,extra-package-root
 private_manifest_copy_into_worktree: False
@@ -1540,7 +1553,7 @@ DRC_v2.0.0_tag: not-created
 release_completion_status: NOT_RELEASED
 ```
 
-Commit G-6 fixes the release procedure before the final artifact is created. The new builder validates the ignored Day80 manifest from the operator working tree, creates a detached temporary worktree at the recorded committed `HEAD`, invokes `build_release.bat release` exactly once there, refuses to overwrite an existing artifact, and prints the repository-relative zip path, source commit, file size, and SHA-256. Because a Git worktree stores repository metadata in a `.git` file rather than a directory, `build_release.bat` and `check_release_package.py` now explicitly exclude and reject that file. Day82 now opens the supplied zip directly, checks CRC, requires exactly one `DailyRhythmCompanion` package root, verifies required and forbidden entries, runs the existing release-package hygiene check, and rejects marker-only acceptance when no `--release-zip` is supplied. Day83 independently reopens the same supplied artifact, preserves the Day82 contract, requires the Day83 release surface, and likewise rejects marker-only final readiness. This commit does not build the final fixed zip, inspect private evidence content, create a tag, or release v2.0.0.
+Commit G-6 fixes the release procedure before the final artifact is created. The new builder validates the ignored Day80 manifest from the operator working tree, creates a detached temporary worktree at the recorded committed `HEAD`, invokes `build_release.bat release` exactly once there, refuses to overwrite an existing artifact, and prints the repository-relative zip path, source commit, file size, and SHA-256. Because a Git worktree stores repository metadata in a `.git` file rather than a directory, `build_release.bat` and `check_release_package.py` now explicitly exclude and reject that file. Day82 opens the supplied zip directly, checks CRC, requires exactly one `DailyRhythmCompanion` package root, verifies required and forbidden entries, and runs the existing release-package hygiene check. The Public pre-build follow-up separates `--inspect-zip-only` from evidence-backed acceptance: a bare `--release-zip` is rejected, while Day82 acceptance requires both `--release-zip` and `--evidence-json` bound to the inspected basename, byte size, and SHA-256. It also replaces the circular `release_zip_built_once_after_day81` marker with build-once-from-final-committed-Public-source and before-Day82 markers. Day83 independently reopens the same supplied artifact, preserves the Day82 contract, requires its own evidence JSON, and binds the Day82-verified SHA-256 to the Day83 inspection. These implementation changes do not build the final fixed zip, accept the final Public artifact, create a tag, or release v2.0.0.
 
 Commit G-6.1 PowerShell parser hotfix record:
 

@@ -22,6 +22,8 @@ class V200FixedReleaseZipWithWebEvidenceContract:
     status: str
     requirement_key: str
     requires_day81_final_readiness: bool
+    requires_evidence_with_release_zip_for_acceptance: bool
+    allows_inspection_only_mode: bool
     inspects_zip_as_is: bool
     creates_or_rebuilds_zip: bool
     required_zip_entries: tuple[str, ...]
@@ -142,6 +144,8 @@ def build_v200_fixed_release_zip_with_web_evidence_contract() -> V200FixedReleas
         status="fixed-release-zip-with-accepted-web-evidence-verification-ready",
         requirement_key="v200_fixed_release_zip_with_web_evidence",
         requires_day81_final_readiness=True,
+        requires_evidence_with_release_zip_for_acceptance=True,
+        allows_inspection_only_mode=True,
         inspects_zip_as_is=True,
         creates_or_rebuilds_zip=False,
         required_zip_entries=required_zip_entries,
@@ -165,6 +169,8 @@ def build_v200_fixed_release_zip_with_web_evidence_contract() -> V200FixedReleas
         ),
         forbidden_success_states=(
             "day81_not_passed",
+            "release_zip_not_built_from_final_committed_public_source",
+            "different_zip_used_for_day81_and_day82",
             "release_zip_rebuilt_during_verification",
             "zip_not_inspected_as_is",
             "required_file_missing_from_zip",
@@ -203,6 +209,10 @@ def render_v200_fixed_release_zip_with_web_evidence_contract(
             f"v200_fixed_release_zip_with_web_evidence_status: {contract.status}",
             f"v200_fixed_release_zip_with_web_evidence_requirement_key: {contract.requirement_key}",
             f"v200_fixed_release_zip_with_web_evidence_requires_day81_final_readiness: {contract.requires_day81_final_readiness}",
+            "v200_fixed_release_zip_with_web_evidence_requires_evidence_with_release_zip_for_acceptance: "
+            f"{contract.requires_evidence_with_release_zip_for_acceptance}",
+            "v200_fixed_release_zip_with_web_evidence_allows_inspection_only_mode: "
+            f"{contract.allows_inspection_only_mode}",
             f"v200_fixed_release_zip_with_web_evidence_inspects_zip_as_is: {contract.inspects_zip_as_is}",
             f"v200_fixed_release_zip_with_web_evidence_creates_or_rebuilds_zip: {contract.creates_or_rebuilds_zip}",
             "v200_fixed_release_zip_with_web_evidence_required_zip_entries: " + ",".join(contract.required_zip_entries),
@@ -417,8 +427,10 @@ def render_v200_fixed_release_zip_inspection(
 
 def validate_v200_fixed_release_zip_with_web_evidence(
     evidence: Mapping[str, object],
+    *,
+    inspection: V200FixedReleaseZipInspection | None = None,
 ) -> V200FixedReleaseZipWithWebEvidenceValidation:
-    """Validate private marker evidence for Day82 release zip verification."""
+    """Validate private Day82 evidence and bind it to the inspected fixed zip."""
 
     missing: list[str] = []
     if evidence.get("status") != "accepted":
@@ -429,7 +441,9 @@ def validate_v200_fixed_release_zip_with_web_evidence(
         missing.append("manifest_kind=fixed_release_zip_with_web_evidence_verification")
     for marker in (
         "day81_final_readiness_passed",
-        "release_zip_built_once_after_day81",
+        "release_zip_built_once_from_final_committed_public_source",
+        "release_zip_built_once_before_day82",
+        "same_fixed_zip_used_for_day81_and_day82",
         "fixed_release_zip_path_recorded",
         "release_package_check_passed",
         "day82_zip_inspected_as_is",
@@ -441,6 +455,27 @@ def validate_v200_fixed_release_zip_with_web_evidence(
     ):
         if evidence.get(marker) is not True:
             missing.append(marker)
+
+    if "release_zip_built_once_after_day81" in evidence:
+        missing.append("obsolete:release_zip_built_once_after_day81")
+
+    if inspection is None or inspection.status != "accepted":
+        missing.append("fixed_zip_inspection=accepted")
+    else:
+        recorded_path = evidence.get("fixed_release_zip_path")
+        if not isinstance(recorded_path, str) or not recorded_path.strip():
+            missing.append("fixed_release_zip_path=recorded")
+        else:
+            recorded_name = recorded_path.replace("\\", "/").rstrip("/").split("/")[-1]
+            if recorded_name != inspection.release_zip_name:
+                missing.append("fixed_release_zip_path=inspected-zip-name")
+        if evidence.get("fixed_release_zip_name") != inspection.release_zip_name:
+            missing.append("fixed_release_zip_name=inspected-zip-name")
+        if evidence.get("fixed_release_zip_size_bytes") != inspection.file_size_bytes:
+            missing.append("fixed_release_zip_size_bytes=inspected-zip-size")
+        if evidence.get("fixed_release_zip_sha256") != inspection.sha256:
+            missing.append("fixed_release_zip_sha256=inspected-zip-sha256")
+
     contract = build_v200_fixed_release_zip_with_web_evidence_contract()
     public_safe = True
     for forbidden in contract.forbidden_success_states:
