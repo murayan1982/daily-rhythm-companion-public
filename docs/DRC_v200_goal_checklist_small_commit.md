@@ -2,7 +2,7 @@
 
 Status: **NOT RELEASED**
 
-Last updated: 2026-07-21
+Last updated: 2026-07-22
 
 This checklist is the source of truth for Daily Rhythm Companion v2.0.0.
 
@@ -99,13 +99,18 @@ Current state:
 - [x] The committed Public-P3 HEAD passes exporter `--validate-only` with the exact expected HEAD.
 - [x] The first Public snapshot export passed strict validation at 576 files before runtime verification.
 - [x] In-place verification was found to mutate that directory to 838 files through Python/Flutter generated caches; that export is invalidated and must not initialize the Public repository.
-- [ ] Public-P3.1 rejects Python bytecode/cache output and documents disposable-copy runtime verification.
-- [ ] One fresh canonical Public snapshot is re-exported, remains untouched, and passes strict `--source-directory` validation after disposable-copy tests.
-- [ ] The clean snapshot is initialized as the new Public repository and receives its authoritative source commit.
-- [ ] The final Public repository artifact-record contract binds the Public repository source commit rather than the superseded Private candidate commit.
-- [ ] A new final v2.0.0 fixed release zip is built from the committed new Public repository source.
-- [ ] A new annotated `DRC_v2.0.0` tag is created in the new Public repository against that Public source commit.
-- [ ] The new Public GitHub Release is created with the same verified fixed zip.
+- [x] Public-P3.1 rejects Python bytecode/cache output and documents disposable-copy runtime verification.
+- [x] One fresh canonical Public snapshot was re-exported, remained untouched, and passed strict `--source-directory` validation after disposable-copy tests.
+- [x] The clean snapshot initialized `murayan1982/daily-rhythm-companion-public` and created authoritative root commit `c02fef89362fa6660ccdc2559cfb1a9da506f81a`.
+- [x] The clean-history Public repository has one root commit, 576 tracked files, no transferred Private Git history, and no superseded Private candidate artifact.
+- [x] Public-P4 binds the final artifact-record contract and fixed-ZIP builder to clean-history Public `main`, the official Public origin, and the one-root/no-Private-history policy.
+- [x] Public-P4 source-tree Public-distribution checks, artifact-record smoke checks, and Flutter tests passed in both preparation and Public checkouts.
+- [x] Public-P5 synchronizes README, roadmap, this checklist, and the migration procedure without building a ZIP, creating a tag, or publishing a release.
+- [ ] A new final v2.0.0 fixed release ZIP is built exactly once from the committed Public repository source.
+- [ ] Day82 and Day83 pass against that exact Public fixed ZIP without rebuilding.
+- [ ] The public-safe final artifact record validates against the same Public source commit and fixed ZIP.
+- [ ] A new annotated `DRC_v2.0.0` tag is created in the Public repository against that Public source commit.
+- [ ] The new Public GitHub Release is created with the same verified fixed ZIP and artifact record.
 
 Important correction:
 
@@ -1564,7 +1569,8 @@ record_contract_smoke: scripts/smoke_framework_v200_final_release_artifact_recor
 record_contract_doc: docs/v200_final_release_artifact_record.md
 record_locations: annotated-git-tag-message,github-release-body
 source_head_policy: full-40-character-commit-sha
-branch_alignment_policy: main-and-develop-must-equal-source-head-before-final-build
+historical_topology_policy: same-repository-main-and-develop
+public_migration_override_required: True
 tag_policy: annotated-DRC_v2.0.0-tag-must-target-source-head
 artifact_binding_fields: release-zip-basename,file-size,SHA256
 post_build_source_commit_policy: forbidden
@@ -1572,15 +1578,40 @@ release_zip_rebuild_policy: forbidden-after-accepted-verification
 private_metadata_policy: no-private-evidence-no-private-paths-no-raw-lan-ips-no-secrets
 day82_day83_g7_release_surface_required: True
 previous_g61_candidate_policy: invalidated-by-G7-source-change-do-not-release
-final_release_artifact_record: CONTRACT_READY_ARTIFACT_NOT_RECORDED
+final_release_artifact_record: HISTORICAL_SAME_REPOSITORY_CONTRACT_SUPERSEDED_BY_PUBLIC_P4
 final_fixed_release_zip: NOT_BUILT
 DRC_v2.0.0_tag: not-created
 release_completion_status: NOT_RELEASED
 ```
 
-Commit G-7 resolves the process cycle where updating the checklist after a successful build would invalidate the artifact it described. After G-7 is committed, the committed checklist remains the source of truth for requirements and procedure, while the final post-build public-safe outcome is recorded immutably in the annotated `DRC_v2.0.0` tag message and copied into the GitHub Release body. No source or documentation commit is allowed after the final fixed zip is built. The record must bind the final source HEAD, matching `main` and `develop` refs, annotated tag target, zip basename, byte size, SHA-256, Day82/Day83 acceptance, same-artifact use, and public-safe omission markers. The previously verified G-6.1 candidate is not the final artifact because G-7 changes the release surface; it must not be tagged or published.
+Commit G-7 resolved the post-build documentation cycle for the original same-repository release topology. Public-P0 later introduced a clean-history Public repository with a different commit graph, so G-7 remains historical and cannot authorize the Public release by itself.
 
-- [ ] All accepted Web evidence requirements are complete before building the final release zip.
+Public-P4 clean-history Public artifact contract:
+
+```text
+commit_scope: Public-P4 only
+implementation_status: clean-history-public-artifact-contract-and-builder-aligned
+repository_topology: clean_history_public_snapshot
+public_repository: murayan1982/daily-rhythm-companion-public
+public_branch_policy: main-only
+public_origin_policy: official-public-origin-required
+public_root_commit_count_policy: exactly-one
+private_git_history_policy: forbidden
+legacy_develop_head_field_policy: rejected
+builder_private_manifest_dependency: removed
+builder_source_policy: committed-public-main
+artifact_binding_fields: release-zip-basename,file-size,SHA256
+post_build_source_commit_policy: forbidden
+release_zip_rebuild_policy: forbidden-after-accepted-verification
+final_release_artifact_record: CONTRACT_READY_ARTIFACT_NOT_RECORDED
+final_fixed_release_zip: NOT_BUILT
+DRC_v2.0.0_tag: NOT_CREATED
+release_completion_status: NOT_RELEASED
+```
+
+Public-P4 preserves the G-7 invariant that no source or documentation commit is allowed after the final fixed ZIP is built. The final record must bind the committed Public `main` source HEAD, the same annotated tag target, ZIP basename, byte size, SHA-256, Day82/Day83 acceptance, same-artifact use, one-root/no-Private-history verification, and public-safe omission markers.
+
+- [x] All accepted Web evidence requirements are complete before building the final release zip.
 - [ ] Build the final release zip once.
 - [ ] Record the exact zip path.
 - [ ] Run final checks against that same fixed zip without rebuilding.
@@ -1605,17 +1636,18 @@ final_fixed_release_zip: NOT_BUILT
 ### 2.9 Final tag/release
 
 - [ ] `DRC_v2.0.0` is created only after all required real Web evidence is accepted.
-- [ ] `main` and `develop` point to the final release commit.
-- [ ] The final release commit has passed source-tree checks.
-- [ ] The final release commit has passed Flutter tests.
-- [ ] The final release commit has passed fixed-zip checks.
-- [ ] The final release commit has passed accepted Web evidence checks.
-- [ ] The public-safe final artifact record validates against the same fixed zip.
+- [ ] Public `main` points to the final release source commit.
+- [ ] The final Public source commit has passed source-tree checks.
+- [ ] The final Public source commit has passed Flutter tests.
+- [ ] The final Public source commit has passed accepted Web evidence checks.
+- [ ] One final Public fixed ZIP is built exactly once from that committed source.
+- [ ] Day82 and Day83 pass against that exact fixed ZIP without rebuilding.
+- [ ] The public-safe final artifact record validates against the same Public source commit and fixed ZIP.
 - [ ] The annotated `DRC_v2.0.0` tag message contains the validated final artifact record.
-- [ ] The annotated tag targets the same source HEAD as `main` and `develop`.
-- [ ] GitHub Release uses the final fixed zip and copies the same public-safe artifact record.
-- [ ] No source or documentation commit is created after the final fixed zip build.
-- [ ] Existing accidental or premature `DRC_v2.0.0` tags are removed/replaced before final release.
+- [ ] The annotated tag targets the same source HEAD as Public `main`.
+- [ ] GitHub Release uses the same fixed ZIP and copies the same public-safe artifact record.
+- [ ] No source or documentation commit is created after the final fixed ZIP build.
+- [x] The Public repository has no premature `DRC_v2.0.0` tag; the Private candidate tag is superseded and will not be reused.
 
 Release status:
 
@@ -1627,43 +1659,41 @@ DRC_v2.0.0: NOT_RELEASED
 
 ### 2.10 Clean-history Public repository migration
 
-The existing Private repository remains the development and evidence-preservation repository. Its Git history is not published. The fixed zip and annotated tag created before Public-P0 are a verified Private candidate only and are superseded for Public release use.
+The existing Private repository remains the development and evidence-preservation repository. Its Git history is not published. The fixed ZIP and annotated tag created before Public-P0 are a verified Private candidate only and are superseded for Public release use.
 
-A clean-history repository changes the commit SHA even when the exported files are identical. Therefore, the final Public release must use a new artifact record and a new one-time fixed zip built after the Public repository's authoritative source commit exists.
+The clean-history Public repository now exists at `murayan1982/daily-rhythm-companion-public`. Its initial source snapshot created one root commit and contains 576 tracked files. The final Public release must use the committed Public `main` source, the Public-P4 artifact contract, a new one-time fixed ZIP, and a new annotated Public tag.
 
 Public migration gates:
 
 - [x] The existing Private repository remains Private.
-- [x] Private Git history, refs, ignored files, operator evidence, raw evidence, private environment files, local paths, and the old candidate zip are excluded from export.
-- [x] Cleanup-1 removed the first set of confirmed obsolete files.
-- [x] Cleanup-2 removed the duplicate root checklist and updated validators/package requirements to use the docs checklist only.
-- [x] Cleanup-3 first pass removed isolated obsolete pre-v1/v1.10 release helpers and documented retain/remove/private-only/deferred file classes.
-- [x] Cleanup-4 canonicalized `release_notes/v1.9.0.md` and removed the duplicate historical release-note location under `docs/`.
-- [x] Public-P2 added the direct Private-repository Public-export-view/fixed-ZIP validator and wired it into the final builder, Day82, and Day83.
-- [x] Cleanup-5 retired the obsolete v1.9 Day46-Day49 release chain and version-specific cleanup helpers while retaining `release_notes/v1.9.0.md`.
-- [x] Cleanup-6 retired the superseded Day57/Day58 and Day71/Day72 pre-Web readiness chains and example templates.
-- [x] The previously verified Private candidate zip/tag is marked superseded for Public release use.
-- [ ] Choose a GitHub owner/repository name distinct from the existing Private repository, or rename the Private repository before creating the new Public repository.
-- [x] Complete the Public-facing metadata changes: Flutter version `2.0.0+1`, Web name/title/description, README state, and `release_notes/v2.0.0.md`.
-- [ ] Complete the remaining file-retention review for the historical v2.0 evidence/readiness chain and remove or explicitly retain each remaining group.
-- [x] Add a Public-distribution validator that checks version, Web metadata, release notes, required files, forbidden files, and clean-snapshot rules.
-- [ ] Run the Public-distribution validator against the exported clean Public snapshot.
-- [ ] Export one clean source snapshot from the final committed Private preparation state without `.git` or ignored/local files.
-- [ ] Initialize the new Public repository and create its authoritative release source commit.
-- [ ] Update the final artifact-record contract so `source_head`, tag target, and fixed-zip source all refer to the new Public repository commit.
-- [ ] Ensure the Public fixed-zip builder does not require raw or ignored Private evidence in the Public checkout; it may rely only on committed public-safe acceptance markers and the Public migration validator.
-- [ ] Build one new fixed zip from the committed Public repository source.
-- [ ] Run Day82 and Day83 against that exact Public fixed zip without rebuilding.
-- [ ] Create a new annotated `DRC_v2.0.0` tag in the Public repository targeting the same Public source commit.
-- [ ] Create the GitHub Release in the Public repository and attach the exact same verified fixed zip.
-- [ ] Confirm the Public repository contains no Private repository history or superseded candidate artifact.
+- [x] Private Git history, refs, ignored files, operator evidence, raw evidence, private environment files, local paths, and the old candidate ZIP are excluded from export.
+- [x] Cleanup-1 through Cleanup-9 completed the tracked-file cleanup and retention classification.
+- [x] The previously verified Private candidate ZIP/tag is marked superseded for Public release use.
+- [x] `murayan1982/daily-rhythm-companion-public` was selected as the distinct Public repository.
+- [x] Public-P1 completed Flutter/Web/release-note metadata alignment.
+- [x] Public-P2 added the direct Public-distribution validator and wired it into the final builder, Day82, and Day83.
+- [x] Public-P3 added committed-HEAD snapshot export and strict exported-directory validation.
+- [x] Public-P3.1 rejects generated Python/Flutter caches and requires disposable-copy runtime verification.
+- [x] A fresh canonical 576-file snapshot was exported, remained untouched, and passed strict validation.
+- [x] The clean snapshot initialized the Public repository with root commit `c02fef89362fa6660ccdc2559cfb1a9da506f81a`.
+- [x] The Public repository has exactly one root commit and does not contain transferred Private Git history or the superseded Private candidate artifact.
+- [x] Strict Public-distribution validation and Flutter tests passed in the Public checkout.
+- [x] Public-P4 updated the artifact-record contract so `source_head`, Public `main`, tag target, and fixed-ZIP source all refer to the clean-history Public repository.
+- [x] Public-P4 updated the fixed-ZIP builder to require committed Public `main`, the official Public origin, one root commit, and committed public-safe acceptance markers only.
+- [x] Public-P5 synchronizes README, roadmap, this checklist, and the migration procedure without creating release artifacts.
+- [ ] Freeze the final committed Public source after all Public-P5 verification passes.
+- [ ] Build one new fixed ZIP exactly once from the committed Public source.
+- [ ] Run Day82 and Day83 against that exact Public fixed ZIP without rebuilding.
+- [ ] Validate the public-safe final artifact record against the same Public source commit and fixed ZIP.
+- [ ] Create a new annotated `DRC_v2.0.0` tag in the Public repository targeting that same Public source commit.
+- [ ] Create the GitHub Release in the Public repository and attach the exact same verified fixed ZIP.
 
 Current migration status:
 
 ```text
 public_repository_migration: IN_PROGRESS
 private_candidate_zip: VERIFIED_SUPERSEDED
-private_candidate_tag: EXISTS_PRIVATE_SUPERSEDED
+private_candidate_tag: EXISTS_PRIVATE_SUPERSEDED_DO_NOT_REUSE
 private_repository_history_export: FORBIDDEN
 public_metadata_alignment: COMPLETED_PUBLIC_P1
 flutter_package_version: 2.0.0+1
@@ -1671,12 +1701,18 @@ web_public_metadata: ALIGNED
 v200_release_notes: PRESENT
 checklist_source_of_truth: docs/DRC_v200_goal_checklist_small_commit.md
 legacy_root_checklist: REMOVED_CLEANUP_2
-public_cleanup_review: IN_PROGRESS_AFTER_CLEANUP_5
-public_distribution_validator: SOURCE_TREE_PASSED_PUBLIC_P2
-public_snapshot_validator: NOT_RUN
-public_repository: NOT_CREATED
-public_repository_source_head: NOT_RECORDED
-public_artifact_record_contract: NOT_UPDATED
+public_cleanup_review: COMPLETED_CLEANUP_9
+public_distribution_validator: PRIVATE_EXPORT_VIEW_AND_PUBLIC_STRICT_PASSED
+public_snapshot_export_tooling: COMPLETED_PUBLIC_P3
+public_snapshot_validator: COMPLETED_PUBLIC_P3_1
+canonical_public_snapshot: EXPORTED_UNTOUCHED_STRICTLY_VALIDATED
+public_repository: CREATED_MURAYAN1982_DAILY_RHYTHM_COMPANION_PUBLIC
+public_repository_initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
+public_repository_root_commit_count: 1
+public_repository_tracked_files: 576
+public_artifact_record_contract: UPDATED_PUBLIC_P4
+public_fixed_zip_builder: UPDATED_PUBLIC_P4
+public_status_documents: SYNCHRONIZED_PUBLIC_P5
 public_fixed_release_zip: NOT_BUILT
 public_DRC_v2.0.0_tag: NOT_CREATED
 public_github_release: NOT_CREATED

@@ -6,7 +6,7 @@ Source of truth: `docs/DRC_v200_goal_checklist_small_commit.md`
 
 ## Purpose
 
-Prepare Daily Rhythm Companion v2.0.0 in the existing Private development repository, then publish a clean-history source snapshot in a separate Public repository without exposing the Private repository's Git history or local/operator evidence.
+Prepare Daily Rhythm Companion v2.0.0 in the existing Private development repository, maintain the reviewed clean-history source in `murayan1982/daily-rhythm-companion-public`, and complete the final Public artifact/tag/Release sequence without exposing Private Git history or local/operator evidence.
 
 ## Superseded Private candidate
 
@@ -36,28 +36,38 @@ Existing Private repository
   - receives Public preparation commits
   - remains Private
 
-New Public repository
-  - is initialized from one reviewed clean source snapshot
+Clean-history Public repository
+  - was initialized from one reviewed clean source snapshot
   - does not receive the Private .git directory, refs, tags, branches, or commit history
-  - creates a new authoritative Public source commit
-  - builds and verifies the final Public fixed zip from that Public commit
-  - creates a new annotated DRC_v2.0.0 tag
-  - publishes the GitHub Release with the same verified zip
+  - has an authoritative Public root commit and subsequent Public preparation commits
+  - will build and verify the final Public fixed ZIP from the frozen Public `main` commit
+  - will create a new annotated DRC_v2.0.0 tag
+  - will publish the GitHub Release with the same verified ZIP
 ```
 
-The new Public repository must use a distinct GitHub owner/name from the existing Private repository, unless the existing Private repository is renamed first. Two repositories under the same owner cannot have the same repository name.
+The Public repository uses the distinct owner/name `murayan1982/daily-rhythm-companion-public`; the existing Private repository remains separate and Private.
 
 ## Why the old final artifact record cannot be reused
 
 Git commit IDs include parent history. A clean-history Public repository therefore receives a different commit SHA even when its file tree matches the Private preparation tree.
 
-The earlier G-7 contract requires:
+The earlier G-7 contract used the original same-repository topology:
 
 ```text
 source_head == main_head == develop_head == annotated tag target
 ```
 
-That equality can only authorize the repository where the recorded commit exists. For the clean-history Public release, the artifact record must instead bind the new Public repository commit, Public tag target, and fixed zip built from that Public commit.
+Public-P4 replaces that historical requirement with the clean-history Public topology:
+
+```text
+repository_topology == clean_history_public_snapshot
+public_repository == murayan1982/daily-rhythm-companion-public
+source_head == public_main_head == annotated_public_tag_target
+public_root_commit_count == 1
+private_git_history_included == false
+```
+
+The Public fixed-ZIP builder now requires the official Public origin and committed Public `main`; it does not require the ignored Private Day80 manifest in the Public checkout. The Private candidate artifact record remains historical only.
 
 ## Public preparation gates in the Private repository
 
@@ -87,7 +97,7 @@ v200_release_notes: release_notes/v2.0.0.md
 release_status: NOT_RELEASED
 ```
 
-The remaining gates are retention cleanup, Public-distribution validation, clean snapshot creation, the new Public source commit, Public artifact-record binding, the one-time fixed zip, the Public annotated tag, and the GitHub Release.
+Retention cleanup, Public-distribution validation, clean snapshot creation, Public repository initialization, and Public artifact-record/builder binding are complete. The remaining gates are the final committed Public source freeze, one-time fixed ZIP, Day82/Day83 same-artifact verification, final artifact record, Public annotated tag, and GitHub Release.
 
 ## Cleanup-2 checklist source consolidation
 
@@ -173,17 +183,20 @@ superseded Private candidate zip
 
 ## Public repository release sequence
 
-1. Finish and verify all Public preparation commits in the Private repository.
-2. Confirm the tracked working tree is clean.
-3. Export one reviewed clean source snapshot without Private Git metadata or ignored/local files.
-4. Initialize the new Public repository and create its authoritative source commit.
-5. Run source-tree, mock-safe, Flutter, and Public-distribution checks in the Public checkout.
-6. Build one fixed zip from the committed Public source.
-7. Run Day82 and Day83 against that exact zip without rebuilding.
-8. Validate the Public artifact record against the Public source commit and zip.
-9. Create a new annotated `DRC_v2.0.0` tag targeting the same Public source commit.
-10. Create the GitHub Release and attach the exact same fixed zip.
-11. Confirm the existing Private repository remains Private.
+- [x] Finish and verify Public preparation through Public-P4 in the Private repository.
+- [x] Export one reviewed clean source snapshot without Private Git metadata or ignored/local files.
+- [x] Initialize `murayan1982/daily-rhythm-companion-public` and create its authoritative root commit.
+- [x] Run strict Public-distribution checks and Flutter tests in the Public checkout using disposable runtime copies.
+- [x] Align the final artifact record and builder with clean-history Public `main` in Public-P4.
+- [x] Synchronize README/checklist/roadmap/migration status in Public-P5.
+- [ ] Confirm the final Public-P5 commit is pushed and both working trees are clean.
+- [ ] Run final source-tree, acceptance, and Flutter checks from the committed Public source.
+- [ ] Build one fixed ZIP exactly once from the committed Public source.
+- [ ] Run Day82 and Day83 against that exact ZIP without rebuilding.
+- [ ] Validate the Public artifact record against the same Public source commit and ZIP.
+- [ ] Create a new annotated `DRC_v2.0.0` tag targeting that Public source commit.
+- [ ] Create the GitHub Release and attach the exact same fixed ZIP and artifact record.
+- [x] Confirm the existing Private repository remains Private.
 
 ## Public-P2 direct distribution validator
 
@@ -228,7 +241,46 @@ Private-only history, source-only day checks, patch/diff artifacts, ignored oper
 
 Public-P3 adds `scripts/export_v200_public_snapshot_from_head.py` and `docs/v200_public_snapshot_export.md`. The exporter requires a clean working tree, reads the exact committed HEAD through `git archive`, applies the committed Public export policy, validates the selected files strictly, and can write one new directory outside the Private repository. It does not copy `.git`, read ignored files, initialize Git, build a ZIP, create tags, publish GitHub content, or access the network.
 
-Public-P2 also accepts `--source-directory` for strict validation of the exported tree without Private-source exclusions. This makes the export boundary independently verifiable before and after the new Public repository is initialized.
+Public-P2 also accepts `--source-directory` for strict validation of the exported tree without Private-source exclusions. This makes the export boundary independently verifiable before and after the clean-history Public repository is initialized.
+
+## Public-P3.1 generated-cache hardening and canonical export
+
+Public-P3.1 rejects Python bytecode/cache directories and Flutter-generated cache/build output from strict Public source validation. Runtime checks are run only in disposable verification copies so the canonical export remains untouched.
+
+A fresh canonical snapshot passed strict validation at 576 files and was used to initialize the clean-history Public repository. The earlier mutated export remains invalidated and was not used.
+
+## Public repository initialization
+
+```text
+public_repository: murayan1982/daily-rhythm-companion-public
+initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
+initial_commit_message: Initial public source snapshot for v2.0.0
+root_commit_count: 1
+tracked_file_count: 576
+private_git_history_transferred: false
+superseded_private_candidate_transferred: false
+```
+
+The initial Public snapshot passed strict Public-distribution validation. Python and Flutter runtime checks were performed in disposable copies rather than in the canonical checkout.
+
+## Public-P4 clean-history artifact contract and builder
+
+Public-P4 updates these four release-contract files in both repositories:
+
+```text
+backend/app/services/framework_v200_final_release_artifact_record.py
+scripts/smoke_framework_v200_final_release_artifact_record.py
+build_v200_final_fixed_release_zip_from_head.ps1
+docs/v200_final_release_artifact_record.md
+```
+
+The final artifact record now requires the clean-history Public repository, Public `main`, exactly one root commit, the official Public origin, no Private Git history, and no legacy `develop_head` field. The fixed-ZIP builder uses committed public-safe acceptance markers and does not require ignored Private evidence in the Public checkout.
+
+Public-P4 validation passed in both preparation and Public checkouts, including strict Public-distribution validation, artifact-record smoke checks, and Flutter tests. It did not build a ZIP, create a tag, or publish a Release.
+
+## Public-P5 status synchronization
+
+Public-P5 synchronizes `README.md`, `roadmap.md`, the goal checklist, and this migration procedure with the completed Public-P3.1/Public initialization/Public-P4 state. It preserves `NOT_RELEASED` and leaves the fixed ZIP, Day82/Day83 artifact verification, final artifact record, annotated tag, and GitHub Release pending.
 
 ## Current status
 
@@ -247,12 +299,17 @@ cleanup_6_pre_web_v200_readiness_chain: completed
 cleanup_7_tts_private_run_preparation_chain: completed
 cleanup_8_day74_day75_intermediate_chain: completed
 cleanup_9_final_retention_classification: completed
-public_distribution_validator: source-tree-passed-public-p2-cleanup-complete
-public_snapshot_export_tooling: ready-public-p3
-initial_public_snapshot: invalidated-after-in-place-generated-cache-write
-public_snapshot_validator: public-p3.1-cache-hardening-pending
-public_repository: not-created
-public_source_commit: not-created
+public_distribution_validator: private-export-view-and-public-strict-passed
+public_snapshot_export_tooling: completed-public-p3
+public_snapshot_validator: completed-public-p3.1
+canonical_public_snapshot: exported-untouched-strictly-validated
+public_repository: murayan1982/daily-rhythm-companion-public
+public_repository_initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
+public_repository_root_commit_count: 1
+public_repository_tracked_files: 576
+public_artifact_record_contract: completed-public-p4
+public_fixed_zip_builder: completed-public-p4
+public_status_document_sync: completed-public-p5
 public_fixed_release_zip: not-built
 public_tag: not-created
 public_github_release: not-created

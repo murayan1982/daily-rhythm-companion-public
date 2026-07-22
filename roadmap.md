@@ -1,6 +1,6 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-07-21
+Updated: 2026-07-22
 Current released baseline: v1.10.0, the v2.0.0 prerelease evidence gate foundation
 Current target: v2.0.0 clean-history Public repository preparation (**NOT RELEASED**)
 
@@ -74,7 +74,7 @@ source of truth: docs/DRC_v200_goal_checklist_small_commit.md
 
 Day64-Day83 evidence readiness / validator gates are useful infrastructure and do not replace real execution evidence. The required capability evidence and public-safe acceptance markers are now accepted.
 
-v2.0.0 must not be published until the remaining clean-history Public repository gates are complete. Metadata alignment, retention cleanup, and Public-distribution validation are complete; Public-P3 provides committed-HEAD snapshot export tooling. The first real export was invalidated after in-place Python/Flutter verification generated cache files. Public-P3.1 must harden cache rejection, then a fresh untouched snapshot, Public source commit, Public-repository-bound artifact record, one final fixed zip, Public annotated tag, and GitHub Release remain pending.
+v2.0.0 must not be published until the remaining clean-history Public repository gates are complete. Metadata alignment, retention cleanup, Public-distribution validation, Public-P3.1 cache hardening, canonical snapshot export, Public repository initialization, and Public-P4 artifact-contract/builder alignment are complete. Public-P5 synchronizes status documentation. The remaining gates are the final committed Public source verification, one fixed ZIP built exactly once from Public `main`, Day82/Day83 verification against that same artifact, the Public artifact record, annotated tag, and GitHub Release.
 
 Current v2.0.0 checkpoint:
 
@@ -93,7 +93,7 @@ release_status: NOT_RELEASED
 ```
 
 
-From Public-P0 onward, `final_fixed_release_zip` and `DRC_v2.0.0_tag` in the current checkpoint refer to the future artifact and tag in the new clean-history Public repository. The already verified Private-repository candidate zip and annotated tag are superseded for Public release use.
+From Public-P0 onward, `final_fixed_release_zip` and `DRC_v2.0.0_tag` in the current checkpoint refer to the future artifact and tag in the clean-history Public repository. The already verified Private-repository candidate zip and annotated tag are superseded for Public release use.
 
 ```text
 public_repository_migration: IN_PROGRESS
@@ -102,31 +102,35 @@ private_candidate_release_use: superseded-do-not-publish
 public_metadata_alignment: completed-public-p1
 checklist_source_of_truth: docs-only-cleanup-2
 cleanup_3_first_pass_retention: completed
-public_distribution_validator: source-tree-passed-public-p2
+public_distribution_validator: private-export-view-and-public-strict-passed
 cleanup_7_tts_private_run_preparation_chain: completed
 cleanup_9_final_retention_classification: completed
-public_snapshot_export_tooling: ready-public-p3
-initial_public_snapshot: invalidated-after-in-place-generated-cache-write
-public_snapshot_validator: public-p3.1-cache-hardening-pending
+public_snapshot_export_tooling: completed-public-p3
+public_snapshot_validator: completed-public-p3.1
+canonical_public_snapshot: exported-untouched-and-strictly-validated
 obsolete_file_cleanup: completed
-public_repository_initial_commit: not-created
-public_artifact_record_contract_update: pending
+public_repository: created-murayan1982/daily-rhythm-companion-public
+public_repository_initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
+public_repository_root_commit_count: 1
+public_repository_tracked_files: 576
+public_artifact_record_contract_update: completed-public-p4
+public_status_document_sync: completed-public-p5
 public_fixed_release_zip: not-built
 public_DRC_v2.0.0_tag: not-created
 public_github_release: not-created
 ```
 
-Because a clean-history Public repository produces a new commit SHA, the final Public artifact record must bind the new Public repository source commit, its annotated tag target, and the fixed zip built from that Public commit. The same-repository Private G-7 record is historical and cannot authorize the Public release.
+Because a clean-history Public repository produces a new commit SHA, the final Public artifact record must bind the clean-history Public repository source commit, its annotated tag target, and the fixed ZIP built from that Public commit. Public-P4 now enforces that topology. The same-repository Private G-7 record remains historical and cannot authorize the Public release.
 
-D-next-14 aligned DRC with the released FW v5 public voice output contract (`create_voice_output_session`, `VoiceOutputRequest`, `create_output`, mp3, artifact-ref result). D-next-15 converts a validated managed FW mp3 artifact into a DRC-owned opaque relative URL and serves it through the backend without exposing the local path. D-next-16 hardens DRC/FW secret separation, rejects provider-specific keys from the DRC-side preflight, blocks local env/patch/validation artifacts from release packages, and aligns the Day77 helper filename. D-next-17 aligns the real TTS smartphone Web launch flow with the Flutter app's actual `DRC_BACKEND_API_BASE_URL` compile-time key and guards against the deprecated unused alias. D-next-18 synchronizes public-safe acceptance after the configured DRC backend path generated real TTS audio, audible playback was confirmed in both PC and smartphone Web UI, and the Day54, Day65, Day77, and combined marker-only validators accepted. E-1 through E-8 then restored and exercised the real Google Health path through OAuth, the actual backend, normalized sleep-summary output, PC Web, smartphone Web, and private screenshot capture. E-9 synchronizes public-safe acceptance after Day55, Day66, and Day78 marker-only validation accepted. Raw audio, screenshots, provider payloads, raw Google Health payloads, exact sleep values, OAuth values, credentials, URLs, LAN IPs, private paths, and operator evidence files remain uncommitted. All capability-specific v2.0.0 evidence requirements are accepted. G-1 removed tracked private evidence from the public repository surface and normalized secret-shaped/private-path fixtures; G-2 synchronizes the accepted Day69 public repository final sweep using public-safe markers only; G-3 synchronizes the accepted Day70 final prerelease aggregate review using public-safe markers only. G-4 hardens the Day80 accepted private evidence manifest source-tree validator and documents the exact ignored operator manifest handoff. G-5 synchronizes public-safe acceptance after the ignored Day80 manifest validated all seven required evidence items, actual DRC backend and Web UI execution, private screenshot references, and forbidden-state absence. G-6 hardens the remaining release path before artifact creation: the final builder now exports a detached temporary worktree at the recorded committed HEAD and invokes the release builder exactly once, explicitly excludes the worktree `.git` metadata file, while Day82 directly opens the supplied same zip and runs package hygiene, CRC, package-root, required-entry, forbidden-entry, worktree-metadata, and unchanged-artifact checks; Day83 independently reopens that same artifact, preserves the Day82 contract, and requires the final readiness release surface. The private manifest and raw evidence remain ignored and uncommitted, and G-6 does not build the final fixed zip. The next unresolved gates are the final fixed release zip one-time build and verification, tag, and v2.0.0 release. Commit G-7 defines the immutable public-safe final artifact record before the true final build: the committed checklist remains the requirements/procedure source of truth, no post-build source commit is allowed, and the accepted zip basename, size, SHA-256, source HEAD, matching main/develop refs, annotated tag target, and Day82/Day83 results must be copied unchanged into the annotated tag message and GitHub Release body. Any candidate built before G-7 is not the final artifact.
+D-next-14 aligned DRC with the released FW v5 public voice output contract (`create_voice_output_session`, `VoiceOutputRequest`, `create_output`, mp3, artifact-ref result). D-next-15 converts a validated managed FW mp3 artifact into a DRC-owned opaque relative URL and serves it through the backend without exposing the local path. D-next-16 hardens DRC/FW secret separation, rejects provider-specific keys from the DRC-side preflight, blocks local env/patch/validation artifacts from release packages, and aligns the Day77 helper filename. D-next-17 aligns the real TTS smartphone Web launch flow with the Flutter app's actual `DRC_BACKEND_API_BASE_URL` compile-time key and guards against the deprecated unused alias. D-next-18 synchronizes public-safe acceptance after the configured DRC backend path generated real TTS audio, audible playback was confirmed in both PC and smartphone Web UI, and the Day54, Day65, Day77, and combined marker-only validators accepted. E-1 through E-8 then restored and exercised the real Google Health path through OAuth, the actual backend, normalized sleep-summary output, PC Web, smartphone Web, and private screenshot capture. E-9 synchronizes public-safe acceptance after Day55, Day66, and Day78 marker-only validation accepted. Raw audio, screenshots, provider payloads, raw Google Health payloads, exact sleep values, OAuth values, credentials, URLs, LAN IPs, private paths, and operator evidence files remain uncommitted. All capability-specific v2.0.0 evidence requirements are accepted. G-1 removed tracked private evidence from the public repository surface and normalized secret-shaped/private-path fixtures; G-2 synchronizes the accepted Day69 public repository final sweep using public-safe markers only; G-3 synchronizes the accepted Day70 final prerelease aggregate review using public-safe markers only. G-4 hardens the Day80 accepted private evidence manifest source-tree validator and documents the exact ignored operator manifest handoff. G-5 synchronizes public-safe acceptance after the ignored Day80 manifest validated all seven required evidence items, actual DRC backend and Web UI execution, private screenshot references, and forbidden-state absence. G-6 hardens the remaining release path before artifact creation: the final builder now exports a detached temporary worktree at the recorded committed HEAD and invokes the release builder exactly once, explicitly excludes the worktree `.git` metadata file, while Day82 directly opens the supplied same zip and runs package hygiene, CRC, package-root, required-entry, forbidden-entry, worktree-metadata, and unchanged-artifact checks; Day83 independently reopens that same artifact, preserves the Day82 contract, and requires the final readiness release surface. The private manifest and raw evidence remain ignored and uncommitted, and G-6 does not build the final fixed zip. The next unresolved gates are the final fixed release zip one-time build and verification, tag, and v2.0.0 release. Commit G-7 defines the immutable public-safe final artifact record before the true final build: the committed checklist remains the requirements/procedure source of truth, no post-build source commit is allowed, and the accepted ZIP basename, size, SHA-256, source HEAD, tag target, and Day82/Day83 results must be copied unchanged into the annotated tag message and GitHub Release body. Public-P4 replaces the historical same-repository `main`/`develop` equality with the clean-history Public `main` contract, one-root verification, official Public origin, and explicit Private-history exclusion. Any candidate built before the final Public source commit is not the final artifact.
 
 Cleanup-4 canonicalizes the retained v1.9.0 release record at `release_notes/v1.9.0.md` and updates active validators and documentation to remove the duplicate `docs/` release-note location.
 
-Public-P3 adds committed-HEAD clean snapshot export tooling and strict exported-directory validation. It does not write a snapshot during the commit, initialize the Public repository, build the final ZIP, create tags, or publish a GitHub Release.
+Public-P3 adds committed-HEAD clean snapshot export tooling and strict exported-directory validation. Public-P3.1 then hardens generated-cache rejection and disposable-copy verification; a fresh untouched snapshot was validated and used to initialize the clean-history Public repository. Neither step built the final ZIP, created the Public release tag, or published a GitHub Release.
 
-Public-P2 adds a direct Public-distribution validator for the clean Public export view of the Private repository and one supplied fixed ZIP. Source mode intentionally omits retained Private-only history such as `docs/internal/**`, historical patch/diff files, and source-only day checks; fixed-ZIP mode remains strict. It checks v2.0.0 metadata, required Public files, forbidden private/local artifacts, ZIP hygiene, and obvious sensitive content. The final builder, Day82, and Day83 invoke it. Clean Public repository execution remains pending.
+Public-P2 adds a direct Public-distribution validator for the clean Public export view of the Private repository and one supplied fixed ZIP. Source mode intentionally omits retained Private-only history such as `docs/internal/**`, historical patch/diff files, and source-only day checks; fixed-ZIP mode remains strict. It checks v2.0.0 metadata, required Public files, forbidden private/local artifacts, ZIP hygiene, and obvious sensitive content. The final builder, Day82, and Day83 invoke it. Strict clean Public repository execution has passed at 576 tracked files.
 
-Cleanup-5 retires the obsolete v1.9.0 Day46-Day49 release-chain implementation and version-specific cleanup helpers. The canonical v1.9.0 release note remains retained, and the remaining cleanup focus is the historical v2.0 evidence/readiness surface.
+Cleanup-5 retires the obsolete v1.9.0 Day46-Day49 release-chain implementation and version-specific cleanup helpers. The canonical v1.9.0 release note remains retained. Cleanup-6 through Cleanup-9 later completed the remaining historical v2.0 evidence/readiness retention review.
 
 ## Current baseline
 

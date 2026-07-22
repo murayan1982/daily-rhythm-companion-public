@@ -11,7 +11,7 @@ Current target: v2.0.0 clean-history Public repository preparation (**NOT RELEAS
 
 v2.0.0 is **not released**. The source of truth for v2.0.0 completion is [Daily Rhythm Companion v2.0.0 Goal Checklist](docs/DRC_v200_goal_checklist_small_commit.md).
 
-Required real Web execution evidence, public-safe acceptance markers, Public metadata alignment, tracked-file cleanup, retention classification, and Public-distribution validation are complete. Public-P3 provides committed-HEAD clean snapshot export and strict exported-directory validation. The first real export passed at 576 files but was later mutated by in-place Python/Flutter verification, so it is invalidated. Public-P3.1 hardens generated-cache rejection and requires runtime checks in a disposable verification copy before a fresh canonical export is used for the new Public repository.
+Required real Web execution evidence, public-safe acceptance markers, Public metadata alignment, tracked-file cleanup, retention classification, and Public-distribution validation are complete. Public-P3.1 hardened generated-cache rejection and required runtime checks in disposable verification copies. A fresh untouched 576-file snapshot passed strict validation, initialized the clean-history Public repository, and produced its authoritative root commit. Public-P4 then updated the final artifact-record and fixed-zip builder contracts for the clean-history Public `main` topology. Public-P5 synchronizes the repository status documents before any final fixed ZIP, tag, or GitHub Release is created.
 
 Do not publish `DRC_v2.0.0` until every Public migration gate in the checklist is complete. The superseded Private candidate zip and Private tag are not Public release assets.
 
@@ -21,22 +21,26 @@ Cleanup-3 first-pass retention cleanup removes isolated obsolete pre-v1/v1.10 re
 
 Cleanup-4 moves the retained v1.9.0 release note into `release_notes/v1.9.0.md`, so all supported version records now use the canonical release-history directory.
 
-Public-P2 adds `scripts/smoke_framework_v200_public_distribution_readiness.py`, a direct Public-export/fixed-ZIP validator for v2.0.0 metadata, required Public files, forbidden local/private artifacts, and obvious sensitive content. In the Private repository, source mode inspects the clean Public export view and intentionally omits retained Private-only history such as `docs/internal/**`, old patch/diff files, and day-by-day source checks. Clean Public repository execution remains pending.
+Public-P2 adds `scripts/smoke_framework_v200_public_distribution_readiness.py`, a direct Public-export/fixed-ZIP validator for v2.0.0 metadata, required Public files, forbidden local/private artifacts, and obvious sensitive content. In the Private repository, source mode inspects the clean Public export view and intentionally omits retained Private-only history such as `docs/internal/**`, old patch/diff files, and day-by-day source checks. Strict execution against the clean Public repository has passed at 576 tracked files.
 
 Cleanup-5 removes the obsolete v1.9.0 Day46-Day49 release/readiness/package/finalization implementation chain and version-specific cleanup helpers. The canonical historical release note remains at `release_notes/v1.9.0.md`.
 
 Cleanup-6 retires the superseded pre-Web v2.0 Day57/Day58 and Day71/Day72 readiness chains. Cleanup-7 removes the completed TTS private-run preparation chain while retaining the runtime boundary, public acceptance contract, marker validators, safe configuration example, and final Day80-Day83 audit path. Cleanup-8 retires the superseded Day74 screenshot-collection checklist and Day75 intermediate private-manifest validator after Day80 acceptance became the authoritative aggregate. Cleanup-9 explicitly retains the remaining capability evidence and final audit chain because those files form the reproducible public-safe proof path from accepted capability markers through Day80, Day82, Day83, and the final artifact record.
 
-Public-P3 adds `scripts/export_v200_public_snapshot_from_head.py`, which reads only committed HEAD, applies the committed Public export policy, rejects a dirty working tree, never copies Private Git history or ignored evidence, and can write one new snapshot outside the Private repository. Public-P2 now also supports strict `--source-directory` validation without Private-source exclusions.
+Public-P3 adds `scripts/export_v200_public_snapshot_from_head.py`, which reads only committed HEAD, applies the committed Public export policy, rejects a dirty working tree, never copies Private Git history or ignored evidence, and can write one new snapshot outside the Private repository. Public-P2 also supports strict `--source-directory` validation without Private-source exclusions.
+
+Public-P3.1 rejects generated Python/Flutter cache output and moves runtime verification into disposable copies. The canonical snapshot remained untouched, was validated strictly, and became the root of `murayan1982/daily-rhythm-companion-public`.
+
+Public-P4 binds the final artifact record and one-time fixed-ZIP builder to the clean-history Public repository: Public `main`, one root commit, the official Public origin, no Private Git history, no ignored Private evidence, and no legacy `develop_head` field.
 
 
 ## Public repository migration checkpoint
 
-The fixed zip and annotated tag created in the existing Private repository before this migration gate are retained only as a verified **private candidate**. They must not be uploaded as the v2.0.0 asset or reused as the final tag for the new Public repository.
+The fixed zip and annotated tag created in the existing Private repository before this migration gate are retained only as a verified **private candidate**. They must not be uploaded as the v2.0.0 asset or reused as the final tag for the clean-history Public repository.
 
 The Public release will use a clean-history repository snapshot. The existing Private repository remains Private, and its `.git` history, refs, ignored operator evidence, local environment files, raw evidence, and previous release candidate are not transferred.
 
-A clean-history repository creates a new commit SHA. Therefore, the final Public fixed zip must be built from the committed source in the **new Public repository**, and the Public repository's annotated `DRC_v2.0.0` tag must target that same Public source commit. The earlier Private-repository G-7 artifact record cannot be reused unchanged.
+A clean-history repository creates a new commit SHA. Therefore, the final Public fixed zip must be built from the committed source in the **clean-history Public repository**, and the Public repository's annotated `DRC_v2.0.0` tag must target that same Public source commit. Public-P4 updates the former same-repository G-7 contract for this topology; the earlier Private candidate record and tag remain historical only.
 
 Current migration status:
 
@@ -46,14 +50,19 @@ private_candidate_zip: verified-superseded-do-not-publish
 private_candidate_tag: retained-private-do-not-reuse
 public_metadata_alignment: completed-public-p1
 public_cleanup_review: completed-cleanup-9
-public_distribution_validator: private-repo-public-export-view-passed-public-p2
-public_snapshot_export_tooling: ready-public-p3
-initial_public_snapshot: invalidated-after-in-place-generated-cache-write
-public_snapshot_validator: public-p3.1-cache-hardening-pending
-public_repository: not-created
-public_repository_initial_commit: not-created
+public_distribution_validator: private-export-view-and-public-strict-validation-passed
+public_snapshot_export_tooling: completed-public-p3
+public_snapshot_cache_hardening: completed-public-p3.1
+canonical_public_snapshot: exported-untouched-and-strictly-validated
+public_repository: created-murayan1982/daily-rhythm-companion-public
+public_repository_initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
+public_repository_root_commit_count: 1
+public_repository_tracked_files: 576
+public_artifact_record_contract: completed-public-p4
+public_status_sync: completed-public-p5
 public_fixed_release_zip: not-built
 public_DRC_v2.0.0_tag: not-created
+public_github_release: not-created
 release_status: NOT_RELEASED
 ```
 
@@ -3403,20 +3412,20 @@ python scripts\smoke_framework_v200_final_release_readiness_fixed_zip_with_web_e
 
 The `$zip` value must be identical to the artifact path used for Day82. Source-tree-only Day83 output does not authorize tagging or release.
 
-## v2.0.0 G-7 immutable final release artifact record
+## v2.0.0 G-7 / Public-P4 immutable final release artifact record
 
 Doc: `docs/v200_final_release_artifact_record.md`
 Check: `scripts/smoke_framework_v200_final_release_artifact_record.py`
 
-G-7 resolves the final-build bookkeeping cycle before the true final artifact is created. The committed checklist remains the source of truth for requirements and procedure. After the G-7 commit, `main` and `develop` must point to the same committed HEAD, one new fixed zip is built from that HEAD, and Day82/Day83 inspect the same artifact. No post-build source or documentation commit is allowed.
+G-7 resolved the final-build bookkeeping cycle for the original same-repository topology. Public-P4 updates that contract for `murayan1982/daily-rhythm-companion-public`: the committed Public `main` HEAD, official Public origin, exactly one root commit, no Private Git history, and no legacy `develop_head` field. No post-build source or documentation commit is allowed.
 
-The public-safe final outcome is recorded in both the annotated `DRC_v2.0.0` tag message and GitHub Release body. The record binds the full source HEAD, matching branch refs, annotated tag target, zip basename, byte size, SHA-256, Day82/Day83 acceptance, and same-artifact/public-safety markers. It must not contain private evidence, raw screenshots/audio/health data, private paths, LAN IPs, provider payloads, tokens, or credentials.
+The public-safe final outcome is recorded in both the annotated `DRC_v2.0.0` tag message and GitHub Release body. The record binds the full Public source HEAD, matching Public `main` and annotated tag target, ZIP basename, byte size, SHA-256, Day82/Day83 acceptance, one-root/no-Private-history verification, and same-artifact/public-safety markers. It must not contain Private repository commit IDs, private evidence, raw screenshots/audio/health data, private paths, LAN IPs, provider payloads, tokens, or credentials.
 
-Source-tree check before committing G-7:
+Source-tree check before the final one-time build:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\smoke_framework_v200_final_release_artifact_record.py
 ```
 
-Any fixed zip built from an earlier source state is not the final artifact after G-7 changes the release surface. Build the next candidate only after G-7 is committed and pushed.
+Any fixed ZIP built from an earlier source state is not the final artifact after Public-P5 changes the release surface. Build only after Public-P5 is committed, pushed, and the final Public source checks pass.
