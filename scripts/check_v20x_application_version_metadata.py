@@ -120,9 +120,12 @@ def main() -> None:
         require(inventory, needle, "M-2 version inventory")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: M-2", "M-2 checklist current item")
-    require(checklist, "Status: CURRENT / NOT_COMPLETED", "M-2 incomplete state")
-    for item in range(3, 10):
+    require(checklist, "Current small commit: M-3", "active checklist current item")
+    m2 = checklist.split("# M-2", 1)[1].split("# M-3", 1)[0]
+    require(m2, "Status: COMPLETED", "M-2 completed state")
+    m3 = checklist.split("# M-3", 1)[1].split("# Planned queue", 1)[0]
+    require(m3, "Status: CURRENT / NOT_COMPLETED", "M-3 current state")
+    for item in range(4, 10):
         section = checklist.split(f"## M-{item}", 1)[1]
         if item < 9:
             section = section.split(f"## M-{item + 1}", 1)[0]
@@ -130,7 +133,7 @@ def main() -> None:
 
     run_baseline_check()
 
-    print("v20x_application_version_metadata_status: m2-current-not-completed")
+    print("v20x_application_version_metadata_status: m2-completed")
     print(f"v20x_application_version_metadata_backend_version: {APP_VERSION}")
     print(f"v20x_application_version_metadata_flutter_version: {flutter_version}")
     print("v20x_application_version_metadata_health_runtime_surface: True")

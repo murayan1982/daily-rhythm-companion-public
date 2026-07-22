@@ -93,25 +93,29 @@ def main() -> None:
         require(files[relative], "v2.0.0", f"{relative} released baseline")
         require(files[relative], "RELEASED", f"{relative} released status")
         require(files[relative], "docs/DRC_v20x_maintenance_checklist.md", f"{relative} active maintenance source")
-        require(files[relative], "M-2", f"{relative} current small commit")
+        require(files[relative], "M-3", f"{relative} current small commit")
 
     require(files["README.md"], "Current patch source version: v2.0.1", "README patch source")
     require(files["roadmap.md"], "Status: In progress", "roadmap maintenance status")
     require(files["roadmap.md"], "M-1  COMPLETED", "roadmap M-1 completion")
-    require(files["roadmap.md"], "M-2  CURRENT", "roadmap M-2 current")
+    require(files["roadmap.md"], "M-2  COMPLETED", "roadmap M-2 completion")
+    require(files["roadmap.md"], "M-3  CURRENT", "roadmap M-3 current")
     require(files["tasklist.md"], "Status: CURRENT / NOT_COMPLETED", "task list current state")
     require(files["scripts/README.md"], r"python scripts\check_v20x_maintenance_baseline.py", "scripts README baseline command")
     require(files["scripts/README.md"], r"python scripts\check_v20x_application_version_metadata.py", "scripts README M-2 command")
+    require(files["scripts/README.md"], r"python scripts\check_v20x_backend_mock_safe_regression.py", "scripts README M-3 command")
 
     checklist_text = files["docs/DRC_v20x_maintenance_checklist.md"]
     require(checklist_text, "Status: IN_PROGRESS", "maintenance checklist status")
-    require(checklist_text, "Current small commit: M-2", "maintenance current item")
+    require(checklist_text, "Current small commit: M-3", "maintenance current item")
     m1 = section_between(checklist_text, "# M-1", "# M-2")
     require(m1, "Status: COMPLETED", "M-1 completed status")
-    m2 = section_between(checklist_text, "# M-2", "# Planned queue")
-    require(m2, "Status: CURRENT / NOT_COMPLETED", "M-2 current status")
-    require(m2, "M-2 must remain `CURRENT / NOT_COMPLETED`", "M-2 no early completion")
-    for item in range(3, 10):
+    m2 = section_between(checklist_text, "# M-2", "# M-3")
+    require(m2, "Status: COMPLETED", "M-2 completed status")
+    m3 = section_between(checklist_text, "# M-3", "# Planned queue")
+    require(m3, "Status: CURRENT / NOT_COMPLETED", "M-3 current status")
+    require(m3, "M-3 must remain `CURRENT / NOT_COMPLETED`", "M-3 no early completion")
+    for item in range(4, 10):
         section = section_between(
             checklist_text,
             f"## M-{item}",
@@ -142,8 +146,9 @@ def main() -> None:
     print("v20x_maintenance_baseline_released_version: v2.0.0")
     print("v20x_maintenance_baseline_patch_source_version: v2.0.1")
     print("v20x_maintenance_baseline_current_line: v2.0.x")
-    print("v20x_maintenance_baseline_current_small_commit: M-2")
+    print("v20x_maintenance_baseline_current_small_commit: M-3")
     print("v20x_maintenance_baseline_m1_completed: True")
+    print("v20x_maintenance_baseline_m2_completed: True")
     print("v20x_maintenance_baseline_historical_records_unchanged: True")
     print("[v20x-maintenance-baseline-check] OK")
 

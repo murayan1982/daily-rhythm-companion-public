@@ -7,7 +7,7 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: M-2 application version metadata alignment
+Current small commit: M-3 backend mock-safe regression foundation
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -48,22 +48,26 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 established the post-release baseline and is complete. M-2 aligns the active source metadata to v2.0.1 without releasing a patch or changing the published v2.0.0 assets.
+M-1 established the post-release baseline and M-2 aligned the application version metadata. Both are complete. M-3 is the current small commit and adds a normal credential-free pytest foundation without changing backend runtime behavior.
 
-Version ownership for M-2:
+M-3 regression ownership:
 
 ```text
-Backend/API semantic version: backend/app/version.py
-Flutter package version/build: app/pubspec.yaml
-Web and platform build metadata: inherited from Flutter package metadata
+Development test dependencies: backend/requirements-dev.txt
+Backend regression suite: backend/tests/**
+Scope: health, characters, mock sleep, mock advice, and temporary-database DailyRecord basics
+Excluded from M-3: Framework fallback, real providers, OAuth, real TTS, and voice artifact safety
 ```
 
-Run the current M-2 checks with:
+Install and run the current M-3 checks with:
 
 ```powershell
+python -m pip install -r backend/requirements-dev.txt
 python -m compileall -q backend scripts
 python scripts\check_v20x_maintenance_baseline.py
 python scripts\check_v20x_application_version_metadata.py
+python scripts\check_v20x_backend_mock_safe_regression.py
+python -m pytest -q backend/tests
 
 cd app
 flutter test

@@ -10,40 +10,44 @@ Current patch source and small commit:
 
 ```text
 v2.0.1
-M-2  CURRENT / NOT_COMPLETED
-fix/test: align application version metadata
+M-3  CURRENT / NOT_COMPLETED
+test: add backend mock-safe regression foundation
 ```
 
-M-1 is completed. M-2 aligns backend/API and Flutter package metadata while keeping Web and platform build metadata inherited instead of adding duplicate production constants.
+M-1 and M-2 are completed. M-3 adds a normal credential-free pytest suite for core backend behavior and keeps historical release-evidence validators separate from daily regression tests.
 
-Run the current credential-free checks from the repository root:
+Install the development test dependencies and run the current checks from the repository root:
 
 ```powershell
+python -m pip install -r backend/requirements-dev.txt
 python -m compileall -q backend scripts
 python scripts\check_v20x_maintenance_baseline.py
 python scripts\check_v20x_application_version_metadata.py
+python scripts\check_v20x_backend_mock_safe_regression.py
+python -m pytest -q backend/tests
 
 cd app
 flutter test
 cd ..
 ```
 
-The M-2 source-tree check verifies:
+The M-3 regression boundary verifies:
 
 ```text
-- backend/app/version.py owns backend APP_VERSION=2.0.1
-- FastAPI/OpenAPI and /health use that constant
-- app/pubspec.yaml owns Flutter version 2.0.1+2
-- Flutter and backend semantic versions match
-- BackendApiClient displays optional API version metadata and preserves legacy responses
-- Web source has no duplicate hard-coded patch version
-- historical v2.0.0 checklist and release notes remain unchanged
-- M-3 through M-9 remain PLANNED
+- backend/.env is skipped during the normal test suite
+- real provider and OAuth environment variables are cleared
+- /health, /characters, and /sleep/summary run through a small mock-safe test app
+- MockConversationEngine returns stable advice/source metadata
+- unavailable sleep advice does not invent a duration
+- DailyRecord SQLite behavior uses pytest tmp_path only
+- backend production dependencies and runtime implementation remain unchanged
+- Framework fallback and voice artifact safety remain M-4 work
+- M-4 through M-9 remain PLANNED
 ```
 
-M-2 does not call external providers, access OAuth credentials, execute real health APIs, synthesize audio, start a browser, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
+M-3 does not call external providers, access OAuth credentials, execute real health APIs, synthesize audio, import the full production app, use `backend/local_data`, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
 
-Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They may intentionally pin v2.0.0 metadata and are not the active current-main version regression check.
+Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They may intentionally pin v2.0.0 metadata and are not the active current-main regression suite.
 
 ## Historical v2.0.0 Public repository migration verification status
 

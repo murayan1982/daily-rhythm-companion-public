@@ -2,7 +2,7 @@
 
 Updated: 2026-07-22
 Status: IN_PROGRESS
-Current small commit: M-2
+Current small commit: M-3
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -63,7 +63,7 @@ Accepted outcomes:
 
 # M-2 — Align application version metadata
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED
 Commit title:
 
 ```text
@@ -146,21 +146,97 @@ release ZIP, tag, and GitHub Release handling
 - The operator reviews the diff and approves the small commit.
 ```
 
-M-2 must remain `CURRENT / NOT_COMPLETED` until all checks and final operator approval complete. M-2 does not release v2.0.1.
+M-2 was accepted and committed before M-3 began. M-2 did not release v2.0.1.
+
+---
+
+# M-3 — Add backend mock-safe regression foundation
+
+Status: CURRENT / NOT_COMPLETED
+Commit title:
+
+```text
+test: add backend mock-safe regression foundation
+```
+
+## Purpose
+
+```text
+- Introduce a normal backend pytest layout separate from historical release-evidence smoke checks.
+- Cover core credential-free health, character, sleep, advice, and DailyRecord behavior.
+- Make normal regression execution deterministic and independent from backend/.env.
+- Keep real providers, OAuth, Framework execution, and real TTS outside the default suite.
+```
+
+## Change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+backend/requirements-dev.txt
+backend/tests/conftest.py
+backend/tests/test_core_api.py
+backend/tests/test_mock_advice.py
+backend/tests/test_daily_record_store.py
+docs/v20x_backend_mock_safe_regression.md
+docs/DRC_v20x_maintenance_checklist.md
+scripts/check_v20x_maintenance_baseline.py
+scripts/check_v20x_application_version_metadata.py
+scripts/check_v20x_backend_mock_safe_regression.py
+```
+
+## Explicit non-change surface
+
+```text
+backend application/runtime implementation
+backend/requirements.txt production dependency set
+Framework success/fallback behavior
+voice output artifact behavior
+real LLM, TTS, STT, health API, OAuth, or motion execution
+persistence schema
+release ZIP, tag, and GitHub Release handling
+```
+
+## Test boundary
+
+```text
+- conftest disables backend/.env loading and clears real-execution environment variables.
+- API tests create a small local FastAPI instance with only health, characters, and sleep routers.
+- Advice tests call MockConversationEngine directly.
+- DailyRecord tests use pytest tmp_path and never use backend/local_data.
+- Full app Framework fallback and voice artifact tests remain M-4 work.
+```
+
+## Completion requirements
+
+```text
+- backend/requirements-dev.txt includes backend/requirements.txt and a bounded pytest dependency.
+- backend/tests contains the shared mock-safe fixture and focused core regression modules.
+- health returns the active APP_VERSION.
+- characters returns the stable three bundled character IDs and display names.
+- sleep summary uses the deterministic mock provider.
+- mock advice preserves stable mock source metadata and does not invent unavailable sleep values.
+- DailyRecord upsert/read/update behavior is verified in a temporary SQLite database.
+- No normal M-3 test imports app.main or accesses backend/local_data.
+- docs/v20x_backend_mock_safe_regression.md records setup, scope, exclusions, and commands.
+- M-4 through M-9 remain PLANNED.
+- Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
+- python -m compileall -q backend scripts passes.
+- python scripts\check_v20x_maintenance_baseline.py passes.
+- python scripts\check_v20x_application_version_metadata.py passes.
+- python scripts\check_v20x_backend_mock_safe_regression.py passes.
+- python -m pytest -q backend/tests passes.
+- flutter test passes from app/.
+- The operator reviews the diff and approves the small commit.
+```
+
+M-3 must remain `CURRENT / NOT_COMPLETED` until all checks and final operator approval complete. M-3 does not release v2.0.1.
 
 ---
 
 # Planned queue
-
-## M-3 — Add backend mock-safe regression foundation
-
-Status: PLANNED
-
-```text
-- Introduce a normal pytest layout for core mock-safe behavior.
-- Cover health, characters, sleep, advice, and DailyRecord basics.
-- Keep credentials and real integrations optional.
-```
 
 ## M-4 — Cover Framework fallback and voice artifact safety
 
