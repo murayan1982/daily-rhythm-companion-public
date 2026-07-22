@@ -42,6 +42,17 @@ class BackendApiClient {
     return 'スマホWeb実演向けのbackend API URLが指定されています。';
   }
 
+  static String formatHealthStatus(Map<String, dynamic> body) {
+    final status = body['status']?.toString().trim() ?? 'unknown';
+    final version = body['version']?.toString().trim() ?? '';
+
+    if (version.isEmpty) {
+      return status;
+    }
+
+    return '$status / API v$version';
+  }
+
   Future<String> fetchHealthStatus() async {
     final uri = Uri.parse('$baseUrl/health');
     final response = await http.get(uri);
@@ -51,7 +62,7 @@ class BackendApiClient {
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    return body['status']?.toString() ?? 'unknown';
+    return formatHealthStatus(body);
   }
 
   Future<DemoStatus> fetchDemoStatus() async {

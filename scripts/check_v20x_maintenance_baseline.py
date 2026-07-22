@@ -1,6 +1,7 @@
-"""Verify the post-v2.0.0 maintenance baseline for M-1.
+"""Verify the active post-v2.0.0 maintenance baseline.
 
-This is a credential-free source-tree check. It does not run external APIs,
+This credential-free source-tree check preserves the immutable v2.0.0 records
+and validates the current small-commit queue. It does not run external APIs,
 build release artifacts, or modify the repository.
 """
 
@@ -39,6 +40,15 @@ def reject(text: str, needle: str, label: str) -> None:
         raise AssertionError(f"Unexpected {label}: {needle!r}")
 
 
+def section_between(text: str, start: str, end: str | None) -> str:
+    if start not in text:
+        raise AssertionError(f"Missing section: {start}")
+    section = text.split(start, 1)[1]
+    if end and end in section:
+        section = section.split(end, 1)[0]
+    return section
+
+
 def assert_historical_hashes() -> None:
     for relative, expected in HISTORICAL_HASHES.items():
         path = ROOT / relative
@@ -74,46 +84,39 @@ def main() -> None:
         "roadmap.md": read("roadmap.md"),
         "tasklist.md": read("tasklist.md"),
         "scripts/README.md": read("scripts/README.md"),
-        "docs/post_v200_release_baseline.md": read(
-            "docs/post_v200_release_baseline.md"
-        ),
-        "docs/DRC_v20x_maintenance_checklist.md": read(
-            "docs/DRC_v20x_maintenance_checklist.md"
-        ),
-        "docs/public_private_development_policy.md": read(
-            "docs/public_private_development_policy.md"
-        ),
+        "docs/post_v200_release_baseline.md": read("docs/post_v200_release_baseline.md"),
+        "docs/DRC_v20x_maintenance_checklist.md": read("docs/DRC_v20x_maintenance_checklist.md"),
+        "docs/public_private_development_policy.md": read("docs/public_private_development_policy.md"),
     }
 
     for relative in ("README.md", "roadmap.md", "tasklist.md", "scripts/README.md"):
         require(files[relative], "v2.0.0", f"{relative} released baseline")
         require(files[relative], "RELEASED", f"{relative} released status")
-        require(
-            files[relative],
-            "docs/DRC_v20x_maintenance_checklist.md",
-            f"{relative} active maintenance source",
-        )
+        require(files[relative], "docs/DRC_v20x_maintenance_checklist.md", f"{relative} active maintenance source")
+        require(files[relative], "M-2", f"{relative} current small commit")
 
-    require(files["README.md"], "M-1 post-v2.0.0 maintenance baseline", "README current commit")
+    require(files["README.md"], "Current patch source version: v2.0.1", "README patch source")
     require(files["roadmap.md"], "Status: In progress", "roadmap maintenance status")
-    require(files["roadmap.md"], "M-1  CURRENT", "roadmap current item")
+    require(files["roadmap.md"], "M-1  COMPLETED", "roadmap M-1 completion")
+    require(files["roadmap.md"], "M-2  CURRENT", "roadmap M-2 current")
     require(files["tasklist.md"], "Status: CURRENT / NOT_COMPLETED", "task list current state")
-    require(
-        files["scripts/README.md"],
-        "python scripts\\check_v20x_maintenance_baseline.py",
-        "scripts README command",
-    )
+    require(files["scripts/README.md"], r"python scripts\check_v20x_maintenance_baseline.py", "scripts README baseline command")
+    require(files["scripts/README.md"], r"python scripts\check_v20x_application_version_metadata.py", "scripts README M-2 command")
 
     checklist_text = files["docs/DRC_v20x_maintenance_checklist.md"]
     require(checklist_text, "Status: IN_PROGRESS", "maintenance checklist status")
-    require(checklist_text, "Current small commit: M-1", "maintenance current item")
-    require(checklist_text, "M-1 must remain `CURRENT / NOT_COMPLETED`", "no early completion")
-    for item in range(2, 10):
-        require(checklist_text, f"## M-{item}", f"M-{item} section")
-        # Later sections must remain planned during M-1.
-        section = checklist_text.split(f"## M-{item}", 1)[1]
-        if item < 9:
-            section = section.split(f"## M-{item + 1}", 1)[0]
+    require(checklist_text, "Current small commit: M-2", "maintenance current item")
+    m1 = section_between(checklist_text, "# M-1", "# M-2")
+    require(m1, "Status: COMPLETED", "M-1 completed status")
+    m2 = section_between(checklist_text, "# M-2", "# Planned queue")
+    require(m2, "Status: CURRENT / NOT_COMPLETED", "M-2 current status")
+    require(m2, "M-2 must remain `CURRENT / NOT_COMPLETED`", "M-2 no early completion")
+    for item in range(3, 10):
+        section = section_between(
+            checklist_text,
+            f"## M-{item}",
+            f"## M-{item + 1}" if item < 9 else "# Future-version boundary",
+        )
         require(section, "Status: PLANNED", f"M-{item} planned status")
         reject(section, "Status: COMPLETED", f"M-{item} early completion")
 
@@ -135,12 +138,13 @@ def main() -> None:
     for relative, text in files.items():
         assert_no_obvious_secrets(relative, text)
 
-    print("v20x_maintenance_baseline_status: m1-current-not-completed")
+    print("v20x_maintenance_baseline_status: active")
     print("v20x_maintenance_baseline_released_version: v2.0.0")
+    print("v20x_maintenance_baseline_patch_source_version: v2.0.1")
     print("v20x_maintenance_baseline_current_line: v2.0.x")
-    print("v20x_maintenance_baseline_current_small_commit: M-1")
+    print("v20x_maintenance_baseline_current_small_commit: M-2")
+    print("v20x_maintenance_baseline_m1_completed: True")
     print("v20x_maintenance_baseline_historical_records_unchanged: True")
-    print("v20x_maintenance_baseline_runtime_change: False")
     print("[v20x-maintenance-baseline-check] OK")
 
 

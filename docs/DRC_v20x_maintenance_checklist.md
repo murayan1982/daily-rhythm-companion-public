@@ -2,7 +2,7 @@
 
 Updated: 2026-07-22
 Status: IN_PROGRESS
-Current small commit: M-1
+Current small commit: M-2
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -42,21 +42,43 @@ The published v2.0.0 tag and release asset are not edit targets.
 
 # M-1 — Establish post-v2.0.0 maintenance baseline
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED
 Commit title:
 
 ```text
 docs: establish post-v2.0.0 maintenance baseline
 ```
 
+Accepted outcomes:
+
+```text
+- v2.0.0 RELEASED is the immutable baseline.
+- This v2.0.x checklist is the active detailed source of truth.
+- Public source and Private operator-environment boundaries are documented.
+- Historical v2.0.0 checklist and release-note content remain unchanged.
+- Runtime behavior was not changed by M-1.
+```
+
+---
+
+# M-2 — Align application version metadata
+
+Status: CURRENT / NOT_COMPLETED
+Commit title:
+
+```text
+fix/test: align application version metadata
+```
+
 ## Purpose
 
 ```text
-- Synchronize current status to v2.0.0 RELEASED.
-- Establish this v2.0.x checklist without rewriting the v2.0.0 checklist.
-- Separate active maintenance checks from historical release-evidence validators.
-- Record Public source and Private operator-environment boundaries.
-- Keep all runtime behavior unchanged.
+- Inventory backend, Flutter, Web, platform, and user-visible version surfaces.
+- Advance the current maintenance source to semantic version 2.0.1.
+- Keep backend and Flutter version ownership explicit without adding conflicting production constants.
+- Expose the backend version through FastAPI/OpenAPI and the additive /health runtime field.
+- Keep Flutter/Web display backward compatible when an older backend omits the version.
+- Add focused credential-free regression checks.
 ```
 
 ## Change surface
@@ -66,52 +88,69 @@ README.md
 roadmap.md
 tasklist.md
 scripts/README.md
-docs/post_v200_release_baseline.md
+backend/app/version.py
+backend/app/main.py
+backend/app/api/health.py
+app/pubspec.yaml
+app/lib/services/backend_api_client.dart
+app/test/widget_test.dart
+docs/v20x_application_version_metadata.md
 docs/DRC_v20x_maintenance_checklist.md
-docs/public_private_development_policy.md
 scripts/check_v20x_maintenance_baseline.py
+scripts/check_v20x_application_version_metadata.py
 ```
+
+## Inspected but intentionally unchanged
+
+```text
+app/web/index.html
+app/web/manifest.json
+app/android/app/build.gradle.kts
+app/ios/Runner/Info.plist
+app/macos/Runner/Configs/AppInfo.xcconfig
+app/windows/runner/Runner.rc
+app/linux/CMakeLists.txt
+```
+
+These surfaces either contain product identity only or inherit Flutter-generated version/build values from `app/pubspec.yaml`. M-2 does not add a second hard-coded application version to them.
 
 ## Explicit non-change surface
 
 ```text
 docs/DRC_v200_goal_checklist_small_commit.md
 release_notes/v2.0.0.md
-backend runtime files
-Flutter runtime files
 provider and OAuth implementation
-health, LLM, TTS, STT, and motion execution paths
+health-data provider selection or normalization
+LLM, TTS, STT, chat, and motion behavior
 persistence schema
+release ZIP, tag, and GitHub Release handling
 ```
 
 ## Completion requirements
 
 ```text
-- README, roadmap, root task list, and scripts README identify v2.0.0 as RELEASED.
-- This file is linked as the v2.0.x detailed source of truth.
-- The post-release baseline and Public/Private policy documents exist.
-- M-2 through M-9 remain PLANNED.
+- backend/app/version.py is the only backend runtime version constant and contains APP_VERSION=2.0.1.
+- FastAPI/OpenAPI uses APP_VERSION instead of the former 0.15.0 literal.
+- /health returns status=ok and version=2.0.1.
+- app/pubspec.yaml uses version 2.0.1+2.
+- Flutter semantic version 2.0.1 matches backend APP_VERSION.
+- BackendApiClient displays the optional /health version and preserves legacy no-version behavior.
+- Web source metadata does not introduce a duplicate hard-coded version.
+- docs/v20x_application_version_metadata.md records the source-owner and inheritance rules.
+- M-3 through M-9 remain PLANNED.
 - Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
 - python -m compileall -q backend scripts passes.
 - python scripts\check_v20x_maintenance_baseline.py passes.
+- python scripts\check_v20x_application_version_metadata.py passes.
+- flutter test passes from app/.
 - The operator reviews the diff and approves the small commit.
 ```
 
-M-1 must remain `CURRENT / NOT_COMPLETED` until the final operator approval and commit.
+M-2 must remain `CURRENT / NOT_COMPLETED` until all checks and final operator approval complete. M-2 does not release v2.0.1.
 
 ---
 
 # Planned queue
-
-## M-2 — Align application version metadata
-
-Status: PLANNED
-
-```text
-- Inventory backend, Flutter, Web, and user-visible version surfaces.
-- Define the patch version without duplicating conflicting constants.
-- Add focused version-metadata regression tests.
-```
 
 ## M-3 — Add backend mock-safe regression foundation
 

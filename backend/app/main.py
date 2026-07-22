@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.version import APP_VERSION
+
 from app.api import (
     chat,
     advice,
@@ -19,7 +21,7 @@ from app.api import (
 
 app = FastAPI(
     title="Daily Rhythm Companion API",
-    version="0.15.0",
+    version=APP_VERSION,
 )
 
 app.add_middleware(

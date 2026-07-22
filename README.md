@@ -6,7 +6,8 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
-Current small commit: M-1 post-v2.0.0 maintenance baseline
+Current patch source version: v2.0.1
+Current small commit: M-2 application version metadata alignment
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -47,13 +48,26 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 is documentation and guardrail work only. It does not change backend, Flutter, provider, health-data, LLM, TTS, STT, motion, or persistence runtime behavior.
+M-1 established the post-release baseline and is complete. M-2 aligns the active source metadata to v2.0.1 without releasing a patch or changing the published v2.0.0 assets.
 
-Run the current M-1 check with:
+Version ownership for M-2:
+
+```text
+Backend/API semantic version: backend/app/version.py
+Flutter package version/build: app/pubspec.yaml
+Web and platform build metadata: inherited from Flutter package metadata
+```
+
+Run the current M-2 checks with:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v20x_maintenance_baseline.py
+python scripts\check_v20x_application_version_metadata.py
+
+cd app
+flutter test
+cd ..
 ```
 
 The historical v2.0.0 release validators remain available for the tagged release surface, but they are not the primary current-main maintenance suite.
@@ -149,6 +163,7 @@ The smartphone Web demo is primarily for local/demo use. It is not the same as a
 See:
 
 - [Post-v2.0.0 release baseline](docs/post_v200_release_baseline.md)
+- [v2.0.x application version metadata](docs/v20x_application_version_metadata.md)
 - [v2.0.x maintenance checklist](docs/DRC_v20x_maintenance_checklist.md)
 - [Public / Private development policy](docs/public_private_development_policy.md)
 - [Local quickstart](docs/quickstart_local.md)

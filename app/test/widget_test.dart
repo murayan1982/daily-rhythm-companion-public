@@ -46,6 +46,20 @@ void main() {
     );
   });
 
+  test('BackendApiClient formats versioned and legacy health payloads', () {
+    expect(
+      BackendApiClient.formatHealthStatus({
+        'status': 'ok',
+        'version': '2.0.1',
+      }),
+      'ok / API v2.0.1',
+    );
+    expect(
+      BackendApiClient.formatHealthStatus({'status': 'ok'}),
+      'ok',
+    );
+  });
+
   testWidgets('Backend connection section shows configured API base URL', (
     WidgetTester tester,
   ) async {
@@ -60,6 +74,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text('Backend status: ok / API v2.0.1'), findsOneWidget);
     expect(find.text('API base URL: http://203.0.113.20:8000'), findsOneWidget);
     expect(
       find.text('スマホWeb実演向けのbackend API URLが指定されています。'),
@@ -1465,7 +1480,7 @@ class _FakeBackendApiClient extends BackendApiClient {
 
   @override
   Future<String> fetchHealthStatus() async {
-    return 'ok';
+    return 'ok / API v2.0.1';
   }
 
 
@@ -2254,7 +2269,7 @@ class _RecoveringInitialLoadBackendApiClient extends _FakeBackendApiClient {
       throw Exception('temporary backend outage');
     }
 
-    return 'ok';
+    return 'ok / API v2.0.1';
   }
 }
 

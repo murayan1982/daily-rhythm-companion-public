@@ -6,23 +6,44 @@ This directory contains development, verification, release, compatibility, and c
 
 v2.0.0 is **RELEASED** as the immutable Public baseline. The active detailed source of truth is `docs/DRC_v20x_maintenance_checklist.md`.
 
-Current small commit:
+Current patch source and small commit:
 
 ```text
-M-1  CURRENT / NOT_COMPLETED
-docs: establish post-v2.0.0 maintenance baseline
+v2.0.1
+M-2  CURRENT / NOT_COMPLETED
+fix/test: align application version metadata
 ```
 
-Run the M-1 credential-free check from the repository root:
+M-1 is completed. M-2 aligns backend/API and Flutter package metadata while keeping Web and platform build metadata inherited instead of adding duplicate production constants.
+
+Run the current credential-free checks from the repository root:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v20x_maintenance_baseline.py
+python scripts\check_v20x_application_version_metadata.py
+
+cd app
+flutter test
+cd ..
 ```
 
-M-1 verifies documentation/status synchronization, the Public/Private boundary, and preservation of the historical v2.0.0 checklist and release note. It does not call external providers, access OAuth credentials, run real health APIs, create audio, start the Web UI, build a release ZIP, or mark M-2 and later work complete.
+The M-2 source-tree check verifies:
 
-Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They are not the primary normal regression suite for current `main` after post-release changes.
+```text
+- backend/app/version.py owns backend APP_VERSION=2.0.1
+- FastAPI/OpenAPI and /health use that constant
+- app/pubspec.yaml owns Flutter version 2.0.1+2
+- Flutter and backend semantic versions match
+- BackendApiClient displays optional API version metadata and preserves legacy responses
+- Web source has no duplicate hard-coded patch version
+- historical v2.0.0 checklist and release notes remain unchanged
+- M-3 through M-9 remain PLANNED
+```
+
+M-2 does not call external providers, access OAuth credentials, execute real health APIs, synthesize audio, start a browser, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
+
+Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They may intentionally pin v2.0.0 metadata and are not the active current-main version regression check.
 
 ## Historical v2.0.0 Public repository migration verification status
 

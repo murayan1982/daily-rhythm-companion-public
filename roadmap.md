@@ -3,6 +3,8 @@
 Updated: 2026-07-22
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
+Current patch source version: v2.0.1
+Current small commit: M-2
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -164,7 +166,7 @@ The following inventory is the starting point for all post-v2.0.0 planning.
 ## v2.0.x - Post-release maintenance and regression hardening
 
 Status: In progress
-Current small commit: M-1
+Current small commit: M-2
 Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
 First expected patch target: v2.0.1
 
@@ -215,11 +217,11 @@ Completion direction:
 
 ### v2.0.x provisional small-commit sequence
 
-The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 is current; later items remain planned and must not be marked complete early.
+The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 is completed, M-2 is current/not completed, and M-3 through M-9 remain planned.
 
 ```text
-M-1  CURRENT  docs: establish post-v2.0.0 maintenance baseline
-M-2  fix/test: align application version metadata
+M-1  COMPLETED  docs: establish post-v2.0.0 maintenance baseline
+M-2  CURRENT    fix/test: align application version metadata
 M-3  test: add backend mock-safe regression foundation
 M-4  test: cover Framework fallback and voice artifact safety
 M-5  fix: bound temporary chat sessions and TTS artifacts
@@ -228,6 +230,18 @@ M-7  docs/test: clarify Fitbit current-state contract
 M-8  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  release: fixed-ZIP verification and patch release record, only when the patch scope is accepted
 ```
+
+M-2 current contract:
+
+```text
+- Backend APP_VERSION, FastAPI/OpenAPI, and /health use semantic version 2.0.1.
+- Flutter uses package version 2.0.1+2.
+- Web and native platform metadata inherit Flutter build metadata; no duplicate hard-coded version is added.
+- The existing Backend status UI shows the optional API version while preserving legacy no-version responses.
+- M-2 does not publish v2.0.1.
+```
+
+See `docs/v20x_application_version_metadata.md` for the source-owner inventory and verification boundary.
 
 Expected initial change surface:
 
