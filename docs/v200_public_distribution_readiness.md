@@ -68,12 +68,32 @@ API keys, OAuth tokens, Authorization headers, or private keys
 private Windows user paths or raw private LAN IPs
 local .env variants
 release output, Python `__pycache__` / `.pyc` / `.pyo`, Flutter `.dart_tool`, build output, patch/diff/temp/backup files
+untracked Flutter generated plugin registrants for Android, iOS, Linux, and Windows
 superseded Private candidate zips
 obsolete duplicate/archive/check/release-chain files removed by Cleanup-1 through Cleanup-8
 ```
 
 The validator intentionally does not read ignored local evidence or credential files.
 
+## Final fixed-ZIP generated-file boundary
+
+The final fixed ZIP must come from the committed-HEAD detached-worktree builder. A manual archive of an operator working directory is not an acceptable substitute, even when its package root and required files look correct.
+
+The validator and `scripts/check_release_package.py` reject the following Flutter-generated plugin registration outputs when they appear in a source surface or fixed ZIP:
+
+```text
+app/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+app/ios/Runner/GeneratedPluginRegistrant.h
+app/ios/Runner/GeneratedPluginRegistrant.m
+app/linux/flutter/generated_plugin_registrant.cc
+app/linux/flutter/generated_plugin_registrant.h
+app/linux/flutter/generated_plugins.cmake
+app/windows/flutter/generated_plugin_registrant.cc
+app/windows/flutter/generated_plugin_registrant.h
+app/windows/flutter/generated_plugins.cmake
+```
+
+These files were observed in a manually archived working directory but are absent from the authoritative Public `main` source surface. Required Flutter project source and platform build configuration remain allowed.
 
 ## Canonical snapshot immutability
 
@@ -110,3 +130,7 @@ Public-P3 tooling readiness does not mean the snapshot has been written or the P
 ## Cleanup-8 and Cleanup-9 boundary
 
 The validator rejects restoration of the superseded Day74 screenshot-collection checklist and Day75 intermediate private-manifest validator. Day80 is the authoritative accepted private evidence manifest contract. Cleanup-9 explicitly retains the remaining capability evidence and final audit chain and advances the next focus to clean snapshot export and strict validation in the new Public repository.
+
+## Current next focus
+
+Resolve the remaining final Public pre-build gate issues, commit and push the final Public source, verify a clean Public `main`, freeze source, build one fixed ZIP, and run Day81, Day82, and Day83 against that same artifact. This validator update does not build or accept the final ZIP, create a tag, or publish a GitHub Release.

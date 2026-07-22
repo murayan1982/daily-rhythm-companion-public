@@ -107,6 +107,8 @@ Current state:
 - [x] Public-P4 source-tree Public-distribution checks, artifact-record smoke checks, and Flutter tests passed in both preparation and Public checkouts.
 - [x] Public-P5 synchronizes README, roadmap, this checklist, and the migration procedure without building a ZIP, creating a tag, or publishing a release.
 - [x] Public-P6 aligns the accepted-manifest pre-build gate with the completed evidence state, hardens the no-existing-tag check for an empty tag list, and adds a Day82 regression guard without building a ZIP or creating a tag.
+- [x] Public-P6 pre-build follow-up 1 separates Day82/Day83 inspection-only mode from evidence-backed acceptance and removes the circular post-Day81 build marker without accepting a final artifact.
+- [x] Public-P6 pre-build follow-up 2 rejects untracked Flutter generated plugin registrants from Public source/fixed-ZIP validation and advances the Public-distribution next focus to the final pre-build sequence without building a ZIP or creating a tag.
 - [ ] A new final v2.0.0 fixed release ZIP is built exactly once from the committed Public repository source.
 - [ ] Day82 and Day83 pass against that exact Public fixed ZIP without rebuilding.
 - [ ] The public-safe final artifact record validates against the same Public source commit and fixed ZIP.
@@ -1543,6 +1545,10 @@ day83_marker_only_acceptance_allowed: False
 day83_same_artifact_binding_fields: zip-path,basename,file-size,SHA256,day82-verified-SHA256
 day82_source_tree_synthetic_positive_case: accepted
 day82_source_tree_negative_cases: missing-required-entry,private-evidence-entry,worktree-git-file,extra-package-root
+public_distribution_generated_registrant_paths_rejected: True
+release_package_generated_registrant_paths_rejected: True
+manual_working_directory_zip_release_use: forbidden
+public_distribution_next_focus: final-Public-pre-build-freeze-one-fixed-ZIP-Day81-Day82-Day83
 private_manifest_copy_into_worktree: False
 worktree_git_metadata_file_release_inclusion_policy: forbidden
 operator_evidence_release_inclusion_policy: forbidden
@@ -1553,7 +1559,7 @@ DRC_v2.0.0_tag: not-created
 release_completion_status: NOT_RELEASED
 ```
 
-Commit G-6 fixes the release procedure before the final artifact is created. The new builder validates the ignored Day80 manifest from the operator working tree, creates a detached temporary worktree at the recorded committed `HEAD`, invokes `build_release.bat release` exactly once there, refuses to overwrite an existing artifact, and prints the repository-relative zip path, source commit, file size, and SHA-256. Because a Git worktree stores repository metadata in a `.git` file rather than a directory, `build_release.bat` and `check_release_package.py` now explicitly exclude and reject that file. Day82 opens the supplied zip directly, checks CRC, requires exactly one `DailyRhythmCompanion` package root, verifies required and forbidden entries, and runs the existing release-package hygiene check. The Public pre-build follow-up separates `--inspect-zip-only` from evidence-backed acceptance: a bare `--release-zip` is rejected, while Day82 acceptance requires both `--release-zip` and `--evidence-json` bound to the inspected basename, byte size, and SHA-256. It also replaces the circular `release_zip_built_once_after_day81` marker with build-once-from-final-committed-Public-source and before-Day82 markers. Day83 independently reopens the same supplied artifact, preserves the Day82 contract, requires its own evidence JSON, and binds the Day82-verified SHA-256 to the Day83 inspection. These implementation changes do not build the final fixed zip, accept the final Public artifact, create a tag, or release v2.0.0.
+Commit G-6 fixes the release procedure before the final artifact is created. The new builder validates the ignored Day80 manifest from the operator working tree, creates a detached temporary worktree at the recorded committed `HEAD`, invokes `build_release.bat release` exactly once there, refuses to overwrite an existing artifact, and prints the repository-relative zip path, source commit, file size, and SHA-256. Because a Git worktree stores repository metadata in a `.git` file rather than a directory, `build_release.bat` and `check_release_package.py` now explicitly exclude and reject that file. Day82 opens the supplied zip directly, checks CRC, requires exactly one `DailyRhythmCompanion` package root, verifies required and forbidden entries, and runs the existing release-package hygiene check. The Public pre-build follow-up separates `--inspect-zip-only` from evidence-backed acceptance: a bare `--release-zip` is rejected, while Day82 acceptance requires both `--release-zip` and `--evidence-json` bound to the inspected basename, byte size, and SHA-256. It also replaces the circular `release_zip_built_once_after_day81` marker with build-once-from-final-committed-Public-source and before-Day82 markers. Day83 independently reopens the same supplied artifact, preserves the Day82 contract, requires its own evidence JSON, and binds the Day82-verified SHA-256 to the Day83 inspection. The second Public pre-build follow-up also rejects the Android, iOS, Linux, and Windows generated plugin registrant outputs that appeared in a manually archived working directory but are absent from authoritative Public `main`, and it advances the validator next focus from completed Public-P3 work to the final Public source freeze and same-artifact Day81-Day83 sequence. These implementation changes do not build the final fixed zip, accept the final Public artifact, create a tag, or release v2.0.0.
 
 Commit G-6.1 PowerShell parser hotfix record:
 

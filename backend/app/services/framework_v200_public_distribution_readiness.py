@@ -87,6 +87,19 @@ REQUIRED_FILES = (
     "build_v200_final_fixed_release_zip_from_head.ps1",
 )
 
+
+GENERATED_FLUTTER_REGISTRANT_PATHS = (
+    "app/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
+    "app/ios/Runner/GeneratedPluginRegistrant.h",
+    "app/ios/Runner/GeneratedPluginRegistrant.m",
+    "app/linux/flutter/generated_plugin_registrant.cc",
+    "app/linux/flutter/generated_plugin_registrant.h",
+    "app/linux/flutter/generated_plugins.cmake",
+    "app/windows/flutter/generated_plugin_registrant.cc",
+    "app/windows/flutter/generated_plugin_registrant.h",
+    "app/windows/flutter/generated_plugins.cmake",
+)
+
 FORBIDDEN_EXACT_PATHS = (
     "DRC_v200_goal_checklist_small_commit.md",
     "docs/archive/README.md",
@@ -153,6 +166,7 @@ FORBIDDEN_EXACT_PATHS = (
     "scripts/check_v200_private_web_evidence_manifest_day75.py",
     "docs/operator_evidence_templates/v200_web_execution_screenshot_collection_day74.example.json",
     "docs/operator_evidence_templates/v200_private_web_evidence_manifest_day75.example.json",
+    *GENERATED_FLUTTER_REGISTRANT_PATHS,
 )
 
 FORBIDDEN_PATH_PREFIXES = (
@@ -304,6 +318,7 @@ def build_v200_public_distribution_readiness_contract() -> V200PublicDistributio
             "authorization_headers", "private_absolute_paths", "raw_lan_ips",
             "local_env_files", "build_cache_output",
             "patch_diff_temp_backup_files", "superseded_private_candidate_zip",
+            "untracked_flutter_generated_registrants",
         ),
         public_export_excluded_exact_paths=PUBLIC_EXPORT_EXCLUDED_EXACT_PATHS,
         public_export_excluded_path_prefixes=PUBLIC_EXPORT_EXCLUDED_PATH_PREFIXES,
@@ -311,8 +326,9 @@ def build_v200_public_distribution_readiness_contract() -> V200PublicDistributio
         public_export_excluded_suffixes=PUBLIC_EXPORT_EXCLUDED_SUFFIXES,
         deferred_cleanup_groups=(),
         next_focus=(
-            "Use Public-P3 to validate and write one committed clean Public snapshot, "
-            "then initialize the new Public repository and create its source commit."
+            "Resolve final Public pre-build gate issues, commit and push the final Public source, "
+            "verify a clean Public main, freeze source, build one fixed ZIP, and run Day81, "
+            "Day82, and Day83 against that same artifact."
         ),
     )
 
@@ -487,10 +503,11 @@ def inspect_v200_public_distribution_files(
     names = set(normalized_files)
 
     missing = sorted(path for path in REQUIRED_FILES if path not in names)
+    forbidden_exact_paths_lower = {path.lower() for path in FORBIDDEN_EXACT_PATHS}
     forbidden: list[str] = []
     for path in sorted(names):
         lower = path.lower()
-        if path in FORBIDDEN_EXACT_PATHS:
+        if lower in forbidden_exact_paths_lower:
             forbidden.append(path)
             continue
         if any(lower.startswith(prefix.lower()) for prefix in FORBIDDEN_PATH_PREFIXES):

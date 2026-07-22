@@ -74,6 +74,19 @@ BLOCKED_SUFFIXES = {
     ".db",
 }
 
+
+BLOCKED_NORMALIZED_EXACT_PATHS = {
+    "app/android/app/src/main/java/io/flutter/plugins/generatedpluginregistrant.java",
+    "app/ios/runner/generatedpluginregistrant.h",
+    "app/ios/runner/generatedpluginregistrant.m",
+    "app/linux/flutter/generated_plugin_registrant.cc",
+    "app/linux/flutter/generated_plugin_registrant.h",
+    "app/linux/flutter/generated_plugins.cmake",
+    "app/windows/flutter/generated_plugin_registrant.cc",
+    "app/windows/flutter/generated_plugin_registrant.h",
+    "app/windows/flutter/generated_plugins.cmake",
+}
+
 BLOCKED_NORMALIZED_PATTERNS = {
     "docs/internal/*",
     "CHANGE_SUMMARY*",
@@ -202,6 +215,9 @@ def _is_blocked(zip_name: str) -> str | None:
 
     if basename in BLOCKED_BASENAMES:
         return f"blocked basename: {basename}"
+
+    if normalized.lower() in BLOCKED_NORMALIZED_EXACT_PATHS:
+        return f"blocked untracked Flutter generated file: {normalized}"
 
     for pattern in BLOCKED_NORMALIZED_PATTERNS:
         if fnmatch.fnmatch(normalized.lower(), pattern.lower()):

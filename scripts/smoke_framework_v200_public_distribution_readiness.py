@@ -14,6 +14,7 @@ import argparse
 from pathlib import Path, PurePosixPath
 import subprocess
 import sys
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +22,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backend.app.services.framework_v200_public_distribution_readiness import (  # noqa: E402
+    GENERATED_FLUTTER_REGISTRANT_PATHS,
     build_v200_public_distribution_readiness_contract,
     inspect_v200_public_distribution_files,
     is_v200_private_repository_export_excluded,
@@ -157,25 +159,29 @@ def _run_contract_self_checks(files: dict[str, bytes], *, surface_kind: str) -> 
     generated = dict(files)
     generated["backend/app/__pycache__/probe.cpython-312.pyc"] = b"compiled-cache"
     generated["app/.dart_tool/package_config.json"] = b"{}"
+    for generated_path in GENERATED_FLUTTER_REGISTRANT_PATHS:
+        generated[generated_path] = b"generated Flutter plugin registration output"
     generated_result = inspect_v200_public_distribution_files(
         generated, surface_kind=surface_kind + "-negative-generated-cache"
     )
     expected_generated = {
         "backend/app/__pycache__/probe.cpython-312.pyc",
         "app/.dart_tool/package_config.json",
+        *GENERATED_FLUTTER_REGISTRANT_PATHS,
     }
     if (
         generated_result.status == "accepted"
         or not expected_generated.issubset(set(generated_result.forbidden_files))
     ):
         print("[smoke-framework-v200-public-distribution-readiness] ERROR")
-        print("negative generated-cache case was not rejected")
+        print("negative generated-cache/registrant case was not rejected")
         return False
 
     print("v200_public_distribution_source_positive_case: accepted")
     print(
         "v200_public_distribution_source_negative_cases: "
-        "missing-required-file,obsolete-duplicate,version-metadata,private-path,generated-cache"
+        "missing-required-file,obsolete-duplicate,version-metadata,private-path,"
+        "generated-cache,flutter-generated-registrants"
     )
     return True
 
@@ -186,6 +192,60 @@ def _run_release_package_hygiene(release_zip: Path) -> bool:
         check=False,
     )
     return completed.returncode == 0
+
+
+def _run_generated_registrant_zip_negative_check() -> bool:
+    with tempfile.TemporaryDirectory(prefix="drc-v200-generated-registrant-") as temp_dir:
+        probe_zip = Path(temp_dir) / "DailyRhythmCompanion_generated_probe.zip"
+        with zipfile.ZipFile(probe_zip, "w", compression=zipfile.ZIP_DEFLATED) as package:
+            for generated_path in GENERATED_FLUTTER_REGISTRANT_PATHS:
+                package.writestr(
+                    f"DailyRhythmCompanion_generated_probe/{generated_path}",
+                    b"generated Flutter plugin registration output",
+                )
+
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "check_release_package.py"), str(probe_zip)],
+            cwd=ROOT,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        output = completed.stdout.replace("\\", "/").lower()
+        missing_reports = [
+            path for path in GENERATED_FLUTTER_REGISTRANT_PATHS
+            if path.lower() not in output
+        ]
+        if completed.returncode == 0 or missing_reports:
+            print("[smoke-framework-v200-public-distribution-readiness] ERROR")
+            print("release-package checker did not reject every generated registrant path")
+            if missing_reports:
+                print("missing generated registrant rejection reports: " + ",".join(missing_reports))
+            return False
+
+    print("v200_public_distribution_generated_registrant_zip_negative_case: rejected")
+    return True
+
+
+def _check_next_focus_regression(next_focus: str) -> bool:
+    required_markers = (
+        "final Public pre-build gate issues",
+        "commit and push the final Public source",
+        "clean Public main",
+        "freeze source",
+        "build one fixed ZIP",
+        "Day81",
+        "Day82",
+        "Day83",
+        "same artifact",
+    )
+    if "Public-P3" in next_focus or any(marker not in next_focus for marker in required_markers):
+        print("[smoke-framework-v200-public-distribution-readiness] ERROR")
+        print("next focus is not aligned with the final Public pre-build/release sequence")
+        return False
+    print("v200_public_distribution_next_focus_regression: current-final-public-sequence")
+    return True
 
 
 def main() -> int:
@@ -208,6 +268,10 @@ def main() -> int:
 
     contract = build_v200_public_distribution_readiness_contract()
     print(render_v200_public_distribution_readiness_contract(contract))
+    if not _check_next_focus_regression(contract.next_focus):
+        return 1
+    if not _run_generated_registrant_zip_negative_check():
+        return 1
 
     try:
         if args.release_zip is not None:
