@@ -4,7 +4,7 @@ Updated: 2026-07-22
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: M-3
+Current small commit: M-4
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -166,7 +166,7 @@ The following inventory is the starting point for all post-v2.0.0 planning.
 ## v2.0.x - Post-release maintenance and regression hardening
 
 Status: In progress
-Current small commit: M-3
+Current small commit: M-4
 Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
 First expected patch target: v2.0.1
 
@@ -217,18 +217,18 @@ Completion direction:
 
 ### v2.0.x provisional small-commit sequence
 
-The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 and M-2 are completed, M-3 is current/not completed, and M-4 through M-9 remain planned.
+The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-3 are completed, M-4 is current/not completed, and M-5 through M-9 remain planned.
 
 ```text
 M-1  COMPLETED  docs: establish post-v2.0.0 maintenance baseline
 M-2  COMPLETED  fix/test: align application version metadata
-M-3  CURRENT    test: add backend mock-safe regression foundation
-M-4  PLANNED    test: cover Framework fallback and voice artifact safety
-M-5  fix: bound temporary chat sessions and TTS artifacts
-M-6  fix: make Web CORS origins configurable
-M-7  docs/test: clarify Fitbit current-state contract
-M-8  test/docs: add v2.0.x aggregate maintenance readiness
-M-9  release: fixed-ZIP verification and patch release record, only when the patch scope is accepted
+M-3  COMPLETED  test: add backend mock-safe regression foundation
+M-4  CURRENT    test: cover Framework fallback and voice artifact safety
+M-5  PLANNED    fix: bound temporary chat sessions and TTS artifacts
+M-6  PLANNED    fix: make Web CORS origins configurable
+M-7  PLANNED    docs/test: clarify Fitbit current-state contract
+M-8  PLANNED    test/docs: add v2.0.x aggregate maintenance readiness
+M-9  PLANNED    release: fixed-ZIP verification and patch release record, only when the patch scope is accepted
 ```
 
 M-2 accepted contract:
@@ -241,7 +241,7 @@ M-2 accepted contract:
 - M-2 does not publish v2.0.1.
 ```
 
-M-3 current contract:
+M-3 accepted contract:
 
 ```text
 - Add backend/requirements-dev.txt without adding pytest to production runtime requirements.
@@ -249,10 +249,22 @@ M-3 current contract:
 - Use a temporary SQLite database for persistence tests.
 - Do not import the full production app or access backend/local_data during normal tests.
 - Keep Framework fallback and voice artifact safety for M-4.
-- Keep M-4 through M-9 PLANNED.
+- M-3 was accepted without backend runtime changes or real-provider execution.
 ```
 
-See `docs/v20x_application_version_metadata.md` for the source-owner inventory and verification boundary.
+M-4 current contract:
+
+```text
+- Use a temporary fake framework package and the public create_text_chat_session boundary for configured advice success.
+- Verify FrameworkEngineError becomes visible framework_fallback metadata at the advice boundary.
+- Use pytest tmp_path for voice artifact staging/public directories.
+- Verify only managed MP3 files become opaque DRC URLs.
+- Reject outside paths, unsupported formats, traversal, and malformed artifact IDs.
+- Do not call a real Framework checkout, provider, network, or TTS runtime.
+- Keep M-5 through M-9 PLANNED.
+```
+
+See `docs/v20x_application_version_metadata.md` for version ownership, `docs/v20x_backend_mock_safe_regression.md` for the M-3 foundation, and `docs/v20x_framework_fallback_voice_artifact_regression.md` for the M-4 boundary.
 
 Expected initial change surface:
 

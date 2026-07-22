@@ -2,7 +2,7 @@
 
 Updated: 2026-07-22
 Small commit: M-3
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED
 
 ## Purpose
 
@@ -106,7 +106,7 @@ flutter test
 cd ..
 ```
 
-The M-3 checker also invokes the backend pytest suite. The explicit pytest command remains documented so developers can run the normal regression suite directly.
+After M-3 completion, its checker runs the original M-3 modules only. The active full backend suite is owned by the current maintenance check so later regression modules do not rewrite the accepted M-3 boundary.
 
 ## Non-release statement
 

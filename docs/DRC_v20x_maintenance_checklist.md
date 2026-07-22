@@ -2,7 +2,7 @@
 
 Updated: 2026-07-22
 Status: IN_PROGRESS
-Current small commit: M-3
+Current small commit: M-4
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -152,7 +152,7 @@ M-2 was accepted and committed before M-3 began. M-2 did not release v2.0.1.
 
 # M-3 — Add backend mock-safe regression foundation
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED
 Commit title:
 
 ```text
@@ -232,21 +232,90 @@ release ZIP, tag, and GitHub Release handling
 - The operator reviews the diff and approves the small commit.
 ```
 
-M-3 must remain `CURRENT / NOT_COMPLETED` until all checks and final operator approval complete. M-3 does not release v2.0.1.
+M-3 was accepted and committed before M-4 began. M-3 did not release v2.0.1.
+
+---
+
+# M-4 — Cover Framework fallback and voice artifact safety
+
+Status: CURRENT / NOT_COMPLETED
+Commit title:
+
+```text
+test: cover Framework fallback and voice artifact safety
+```
+
+## Purpose
+
+```text
+- Extend the normal backend regression suite to the configured Framework advice boundary.
+- Preserve visible framework_fallback metadata when Framework execution fails.
+- Verify DRC-managed voice artifacts never expose arbitrary local paths.
+- Keep the tests credential-free, provider-free, network-free, and audio-generation-free.
+```
+
+## Change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+backend/tests/test_framework_advice.py
+backend/tests/test_voice_output_artifact_store.py
+docs/v20x_backend_mock_safe_regression.md
+docs/v20x_framework_fallback_voice_artifact_regression.md
+docs/DRC_v20x_maintenance_checklist.md
+scripts/check_v20x_maintenance_baseline.py
+scripts/check_v20x_application_version_metadata.py
+scripts/check_v20x_backend_mock_safe_regression.py
+scripts/check_v20x_framework_fallback_voice_artifact_regression.py
+```
+
+## Explicit non-change surface
+
+```text
+backend runtime implementation
+FrameworkConversationEngine behavior
+/advice fallback behavior
+VoiceOutputArtifactStore behavior
+provider credentials or network access
+real LLM, TTS, STT, health API, OAuth, or motion execution
+chat session and TTS artifact lifecycle limits
+release ZIP, tag, and GitHub Release handling
+```
+
+## Test boundary
+
+```text
+- A temporary fake framework package exposes create_text_chat_session from framework/__init__.py.
+- The fake session writes only under pytest tmp_path and returns deterministic text.
+- The fallback test imports app.api.advice only after replacing default persistence stores, so backend/local_data is not created.
+- Voice artifact tests use a temporary VoiceOutputArtifactStore root.
+- Dummy MP3 bytes are not real synthesized audio and are never committed outside the test source.
+```
+
+## Completion requirements
+
+```text
+- FrameworkConversationEngine calls the public facade and returns engine=framework.
+- framework_preset, framework_character, and framework_character_source remain visible and correct.
+- Empty framework responses raise FrameworkEngineError.
+- Framework failure returns engine=framework_fallback without claiming framework/provider success.
+- Managed staging MP3 publication returns a 32-character opaque artifact ID and root-relative URL.
+- Published artifact resolution remains within the managed public directory.
+- Outside files, unsupported/mismatched formats, traversal strings, and malformed IDs are rejected.
+- The normal suite does not create backend/local_data.
+- M-5 through M-9 remain PLANNED.
+- compileall, M-1 through M-4 checks, backend pytest, and flutter test pass.
+- The operator reviews the diff and approves the small commit.
+```
+
+M-4 must remain `CURRENT / NOT_COMPLETED` until all checks and final operator approval complete. M-4 does not release v2.0.1.
 
 ---
 
 # Planned queue
-
-## M-4 — Cover Framework fallback and voice artifact safety
-
-Status: PLANNED
-
-```text
-- Cover framework success/fallback source labels.
-- Cover opaque voice artifact lookup and unsafe-path rejection.
-- Keep real provider execution outside default tests.
-```
 
 ## M-5 — Bound temporary chat sessions and TTS artifacts
 

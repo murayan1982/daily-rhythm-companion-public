@@ -37,7 +37,15 @@ def run_check(relative: str) -> None:
 
 def run_pytest() -> None:
     subprocess.run(
-        [sys.executable, "-m", "pytest", "-q", "backend/tests"],
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "-q",
+            "backend/tests/test_core_api.py",
+            "backend/tests/test_mock_advice.py",
+            "backend/tests/test_daily_record_store.py",
+        ],
         cwd=ROOT,
         check=True,
     )
@@ -112,10 +120,12 @@ def main() -> None:
         require(documentation, needle, "M-3 documentation")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: M-3", "M-3 checklist current item")
-    m3 = checklist.split("# M-3", 1)[1].split("# Planned queue", 1)[0]
-    require(m3, "Status: CURRENT / NOT_COMPLETED", "M-3 incomplete state")
-    for item in range(4, 10):
+    require(checklist, "Current small commit: M-4", "active checklist current item")
+    m3 = checklist.split("# M-3", 1)[1].split("# M-4", 1)[0]
+    require(m3, "Status: COMPLETED", "M-3 completed state")
+    m4 = checklist.split("# M-4", 1)[1].split("# Planned queue", 1)[0]
+    require(m4, "Status: CURRENT / NOT_COMPLETED", "M-4 current state")
+    for item in range(5, 10):
         section = checklist.split(f"## M-{item}", 1)[1]
         if item < 9:
             section = section.split(f"## M-{item + 1}", 1)[0]
@@ -124,7 +134,7 @@ def main() -> None:
     run_check("scripts/check_v20x_application_version_metadata.py")
     run_pytest()
 
-    print("v20x_backend_mock_safe_regression_status: m3-current-not-completed")
+    print("v20x_backend_mock_safe_regression_status: m3-completed")
     print("v20x_backend_mock_safe_regression_test_modules: 3")
     print("v20x_backend_mock_safe_regression_credentials_required: False")
     print("v20x_backend_mock_safe_regression_real_execution: False")

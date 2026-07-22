@@ -10,11 +10,11 @@ Current patch source and small commit:
 
 ```text
 v2.0.1
-M-3  CURRENT / NOT_COMPLETED
-test: add backend mock-safe regression foundation
+M-4  CURRENT / NOT_COMPLETED
+test: cover Framework fallback and voice artifact safety
 ```
 
-M-1 and M-2 are completed. M-3 adds a normal credential-free pytest suite for core backend behavior and keeps historical release-evidence validators separate from daily regression tests.
+M-1 through M-3 are completed. M-4 adds credential-free regression coverage for configured Framework advice success/fallback and the DRC-managed voice artifact boundary.
 
 Install the development test dependencies and run the current checks from the repository root:
 
@@ -24,6 +24,7 @@ python -m compileall -q backend scripts
 python scripts\check_v20x_maintenance_baseline.py
 python scripts\check_v20x_application_version_metadata.py
 python scripts\check_v20x_backend_mock_safe_regression.py
+python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python -m pytest -q backend/tests
 
 cd app
@@ -31,21 +32,21 @@ flutter test
 cd ..
 ```
 
-The M-3 regression boundary verifies:
+The M-4 regression boundary verifies:
 
 ```text
-- backend/.env is skipped during the normal test suite
-- real provider and OAuth environment variables are cleared
-- /health, /characters, and /sleep/summary run through a small mock-safe test app
-- MockConversationEngine returns stable advice/source metadata
-- unavailable sleep advice does not invent a duration
-- DailyRecord SQLite behavior uses pytest tmp_path only
-- backend production dependencies and runtime implementation remain unchanged
-- Framework fallback and voice artifact safety remain M-4 work
-- M-4 through M-9 remain PLANNED
+- a temporary fake Framework public package returns deterministic configured advice
+- Framework source and character-mapping metadata remain visible
+- empty Framework responses fail safely
+- FrameworkEngineError becomes explicit framework_fallback metadata
+- managed staging MP3 files move behind opaque root-relative URLs
+- outside paths, unsupported formats, traversal, and malformed IDs are rejected
+- tests use pytest tmp_path and do not create backend/local_data
+- backend runtime implementation remains unchanged
+- M-5 through M-9 remain PLANNED
 ```
 
-M-3 does not call external providers, access OAuth credentials, execute real health APIs, synthesize audio, import the full production app, use `backend/local_data`, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
+M-4 does not use a real Framework checkout, call external providers, access OAuth credentials, execute real health APIs, synthesize real audio, start a browser, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
 
 Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They may intentionally pin v2.0.0 metadata and are not the active current-main regression suite.
 
