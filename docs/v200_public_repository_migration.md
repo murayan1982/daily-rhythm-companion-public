@@ -67,7 +67,7 @@ public_root_commit_count == 1
 private_git_history_included == false
 ```
 
-The Public fixed-ZIP builder now requires the official Public origin and committed Public `main`; it does not require the ignored Private Day80 manifest in the Public checkout. The Private candidate artifact record remains historical only.
+The Public fixed-ZIP builder now requires the official Public origin and committed Public `main`. It removes the repository-local ignored-manifest dependency from the Public checkout, but still requires an explicit `ManifestPath` to the accepted Day80 manifest outside the Public repository. The builder validates that external manifest without copying it into the worktree or ZIP and without printing its private path. The Private candidate artifact record remains historical only.
 
 ## Public preparation gates in the Private repository
 
@@ -189,10 +189,13 @@ superseded Private candidate zip
 - [x] Run strict Public-distribution checks and Flutter tests in the Public checkout using disposable runtime copies.
 - [x] Align the final artifact record and builder with clean-history Public `main` in Public-P4.
 - [x] Synchronize README/checklist/roadmap/migration status in Public-P5.
-- [ ] Confirm the final Public-P5 commit is pushed and both working trees are clean.
-- [ ] Run final source-tree, acceptance, and Flutter checks from the committed Public source.
-- [ ] Build one fixed ZIP exactly once from the committed Public source.
-- [ ] Run Day82 and Day83 against that exact ZIP without rebuilding.
+- [x] Require evidence-backed Day82/Day83 acceptance in Public-P6 follow-up 1.
+- [x] Reject untracked Flutter generated registrants in Public-P6 follow-up 2.
+- [x] Synchronize the active Public main-only release sequence in Public-P6 follow-up 3.
+- [ ] Confirm the final Public pre-build synchronization commit is pushed and the Public working tree is clean.
+- [ ] Run final source-tree, acceptance-contract, and Flutter checks from the committed Public source.
+- [ ] Build one fixed ZIP exactly once from the committed Public source using the external accepted Day80 manifest.
+- [ ] Run Day81, Day82, and Day83 against that exact ZIP without rebuilding.
 - [ ] Validate the Public artifact record against the same Public source commit and ZIP.
 - [ ] Create a new annotated `DRC_v2.0.0` tag targeting that Public source commit.
 - [ ] Create the GitHub Release and attach the exact same fixed ZIP and artifact record.
@@ -274,13 +277,13 @@ build_v200_final_fixed_release_zip_from_head.ps1
 docs/v200_final_release_artifact_record.md
 ```
 
-The final artifact record now requires the clean-history Public repository, Public `main`, exactly one root commit, the official Public origin, no Private Git history, and no legacy `develop_head` field. The fixed-ZIP builder uses committed public-safe acceptance markers and does not require ignored Private evidence in the Public checkout.
+The final artifact record now requires the clean-history Public repository, Public `main`, exactly one root commit, the official Public origin, no Private Git history, and no legacy `develop_head` field. The fixed-ZIP builder uses committed public-safe acceptance markers, rejects repository-local private-manifest storage, and requires the accepted Day80 manifest through an explicit path outside the Public repository.
 
 Public-P4 validation passed in both preparation and Public checkouts, including strict Public-distribution validation, artifact-record smoke checks, and Flutter tests. It did not build a ZIP, create a tag, or publish a Release.
 
-## Public-P5 status synchronization
+## Public-P5 and Public-P6 pre-build synchronization
 
-Public-P5 synchronizes `README.md`, `roadmap.md`, the goal checklist, and this migration procedure with the completed Public-P3.1/Public initialization/Public-P4 state. It preserves `NOT_RELEASED` and leaves the fixed ZIP, Day82/Day83 artifact verification, final artifact record, annotated tag, and GitHub Release pending.
+Public-P5 synchronized `README.md`, `roadmap.md`, the goal checklist, and this migration procedure with the completed Public-P3.1/Public initialization/Public-P4 state. Public-P6 fixed the empty-tag preflight and accepted-manifest gate. Public-P6 follow-up 1 separates inspection-only ZIP checks from evidence-backed Day82/Day83 acceptance, follow-up 2 rejects untracked Flutter generated registrants, and follow-up 3 aligns all active instructions with the Public main-only topology and external Day80 manifest boundary. These steps preserve `NOT_RELEASED` and leave the fixed ZIP, actual Day81/Day82/Day83 artifact verification, final artifact record, annotated tag, and GitHub Release pending.
 
 ## Current status
 
@@ -310,6 +313,9 @@ public_repository_tracked_files: 576
 public_artifact_record_contract: completed-public-p4
 public_fixed_zip_builder: completed-public-p4
 public_status_document_sync: completed-public-p5
+public_prebuild_acceptance_contract: completed-public-p6-follow-up-1
+public_generated_release_guard: completed-public-p6-follow-up-2
+public_final_sequence_sync: completed-public-p6-follow-up-3
 public_fixed_release_zip: not-built
 public_tag: not-created
 public_github_release: not-created

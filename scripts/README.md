@@ -3367,7 +3367,7 @@ Day81 requires actual Daily Rhythm Companion backend API use, Web UI execution, 
 
 Day82 doc: `docs/v200_fixed_release_zip_with_web_evidence_verification.md`
 
-Commit G-6 makes Day82 an actual fixed-artifact inspection. The source-tree smoke creates synthetic accepted/rejected zips to exercise required-entry, private-evidence, worktree `.git` metadata-file, and package-root behavior. With `--release-zip`, the command first runs `check_release_package.py`, then opens the supplied zip directly, tests CRC, verifies one `DailyRhythmCompanion` root, checks required and forbidden entries, calculates SHA-256, and confirms the zip did not change while inspected. It never creates, modifies, timestamp-refreshes, or rebuilds the artifact. Marker-only `--evidence-json` input is rejected unless `--release-zip` is also supplied.
+Commit G-6 makes Day82 an actual fixed-artifact inspection. The source-tree smoke creates synthetic accepted/rejected zips to exercise required-entry, private-evidence, worktree `.git` metadata-file, and package-root behavior. Package-only inspection requires `--release-zip` together with `--inspect-zip-only`; Day82 acceptance requires `--release-zip` together with `--evidence-json`, and the evidence must bind the inspected basename, byte size, and SHA-256. A bare `--release-zip` and marker-only `--evidence-json` are both rejected. Inspection first runs `check_release_package.py`, then opens the supplied zip directly, tests CRC, verifies one `DailyRhythmCompanion` root, checks required and forbidden entries, calculates SHA-256, and confirms the zip did not change while inspected. It never creates, modifies, timestamp-refreshes, or rebuilds the artifact.
 
 Source-tree check before artifact creation:
 
@@ -3382,7 +3382,16 @@ After the committed-HEAD builder has run exactly once:
 $zip = "release\DailyRhythmCompanion_YYYYMMDD_HHMMSS.zip"
 
 python scripts\check_release_package.py $zip
-python scripts\smoke_framework_v200_fixed_release_zip_with_web_evidence_verification.py --release-zip $zip
+
+# Optional package-only inspection; not Day82 acceptance.
+python scripts\smoke_framework_v200_fixed_release_zip_with_web_evidence_verification.py `
+  --release-zip $zip `
+  --inspect-zip-only
+
+# Day82 acceptance.
+python scripts\smoke_framework_v200_fixed_release_zip_with_web_evidence_verification.py `
+  --release-zip $zip `
+  --evidence-json "<private-Day82-marker-json>"
 ```
 
 Do not rebuild the zip after this check passes. Reuse the same fixed zip for the next final readiness step.
@@ -3392,11 +3401,13 @@ Do not rebuild the zip after this check passes. Reuse the same fixed zip for the
 
 Day83 doc: `docs/v200_final_release_readiness_fixed_zip_with_web_evidence.md`
 
-Day83 now requires the same fixed artifact through `--release-zip`. It reruns package hygiene, directly reopens the zip, preserves every Day82 required/forbidden rule, requires the Day83 final readiness files, verifies CRC/root/SHA-256/unchanged-artifact state, and rejects marker-only final readiness.
+Day83 requires the same fixed artifact and private Day83 evidence through `--release-zip` plus `--evidence-json`. It reruns package hygiene, directly reopens the zip, preserves every Day82 required/forbidden rule, requires the Day83 final readiness files, verifies CRC/root/SHA-256/unchanged-artifact state, and binds the Day82-verified SHA-256 to the Day83 inspection. A bare `--release-zip` and marker-only final readiness are rejected.
 
 ```powershell
 $zip = "release\DailyRhythmCompanion_YYYYMMDD_HHMMSS.zip"
-python scripts\smoke_framework_v200_final_release_readiness_fixed_zip_with_web_evidence.py --release-zip $zip
+python scripts\smoke_framework_v200_final_release_readiness_fixed_zip_with_web_evidence.py `
+  --release-zip $zip `
+  --evidence-json "<private-Day83-marker-json>"
 ```
 
 Do not run `build_v200_final_fixed_release_zip_from_head.ps1` again between Day82 and Day83.
@@ -3889,7 +3900,7 @@ G-5 closes only the accepted private evidence manifest requirement. The next ste
 
 ## v2.0.0 Commit G-6 committed-HEAD final zip and direct Day82/Day83 verification hardening
 
-G-6 adds `build_v200_final_fixed_release_zip_from_head.ps1`. The script requires a clean tracked/non-ignored working tree, validates the committed G-5 public-safe state and the ignored Day80 private manifest, records the current branch and committed `HEAD`, creates a detached temporary worktree at that exact commit, invokes `build_release.bat release` exactly once, refuses to overwrite an existing release artifact, and prints the repository-relative zip path, size, and SHA-256. The private manifest is never copied into the detached worktree or release zip. The existing package builder and package checker are also hardened to exclude and reject the worktree `.git` metadata file.
+G-6 adds `build_v200_final_fixed_release_zip_from_head.ps1`. The script requires a clean tracked/non-ignored working tree, validates the committed G-5 public-safe state, requires an explicit path to the accepted Day80 manifest outside the Public repository, records the current branch and committed `HEAD`, creates a detached temporary worktree at that exact commit, invokes `build_release.bat release` exactly once, refuses to overwrite an existing release artifact, and prints the repository-relative zip path, size, and SHA-256. The external private manifest is validated without being copied into the detached worktree or release zip and without printing its path. The existing package builder and package checker are also hardened to exclude and reject the worktree `.git` metadata file.
 
 G-6 also upgrades the Day82 and Day83 smoke paths from marker-only validation to direct same-zip inspection through `--release-zip`.
 
@@ -3919,7 +3930,7 @@ release_status: NOT_RELEASED
 
 ## v2.0.0 Commit G-7 immutable final release artifact record
 
-G-7 adds `backend/app/services/framework_v200_final_release_artifact_record.py`, `scripts/smoke_framework_v200_final_release_artifact_record.py`, and `docs/v200_final_release_artifact_record.md`. The contract binds the final committed source HEAD, matching `main`/`develop` refs, annotated `DRC_v2.0.0` tag target, fixed zip basename, byte size, SHA-256, Day82/Day83 acceptance, same-artifact use, and public-safe omission markers.
+G-7 adds `backend/app/services/framework_v200_final_release_artifact_record.py`, `scripts/smoke_framework_v200_final_release_artifact_record.py`, and `docs/v200_final_release_artifact_record.md`. Its original same-repository contract bound matching `main`/`develop` refs. Public-P4 supersedes that historical topology: the active Public record binds Public `main`, `origin/main`, the annotated `DRC_v2.0.0` tag target, exactly one Public root commit, fixed zip basename, byte size, SHA-256, Day82/Day83 acceptance, same-artifact use, and public-safe omission markers; legacy `develop_head` fields are rejected.
 
 The source-tree smoke validates a synthetic accepted record, rejects hash mismatch, branch mismatch, lightweight tag, private-path inclusion, and post-build source-change cases, and verifies that the G-7 files are required by both Day82 and Day83 release surfaces.
 
@@ -3928,7 +3939,7 @@ python -m compileall -q backend scripts
 python scripts\smoke_framework_v200_final_release_artifact_record.py
 ```
 
-After G-7 is committed and `main`/`develop` are aligned, build one new fixed zip from that committed HEAD. Do not create a source or documentation commit after the build. The accepted public-safe record is placed in the annotated tag message and copied into the GitHub Release body; raw evidence and private paths remain excluded.
+The historical G-7 sequence aligned `main`/`develop`; do not use that instruction for the clean-history Public release. After the final Public pre-build synchronization commit is pushed, confirm `Public main HEAD == origin/main`, one Public root commit, a clean working tree, and no existing `DRC_v2.0.0` tag, then build one new fixed zip from that committed Public HEAD. Do not create a source or documentation commit after the build. The accepted public-safe record is placed in the annotated tag message and copied into the GitHub Release body; raw evidence and private paths remain excluded.
 
 ```text
 final_release_artifact_record: contract-ready-artifact-not-recorded

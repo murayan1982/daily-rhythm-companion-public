@@ -140,4 +140,4 @@ backend/app/services/framework_v200_final_release_artifact_record.py
 scripts/smoke_framework_v200_final_release_artifact_record.py
 ```
 
-Any zip built before G-7 is committed is not the final v2.0.0 artifact because the required release surface changed. After G-7 is committed and `main` and `develop` point to the same HEAD, build one new fixed zip and restart Day82/Day83 verification. Do not update source files after that build; record the accepted artifact outcome in the annotated tag and GitHub Release metadata instead.
+Any zip built before G-7 is committed is not the final v2.0.0 artifact because the required release surface changed. The historical G-7 same-repository instruction aligned `main` and `develop`, but Public-P4 supersedes that topology. The active Public rule is `Public main HEAD == origin/main == fixed ZIP source_head == annotated tag target`, with exactly one Public root commit and no Private Git history. Build only from that frozen Public `main`; do not update source files after the build, and record the accepted artifact outcome in the annotated tag and GitHub Release metadata instead.

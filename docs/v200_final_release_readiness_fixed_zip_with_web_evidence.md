@@ -92,6 +92,6 @@ Day83 default source-tree checks do not call providers, Google Health, OAuth end
 
 ## G-7 immutable final artifact record handoff
 
-Day83 now requires the G-7 record doc, service, and smoke script in the same fixed zip. After Day83 passes, validate a public-safe final artifact record against that exact zip with `scripts/smoke_framework_v200_final_release_artifact_record.py`. The record must bind the full source HEAD, matching `main` and `develop` refs, annotated tag target, zip basename, size, and SHA-256.
+Day83 requires the G-7 record doc, service, and smoke script in the same fixed zip. After Day83 passes, validate a public-safe final artifact record against that exact zip with `scripts/smoke_framework_v200_final_release_artifact_record.py`. Under the Public-P4 topology, the record must bind the full Public source HEAD, matching Public `main` and `origin/main`, the annotated tag target, exactly one Public root commit, the zip basename, size, and SHA-256; legacy `develop_head` fields are rejected.
 
 No source or documentation commit may be created after the final fixed zip build. The validated record is copied unchanged into the annotated `DRC_v2.0.0` tag message and GitHub Release body. Private evidence, raw media/health data, secrets, LAN IPs, and private paths remain outside both the repository and release metadata.

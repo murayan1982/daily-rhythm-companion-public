@@ -89,7 +89,83 @@ def _synthetic_inspection() -> V200FixedReleaseZipInspection:
     )
 
 
+def _check_public_release_sequence_docs() -> bool:
+    required_snippets = {
+        ROOT / "README.md": (
+            '--evidence-json "<private-Day82-marker-json>"',
+            '--evidence-json "<private-Day83-marker-json>"',
+            'build_v200_final_fixed_release_zip_from_head.ps1 -ManifestPath $manifest',
+        ),
+        ROOT / "docs" / "v200_fixed_release_zip_with_web_evidence_verification.md": (
+            "Public main HEAD == origin/main == fixed ZIP source_head == annotated tag target",
+            "--inspect-zip-only",
+            "<private-Day82-marker-json>",
+        ),
+        ROOT / "docs" / "v200_final_release_readiness_fixed_zip_with_web_evidence.md": (
+            "matching Public `main` and `origin/main`",
+            "legacy `develop_head` fields are rejected",
+            "<private-Day83-marker-json>",
+        ),
+        ROOT / "docs" / "v200_public_repository_migration.md": (
+            "explicit `ManifestPath` to the accepted Day80 manifest outside the Public repository",
+            "Public-P6 follow-up 3",
+        ),
+        ROOT / "docs" / "DRC_v200_goal_checklist_small_commit.md": (
+            "builder_repository_local_private_manifest_dependency: removed",
+            "builder_external_day80_manifest_preflight: required-outside-public-repository",
+            "Public-P6 pre-build follow-up 3",
+        ),
+        ROOT / "scripts" / "README.md": (
+            "Public-P4 supersedes that historical topology",
+            "Public main HEAD == origin/main",
+            '<private-Day82-marker-json>',
+            '<private-Day83-marker-json>',
+            '--inspect-zip-only',
+        ),
+    }
+    forbidden_active_snippets = {
+        ROOT / "docs" / "v200_fixed_release_zip_with_web_evidence_verification.md": (
+            "After G-7 is committed and `main` and `develop` point to the same HEAD",
+        ),
+        ROOT / "docs" / "v200_final_release_readiness_fixed_zip_with_web_evidence.md": (
+            "matching `main` and `develop` refs",
+        ),
+        ROOT / "scripts" / "README.md": (
+            "After G-7 is committed and `main`/`develop` are aligned",
+        ),
+    }
+
+    errors: list[str] = []
+    for path, snippets in required_snippets.items():
+        if not path.is_file():
+            errors.append(f"missing-file:{path.relative_to(ROOT).as_posix()}")
+            continue
+        body = path.read_text(encoding="utf-8")
+        for snippet in snippets:
+            if snippet not in body:
+                errors.append(f"missing-snippet:{path.relative_to(ROOT).as_posix()}:{snippet}")
+    for path, snippets in forbidden_active_snippets.items():
+        if not path.is_file():
+            continue
+        body = path.read_text(encoding="utf-8")
+        for snippet in snippets:
+            if snippet in body:
+                errors.append(f"obsolete-active-snippet:{path.relative_to(ROOT).as_posix()}:{snippet}")
+
+    if errors:
+        print("[smoke-framework-v200-final-release-artifact-record] ERROR")
+        for error in errors:
+            print(error)
+        return False
+
+    print("v200_final_release_artifact_record_public_release_sequence_docs: synchronized")
+    return True
+
+
 def _run_source_tree_contract_checks() -> bool:
+    if not _check_public_release_sequence_docs():
+        return False
+
     day82 = build_v200_fixed_release_zip_with_web_evidence_contract()
     day83 = build_v200_final_release_readiness_fixed_zip_with_web_evidence_contract()
     required_entries = {

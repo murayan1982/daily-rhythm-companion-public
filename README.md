@@ -11,7 +11,7 @@ Current target: v2.0.0 clean-history Public repository preparation (**NOT RELEAS
 
 v2.0.0 is **not released**. The source of truth for v2.0.0 completion is [Daily Rhythm Companion v2.0.0 Goal Checklist](docs/DRC_v200_goal_checklist_small_commit.md).
 
-Required real Web execution evidence, public-safe acceptance markers, Public metadata alignment, tracked-file cleanup, retention classification, and Public-distribution validation are complete. Public-P3.1 hardened generated-cache rejection and required runtime checks in disposable verification copies. A fresh untouched 576-file snapshot passed strict validation, initialized the clean-history Public repository, and produced its authoritative root commit. Public-P4 then updated the final artifact-record and fixed-zip builder contracts for the clean-history Public `main` topology. Public-P5 synchronizes the repository status documents before any final fixed ZIP, tag, or GitHub Release is created.
+Required real Web execution evidence, public-safe acceptance markers, Public metadata alignment, tracked-file cleanup, retention classification, and Public-distribution validation are complete. Public-P3.1 hardened generated-cache rejection and required runtime checks in disposable verification copies. A fresh untouched 576-file snapshot passed strict validation, initialized the clean-history Public repository, and produced its authoritative root commit. Public-P4 updated the final artifact-record and fixed-ZIP builder contracts for the clean-history Public `main` topology, Public-P5 synchronized the repository status documents, and Public-P6 fixed the remaining pre-build gates. Public-P6 follow-up 1 requires evidence-backed Day82/Day83 acceptance, follow-up 2 rejects untracked Flutter generated registrants, and follow-up 3 synchronizes the active Public main-only release sequence before any final fixed ZIP, tag, or GitHub Release is created.
 
 Do not publish `DRC_v2.0.0` until every Public migration gate in the checklist is complete. The superseded Private candidate zip and Private tag are not Public release assets.
 
@@ -60,6 +60,9 @@ public_repository_root_commit_count: 1
 public_repository_tracked_files: 576
 public_artifact_record_contract: completed-public-p4
 public_status_sync: completed-public-p5
+public_prebuild_acceptance_contract: completed-public-p6-follow-up-1
+public_generated_release_guard: completed-public-p6-follow-up-2
+public_final_sequence_sync: completed-public-p6-follow-up-3
 public_fixed_release_zip: not-built
 public_DRC_v2.0.0_tag: not-created
 public_github_release: not-created
@@ -3367,7 +3370,7 @@ The accepted Day79 item is summarized by the Day80 accepted Web evidence manifes
 
 Doc: `docs/v200_fixed_release_zip_with_web_evidence_verification.md`
 
-Day82 returns the v2.0.0 flow to fixed release zip verification after Day80 private evidence acceptance. Commit G-6 removes the remaining marker-only gap before the final artifact is created. The final builder uses a detached temporary Git worktree at the recorded committed `HEAD`, validates the ignored Day80 private manifest before packaging, invokes `build_release.bat release` exactly once, and moves that one artifact into `release/` without rebuilding or overwriting it. The package builder explicitly excludes the worktree `.git` metadata file so its private administrative path cannot enter the zip.
+Day82 returns the v2.0.0 flow to fixed release zip verification after Day80 private evidence acceptance. Commit G-6 removes the remaining marker-only gap before the final artifact is created. The final builder uses a detached temporary Git worktree at the recorded committed `HEAD`, requires an explicit `ManifestPath` to the accepted Day80 manifest outside the Public repository, validates that manifest without copying or printing its path, invokes `build_release.bat release` exactly once, and moves that one artifact into `release/` without rebuilding or overwriting it. The package builder explicitly excludes the worktree `.git` metadata file so its private administrative path cannot enter the zip.
 
 Day82 does not create or rebuild the release zip. It runs `check_release_package.py`, opens the supplied zip directly, verifies CRC integrity, requires exactly one `DailyRhythmCompanion` package root, checks required release entries, rejects forbidden/private entries, records the zip basename, size, and SHA-256, and confirms the artifact did not change during inspection. Marker-only Day82 evidence is rejected unless the same fixed zip is also supplied with `--release-zip`.
 
@@ -3382,7 +3385,8 @@ cd app
 flutter test
 cd ..
 
-.\build_v200_final_fixed_release_zip_from_head.ps1
+$manifest = "<absolute path to accepted Day80 manifest outside Public repository>"
+.\build_v200_final_fixed_release_zip_from_head.ps1 -ManifestPath $manifest
 ```
 
 Copy the exact `v200_final_fixed_release_zip_path` printed by the builder and verify that same artifact without running the builder again:
@@ -3391,7 +3395,16 @@ Copy the exact `v200_final_fixed_release_zip_path` printed by the builder and ve
 $zip = "release\DailyRhythmCompanion_YYYYMMDD_HHMMSS.zip"
 
 python scripts\check_release_package.py $zip
-python scripts\smoke_framework_v200_fixed_release_zip_with_web_evidence_verification.py --release-zip $zip
+
+# Optional package-only inspection; this does not accept Day82.
+python scripts\smoke_framework_v200_fixed_release_zip_with_web_evidence_verification.py `
+  --release-zip $zip `
+  --inspect-zip-only
+
+# Day82 acceptance requires evidence bound to this exact ZIP.
+python scripts\smoke_framework_v200_fixed_release_zip_with_web_evidence_verification.py `
+  --release-zip $zip `
+  --evidence-json "<private-Day82-marker-json>"
 ```
 
 The same `$zip` must then be reused for Day83, tag, and GitHub Release handling. Any committed source, documentation, release rule, or release-surface change invalidates that artifact and requires a new one-time build from the new committed `HEAD`.
@@ -3407,7 +3420,9 @@ Check: `scripts/smoke_framework_v200_final_release_readiness_fixed_zip_with_web_
 ```powershell
 $zip = "release\DailyRhythmCompanion_YYYYMMDD_HHMMSS.zip"
 
-python scripts\smoke_framework_v200_final_release_readiness_fixed_zip_with_web_evidence.py --release-zip $zip
+python scripts\smoke_framework_v200_final_release_readiness_fixed_zip_with_web_evidence.py `
+  --release-zip $zip `
+  --evidence-json "<private-Day83-marker-json>"
 ```
 
 The `$zip` value must be identical to the artifact path used for Day82. Source-tree-only Day83 output does not authorize tagging or release.
@@ -3428,4 +3443,4 @@ python -m compileall -q backend scripts
 python scripts\smoke_framework_v200_final_release_artifact_record.py
 ```
 
-Any fixed ZIP built from an earlier source state is not the final artifact after Public-P5 changes the release surface. Build only after Public-P5 is committed, pushed, and the final Public source checks pass.
+Any fixed ZIP built from an earlier source state is not the final artifact after the Public-P6 pre-build follow-ups change the release surface. Build only after the final Public pre-build synchronization commit is committed and pushed, `HEAD == origin/main`, the working tree is clean, and all source-tree and Flutter checks pass.

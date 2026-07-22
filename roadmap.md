@@ -74,7 +74,7 @@ source of truth: docs/DRC_v200_goal_checklist_small_commit.md
 
 Day64-Day83 evidence readiness / validator gates are useful infrastructure and do not replace real execution evidence. The required capability evidence and public-safe acceptance markers are now accepted.
 
-v2.0.0 must not be published until the remaining clean-history Public repository gates are complete. Metadata alignment, retention cleanup, Public-distribution validation, Public-P3.1 cache hardening, canonical snapshot export, Public repository initialization, and Public-P4 artifact-contract/builder alignment are complete. Public-P5 synchronizes status documentation. The remaining gates are the final committed Public source verification, one fixed ZIP built exactly once from Public `main`, Day82/Day83 verification against that same artifact, the Public artifact record, annotated tag, and GitHub Release.
+v2.0.0 must not be published until the remaining clean-history Public repository gates are complete. Metadata alignment, retention cleanup, Public-distribution validation, Public-P3.1 cache hardening, canonical snapshot export, Public repository initialization, Public-P4 artifact-contract/builder alignment, Public-P5 status synchronization, and Public-P6 pre-build hardening are complete. Public-P6 follow-up 1 requires evidence-backed Day82/Day83 acceptance, follow-up 2 rejects untracked Flutter generated registrants, and follow-up 3 synchronizes the active Public main-only sequence. The remaining gates are final committed Public source verification, one fixed ZIP built exactly once from Public `main`, Day81/Day82/Day83 verification against that same artifact, the Public artifact record, annotated tag, and GitHub Release.
 
 Current v2.0.0 checkpoint:
 
@@ -115,6 +115,9 @@ public_repository_root_commit_count: 1
 public_repository_tracked_files: 576
 public_artifact_record_contract_update: completed-public-p4
 public_status_document_sync: completed-public-p5
+public_prebuild_acceptance_contract: completed-public-p6-follow-up-1
+public_generated_release_guard: completed-public-p6-follow-up-2
+public_final_sequence_sync: completed-public-p6-follow-up-3
 public_fixed_release_zip: not-built
 public_DRC_v2.0.0_tag: not-created
 public_github_release: not-created

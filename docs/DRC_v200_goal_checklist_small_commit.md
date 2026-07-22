@@ -109,6 +109,7 @@ Current state:
 - [x] Public-P6 aligns the accepted-manifest pre-build gate with the completed evidence state, hardens the no-existing-tag check for an empty tag list, and adds a Day82 regression guard without building a ZIP or creating a tag.
 - [x] Public-P6 pre-build follow-up 1 separates Day82/Day83 inspection-only mode from evidence-backed acceptance and removes the circular post-Day81 build marker without accepting a final artifact.
 - [x] Public-P6 pre-build follow-up 2 rejects untracked Flutter generated plugin registrants from Public source/fixed-ZIP validation and advances the Public-distribution next focus to the final pre-build sequence without building a ZIP or creating a tag.
+- [x] Public-P6 pre-build follow-up 3 synchronizes active Day82/Day83, README, roadmap, migration, and scripts guidance with the Public main-only topology and the external Day80 manifest boundary without building or accepting a final artifact.
 - [ ] A new final v2.0.0 fixed release ZIP is built exactly once from the committed Public repository source.
 - [ ] Day82 and Day83 pass against that exact Public fixed ZIP without rebuilding.
 - [ ] The public-safe final artifact record validates against the same Public source commit and fixed ZIP.
@@ -1618,7 +1619,8 @@ public_origin_policy: official-public-origin-required
 public_root_commit_count_policy: exactly-one
 private_git_history_policy: forbidden
 legacy_develop_head_field_policy: rejected
-builder_private_manifest_dependency: removed
+builder_repository_local_private_manifest_dependency: removed
+builder_external_day80_manifest_preflight: required-outside-public-repository
 builder_source_policy: committed-public-main
 artifact_binding_fields: release-zip-basename,file-size,SHA256
 post_build_source_commit_policy: forbidden
@@ -1701,9 +1703,14 @@ Public migration gates:
 - [x] Public-P4 updated the artifact-record contract so `source_head`, Public `main`, tag target, and fixed-ZIP source all refer to the clean-history Public repository.
 - [x] Public-P4 updated the fixed-ZIP builder to require committed Public `main`, the official Public origin, one root commit, and committed public-safe acceptance markers only.
 - [x] Public-P5 synchronizes README, roadmap, this checklist, and the migration procedure without creating release artifacts.
-- [ ] Freeze the final committed Public source after all Public-P5 verification passes.
-- [ ] Build one new fixed ZIP exactly once from the committed Public source.
-- [ ] Run Day82 and Day83 against that exact Public fixed ZIP without rebuilding.
+- [x] Public-P6 pre-build follow-up 1 requires evidence-backed Day82/Day83 acceptance and removes the circular build marker.
+- [x] Public-P6 pre-build follow-up 2 rejects untracked Flutter generated registrants and updates the Public-distribution next focus.
+- [x] Public-P6 pre-build follow-up 3 synchronizes the Public main-only sequence and external Day80 manifest boundary.
+- [ ] Confirm the final Public pre-build synchronization commit is pushed and the Public working tree is clean.
+- [ ] Run final source-tree, acceptance-contract, and Flutter checks from the committed Public source.
+- [ ] Freeze the final committed Public source after all pre-build verification passes.
+- [ ] Build one new fixed ZIP exactly once from clean-history Public `main` using the accepted Day80 manifest outside the Public repository.
+- [ ] Run Day81, Day82, and Day83 against that exact Public fixed ZIP without rebuilding.
 - [ ] Validate the public-safe final artifact record against the same Public source commit and fixed ZIP.
 - [ ] Create a new annotated `DRC_v2.0.0` tag in the Public repository targeting that same Public source commit.
 - [ ] Create the GitHub Release in the Public repository and attach the exact same verified fixed ZIP.
@@ -1733,6 +1740,9 @@ public_repository_tracked_files: 576
 public_artifact_record_contract: UPDATED_PUBLIC_P4
 public_fixed_zip_builder: UPDATED_PUBLIC_P4
 public_status_documents: SYNCHRONIZED_PUBLIC_P5
+public_prebuild_acceptance_contract: COMPLETED_PUBLIC_P6_FOLLOWUP_1
+public_generated_release_guard: COMPLETED_PUBLIC_P6_FOLLOWUP_2
+public_final_sequence_sync: COMPLETED_PUBLIC_P6_FOLLOWUP_3
 public_fixed_release_zip: NOT_BUILT
 public_DRC_v2.0.0_tag: NOT_CREATED
 public_github_release: NOT_CREATED
