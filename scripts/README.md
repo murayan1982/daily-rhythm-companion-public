@@ -2,27 +2,29 @@
 
 This directory contains development, verification, release, compatibility, and configured-demo helper scripts for Daily Rhythm Companion.
 
-## v2.0.0 current verification baseline
+## v2.0.x current maintenance baseline
 
-v2.0.0 is **not released**. The source of truth for v2.0.0 completion is `docs/DRC_v200_goal_checklist_small_commit.md`.
+v2.0.0 is **RELEASED** as the immutable Public baseline. The active detailed source of truth is `docs/DRC_v20x_maintenance_checklist.md`.
 
-When operating from a release package, source-tree-only day check scripts such as `scripts/check_v*_day*.py` may be absent by release-surface policy. Use the included v2.0.0 release-surface validators for the current small-commit safety check:
+Current small commit:
+
+```text
+M-1  CURRENT / NOT_COMPLETED
+docs: establish post-v2.0.0 maintenance baseline
+```
+
+Run the M-1 credential-free check from the repository root:
 
 ```powershell
 python -m compileall -q backend scripts
-python scripts\smoke_framework_v200_public_distribution_readiness.py
-python scripts\smoke_framework_v200_accepted_web_evidence_manifest_aggregate.py
-python scripts\smoke_framework_v200_final_release_readiness_with_web_evidence.py
-
-cd app
-flutter test
-cd ..
+python scripts\check_v20x_maintenance_baseline.py
 ```
 
-These validators do not replace real Web UI execution evidence, screenshot references, image asset intake/display evidence, accepted private manifest review, or final fixed-zip verification.
+M-1 verifies documentation/status synchronization, the Public/Private boundary, and preservation of the historical v2.0.0 checklist and release note. It does not call external providers, access OAuth credentials, run real health APIs, create audio, start the Web UI, build a release ZIP, or mark M-2 and later work complete.
 
+Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They are not the primary normal regression suite for current `main` after post-release changes.
 
-## Public repository migration verification status
+## Historical v2.0.0 Public repository migration verification status
 
 The existing Private-repository fixed zip and annotated tag are superseded for Public release use. Public-P0 defines a clean-history repository migration, so the final Public commit SHA will differ from the Private preparation HEAD.
 

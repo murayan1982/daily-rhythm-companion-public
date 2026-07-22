@@ -1,14 +1,56 @@
 # Daily Rhythm Companion Roadmap
 
 Updated: 2026-07-22
-Current released baseline: v1.10.0, the v2.0.0 prerelease evidence gate foundation
-Current target: v2.0.0 clean-history Public repository preparation (**NOT RELEASED**)
+Current released baseline: v2.0.0 (**RELEASED**)
+Current maintenance line: v2.0.x
+Next feature release: v2.1.0
+Strategic target: v3.0.0
+
+---
+
+## Release baseline
+
+Daily Rhythm Companion v2.0.0 is the immutable public release baseline.
+
+```text
+Public repository: murayan1982/daily-rhythm-companion-public
+Release / annotated tag: DRC_v2.0.0
+Release status: RELEASED
+Fixed release ZIP: DailyRhythmCompanion_20260722_180426.zip
+Fixed release ZIP SHA-256: b32c7b8a64842480898fcc86ca7838625efb712f1429ab9fe7b33a4001ddc0c1
+Post-publication SHA-256 re-verification: completed
+```
+
+Release immutability rule:
+
+```text
+- Do not rewrite the DRC_v2.0.0 tag.
+- Do not replace the published v2.0.0 release asset.
+- Do not modify the released v2.0.0 source snapshot.
+- Apply every post-release change through a new commit and a new version.
+- Preserve the v2.0.0 checklist and release notes as historical evidence.
+```
+
+The source of truth for the completed v2.0.0 release remains:
+
+```text
+docs/DRC_v200_goal_checklist_small_commit.md
+release_notes/v2.0.0.md
+GitHub Release: DRC_v2.0.0
+```
+
+Those records describe the completed release and must not be reused as the active task list for future versions.
 
 ---
 
 ## Product positioning
 
-Daily Rhythm Companion is primarily a demo application for AI Character Framework.
+Daily Rhythm Companion is both:
+
+```text
+1. A lightweight daily rhythm companion built around sleep, mood, character advice, and reflection.
+2. A public real-app demonstration of AI Character Framework integration.
+```
 
 AI Character Framework repository:
 
@@ -16,394 +58,504 @@ AI Character Framework repository:
 https://github.com/murayan1982/ai-character-framework.git
 ```
 
-The app should prove that AI Character Framework can be used from a real app backend and UI to provide character-based daily interaction.
-
-The app is also developed as a lightweight daily rhythm companion, but its main purpose is to demonstrate the framework in a realistic app context.
-
-## Mandatory demo-app requirements
-
-Daily Rhythm Companion is a public demo application for AI Character Framework.
-
-Target framework repository:
-
-```text
-https://github.com/murayan1982/ai-character-framework.git
-```
-
-This is not a loose positioning statement. It is a product and verification requirement.
-
-Required demo behavior:
-
-```text
-- The DRC repository is public because it is a demo app for AI Character Framework.
-- The developer must be able to demonstrate the service from their own smartphone through Web access.
-- The smartphone Web UI must call the actual Daily Rhythm Companion backend API.
-- The DRC backend must use the configured AI Character Framework integration path when configured.
-- FW4.0.0-era capabilities must be verifiable from this app:
-  - LLM
-  - STT / voice input
-  - TTS / voice output
-  - Live2D / VTS motion
-- The verification plan must include both API-level checks and Web UI result checks.
-- API-only smoke results are not enough to satisfy the smartphone Web demo requirement.
-- skipped / unavailable / fallback states must be visible and must not be counted as configured real execution success.
-- mock-safe default checks must remain credential-free.
-- configured real API checks must require explicit opt-in.
-```
-
-Configured real API test inputs may include already-obtained credentials for:
-
-```text
-- OpenAI
-- Gemini
-- Grok
-- ElevenLabs
-- Google Health API
-```
-
-Actual secrets must never be committed to the public repository.
-
-General consumer App Store / Google Play publication work is explicitly deferred to v2.0.0 or later.
-
-## v2.0.0 active source of truth
-
-```text
-v2.0.0 status: NOT RELEASED
-source of truth: docs/DRC_v200_goal_checklist_small_commit.md
-```
-
-Day64-Day83 evidence readiness / validator gates are useful infrastructure and do not replace real execution evidence. The required capability evidence and public-safe acceptance markers are now accepted.
-
-v2.0.0 must not be published until the remaining clean-history Public repository gates are complete. Metadata alignment, retention cleanup, Public-distribution validation, Public-P3.1 cache hardening, canonical snapshot export, Public repository initialization, Public-P4 artifact-contract/builder alignment, Public-P5 status synchronization, and Public-P6 pre-build hardening are complete. Public-P6 follow-up 1 requires evidence-backed Day82/Day83 acceptance, follow-up 2 rejects untracked Flutter generated registrants, and follow-up 3 synchronizes the active Public main-only sequence. The remaining gates are final committed Public source verification, one fixed ZIP built exactly once from Public `main`, Day81/Day82/Day83 verification against that same artifact, the Public artifact record, annotated tag, and GitHub Release.
-
-Current v2.0.0 checkpoint:
-
-```text
-real_llm_web_answer: ACCEPTED
-image_asset_intake_review: ACCEPTED
-web_image_display: ACCEPTED
-real_tts_web_audio_output: ACCEPTED
-real_google_health_sleep_data: ACCEPTED
-public_repo_final_sweep_review: ACCEPTED
-final_aggregate_review: ACCEPTED
-accepted_private_evidence_manifest: ACCEPTED
-final_fixed_release_zip: not-built
-DRC_v2.0.0_tag: not-created
-release_status: NOT_RELEASED
-```
-
-
-From Public-P0 onward, `final_fixed_release_zip` and `DRC_v2.0.0_tag` in the current checkpoint refer to the future artifact and tag in the clean-history Public repository. The already verified Private-repository candidate zip and annotated tag are superseded for Public release use.
-
-```text
-public_repository_migration: IN_PROGRESS
-private_repository_history_export: forbidden
-private_candidate_release_use: superseded-do-not-publish
-public_metadata_alignment: completed-public-p1
-checklist_source_of_truth: docs-only-cleanup-2
-cleanup_3_first_pass_retention: completed
-public_distribution_validator: private-export-view-and-public-strict-passed
-cleanup_7_tts_private_run_preparation_chain: completed
-cleanup_9_final_retention_classification: completed
-public_snapshot_export_tooling: completed-public-p3
-public_snapshot_validator: completed-public-p3.1
-canonical_public_snapshot: exported-untouched-and-strictly-validated
-obsolete_file_cleanup: completed
-public_repository: created-murayan1982/daily-rhythm-companion-public
-public_repository_initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
-public_repository_root_commit_count: 1
-public_repository_tracked_files: 576
-public_artifact_record_contract_update: completed-public-p4
-public_status_document_sync: completed-public-p5
-public_prebuild_acceptance_contract: completed-public-p6-follow-up-1
-public_generated_release_guard: completed-public-p6-follow-up-2
-public_final_sequence_sync: completed-public-p6-follow-up-3
-public_fixed_release_zip: not-built
-public_DRC_v2.0.0_tag: not-created
-public_github_release: not-created
-```
-
-Because a clean-history Public repository produces a new commit SHA, the final Public artifact record must bind the clean-history Public repository source commit, its annotated tag target, and the fixed ZIP built from that Public commit. Public-P4 now enforces that topology. The same-repository Private G-7 record remains historical and cannot authorize the Public release.
-
-D-next-14 aligned DRC with the released FW v5 public voice output contract (`create_voice_output_session`, `VoiceOutputRequest`, `create_output`, mp3, artifact-ref result). D-next-15 converts a validated managed FW mp3 artifact into a DRC-owned opaque relative URL and serves it through the backend without exposing the local path. D-next-16 hardens DRC/FW secret separation, rejects provider-specific keys from the DRC-side preflight, blocks local env/patch/validation artifacts from release packages, and aligns the Day77 helper filename. D-next-17 aligns the real TTS smartphone Web launch flow with the Flutter app's actual `DRC_BACKEND_API_BASE_URL` compile-time key and guards against the deprecated unused alias. D-next-18 synchronizes public-safe acceptance after the configured DRC backend path generated real TTS audio, audible playback was confirmed in both PC and smartphone Web UI, and the Day54, Day65, Day77, and combined marker-only validators accepted. E-1 through E-8 then restored and exercised the real Google Health path through OAuth, the actual backend, normalized sleep-summary output, PC Web, smartphone Web, and private screenshot capture. E-9 synchronizes public-safe acceptance after Day55, Day66, and Day78 marker-only validation accepted. Raw audio, screenshots, provider payloads, raw Google Health payloads, exact sleep values, OAuth values, credentials, URLs, LAN IPs, private paths, and operator evidence files remain uncommitted. All capability-specific v2.0.0 evidence requirements are accepted. G-1 removed tracked private evidence from the public repository surface and normalized secret-shaped/private-path fixtures; G-2 synchronizes the accepted Day69 public repository final sweep using public-safe markers only; G-3 synchronizes the accepted Day70 final prerelease aggregate review using public-safe markers only. G-4 hardens the Day80 accepted private evidence manifest source-tree validator and documents the exact ignored operator manifest handoff. G-5 synchronizes public-safe acceptance after the ignored Day80 manifest validated all seven required evidence items, actual DRC backend and Web UI execution, private screenshot references, and forbidden-state absence. G-6 hardens the remaining release path before artifact creation: the final builder now exports a detached temporary worktree at the recorded committed HEAD and invokes the release builder exactly once, explicitly excludes the worktree `.git` metadata file, while Day82 directly opens the supplied same zip and runs package hygiene, CRC, package-root, required-entry, forbidden-entry, worktree-metadata, and unchanged-artifact checks; Day83 independently reopens that same artifact, preserves the Day82 contract, and requires the final readiness release surface. The private manifest and raw evidence remain ignored and uncommitted, and G-6 does not build the final fixed zip. The next unresolved gates are the final fixed release zip one-time build and verification, tag, and v2.0.0 release. Commit G-7 defines the immutable public-safe final artifact record before the true final build: the committed checklist remains the requirements/procedure source of truth, no post-build source commit is allowed, and the accepted ZIP basename, size, SHA-256, source HEAD, tag target, and Day82/Day83 results must be copied unchanged into the annotated tag message and GitHub Release body. Public-P4 replaces the historical same-repository `main`/`develop` equality with the clean-history Public `main` contract, one-root verification, official Public origin, and explicit Private-history exclusion. Any candidate built before the final Public source commit is not the final artifact.
-
-Cleanup-4 canonicalizes the retained v1.9.0 release record at `release_notes/v1.9.0.md` and updates active validators and documentation to remove the duplicate `docs/` release-note location.
-
-Public-P3 adds committed-HEAD clean snapshot export tooling and strict exported-directory validation. Public-P3.1 then hardens generated-cache rejection and disposable-copy verification; a fresh untouched snapshot was validated and used to initialize the clean-history Public repository. Neither step built the final ZIP, created the Public release tag, or published a GitHub Release.
-
-Public-P2 adds a direct Public-distribution validator for the clean Public export view of the Private repository and one supplied fixed ZIP. Source mode intentionally omits retained Private-only history such as `docs/internal/**`, historical patch/diff files, and source-only day checks; fixed-ZIP mode remains strict. It checks v2.0.0 metadata, required Public files, forbidden private/local artifacts, ZIP hygiene, and obvious sensitive content. The final builder, Day82, and Day83 invoke it. Strict clean Public repository execution has passed at 576 tracked files.
-
-Cleanup-5 retires the obsolete v1.9.0 Day46-Day49 release-chain implementation and version-specific cleanup helpers. The canonical v1.9.0 release note remains retained. Cleanup-6 through Cleanup-9 later completed the remaining historical v2.0 evidence/readiness retention review.
-
-## Current baseline
-
-```text
-v1.10.0 released as the v2.0.0 prerelease evidence gate foundation
-```
-
-Release notes:
-
-```text
-release_notes/v1.10.0.md
-```
-
-v1.10.0 is positioned as:
-
-```text
-v2.0.0 prerelease evidence gate foundation
-```
-
-v1.10.0 completed credential-free evidence gate and public-readiness guardrail preparation. It does not close the v2.0.0 real Web execution evidence requirements.
-
-Previous fixed public demo release package:
-
-```text
-release\DailyRhythmCompanion_20260523_212614.zip
-```
-
-v1.9.0 is positioned as:
-
-```text
-AI Character Framework v4.0.0 smartphone Web public demo release.
-```
-
-v1.9.0 completed FW4.0.0 smartphone Web evidence, release surface cleanup, and explicit v2.0.0 pre-release requirement documentation. It does not close the v2.0.0 real-provider requirements.
-
-
-Release notes are kept under `release_notes/` to avoid accumulating version records at the repository root.
-
-v1.8.0 is positioned as:
-
-```text
-Report-to-advice handoff and DailyRecord reflection polish.
-```
-
-v1.8.0 completed the report-to-advice handoff and DailyRecord reflection polish path while preserving the mock-safe default, fixed-zip discipline, visible source/data-quality explanations, Flutter / Chrome verification, conservative non-medical wording, and explicit report handoff boundary.
-
-Important correction during release:
-
-```text
-A v1.9.0 tag was created by mistake during release handling.
-The release was corrected and re-released as v1.8.0.
-v1.8.0 is the intended completed release tag.
-v1.9.0 remains available for the next version.
-```
-
-v1.7.0 is positioned as:
-
-```text
-Rhythm report polish and app-side explanation hardening.
-```
-
-v1.7.0 completed the rhythm report polish and app-side explanation hardening path while preserving the mock-safe default, fixed-zip discipline, visible source/data-quality explanations, Flutter / Chrome verification, and conservative non-medical wording.
-
-v1.6.0 is positioned as:
-
-```text
-Weekly/monthly rhythm reports.
-```
-
-v1.6.0 completed the weekly/monthly rhythm reports path while preserving the mock-safe default, visible source/data-quality labels, fixed-zip discipline, and conservative non-medical wording.
-
-v1.5.0 is positioned as:
-
-```text
-Mood and personalization foundation.
-```
-
-v1.5.0 completed the mood and personalization foundation while preserving the mock-safe default, stable canonical mood IDs, and conservative health wording.
-
-v1.4.0 is positioned as:
-
-```text
-Character experience expansion.
-```
-
-v1.4.0 completed the character experience expansion path while preserving the mock-safe default.
-
-v1.3.0 is positioned as:
-
-```text
-Framework / LLM configured demo hardening.
-```
-
-v1.3.0 completed the configured AI Character Framework / LLM demo hardening path while preserving the mock-safe default.
-
-## v1.3.0 completed outcomes
-
-```text
-- Framework / LLM configured demo hardening plan
-- framework-mode setup docs
-- framework local setup guidance
-- configured-only FW/LLM smoke check with clear SKIP behavior
-- mock / framework / framework_fallback source label rules
-- configured_llm_skip operator-check state clarification
-- FW-backed advice demo operator checklist
-- aggregate readiness check
-- final source-tree verification check
-- fixed release zip verification check
-- final release readiness check
-- release notes
-```
-
-Final verified release zip:
-
-```text
-release\DailyRhythmCompanion_20260521_155200.zip
-```
-
-Important fixed-zip rule:
-
-```text
-Build the release zip once, record its path, then run final checks against that fixed zip without rebuilding.
-```
-
-## v1.3.0 does not claim
-
-```text
-- production hosted consumer-service readiness
-- automatic real LLM/API execution
-- mandatory external LLM credentials for normal checks
-- mandatory AI Character Framework checkout for mock-safe operation
-- production-grade health or medical advice
-- App Store / Google Play distribution
-- mandatory Live2D/VTS, voice input, or TTS runtime availability
-```
-
----
-
-## Core concept
+Core product flow:
 
 ```text
 Sleep / mood / daily context
 → Daily Rhythm Companion backend
-→ AI Character Framework
-→ character response / voice / motion
+→ AI Character Framework when configured
+→ character response / voice / future motion
 → Flutter app UI
-→ DailyRecord history
+→ DailyRecord history and rhythm reports
 ```
 
-## Post-v1.0 direction
-
-After v1.0.0, development should move from "initial demo-app readiness" to "public repository readiness, cleanup, and deeper configured demos."
-
-Priority order:
-
-```text
-1. Publishability and cleanup
-2. Safe real API and configured demo verification
-3. Character/demo quality
-4. History/reflection usefulness
-5. Richer multimodal interaction
-```
+The application must remain useful in mock-safe mode while providing explicit, observable opt-in paths for configured real integrations.
 
 ---
 
 ## Guarding policy
 
 ```text
-Safe default + documented explicit opt-in.
+Safe default + documented explicit opt-in + visible execution state.
 ```
 
 Safe default means:
 
 ```text
-- mock-safe mode works without credentials.
+- Mock-safe mode works without credentials.
 - CI and normal local checks do not require real external APIs.
-- Real API requests do not happen by accident.
-- Missing optional dependencies do not crash the app.
+- Real provider or health API requests do not happen accidentally.
+- Missing optional dependencies do not crash the normal app path.
+- Secrets, tokens, raw payloads, raw audio, screenshots, private paths, and LAN addresses remain outside Public source and release artifacts.
 ```
 
 Explicit opt-in means:
 
 ```text
-- Supported real/demo capabilities have documented setup paths.
-- Capability status is observable.
-- Verification steps exist when the environment is available.
-- Skipped checks explain why they were skipped.
-- Fallback behavior is visible and intentional.
+- Supported real capabilities have documented setup and verification paths.
+- Capability status distinguishes configured, unavailable, skipped, fallback, blocked, and successful execution.
+- Real execution checks require deliberate operator action.
+- API-only or source-tree-only results do not substitute for required UI evidence.
 ```
 
-Important rule:
+Important rules:
 
 ```text
-Guarded does not mean unimplemented.
+Guarded does not mean implemented.
+Detected does not mean connected.
+Fallback does not mean configured-provider success.
 ```
 
 ---
 
-## Priority model after v1.0.0
+## v2.0.0 capability baseline
 
-### P0 - Public repository safety and readability
+The following inventory is the starting point for all post-v2.0.0 planning.
 
-Required after v1.0.0:
+### Completed and accepted in v2.0.0
 
 ```text
-- README gives a clear first-read path.
-- public docs are understandable without private development context.
-- docs/internal policy is explicit.
-- old v0xx docs/scripts are handled by KEEP / MERGE / ARCHIVE / DELETE policy.
-- no secrets, tokens, local data, raw payloads, or machine-specific paths are exposed.
-- release package contents remain reproducible from a fixed zip.
+- Smartphone Web UI calling the actual DRC backend.
+- Sleep summary, mood selection, character selection, and character-style advice.
+- DailyRecord persistence, recent history, weekly/monthly reflection, and rhythm reports.
+- Report-to-advice handoff and optional post-advice chat boundary.
+- Three bundled character profiles with character-aware mood and advice presentation.
+- Configured AI Character Framework / LLM advice path with visible fallback labels.
+- Real LLM Web answer evidence through the configured DRC backend path.
+- Real TTS voice output through the released AI Character Framework v5 public boundary.
+- DRC-owned opaque MP3 artifact URLs without exposing managed local paths.
+- Real Google Health sleep data normalization and Web display.
+- Repository-safe character image intake and Web image display.
+- Public repository hygiene, fixed-ZIP discipline, annotated tag, GitHub Release, and post-publication SHA-256 verification.
 ```
 
-### P1 - Framework demo validity
-
-Required after v1.0.0:
+### Partially implemented or maintenance-limited
 
 ```text
-- DRC backend can call AI Character Framework when configured.
-- /advice can generate FW-backed responses.
-- FW-backed LLM generation can be demonstrated.
-- Voice input can be demonstrated when configured.
-- Voice output/TTS can be demonstrated when configured.
-- Live2D/VTS motion can be demonstrated when configured.
-- Mock mode remains available for safe local development.
-- The app can show which FW capabilities are active, unavailable, skipped, or falling back.
+- Fitbit OAuth, token, sleep client, normalization, and UI surfaces exist, but the real-use contract and operator acceptance are weaker than Google Health.
+- Post-advice chat sessions are process-local and need a bounded lifecycle.
+- Generated TTS artifacts need retention and cleanup rules.
+- Flutter voice output uses a basic URL/open flow rather than a complete in-app player experience.
+- Character display uses static assets and lightweight simulated expression/motion behavior.
 ```
 
-### P2 - Safe real health API readiness
-
-Required after v1.0.0:
+### Guarded boundary only; real runtime not connected
 
 ```text
-- mock-safe remains default.
-- Google Health connection state is understandable.
-- Real Google Health API execution remains guarded by explicit opt-in.
-- A documented local/demo setup can fetch real sleep data.
-- Real Google Health sleep data can be normalized into SleepSummary.
-- /sleep/summary can return Google Health-backed data when explicitly configured.
-- token / secret / raw payload / local paths are not exposed in responses, logs, or release packages.
+- STT / voice input: capability discovery, status, and guarded request boundary exist; microphone capture and real STT execution are not wired.
+- Live2D / VTube Studio motion: capability discovery, status, request models, and UI simulation exist; real adapter execution is not wired.
 ```
 
-### P3 - App usefulness
-
-Required after v1.0.0:
+### Known maintenance debt
 
 ```text
-- User can see today's sleep summary.
-- User can choose or confirm mood.
-- User can choose a character.
-- User can receive character-style advice.
-- Advice can be saved as a DailyRecord.
-- User can review recent records.
-- Recent trend / weekly summary are understandable and conservative.
-```
-
-### P4 - Conservative health and history wording
-
-Required after v1.0.0:
-
-```text
-- History-derived trend is not presented as today's sleep.
-- Weekly/monthly summaries remain lightweight reflections, not diagnoses.
-- User-facing wording avoids medical claims, improvement guarantees, or alarmist language.
-- Fallback and source labels remain understandable.
+- Backend and Flutter version metadata are not managed from one clear version source.
+- Normal backend pytest coverage is much smaller than the release-evidence smoke-script surface.
+- Temporary chat sessions and TTS artifacts need explicit limits and cleanup.
+- CORS defaults are appropriate for local demo use but need configurable origin restrictions.
+- Large Flutter screen and widget-test files should be split before major new UI capabilities accumulate.
+- Historical release validators and active runtime regression tests need clearer separation.
 ```
 
 ---
 
-# Version roadmap
+# Current version roadmap
+
+## v2.0.x - Post-release maintenance and regression hardening
+
+Status: In progress
+Current small commit: M-1
+Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
+First expected patch target: v2.0.1
+
+Goal:
+
+```text
+Stabilize the released v2.0.0 capability set without adding a new large user-facing subsystem.
+```
+
+Priority: P0
+
+Planned scope:
+
+```text
+- Establish a post-v2.0.0 maintenance source of truth.
+- Synchronize current release/version metadata across backend, Flutter, README, and runtime status surfaces.
+- Add a normal backend pytest foundation for core mock-safe API and service behavior.
+- Add focused regression coverage for Framework success/fallback labels and TTS artifact safety.
+- Bound post-advice chat sessions by expiry and/or capacity.
+- Add retention and cleanup behavior for DRC-owned TTS artifacts.
+- Make CORS origins configurable while preserving a documented local-demo default.
+- Clarify Fitbit real, legacy, stub, unavailable, and migration wording without claiming unverified success.
+- Preserve Google Health, LLM, TTS, image, and smartphone Web behavior accepted in v2.0.0.
+- Keep historical release validators available without making them the primary day-to-day test suite.
+```
+
+Out of scope for v2.0.x:
+
+```text
+- Real microphone capture or STT execution.
+- Live2D / VTube Studio real adapter execution.
+- Realtime voice orchestration or barge-in.
+- User accounts or cloud synchronization.
+- Production multi-user hosting.
+- App Store / Google Play publication.
+- Large persistence-schema redesign.
+- Provider-specific LLM, TTS, or STT implementations inside DRC.
+```
+
+Completion direction:
+
+```text
+- Existing v2.0.0 behavior remains backward compatible.
+- Mock-safe tests remain credential-free.
+- New regression tests run independently from historical release-evidence checks.
+- No post-release change rewrites or replaces the v2.0.0 tag or release asset.
+```
+
+### v2.0.x provisional small-commit sequence
+
+The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 is current; later items remain planned and must not be marked complete early.
+
+```text
+M-1  CURRENT  docs: establish post-v2.0.0 maintenance baseline
+M-2  fix/test: align application version metadata
+M-3  test: add backend mock-safe regression foundation
+M-4  test: cover Framework fallback and voice artifact safety
+M-5  fix: bound temporary chat sessions and TTS artifacts
+M-6  fix: make Web CORS origins configurable
+M-7  docs/test: clarify Fitbit current-state contract
+M-8  test/docs: add v2.0.x aggregate maintenance readiness
+M-9  release: fixed-ZIP verification and patch release record, only when the patch scope is accepted
+```
+
+Expected initial change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+backend/app/main.py
+backend/app/config.py
+backend/app/services/post_advice_chat_service.py
+backend/app/services/voice_output_artifact_store.py
+backend/app/api/voice_output_demo.py
+backend/.env.example
+app/pubspec.yaml
+backend/tests/**
+docs/DRC_v20x_maintenance_checklist.md
+docs/post_v200_release_baseline.md
+docs/public_private_development_policy.md
+scripts/check_v20x_maintenance_baseline.py
+```
+
+Historical v2.0.0 checklist files are not part of the normal edit scope.
+
+---
+
+## v2.1.0 - Real wearable daily loop
+
+Status: Planned after v2.0.x stabilization
+
+Goal:
+
+```text
+Turn the accepted v2.0.0 demo paths into a clearer repeatable daily-use loop, with Fitbit completion as the main new capability.
+```
+
+Priority: P1
+
+Primary scope:
+
+```text
+1. Complete and verify Fitbit real-use behavior.
+2. Unify sleep-provider selection and source presentation across mock, Google Health, and Fitbit.
+3. Improve configured LLM post-advice chat lifecycle and user-facing state.
+4. Add a proper in-app TTS playback experience.
+5. Improve static character expression/state presentation without introducing Live2D runtime dependency.
+6. Simplify Google Health connection UX while preserving operator diagnostics and guarded real execution.
+```
+
+### Fitbit completion target
+
+```text
+- Verify token validity and refresh behavior against the intended real-use path.
+- Make reconnect and permission failure states understandable.
+- Verify real Fitbit sleep retrieval and normalization into SleepSummary.
+- Show the selected sleep provider and data source clearly in the UI.
+- Keep provider tokens and raw Fitbit payloads outside logs, Public source, and release artifacts.
+- Add mock-safe contract tests plus explicit opt-in real operator verification.
+```
+
+### LLM chat target
+
+```text
+- Define bounded chat-session lifetime and turn limits.
+- Preserve mock, framework, framework_fallback, skipped, blocked, and unavailable distinctions.
+- Separate developer/operator gate wording from normal user-facing copy.
+- Reuse only stable AI Character Framework public session APIs.
+```
+
+### TTS experience target
+
+```text
+- Play generated voice output inside the Flutter UI.
+- Provide play, stop, replay, loading, failure, and expired-artifact states.
+- Keep the DRC-owned opaque artifact boundary.
+- Do not expose FW-managed paths or provider payloads.
+```
+
+### Character display target
+
+```text
+- Extract character display from the large home-screen implementation.
+- Add deterministic advice, mood, loading, speaking, and fallback visual states.
+- Keep static repository-safe assets as the v2.1.0 baseline.
+- Do not claim Live2D or VTS execution.
+```
+
+Out of scope for v2.1.0:
+
+```text
+- Streaming microphone input.
+- Realtime full-duplex voice conversation.
+- TTS interruption / barge-in.
+- Real Live2D or VTube Studio adapter execution.
+- Account system, cloud profile sync, or production multi-user service.
+```
+
+Provisional implementation phases:
+
+```text
+W-1  Fitbit current behavior inventory and contract
+W-2  Fitbit token/status/reconnect hardening
+W-3  Fitbit real sleep normalization and API regression tests
+W-4  Sleep-provider selection and source-label UI
+W-5  Configured real Fitbit operator verification
+C-1  Post-advice chat lifecycle and UI-state hardening
+T-1  Flutter in-app TTS player and artifact-expiry handling
+V-1  Character display extraction and deterministic state presentation
+R-1  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
+```
+
+The v2.1.0 small-commit checklist becomes authoritative only after it is created and accepted.
+
+---
+
+## v3.0.0 - Realtime multimodal character runtime
+
+Status: Strategic target
+
+Goal:
+
+```text
+Evolve DRC from a daily character companion with configured text/TTS demos into a coordinated realtime voice and character runtime demonstration.
+```
+
+Priority: P2 after v2.1.0 stability and required AI Character Framework public boundaries
+
+Core target capabilities:
+
+```text
+- Real microphone permission, capture, and STT execution.
+- Streaming or incremental voice-input handling where supported.
+- AI Character Framework realtime voice-session integration.
+- LLM streaming and cancellation boundaries.
+- TTS queue control, interruption, and barge-in.
+- Coordinated listening, thinking, speaking, interrupted, and error states.
+- Real Live2D and/or VTube Studio motion adapter execution through a stable public Framework boundary.
+- Character expression and motion events synchronized with conversation state.
+- Clear capability negotiation when individual realtime components are unavailable.
+```
+
+Architecture direction:
+
+```text
+Flutter microphone / UI
+→ DRC realtime orchestration boundary
+→ AI Character Framework public realtime session
+→ STT / LLM / TTS / interruption lifecycle
+→ public character motion events
+→ Live2D / VTS adapter when configured
+→ Flutter and character runtime state synchronization
+```
+
+AI Character Framework prerequisites:
+
+```text
+- Stable public STT / voice-input session contract.
+- Stable realtime lifecycle/event contract.
+- Stable interrupt and cancellation contract.
+- Stable TTS queue/output control contract.
+- Stable public motion-event or VTS adapter contract.
+- Provider-neutral capability reporting.
+```
+
+DRC must not bypass missing public Framework contracts by importing Framework internals.
+
+Possible v3.0.0 platform scope, to be accepted separately:
+
+```text
+- Production hosting and secure server-side secret management.
+- Persistent multi-device user state.
+- Account and cloud synchronization.
+- Mobile packaging, application identifiers, permissions, signing, and store-readiness work.
+```
+
+These platform items are not automatically required merely because the major version is v3.0.0. They need a separate accepted scope and threat/operations model.
+
+Provisional v3.0.0 phases:
+
+```text
+RT-0  Framework public realtime contract readiness review
+RT-1  DRC realtime state and event model
+RT-2  Microphone permission and guarded capture path
+RT-3  Real STT / voice-input integration
+RT-4  Streaming LLM and cancellation integration
+RT-5  TTS queue, interruption, and barge-in integration
+RT-6  Character motion public-event integration
+RT-7  Live2D / VTS configured adapter execution
+RT-8  PC and smartphone realtime acceptance evidence
+RT-9  Security, cleanup, release readiness, fixed ZIP, tag, and GitHub Release
+```
+
+The v3.0.0 plan must remain blocked at RT-0 if the required AI Character Framework public contracts are not released and verifiable.
+
+---
+
+## Priority order toward v3.0.0
+
+```text
+P0  v2.0.x release-baseline synchronization, regression tests, and lifecycle safety
+P1  Fitbit real-use completion and unified wearable daily loop
+P1  Configured LLM chat lifecycle and in-app TTS playback UX
+P1  Static character state presentation and Flutter component separation
+P2  AI Character Framework realtime public-contract preparation
+P2  Real STT and microphone input
+P2  TTS interruption, cancellation, and realtime orchestration
+P2  Real Live2D / VTube Studio motion execution
+P3  Production hosting, accounts, cloud synchronization, and store distribution
+```
+
+A higher-priority item may be deferred when blocked by an external public Framework contract, but it must not be reported as complete through discovery-only or fallback behavior.
+
+---
+
+## AI Character Framework integration ownership
+
+### DRC owns
+
+```text
+- Daily sleep, mood, advice, record, and report workflow.
+- Health-provider selection and normalized SleepSummary use.
+- DRC API and Flutter presentation.
+- DailyRecord persistence and conservative reflection wording.
+- User-facing character selection and DRC-owned static assets.
+- DRC-owned opaque voice-artifact URLs and retention policy.
+- Capability status presentation and app-level orchestration.
+```
+
+### AI Character Framework owns
+
+```text
+- Provider-specific LLM integration.
+- Provider-specific TTS integration.
+- Provider-specific STT integration.
+- Public text, voice-output, voice-input, and realtime sessions.
+- Streaming, cancel, interrupt, queue, and lifecycle contracts.
+- Provider-neutral runtime capability reporting.
+- Public motion events or Live2D / VTS adapter boundary when that capability is released.
+```
+
+### Integration rules
+
+```text
+- DRC imports only released public Framework APIs.
+- DRC does not add duplicate OpenAI, Gemini, Grok, ElevenLabs, or future STT provider clients.
+- Provider-specific keys remain outside the normal DRC configuration surface unless a documented public contract explicitly requires otherwise.
+- Framework failure remains visible as fallback or unavailable state.
+- File/module discovery alone does not count as runtime availability.
+- Every real execution path remains explicit opt-in and separately verifiable.
+```
+
+---
+
+## Public repository and private operator environment
+
+### Public repository
+
+```text
+Repository: murayan1982/daily-rhythm-companion-public
+Primary release branch: main
+```
+
+Public repository responsibilities:
+
+```text
+- Canonical source and public documentation.
+- Mock-safe tests and public fixtures.
+- Public-safe setup examples with placeholders only.
+- Release builders, validators, release notes, tags, and fixed release assets.
+- No exported Private repository history.
+```
+
+### Private operator environment
+
+Private and ignored material includes:
+
+```text
+- Real provider credentials and OAuth values.
+- Local env files.
+- Raw health-provider payloads and exact private sleep values.
+- Raw LLM/TTS/STT provider payloads.
+- Raw audio and raw screenshots.
+- LAN IPs, private URLs, and private absolute paths.
+- Operator evidence manifests and local execution records.
+```
+
+Operating rules:
+
+```text
+- Public main is the only source used to build official release artifacts.
+- Private evidence may validate a Public source commit but may not modify the released artifact after verification.
+- Private source copies, when used, are disposable operator workspaces rather than an alternative release history.
+- Every official release uses one committed Public source state, one fixed ZIP, one annotated tag, and one GitHub Release record.
+```
+
+---
+
+## Small-commit and source-of-truth policy
+
+```text
+1. Read the current implementation before planning a change.
+2. List the expected change files before editing.
+3. Create or update the active version checklist before implementation.
+4. Treat the active checklist as the completion source of truth.
+5. Do not mark completion from roadmap text alone.
+6. Keep each commit focused on one contract, implementation step, test boundary, or documentation synchronization.
+7. Run the smallest relevant checks first, then aggregate checks.
+8. Keep real-provider execution explicit opt-in and keep private evidence uncommitted.
+9. Build a release ZIP only after the final committed source gate passes.
+10. Build the fixed release ZIP once and verify the same artifact without rebuilding.
+```
+
+Required future active checklists:
+
+```text
+docs/DRC_v20x_maintenance_checklist.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/DRC_v300_goal_checklist_small_commit.md
+```
+
+Only one version checklist should be active as the immediate implementation source of truth at a time.
+
+---
+
+# Historical version and release-policy record
+
+The remaining sections are retained as historical release, verification, and compatibility records. Historical status text may describe the state that existed before v2.0.0 publication and must not override the current release baseline above.
+
 
 ## v1.1.0 - Public repo publication and post-release cleanup
 

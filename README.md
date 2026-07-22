@@ -4,87 +4,59 @@ Daily Rhythm Companion is a lightweight daily rhythm companion and a public demo
 
 AI Character Framework repository: [https://github.com/murayan1982/ai-character-framework.git](https://github.com/murayan1982/ai-character-framework.git)
 
-Current released baseline: v1.10.0, the v2.0.0 prerelease evidence gate foundation
-Current target: v2.0.0 clean-history Public repository preparation (**NOT RELEASED**)
+Current released baseline: v2.0.0 (**RELEASED**)
+Current maintenance line: v2.0.x
+Current small commit: M-1 post-v2.0.0 maintenance baseline
+Next feature release: v2.1.0
+Strategic target: v3.0.0
 
-## v2.0.0 release status checkpoint
+## Current release and maintenance status
 
-v2.0.0 is **not released**. The source of truth for v2.0.0 completion is [Daily Rhythm Companion v2.0.0 Goal Checklist](docs/DRC_v200_goal_checklist_small_commit.md).
-
-Required real Web execution evidence, public-safe acceptance markers, Public metadata alignment, tracked-file cleanup, retention classification, and Public-distribution validation are complete. Public-P3.1 hardened generated-cache rejection and required runtime checks in disposable verification copies. A fresh untouched 576-file snapshot passed strict validation, initialized the clean-history Public repository, and produced its authoritative root commit. Public-P4 updated the final artifact-record and fixed-ZIP builder contracts for the clean-history Public `main` topology, Public-P5 synchronized the repository status documents, and Public-P6 fixed the remaining pre-build gates. Public-P6 follow-up 1 requires evidence-backed Day82/Day83 acceptance, follow-up 2 rejects untracked Flutter generated registrants, and follow-up 3 synchronizes the active Public main-only release sequence before any final fixed ZIP, tag, or GitHub Release is created.
-
-Do not publish `DRC_v2.0.0` until every Public migration gate in the checklist is complete. The superseded Private candidate zip and Private tag are not Public release assets.
-
-Cleanup-2 removed the former root-level duplicate checklist. The sole tracked v2.0.0 source of truth is `docs/DRC_v200_goal_checklist_small_commit.md`.
-
-Cleanup-3 first-pass retention cleanup removes isolated obsolete pre-v1/v1.10 release helpers and records the Public snapshot retention classes in `docs/v200_public_snapshot_file_retention.md`. Current v2.0.0 acceptance validators, public-safe marker templates, canonical `release_notes/`, and runtime/user documentation remain retained until the Public-distribution validator owns the final allowlist.
-
-Cleanup-4 moves the retained v1.9.0 release note into `release_notes/v1.9.0.md`, so all supported version records now use the canonical release-history directory.
-
-Public-P2 adds `scripts/smoke_framework_v200_public_distribution_readiness.py`, a direct Public-export/fixed-ZIP validator for v2.0.0 metadata, required Public files, forbidden local/private artifacts, and obvious sensitive content. In the Private repository, source mode inspects the clean Public export view and intentionally omits retained Private-only history such as `docs/internal/**`, old patch/diff files, and day-by-day source checks. Strict execution against the clean Public repository has passed at 576 tracked files.
-
-Cleanup-5 removes the obsolete v1.9.0 Day46-Day49 release/readiness/package/finalization implementation chain and version-specific cleanup helpers. The canonical historical release note remains at `release_notes/v1.9.0.md`.
-
-Cleanup-6 retires the superseded pre-Web v2.0 Day57/Day58 and Day71/Day72 readiness chains. Cleanup-7 removes the completed TTS private-run preparation chain while retaining the runtime boundary, public acceptance contract, marker validators, safe configuration example, and final Day80-Day83 audit path. Cleanup-8 retires the superseded Day74 screenshot-collection checklist and Day75 intermediate private-manifest validator after Day80 acceptance became the authoritative aggregate. Cleanup-9 explicitly retains the remaining capability evidence and final audit chain because those files form the reproducible public-safe proof path from accepted capability markers through Day80, Day82, Day83, and the final artifact record.
-
-Public-P3 adds `scripts/export_v200_public_snapshot_from_head.py`, which reads only committed HEAD, applies the committed Public export policy, rejects a dirty working tree, never copies Private Git history or ignored evidence, and can write one new snapshot outside the Private repository. Public-P2 also supports strict `--source-directory` validation without Private-source exclusions.
-
-Public-P3.1 rejects generated Python/Flutter cache output and moves runtime verification into disposable copies. The canonical snapshot remained untouched, was validated strictly, and became the root of `murayan1982/daily-rhythm-companion-public`.
-
-Public-P4 binds the final artifact record and one-time fixed-ZIP builder to the clean-history Public repository: Public `main`, one root commit, the official Public origin, no Private Git history, no ignored Private evidence, and no legacy `develop_head` field.
-
-
-## Public repository migration checkpoint
-
-The fixed zip and annotated tag created in the existing Private repository before this migration gate are retained only as a verified **private candidate**. They must not be uploaded as the v2.0.0 asset or reused as the final tag for the clean-history Public repository.
-
-The Public release will use a clean-history repository snapshot. The existing Private repository remains Private, and its `.git` history, refs, ignored operator evidence, local environment files, raw evidence, and previous release candidate are not transferred.
-
-A clean-history repository creates a new commit SHA. Therefore, the final Public fixed zip must be built from the committed source in the **clean-history Public repository**, and the Public repository's annotated `DRC_v2.0.0` tag must target that same Public source commit. Public-P4 updates the former same-repository G-7 contract for this topology; the earlier Private candidate record and tag remain historical only.
-
-Current migration status:
+Daily Rhythm Companion v2.0.0 is the immutable Public release baseline.
 
 ```text
-private_repository: remains-private
-private_candidate_zip: verified-superseded-do-not-publish
-private_candidate_tag: retained-private-do-not-reuse
-public_metadata_alignment: completed-public-p1
-public_cleanup_review: completed-cleanup-9
-public_distribution_validator: private-export-view-and-public-strict-validation-passed
-public_snapshot_export_tooling: completed-public-p3
-public_snapshot_cache_hardening: completed-public-p3.1
-canonical_public_snapshot: exported-untouched-and-strictly-validated
-public_repository: created-murayan1982/daily-rhythm-companion-public
-public_repository_initial_commit: c02fef89362fa6660ccdc2559cfb1a9da506f81a
-public_repository_root_commit_count: 1
-public_repository_tracked_files: 576
-public_artifact_record_contract: completed-public-p4
-public_status_sync: completed-public-p5
-public_prebuild_acceptance_contract: completed-public-p6-follow-up-1
-public_generated_release_guard: completed-public-p6-follow-up-2
-public_final_sequence_sync: completed-public-p6-follow-up-3
-public_fixed_release_zip: not-built
-public_DRC_v2.0.0_tag: not-created
-public_github_release: not-created
-release_status: NOT_RELEASED
+Public repository: murayan1982/daily-rhythm-companion-public
+Release / annotated tag: DRC_v2.0.0
+Release status: RELEASED
+Fixed release ZIP: DailyRhythmCompanion_20260722_180426.zip
+Fixed release ZIP SHA-256: b32c7b8a64842480898fcc86ca7838625efb712f1429ab9fe7b33a4001ddc0c1
+Post-publication SHA-256 re-verification: completed
 ```
 
-Migration procedure: [`docs/v200_public_repository_migration.md`](docs/v200_public_repository_migration.md)
+Post-release rules:
 
-When operating from a release package, source-tree-only day check scripts such as `scripts/check_v*_day*.py` may be absent by release-surface policy. Use the included v2.0.0 release-surface validators for package-local safety checks:
+```text
+- Do not rewrite the DRC_v2.0.0 tag.
+- Do not replace the published v2.0.0 release asset.
+- Do not modify the released v2.0.0 source snapshot.
+- Apply post-release changes through a new commit and a new version.
+- Keep the v2.0.0 checklist and release notes as historical evidence.
+```
+
+The completed v2.0.0 records remain:
+
+- [`docs/DRC_v200_goal_checklist_small_commit.md`](docs/DRC_v200_goal_checklist_small_commit.md)
+- [`release_notes/v2.0.0.md`](release_notes/v2.0.0.md)
+- GitHub Release and annotated tag `DRC_v2.0.0`
+
+They are historical release records and are not the active task list for post-release work.
+
+The active post-release source of truth is:
+
+- [`docs/DRC_v20x_maintenance_checklist.md`](docs/DRC_v20x_maintenance_checklist.md)
+- [`roadmap.md`](roadmap.md)
+- [`tasklist.md`](tasklist.md)
+
+M-1 is documentation and guardrail work only. It does not change backend, Flutter, provider, health-data, LLM, TTS, STT, motion, or persistence runtime behavior.
+
+Run the current M-1 check with:
 
 ```powershell
 python -m compileall -q backend scripts
-python scripts\smoke_framework_v200_public_distribution_readiness.py
-python scripts\smoke_framework_v200_accepted_web_evidence_manifest_aggregate.py
-python scripts\smoke_framework_v200_final_release_readiness_with_web_evidence.py
-
-cd app
-flutter test
-cd ..
+python scripts\check_v20x_maintenance_baseline.py
 ```
 
-These validators do not replace real Web UI execution evidence, screenshot references, image asset intake/display evidence, accepted private manifest review, or final fixed-zip verification.
+The historical v2.0.0 release validators remain available for the tagged release surface, but they are not the primary current-main maintenance suite.
 
 The v1.0 direction is:
 
@@ -176,6 +148,9 @@ The smartphone Web demo is primarily for local/demo use. It is not the same as a
 
 See:
 
+- [Post-v2.0.0 release baseline](docs/post_v200_release_baseline.md)
+- [v2.0.x maintenance checklist](docs/DRC_v20x_maintenance_checklist.md)
+- [Public / Private development policy](docs/public_private_development_policy.md)
 - [Local quickstart](docs/quickstart_local.md)
 - [Smartphone Web quickstart](docs/quickstart_smartphone_web.md)
 - [Framework demo setup](docs/framework_demo_setup.md)
