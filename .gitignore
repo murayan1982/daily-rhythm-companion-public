@@ -1,0 +1,164 @@
+# =========================
+# Python / FastAPI backend
+# =========================
+
+backend/.venv/
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment files
+backend/.env
+backend/.env.*
+.env
+.env.*
+*.local.env
+
+# Commit safe environment profiles and examples.
+!backend/env_profiles/
+!backend/env_profiles/*.env
+!backend/env_profiles/*.env.example
+!.env.example
+!backend/.env.example
+
+# Do not commit personal copies placed next to env profiles.
+backend/env_profiles/*.local
+backend/env_profiles/*.local.env
+backend/env_profiles/*secret*
+backend/env_profiles/*token*
+
+# Safe examples are allowed even when their names mention token/secret.
+!backend/env_profiles/*.env.example
+
+# Local database
+*.db
+*.sqlite
+*.sqlite3
+
+
+# =========================
+# External / vendored dependencies
+# =========================
+
+# Local copy of AI Character Conversation Framework.
+# Keep this outside Git history; configure the path with FRAMEWORK_PROJECT_ROOT.
+vendor/AI-Character-Framework*/
+external/AI-Character-Framework*/
+
+
+# =========================
+# Flutter SDK
+# =========================
+
+# Flutter SDK should not live inside this repository.
+# Keep this rule as a safety net.
+flutter/
+
+
+# =========================
+# Flutter / Dart app
+# =========================
+
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+app/build/
+app/coverage/
+
+# Android local/generated files
+app/android/.gradle/
+app/android/local.properties
+app/android/**/build/
+
+# iOS generated/local files
+app/ios/Pods/
+app/ios/.symlinks/
+app/ios/Flutter/Flutter.framework
+app/ios/Flutter/Flutter.podspec
+app/ios/Flutter/Generated.xcconfig
+app/ios/Flutter/ephemeral/
+app/ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS generated/local files
+app/macos/Flutter/ephemeral/
+app/macos/Pods/
+
+# Windows generated files
+app/windows/flutter/ephemeral/
+
+
+# =========================
+# IDE / OS
+# =========================
+
+.vscode/
+.idea/
+*.iml
+
+.DS_Store
+Thumbs.db
+
+
+# =========================
+# Logs / temp
+# =========================
+
+*.log
+tmp/
+temp/
+
+
+# =========================
+# Local-only workspaces
+# =========================
+
+# Local image-generation work files.
+_local/
+
+# Private/operator evidence must stay out of Git. Commit only public-safe
+# templates or docs under docs/**; raw or marker evidence lives here locally.
+operator_evidence/
+
+
+# =========================
+# Release artifacts
+# =========================
+
+release/
+
+
+# =========================
+# Local backend data / secrets
+# =========================
+
+# Local backend runtime data
+backend/local_data/
+
+# OAuth client credentials
+credentials.json
+backend/credentials.json
+**/credentials.json
+client_secret*.json
+backend/client_secret*.json
+**/client_secret*.json
+
+# OAuth local runtime data must stay out of Git.
+backend/local_data/*.json
+backend/local_data/**/*.json
+
+backend/google_health_tokens.json
+backend/google_health_oauth_state.json
+google_health_tokens.json
+google_health_oauth_state.json
+
+backend/fitbit_tokens.json
+backend/fitbit_oauth_state.json
+fitbit_tokens.json
+fitbit_oauth_state.json

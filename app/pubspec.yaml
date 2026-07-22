@@ -1,0 +1,32 @@
+name: app
+description: "Flutter frontend for Daily Rhythm Companion."
+publish_to: 'none'
+
+version: 2.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  http: ^1.6.0
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/characters/gentle_mina_demo.png
+    - assets/images/characters/cheerful_sora_demo.png
+    - assets/images/characters/cool_rei_demo.png
+    - assets/images/backgrounds/morning_room_soft.png
+    - assets/images/backgrounds/night_room_calm.png
+    - assets/images/placeholders/character_fallback.png

@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "release_target": "v2.0.0",
+  "manifest_kind": "final_release_readiness_fixed_zip_with_web_evidence",
+  "day80_accepted_manifest_passed": false,
+  "day81_final_readiness_passed": false,
+  "day82_fixed_zip_verification_passed": false,
+  "fixed_release_zip_path_recorded": false,
+  "fixed_zip_inspected_as_is": false,
+  "no_rebuild_during_day83_verification": true,
+  "all_web_screenshot_evidence_accepted": false,
+  "release_surface_public_safe": false,
+  "operator_review_accepted": false,
+  "notes": "Example only. Do not mark accepted without real Web UI screenshot evidence and fixed-zip verification."
+}

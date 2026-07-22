@@ -1,0 +1,19 @@
+# Optional dependencies for AI Character Framework integration.
+#
+# Install these only when using:
+# CONVERSATION_ENGINE=framework
+
+google-genai==1.70.0
+pyvts==0.3.3
+aiofiles==25.1.0
+websockets==16.0
+elevenlabs==2.41.0
+SpeechRecognition==3.14.3
+
+# Required for xAI / Grok support in the framework.
+openai==2.31.0
+xai-sdk==1.11.0
+
+# Optional: may fail on some Python / Windows environments.
+# Install manually if voice input support is needed.
+# PyAudio==0.2.14

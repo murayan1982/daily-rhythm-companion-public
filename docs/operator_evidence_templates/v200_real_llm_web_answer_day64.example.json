@@ -1,0 +1,21 @@
+{
+  "explicit_operator_opt_in_enabled": true,
+  "backend_advice_api_called": true,
+  "configured_framework_route_used": true,
+  "source_engine_framework_confirmed": true,
+  "message_non_empty_confirmed": true,
+  "smartphone_web_ui_visible_answer_confirmed": true,
+  "fallback_or_skip_not_counted": true,
+  "public_safe_evidence_recorded": true,
+  "api_keys_included": false,
+  "authorization_headers_included": false,
+  "raw_prompt_body_included": false,
+  "answer_body_included": false,
+  "raw_provider_payloads_included": false,
+  "raw_lan_ips_included": false,
+  "private_paths_included": false,
+  "raw_screenshots_included": false,
+  "fallback_counted_as_success": false,
+  "skipped_counted_as_success": false,
+  "unavailable_counted_as_success": false
+}

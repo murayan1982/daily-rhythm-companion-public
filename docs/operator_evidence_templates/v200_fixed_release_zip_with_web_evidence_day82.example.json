@@ -1,0 +1,18 @@
+{
+  "status": "template-only",
+  "release_target": "v2.0.0",
+  "manifest_kind": "fixed_release_zip_with_web_evidence_verification",
+  "fixed_release_zip_path": "<fixed-release-zip>",
+  "day81_final_readiness_passed": false,
+  "release_zip_built_once_after_day81": false,
+  "release_package_check_passed": false,
+  "day82_zip_inspected_as_is": false,
+  "accepted_day80_manifest_reference": "private-operator-evidence://v200/final/day80-manifest-redacted",
+  "raw_screenshots_included": false,
+  "api_keys_included": false,
+  "oauth_tokens_included": false,
+  "authorization_headers_included": false,
+  "private_paths_included": false,
+  "raw_lan_ips_included": false,
+  "operator_review_accepted": false
+}

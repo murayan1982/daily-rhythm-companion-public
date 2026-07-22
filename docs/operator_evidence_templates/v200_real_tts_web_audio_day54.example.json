@@ -1,0 +1,15 @@
+{
+  "explicit_operator_opt_in_enabled": true,
+  "framework_voice_output_boundary_used": true,
+  "provider_synthesis_confirmed": true,
+  "safe_backend_audio_contract_confirmed": true,
+  "web_audio_output_audibly_confirmed": true,
+  "public_safe_evidence_recorded": true,
+  "api_keys_included": false,
+  "private_text_bodies_included": false,
+  "raw_provider_payloads_included": false,
+  "audio_artifacts_committed": false,
+  "raw_lan_ips_included": false,
+  "private_paths_included": false,
+  "raw_screenshots_included": false
+}

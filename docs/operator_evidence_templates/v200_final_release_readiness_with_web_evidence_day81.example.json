@@ -1,0 +1,15 @@
+{
+  "status": "example_not_accepted",
+  "release_target": "v2.0.0",
+  "manifest_kind": "final_release_readiness_with_web_evidence",
+  "fixed_release_zip_verified": false,
+  "day80_manifest_status": "example_not_accepted",
+  "accepted_day80_manifest_reference": "private-operator-evidence://v200/final/day80-manifest-redacted",
+  "tag_allowed": false,
+  "release_allowed": false,
+  "reason": "Example template only. Do not use as accepted evidence.",
+  "api_only_success": false,
+  "source_tree_only_success": false,
+  "command_output_only_success": false,
+  "screenshot_missing": true
+}
