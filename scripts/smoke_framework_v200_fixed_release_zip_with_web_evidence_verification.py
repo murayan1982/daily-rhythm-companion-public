@@ -104,6 +104,9 @@ def _run_committed_head_builder_contract_checks() -> bool:
     required_snippets = {
         ROOT / "build_v200_final_fixed_release_zip_from_head.ps1": (
             "git status --porcelain --untracked-files=all",
+            '$tagOutput = @(& git tag --list "DRC_v2.0.0")',
+            '$existingTags = @($tagOutput | Where-Object { $_ })',
+            'if ($existingTags.Count -gt 0)',
             "smoke_framework_v200_public_distribution_readiness.py",
             "smoke_framework_v200_accepted_web_evidence_manifest_acceptance_sync.py",
             "smoke_framework_v200_accepted_web_evidence_manifest_aggregate.py",

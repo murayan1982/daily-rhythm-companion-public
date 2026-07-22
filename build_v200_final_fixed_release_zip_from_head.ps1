@@ -105,11 +105,12 @@ try {
         throw "The official Public repository must have exactly one root commit."
     }
 
-    $existingTag = (& git tag --list "DRC_v2.0.0").Trim()
+    $tagOutput = @(& git tag --list "DRC_v2.0.0")
     if ($LASTEXITCODE -ne 0) {
         throw "Unable to inspect existing tags."
     }
-    if ($existingTag) {
+    $existingTags = @($tagOutput | Where-Object { $_ })
+    if ($existingTags.Count -gt 0) {
         throw "DRC_v2.0.0 already exists locally. Refusing to build another final artifact."
     }
 

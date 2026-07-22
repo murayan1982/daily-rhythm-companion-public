@@ -223,13 +223,18 @@ def _check_downstream_release_gates() -> bool:
         "### 2.8 Final fixed release zip",
         "### 2.9 Final tag/release",
     )
-    required_unchecked = (
+    required_checked = (
         "All accepted Web evidence requirements are complete before building the final release zip.",
+    )
+    required_unchecked = (
         "Build the final release zip once.",
         "Record the exact zip path.",
         "Run final checks against that same fixed zip without rebuilding.",
     )
-    missing = [item for item in required_unchecked if f"- [ ] {item}" not in zip_section]
+    missing = [item for item in required_checked if f"- [x] {item}" not in zip_section]
+    missing.extend(
+        item for item in required_unchecked if f"- [ ] {item}" not in zip_section
+    )
     global_required = (
         "final_fixed_release_zip: not-built",
         "DRC_v2.0.0_tag: not-created",

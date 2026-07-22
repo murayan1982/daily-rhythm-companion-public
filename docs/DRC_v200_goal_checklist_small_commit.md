@@ -106,6 +106,7 @@ Current state:
 - [x] Public-P4 binds the final artifact-record contract and fixed-ZIP builder to clean-history Public `main`, the official Public origin, and the one-root/no-Private-history policy.
 - [x] Public-P4 source-tree Public-distribution checks, artifact-record smoke checks, and Flutter tests passed in both preparation and Public checkouts.
 - [x] Public-P5 synchronizes README, roadmap, this checklist, and the migration procedure without building a ZIP, creating a tag, or publishing a release.
+- [x] Public-P6 aligns the accepted-manifest pre-build gate with the completed evidence state, hardens the no-existing-tag check for an empty tag list, and adds a Day82 regression guard without building a ZIP or creating a tag.
 - [ ] A new final v2.0.0 fixed release ZIP is built exactly once from the committed Public repository source.
 - [ ] Day82 and Day83 pass against that exact Public fixed ZIP without rebuilding.
 - [ ] The public-safe final artifact record validates against the same Public source commit and fixed ZIP.
