@@ -5,45 +5,88 @@ v200_final_release_artifact_record_status: immutable-final-release-artifact-reco
 v200_final_release_artifact_record_requirement_key: v200_final_release_artifact_record
 v200_final_release_artifact_record_release_target: v2.0.0
 v200_final_release_artifact_record_tag_name: DRC_v2.0.0
+v200_final_release_artifact_record_repository_topology: clean_history_public_snapshot
+v200_final_release_artifact_record_public_repository: murayan1982/daily-rhythm-companion-public
 v200_final_release_artifact_record_locations: annotated-git-tag-message,github-release-body
 ```
 
-Commit G-7 closes the process gap between the last committed source state and the artifact that can only exist after that commit. It does not treat a post-build documentation commit as part of the release. Instead, the final committed source remains immutable after the one-time build, and the public-safe artifact outcome is recorded in both the annotated `DRC_v2.0.0` tag message and the GitHub Release body.
+## Public-P4 clean-history topology
 
-
-## Public repository migration override
-
-The G-7 contract above was designed for a release completed inside the same repository whose `main`, `develop`, tag target, and fixed-zip source all share one commit SHA. Public-P0 introduces a different topology: the existing development repository remains Private and a new Public repository is initialized from a clean snapshot without Private Git history.
-
-A clean snapshot receives a new commit SHA. Consequently:
+The final Public release is produced from the clean-history repository:
 
 ```text
-- The previously verified Private-repository candidate artifact record is historical only.
-- The Private candidate zip and annotated tag must not be reused for the Public release.
-- The new Public repository commit becomes the authoritative release source_head.
-- The final Public fixed zip must be built from that committed Public source.
-- The Public annotated DRC_v2.0.0 tag must target that same Public source_head.
-- Day82, Day83, the artifact-record validator, and GitHub Release must all bind the same new Public zip.
-- Raw or ignored Private evidence must not be copied into the Public repository merely to satisfy a builder preflight.
+murayan1982/daily-rhythm-companion-public
 ```
 
-Until the code-level artifact-record and builder contracts are updated for this clean-history topology, the current G-7 validator remains useful as historical same-repository coverage but does not authorize the new Public release.
+The existing Private development repository remains Private and is not the
+release source. Its commit IDs, refs, tags, history, ignored evidence, raw
+screenshots, raw audio, health payloads, provider payloads, credentials,
+private paths, and LAN IPs are not copied into the Public artifact record.
+
+The authoritative release relationship is:
+
+```text
+Public main HEAD
+  == fixed ZIP source_head
+  == annotated DRC_v2.0.0 tag target
+```
+
+The Public repository must have exactly one root commit. It may contain more
+than one normal Public preparation commit before the release tag, but it must
+not contain the Private repository history.
+
+The obsolete same-repository relationship is not accepted:
+
+```text
+source_head == main_head == develop_head
+```
+
+`develop_head` and `main_and_develop_match_source_head` must not appear in the
+clean-history Public artifact record.
 
 ## Why the record is outside a post-build source commit
 
-The fixed-zip rule requires a new artifact whenever committed source, documentation, evidence rules, or release surface changes. Updating the checklist after a successful build would therefore invalidate the artifact it described. G-7 resolves that cycle before the final build:
+The fixed-ZIP rule requires a new artifact whenever committed source,
+documentation, evidence rules, or the release surface changes. Updating a
+tracked document after a successful build would invalidate the artifact it
+described.
+
+The final sequence is therefore:
 
 ```text
-- Commit G-7 first.
-- Align main and develop to the same committed G-7 HEAD.
-- Build one new fixed zip from that exact committed HEAD.
-- Verify Day82 and Day83 against that same zip without rebuilding.
-- Do not make a post-build source or documentation commit.
-- Put the validated public-safe artifact record in the annotated tag message.
-- Copy the same record into the GitHub Release body and attach the same zip.
+1. Commit and push the last Public source change.
+2. Confirm Public main, origin/main, and source_head are identical.
+3. Confirm the Public repository has exactly one root commit.
+4. Build one fixed ZIP from that committed Public source.
+5. Run Day82 and Day83 against the same ZIP without rebuilding.
+6. Validate the public-safe artifact record against that exact ZIP.
+7. Create the annotated DRC_v2.0.0 tag at source_head.
+8. Verify the annotated tag target.
+9. Copy the same record into the GitHub Release body.
+10. Attach the exact same ZIP.
 ```
 
-The committed checklist remains the source of truth for requirements and release procedure. The annotated tag and GitHub Release metadata are the immutable public record of the final post-build outcome.
+No tracked source or documentation commit is permitted after step 4.
+
+## Builder boundary
+
+`build_v200_final_fixed_release_zip_from_head.ps1` rejects:
+
+```text
+non-main branch
+missing or mismatched origin/main
+non-official Public origin
+multiple root commits
+an existing local DRC_v2.0.0 tag
+dirty source
+generated caches in the strict Public source surface
+a Day80 manifest stored inside the Public repository
+an existing destination ZIP
+```
+
+The accepted Day80 manifest must be supplied by absolute path from outside the
+Public repository. The builder validates it but never copies it into the ZIP
+or prints the private path.
 
 ## Required public-safe fields
 
@@ -51,9 +94,11 @@ The committed checklist remains the source of truth for requirements and release
 status: accepted
 release_target: v2.0.0
 record_kind: final_release_artifact_record
-source_head: full 40-character lowercase commit SHA
-develop_head: same source_head
+repository_topology: clean_history_public_snapshot
+public_repository: murayan1982/daily-rhythm-companion-public
+source_head: full 40-character lowercase Public commit SHA
 main_head: same source_head
+public_root_commit_count: 1
 tag_name: DRC_v2.0.0
 tag_target_head: same source_head
 tag_object_type: annotated
@@ -69,7 +114,8 @@ day80_accepted_manifest_passed: true
 day82_fixed_zip_verification_passed: true
 day83_final_release_readiness_passed: true
 fixed_zip_inspected_as_is: true
-main_and_develop_match_source_head: true
+public_main_matches_source_head: true
+clean_history_public_root_verified: true
 annotated_tag_targets_source_head: true
 github_release_same_fixed_zip_required: true
 operator_review_accepted: true
@@ -80,6 +126,7 @@ Required false markers:
 ```text
 fixed_zip_rebuilt_after_verification: false
 source_changed_after_fixed_zip_build: false
+private_git_history_included: false
 private_evidence_included: false
 raw_screenshots_included: false
 raw_audio_included: false
@@ -92,37 +139,65 @@ private_paths_included: false
 raw_lan_ips_included: false
 ```
 
-The record must contain the zip basename only. Do not put absolute paths, LAN IPs, private screenshot references, operator-evidence paths, provider payloads, tokens, or credentials in tag or release metadata.
+The record contains the ZIP basename only. Do not put absolute paths, Private
+repository commit IDs, screenshot references, operator-evidence paths,
+provider payloads, tokens, credentials, or LAN IPs in the tag or GitHub
+Release metadata.
 
 ## Source-tree verification
 
-Before committing G-7:
+Before the final Public-P4 commit:
 
 ```powershell
-python -m compileall -q backend scripts
-python scripts\smoke_framework_v200_final_release_artifact_record.py
+$previousDontWriteBytecode = $env:PYTHONDONTWRITEBYTECODE
 
-cd app
-flutter test
-cd ..
+try {
+    $env:PYTHONDONTWRITEBYTECODE = "1"
+
+    python scripts\smoke_framework_v200_public_distribution_readiness.py `
+      --source-directory (Get-Location).Path
+
+    python scripts\smoke_framework_v200_final_release_artifact_record.py
+
+    cd app
+    flutter test
+    cd ..
+}
+finally {
+    if ([string]::IsNullOrEmpty($previousDontWriteBytecode)) {
+        Remove-Item Env:PYTHONDONTWRITEBYTECODE -ErrorAction SilentlyContinue
+    }
+    else {
+        $env:PYTHONDONTWRITEBYTECODE = $previousDontWriteBytecode
+    }
+}
 ```
 
-The source-tree smoke checks an accepted synthetic record, rejects representative hash, branch, tag, private-path, and post-build-source-change cases, and verifies that Day82 and Day83 require the G-7 release-surface files.
+The smoke accepts a clean-history Public synthetic record and rejects
+representative ZIP hash, Public main, topology, Private history, multiple-root,
+legacy develop field, lightweight-tag, private-path, and post-build source
+change cases.
 
 ## Final same-artifact validation
 
-After the new committed G-7 HEAD produces one fixed zip and the same zip passes Day82 and Day83, prepare a public-safe record object and validate it against that artifact. The actual final command must use the real full commit SHA, zip basename, byte size, SHA-256, and branch/tag values.
+After the same fixed ZIP passes Day82 and Day83:
 
 ```powershell
-$record = @{
+$head = (git rev-parse HEAD).Trim()
+$mainHead = (git rev-parse main).Trim()
+$publicRootCommitCount = @(git rev-list --max-parents=0 HEAD).Count
+
+$recordObject = [ordered]@{
     status = "accepted"
     release_target = "v2.0.0"
     record_kind = "final_release_artifact_record"
+    repository_topology = "clean_history_public_snapshot"
+    public_repository = "murayan1982/daily-rhythm-companion-public"
     source_head = $head
-    develop_head = $developHead
     main_head = $mainHead
+    public_root_commit_count = $publicRootCommitCount
     tag_name = "DRC_v2.0.0"
-    tag_target_head = $tagTargetHead
+    tag_target_head = $head
     tag_object_type = "annotated"
     release_zip_name = (Split-Path $zip -Leaf)
     release_zip_size_bytes = $zipSize
@@ -131,12 +206,14 @@ $record = @{
     day82_fixed_zip_verification_passed = $true
     day83_final_release_readiness_passed = $true
     fixed_zip_inspected_as_is = $true
-    main_and_develop_match_source_head = $true
+    public_main_matches_source_head = $true
+    clean_history_public_root_verified = $true
     annotated_tag_targets_source_head = $true
     github_release_same_fixed_zip_required = $true
     operator_review_accepted = $true
     fixed_zip_rebuilt_after_verification = $false
     source_changed_after_fixed_zip_build = $false
+    private_git_history_included = $false
     private_evidence_included = $false
     raw_screenshots_included = $false
     raw_audio_included = $false
@@ -147,11 +224,16 @@ $record = @{
     authorization_headers_included = $false
     private_paths_included = $false
     raw_lan_ips_included = $false
-} | ConvertTo-Json -Compress
+}
+
+$record = $recordObject | ConvertTo-Json -Compress
 
 python scripts\smoke_framework_v200_final_release_artifact_record.py `
   --release-zip $zip `
   --record-json $record
 ```
 
-The validator directly reopens the supplied Day83 release surface, checks package hygiene, CRC, required and forbidden entries, and binds the record's zip name, size, and SHA-256 to the inspected artifact. It does not create the tag, move branches, publish GitHub Release, rebuild the zip, or use the network.
+The validator directly reopens the supplied Day83 release surface, checks
+package hygiene, CRC, required and forbidden entries, and binds the record's
+ZIP name, size, and SHA-256 to the inspected artifact. It does not create the
+tag, move branches, publish GitHub Release, rebuild the ZIP, or use the network.

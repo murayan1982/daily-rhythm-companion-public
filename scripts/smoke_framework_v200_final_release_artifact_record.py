@@ -18,15 +18,13 @@ from backend.app.services.framework_v200_final_release_artifact_record import ( 
     validate_v200_final_release_artifact_record,
 )
 from backend.app.services.framework_v200_final_release_readiness_fixed_zip_with_web_evidence import (  # noqa: E402
+    build_v200_final_release_readiness_fixed_zip_with_web_evidence_contract,
     inspect_v200_final_release_readiness_fixed_zip_with_web_evidence,
 )
 from backend.app.services.framework_v200_fixed_release_zip_with_web_evidence_verification import (  # noqa: E402
     V200FixedReleaseZipInspection,
     build_v200_fixed_release_zip_with_web_evidence_contract,
     render_v200_fixed_release_zip_inspection,
-)
-from backend.app.services.framework_v200_final_release_readiness_fixed_zip_with_web_evidence import (  # noqa: E402
-    build_v200_final_release_readiness_fixed_zip_with_web_evidence_contract,
 )
 
 
@@ -39,9 +37,11 @@ def _accepted_record() -> dict[str, object]:
         "status": "accepted",
         "release_target": "v2.0.0",
         "record_kind": "final_release_artifact_record",
+        "repository_topology": "clean_history_public_snapshot",
+        "public_repository": "murayan1982/daily-rhythm-companion-public",
         "source_head": SYNTHETIC_HEAD,
-        "develop_head": SYNTHETIC_HEAD,
         "main_head": SYNTHETIC_HEAD,
+        "public_root_commit_count": 1,
         "tag_name": "DRC_v2.0.0",
         "tag_target_head": SYNTHETIC_HEAD,
         "tag_object_type": "annotated",
@@ -52,12 +52,14 @@ def _accepted_record() -> dict[str, object]:
         "day82_fixed_zip_verification_passed": True,
         "day83_final_release_readiness_passed": True,
         "fixed_zip_inspected_as_is": True,
-        "main_and_develop_match_source_head": True,
+        "public_main_matches_source_head": True,
+        "clean_history_public_root_verified": True,
         "annotated_tag_targets_source_head": True,
         "github_release_same_fixed_zip_required": True,
         "operator_review_accepted": True,
         "fixed_zip_rebuilt_after_verification": False,
         "source_changed_after_fixed_zip_build": False,
+        "private_git_history_included": False,
         "private_evidence_included": False,
         "raw_screenshots_included": False,
         "raw_audio_included": False,
@@ -90,19 +92,19 @@ def _synthetic_inspection() -> V200FixedReleaseZipInspection:
 def _run_source_tree_contract_checks() -> bool:
     day82 = build_v200_fixed_release_zip_with_web_evidence_contract()
     day83 = build_v200_final_release_readiness_fixed_zip_with_web_evidence_contract()
-    required_g7_entries = {
+    required_entries = {
         "docs/v200_final_release_artifact_record.md",
         "backend/app/services/framework_v200_final_release_artifact_record.py",
         "scripts/smoke_framework_v200_final_release_artifact_record.py",
     }
-    missing_day82 = sorted(required_g7_entries - set(day82.required_zip_entries))
-    missing_day83 = sorted(required_g7_entries - set(day83.required_zip_entries))
+    missing_day82 = sorted(required_entries - set(day82.required_zip_entries))
+    missing_day83 = sorted(required_entries - set(day83.required_zip_entries))
     if missing_day82 or missing_day83:
         print("[smoke-framework-v200-final-release-artifact-record] ERROR")
         if missing_day82:
-            print("Day82 missing G-7 release entries: " + ",".join(missing_day82))
+            print("Day82 missing artifact-record entries: " + ",".join(missing_day82))
         if missing_day83:
-            print("Day83 missing G-7 release entries: " + ",".join(missing_day83))
+            print("Day83 missing artifact-record entries: " + ",".join(missing_day83))
         return False
 
     accepted = _accepted_record()
@@ -114,18 +116,39 @@ def _run_source_tree_contract_checks() -> bool:
         return False
 
     negative_cases: list[tuple[str, dict[str, object]]] = []
+
     hash_mismatch = dict(accepted)
     hash_mismatch["release_zip_sha256"] = "0" * 64
     negative_cases.append(("hash-mismatch", hash_mismatch))
-    branch_mismatch = dict(accepted)
-    branch_mismatch["main_head"] = "f" * 40
-    negative_cases.append(("branch-mismatch", branch_mismatch))
+
+    public_main_mismatch = dict(accepted)
+    public_main_mismatch["main_head"] = "f" * 40
+    negative_cases.append(("public-main-mismatch", public_main_mismatch))
+
+    topology_mismatch = dict(accepted)
+    topology_mismatch["repository_topology"] = "same_repository_main_develop"
+    negative_cases.append(("topology-mismatch", topology_mismatch))
+
+    private_history = dict(accepted)
+    private_history["private_git_history_included"] = True
+    negative_cases.append(("private-history", private_history))
+
+    multiple_roots = dict(accepted)
+    multiple_roots["public_root_commit_count"] = 2
+    negative_cases.append(("multiple-roots", multiple_roots))
+
+    legacy_develop = dict(accepted)
+    legacy_develop["develop_head"] = SYNTHETIC_HEAD
+    negative_cases.append(("legacy-develop-field", legacy_develop))
+
     lightweight_tag = dict(accepted)
     lightweight_tag["tag_object_type"] = "lightweight"
     negative_cases.append(("lightweight-tag", lightweight_tag))
+
     private_path = dict(accepted)
     private_path["private_paths_included"] = True
     negative_cases.append(("private-path", private_path))
+
     post_build_source_commit = dict(accepted)
     post_build_source_commit["source_changed_after_fixed_zip_build"] = True
     negative_cases.append(("post-build-source-commit", post_build_source_commit))
@@ -142,6 +165,7 @@ def _run_source_tree_contract_checks() -> bool:
         "v200_final_release_artifact_record_source_tree_negative_cases: "
         + ",".join(name for name, _ in negative_cases)
     )
+    print("v200_final_release_artifact_record_repository_topology: clean-history-public-snapshot")
     print("v200_final_release_artifact_record_day82_day83_release_surface: synchronized")
     return True
 

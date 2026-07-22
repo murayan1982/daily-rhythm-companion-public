@@ -1,9 +1,9 @@
 """v2.0.0 immutable final release artifact record contract.
 
-This module defines a public-safe record that binds the final committed source,
-fixed release zip, annotated tag, branch refs, and GitHub Release metadata.  It
-never creates a zip, edits source files, creates refs, publishes a release, reads
-private operator evidence, or uses the network.
+This module defines a public-safe record that binds the clean-history Public
+repository source, one fixed release zip, the annotated tag, and GitHub Release
+metadata. It never creates a zip, edits source files, creates refs, publishes a
+release, reads private operator evidence, or uses the network.
 """
 
 from __future__ import annotations
@@ -21,6 +21,9 @@ _FULL_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 _FULL_GIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 _SAFE_ZIP_NAME_RE = re.compile(r"^DailyRhythmCompanion_[0-9]{8}_[0-9]{6}\.zip$")
 
+_PUBLIC_REPOSITORY_TOPOLOGY = "clean_history_public_snapshot"
+_PUBLIC_REPOSITORY = "murayan1982/daily-rhythm-companion-public"
+
 
 @dataclass(frozen=True)
 class V200FinalReleaseArtifactRecordContract:
@@ -30,6 +33,8 @@ class V200FinalReleaseArtifactRecordContract:
     requirement_key: str
     release_target: str
     tag_name: str
+    repository_topology: str
+    public_repository: str
     record_locations: tuple[str, ...]
     required_public_fields: tuple[str, ...]
     required_true_markers: tuple[str, ...]
@@ -50,13 +55,15 @@ class V200FinalReleaseArtifactRecordValidation:
 
 
 def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtifactRecordContract:
-    """Build the public-safe G-7 artifact-record contract."""
+    """Build the clean-history Public artifact-record contract."""
 
     return V200FinalReleaseArtifactRecordContract(
         status="immutable-final-release-artifact-record-ready",
         requirement_key="v200_final_release_artifact_record",
         release_target="v2.0.0",
         tag_name="DRC_v2.0.0",
+        repository_topology=_PUBLIC_REPOSITORY_TOPOLOGY,
+        public_repository=_PUBLIC_REPOSITORY,
         record_locations=(
             "annotated-git-tag-message",
             "github-release-body",
@@ -65,9 +72,11 @@ def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtif
             "status",
             "release_target",
             "record_kind",
+            "repository_topology",
+            "public_repository",
             "source_head",
-            "develop_head",
             "main_head",
+            "public_root_commit_count",
             "tag_name",
             "tag_target_head",
             "tag_object_type",
@@ -80,7 +89,8 @@ def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtif
             "day82_fixed_zip_verification_passed",
             "day83_final_release_readiness_passed",
             "fixed_zip_inspected_as_is",
-            "main_and_develop_match_source_head",
+            "public_main_matches_source_head",
+            "clean_history_public_root_verified",
             "annotated_tag_targets_source_head",
             "github_release_same_fixed_zip_required",
             "operator_review_accepted",
@@ -88,6 +98,7 @@ def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtif
         required_false_markers=(
             "fixed_zip_rebuilt_after_verification",
             "source_changed_after_fixed_zip_build",
+            "private_git_history_included",
             "private_evidence_included",
             "raw_screenshots_included",
             "raw_audio_included",
@@ -101,8 +112,10 @@ def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtif
         ),
         forbidden_success_states=(
             "source_head_not_committed",
-            "develop_head_mismatch",
-            "main_head_mismatch",
+            "private_repository_release_source",
+            "public_main_head_mismatch",
+            "multiple_public_root_commits",
+            "private_git_history_present",
             "lightweight_tag",
             "tag_target_mismatch",
             "release_zip_not_inspected",
@@ -118,6 +131,8 @@ def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtif
             "placeholder_only",
         ),
         public_safe_omissions=(
+            "private_repository_commit_ids",
+            "private_git_history",
             "raw_screenshots",
             "raw_audio",
             "raw_health_data",
@@ -131,8 +146,9 @@ def build_v200_final_release_artifact_record_contract() -> V200FinalReleaseArtif
             "private_operator_evidence",
         ),
         next_focus=(
-            "After this contract is committed, align main and develop, build one new fixed zip from that committed HEAD, "
-            "verify the same artifact, then copy the validated public-safe record into the annotated tag and GitHub Release."
+            "Build one fixed zip from clean Public main, verify the same artifact, "
+            "validate this record, then create the annotated tag and GitHub Release "
+            "without changing source or rebuilding the zip."
         ),
     )
 
@@ -148,12 +164,19 @@ def render_v200_final_release_artifact_record_contract(
             f"v200_final_release_artifact_record_requirement_key: {contract.requirement_key}",
             f"v200_final_release_artifact_record_release_target: {contract.release_target}",
             f"v200_final_release_artifact_record_tag_name: {contract.tag_name}",
+            f"v200_final_release_artifact_record_repository_topology: {contract.repository_topology}",
+            f"v200_final_release_artifact_record_public_repository: {contract.public_repository}",
             "v200_final_release_artifact_record_locations: " + ",".join(contract.record_locations),
-            "v200_final_release_artifact_record_required_public_fields: " + ",".join(contract.required_public_fields),
-            "v200_final_release_artifact_record_required_true_markers: " + ",".join(contract.required_true_markers),
-            "v200_final_release_artifact_record_required_false_markers: " + ",".join(contract.required_false_markers),
-            "v200_final_release_artifact_record_forbidden_success_states: " + ",".join(contract.forbidden_success_states),
-            "v200_final_release_artifact_record_public_safe_omissions: " + ",".join(contract.public_safe_omissions),
+            "v200_final_release_artifact_record_required_public_fields: "
+            + ",".join(contract.required_public_fields),
+            "v200_final_release_artifact_record_required_true_markers: "
+            + ",".join(contract.required_true_markers),
+            "v200_final_release_artifact_record_required_false_markers: "
+            + ",".join(contract.required_false_markers),
+            "v200_final_release_artifact_record_forbidden_success_states: "
+            + ",".join(contract.forbidden_success_states),
+            "v200_final_release_artifact_record_public_safe_omissions: "
+            + ",".join(contract.public_safe_omissions),
             "v200_final_release_artifact_record_creates_or_rebuilds_zip: False",
             "v200_final_release_artifact_record_creates_or_moves_git_refs: False",
             "v200_final_release_artifact_record_publishes_github_release: False",
@@ -192,18 +215,20 @@ def validate_v200_final_release_artifact_record(
         missing.append(f"release_target={contract.release_target}")
     if record.get("record_kind") != "final_release_artifact_record":
         missing.append("record_kind=final_release_artifact_record")
+    if record.get("repository_topology") != contract.repository_topology:
+        missing.append(f"repository_topology={contract.repository_topology}")
+    if record.get("public_repository") != contract.public_repository:
+        missing.append(f"public_repository={contract.public_repository}")
     if record.get("tag_name") != contract.tag_name:
         missing.append(f"tag_name={contract.tag_name}")
     if record.get("tag_object_type") != "annotated":
         missing.append("tag_object_type=annotated")
 
     source_head = record.get("source_head")
-    develop_head = record.get("develop_head")
     main_head = record.get("main_head")
     tag_target_head = record.get("tag_target_head")
     for field_name, value in (
         ("source_head", source_head),
-        ("develop_head", develop_head),
         ("main_head", main_head),
         ("tag_target_head", tag_target_head),
     ):
@@ -211,12 +236,18 @@ def validate_v200_final_release_artifact_record(
             missing.append(f"{field_name}=full-40-char-lowercase-sha")
 
     if _is_full_git_sha(source_head):
-        if develop_head != source_head:
-            missing.append("develop_head=source_head")
         if main_head != source_head:
             missing.append("main_head=source_head")
         if tag_target_head != source_head:
             missing.append("tag_target_head=source_head")
+
+    public_root_commit_count = record.get("public_root_commit_count")
+    if (
+        isinstance(public_root_commit_count, bool)
+        or not isinstance(public_root_commit_count, int)
+        or public_root_commit_count != 1
+    ):
+        missing.append("public_root_commit_count=1")
 
     zip_name = record.get("release_zip_name")
     if not isinstance(zip_name, str) or _SAFE_ZIP_NAME_RE.fullmatch(zip_name) is None:
@@ -235,6 +266,7 @@ def validate_v200_final_release_artifact_record(
         if record.get(marker) is not False:
             missing.append(f"{marker}=False")
             if marker in {
+                "private_git_history_included",
                 "private_evidence_included",
                 "raw_screenshots_included",
                 "raw_audio_included",
@@ -251,6 +283,13 @@ def validate_v200_final_release_artifact_record(
         if record.get(forbidden) is True:
             missing.append(f"forbidden:{forbidden}")
             public_safe = False
+
+    if "develop_head" in record:
+        missing.append("field:develop_head=not-allowed-in-clean-public-record")
+        public_safe = False
+    if "main_and_develop_match_source_head" in record:
+        missing.append("field:main_and_develop_match_source_head=obsolete")
+        public_safe = False
 
     if inspection is not None:
         if inspection.status != "accepted":

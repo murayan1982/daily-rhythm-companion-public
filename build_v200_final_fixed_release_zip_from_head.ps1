@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$ManifestPath = "operator_evidence\v200_accepted_web_evidence_manifest_day80.json",
+    [string]$ManifestPath = "",
     [string]$OutputDirectory = "release",
     [string]$PythonCommand = "python"
 )
@@ -13,6 +13,7 @@ $tempRoot = $null
 $worktreeRoot = $null
 $worktreeAdded = $false
 $buildInvocationCount = 0
+$previousDontWriteBytecode = $env:PYTHONDONTWRITEBYTECODE
 
 function Invoke-NativeChecked {
     param(
@@ -26,6 +27,31 @@ function Invoke-NativeChecked {
     if ($LASTEXITCODE -ne 0) {
         throw "Command failed with exit code ${LASTEXITCODE}: $FilePath $($ArgumentList -join ' ')"
     }
+}
+
+function Test-PathOutsideRepository {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+        [Parameter(Mandatory = $true)]
+        [string]$CandidatePath
+    )
+
+    $relative = [IO.Path]::GetRelativePath(
+        [IO.Path]::GetFullPath($RepositoryRoot),
+        [IO.Path]::GetFullPath($CandidatePath)
+    )
+    if ([IO.Path]::IsPathRooted($relative)) {
+        return $true
+    }
+
+    $parentPrefix = ".." + [IO.Path]::DirectorySeparatorChar
+    $altParentPrefix = ".." + [IO.Path]::AltDirectorySeparatorChar
+    return (
+        $relative -eq ".." -or
+        $relative.StartsWith($parentPrefix, [StringComparison]::Ordinal) -or
+        $relative.StartsWith($altParentPrefix, [StringComparison]::Ordinal)
+    )
 }
 
 try {
@@ -51,46 +77,91 @@ try {
     if ($LASTEXITCODE -ne 0 -or -not $headCommit) {
         throw "Unable to resolve committed HEAD."
     }
+
     $branchName = (& git branch --show-current).Trim()
-    if ($LASTEXITCODE -ne 0) {
-        throw "Unable to resolve the current branch."
-    }
-    if (-not $branchName) {
-        $branchName = "detached"
+    if ($LASTEXITCODE -ne 0 -or $branchName -ne "main") {
+        throw "The official Public fixed zip must be built from the Public main branch."
     }
 
+    $originUrl = (& git remote get-url origin).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $originUrl) {
+        throw "The official Public repository must have an origin remote."
+    }
+    $officialOriginPattern = "^(?:https://github\.com/|git@github\.com:)murayan1982/daily-rhythm-companion-public(?:\.git)?$"
+    if ($originUrl -notmatch $officialOriginPattern) {
+        throw "Origin is not the official Public repository."
+    }
+
+    $originMain = (& git rev-parse refs/remotes/origin/main).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $originMain) {
+        throw "origin/main is unavailable. Fetch origin/main before the final build."
+    }
+    if ($originMain -ne $headCommit) {
+        throw "Public main HEAD does not match origin/main. Push or fetch before the final build."
+    }
+
+    $rootCommits = @(& git rev-list --max-parents=0 HEAD)
+    if ($LASTEXITCODE -ne 0 -or $rootCommits.Count -ne 1) {
+        throw "The official Public repository must have exactly one root commit."
+    }
+
+    $existingTag = (& git tag --list "DRC_v2.0.0").Trim()
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to inspect existing tags."
+    }
+    if ($existingTag) {
+        throw "DRC_v2.0.0 already exists locally. Refusing to build another final artifact."
+    }
+
+    if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
+        throw "ManifestPath is required and must point to the accepted Day80 manifest outside the Public repository."
+    }
     $manifestFullPath = if ([IO.Path]::IsPathRooted($ManifestPath)) {
         [IO.Path]::GetFullPath($ManifestPath)
     } else {
         [IO.Path]::GetFullPath((Join-Path $repoRoot $ManifestPath))
     }
     if (-not (Test-Path -LiteralPath $manifestFullPath -PathType Leaf)) {
-        throw "Accepted Day80 private manifest was not found at the configured ignored operator path."
+        throw "Accepted Day80 private manifest was not found."
+    }
+    if (-not (Test-PathOutsideRepository -RepositoryRoot $repoRoot -CandidatePath $manifestFullPath)) {
+        throw "The accepted Day80 manifest must remain outside the Public repository."
     }
 
-    Write-Host "[Preflight] Verifying Public distribution source surface..."
-    Invoke-NativeChecked $PythonCommand "scripts\smoke_framework_v200_public_distribution_readiness.py"
+    $env:PYTHONDONTWRITEBYTECODE = "1"
 
-    Write-Host "[Preflight] Verifying committed G-5 public-safe acceptance state..."
-    Invoke-NativeChecked $PythonCommand "scripts\smoke_framework_v200_accepted_web_evidence_manifest_acceptance_sync.py"
+    Write-Host "[Preflight] Verifying the complete Public source directory strictly..."
+    Invoke-NativeChecked $PythonCommand `
+        "scripts\smoke_framework_v200_public_distribution_readiness.py" `
+        "--source-directory" `
+        $repoRoot
 
-    Write-Host "[Preflight] Validating the ignored Day80 private manifest..."
-    Invoke-NativeChecked $PythonCommand "scripts\smoke_framework_v200_accepted_web_evidence_manifest_aggregate.py" "--manifest-json" $manifestFullPath
+    Write-Host "[Preflight] Verifying committed public-safe acceptance state..."
+    Invoke-NativeChecked $PythonCommand `
+        "scripts\smoke_framework_v200_accepted_web_evidence_manifest_acceptance_sync.py"
 
-    $tempRoot = Join-Path ([IO.Path]::GetTempPath()) ("DailyRhythmCompanion_v200_fixed_" + [Guid]::NewGuid().ToString("N"))
+    Write-Host "[Preflight] Validating the external Day80 private manifest..."
+    Invoke-NativeChecked $PythonCommand `
+        "scripts\smoke_framework_v200_accepted_web_evidence_manifest_aggregate.py" `
+        "--manifest-json" `
+        $manifestFullPath
+
+    $tempRoot = Join-Path (
+        [IO.Path]::GetTempPath()
+    ) ("DailyRhythmCompanion_v200_fixed_" + [Guid]::NewGuid().ToString("N"))
     $worktreeRoot = Join-Path $tempRoot "committed_head"
     New-Item -ItemType Directory -Path $tempRoot -Force | Out-Null
 
-    Write-Host "[Source] Creating detached temporary worktree from committed HEAD..."
+    Write-Host "[Source] Creating detached temporary worktree from Public committed HEAD..."
     Invoke-NativeChecked "git" "worktree" "add" "--detach" $worktreeRoot $headCommit
     $worktreeAdded = $true
 
     $worktreeHead = (& git -C $worktreeRoot rev-parse HEAD).Trim()
     if ($LASTEXITCODE -ne 0 -or $worktreeHead -ne $headCommit) {
-        throw "Temporary worktree HEAD does not match the recorded source HEAD."
+        throw "Temporary worktree HEAD does not match the recorded Public source HEAD."
     }
 
-    Write-Host "[Build] Invoking build_release.bat exactly once from detached committed HEAD..."
+    Write-Host "[Build] Invoking build_release.bat exactly once from detached Public HEAD..."
     $buildInvocationCount++
     Push-Location $worktreeRoot
     try {
@@ -108,7 +179,10 @@ try {
 
     $worktreeReleaseDirectory = Join-Path $worktreeRoot "release"
     $builtZips = @(
-        Get-ChildItem -LiteralPath $worktreeReleaseDirectory -File -Filter "DailyRhythmCompanion_*.zip" -ErrorAction Stop
+        Get-ChildItem -LiteralPath $worktreeReleaseDirectory `
+            -File `
+            -Filter "DailyRhythmCompanion_*.zip" `
+            -ErrorAction Stop
     )
     if ($builtZips.Count -ne 1) {
         throw "Expected exactly one release zip from the one build invocation, found $($builtZips.Count)."
@@ -132,14 +206,27 @@ try {
     Move-Item -LiteralPath $builtZips[0].FullName -Destination $destinationPath
 
     $destinationFile = Get-Item -LiteralPath $destinationPath
-    $sha256 = (Get-FileHash -LiteralPath $destinationPath -Algorithm SHA256).Hash.ToLowerInvariant()
-    $relativeZipPath = [IO.Path]::GetRelativePath($repoRoot, $destinationPath).Replace([IO.Path]::AltDirectorySeparatorChar, [IO.Path]::DirectorySeparatorChar)
+    $sha256 = (
+        Get-FileHash -LiteralPath $destinationPath -Algorithm SHA256
+    ).Hash.ToLowerInvariant()
+    $relativeZipPath = [IO.Path]::GetRelativePath(
+        $repoRoot,
+        $destinationPath
+    ).Replace(
+        [IO.Path]::AltDirectorySeparatorChar,
+        [IO.Path]::DirectorySeparatorChar
+    )
 
     Write-Host ""
     Write-Host "========================================"
-    Write-Host "v200_final_fixed_release_zip_build_status: built-once-from-committed-head"
+    Write-Host "v200_final_fixed_release_zip_build_status: built-once-from-clean-public-main"
+    Write-Host "v200_final_fixed_release_zip_repository_topology: clean-history-public-snapshot"
+    Write-Host "v200_final_fixed_release_zip_public_repository: murayan1982/daily-rhythm-companion-public"
     Write-Host "v200_final_fixed_release_zip_source_branch: $branchName"
     Write-Host "v200_final_fixed_release_zip_source_head: $headCommit"
+    Write-Host "v200_final_fixed_release_zip_origin_main_head: $originMain"
+    Write-Host "v200_final_fixed_release_zip_public_root_commit_count: $($rootCommits.Count)"
+    Write-Host "v200_final_fixed_release_zip_external_day80_manifest: True"
     Write-Host "v200_final_fixed_release_zip_build_invocation_count: $buildInvocationCount"
     Write-Host "v200_final_fixed_release_zip_path: $relativeZipPath"
     Write-Host "v200_final_fixed_release_zip_file_size_bytes: $($destinationFile.Length)"
@@ -148,6 +235,12 @@ try {
     Write-Host "v200_final_fixed_release_zip_next_action: verify-this-same-zip-without-rebuilding"
     Write-Host "========================================"
 } finally {
+    if ([string]::IsNullOrEmpty($previousDontWriteBytecode)) {
+        Remove-Item Env:PYTHONDONTWRITEBYTECODE -ErrorAction SilentlyContinue
+    } else {
+        $env:PYTHONDONTWRITEBYTECODE = $previousDontWriteBytecode
+    }
+
     if ($worktreeAdded -and $worktreeRoot) {
         & git -C $repoRoot worktree remove --force $worktreeRoot 2>$null | Out-Null
         & git -C $repoRoot worktree prune 2>$null | Out-Null
