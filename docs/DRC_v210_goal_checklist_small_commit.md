@@ -3,7 +3,7 @@
 Updated: 2026-07-23
 Status: IN_PROGRESS
 Current small commit: W-4b — Flutter provider/source-label UI and simplified Google Health user UX
-Current small-commit state: CURRENT / NOT_COMPLETED
+Current small-commit state: IMPLEMENTED / NOT_ACCEPTED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
@@ -474,12 +474,12 @@ Status: CURRENT / NOT_COMPLETED
 
 ```text
 W-4a  COMPLETED / ACCEPTED   Read-only sleep-provider selection status contract
-W-4b  CURRENT / NOT_COMPLETED  Flutter provider/source-label UI and simplified
+W-4b  IMPLEMENTED / NOT_ACCEPTED  Flutter provider/source-label UI and simplified
                                 Google Health user UX with retained diagnostics
 ```
 
 W-4a state: COMPLETED / ACCEPTED
-W-4b state: CURRENT / NOT_COMPLETED
+W-4b state: IMPLEMENTED / NOT_ACCEPTED
 
 ## W-4a purpose
 
@@ -559,9 +559,91 @@ release records changed: false
 ```
 
 W-4a was completed and accepted on 2026-07-23. W-4 remains CURRENT /
-NOT_COMPLETED and W-4b is now the current small commit. W-4b owns the Flutter
-configured-provider/data-source UI and simplified Google Health user UX while
-retaining operator diagnostics. W-5 and later phases remain PLANNED.
+NOT_COMPLETED and W-4b is now the current small commit.
+
+## W-4b purpose
+
+```text
+- Consume accepted GET /sleep/providers metadata in Flutter.
+- Show configured provider separately from SleepSummary.source and data kind.
+- Keep mock / wearable samples credential-free and avoid irrelevant Fitbit status calls.
+- Simplify the normal Google Health user surface.
+- Retain Google Health state details, actions, diagnostics, preflight, and self-check
+  under Advanced Demo Tools.
+- Keep configured real Fitbit acceptance and smartphone Web evidence in W-5.
+```
+
+Detailed contract: `docs/v210_flutter_sleep_provider_source_ui.md`
+
+## W-4b change surface
+
+```text
+app/lib/models/sleep_provider_selection.dart
+app/lib/services/backend_api_client.dart
+app/lib/screens/home_screen.dart
+app/test/sleep_provider_selection_test.dart
+app/test/widget_test.dart
+docs/v210_flutter_sleep_provider_source_ui.md
+docs/DRC_v210_goal_checklist_small_commit.md
+scripts/check_v210_sleep_provider_selection_source_labels.py
+scripts/check_v210_flutter_sleep_provider_source_ui.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+```
+
+## W-4b explicit non-change surface
+
+```text
+backend/app/**
+backend/tests/**
+app/pubspec.yaml
+Fitbit and Google Health OAuth/token/sleep runtime
+post-advice chat, voice, motion, and character runtime
+version metadata
+v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
+```
+
+## W-4b implementation boundary
+
+```text
+- Add Flutter models for the read-only provider metadata response.
+- Load /sleep/providers without making the daily loop depend on provider metadata success.
+- Query /fitbit/status only when configured_provider=fitbit.
+- Add a normal Sleep Data Source card with configured provider, actual source,
+  data kind, availability, and provider-specific concise guidance.
+- Keep the normal Google Health card free of state-stage, raw action groups,
+  developer fields, diagnostics, preflight, and self-check details.
+- Keep the detailed Google Health connection/operator surfaces below Advanced Demo Tools.
+- Keep Fitbit UI wording explicitly pending W-5 real operator acceptance.
+```
+
+## W-4b mock-safe verification boundary
+
+```text
+- deterministic model parsing;
+- fake BackendApiClient widget tests for mock, Google Health, and Fitbit states;
+- no external HTTP, OAuth browser, real token, real provider API, or private evidence;
+- full backend pytest remains unchanged and must pass;
+- full Flutter test is required for acceptance.
+```
+
+## W-4b completion conditions
+
+```text
+- W-1/W-2/W-3/W-4a/W-4b checks pass;
+- v2.0.x compatibility and maintenance guards pass;
+- focused Flutter provider model/widget tests pass;
+- full backend pytest and full Flutter test pass;
+- diff review and operator approval pass;
+- W-4 remains CURRENT / NOT_COMPLETED;
+- W-5 and later phases remain PLANNED.
+```
+
+W-4b source is implemented but not accepted. Real Fitbit operator execution,
+smartphone Web real-provider evidence, W-4 completion, and W-5 completion have not
+been performed.
 
 ---
 

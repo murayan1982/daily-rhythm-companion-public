@@ -12,6 +12,7 @@ import '../models/google_health_diagnostics.dart';
 import '../models/google_health_preflight.dart';
 import '../models/google_health_self_check.dart';
 import '../models/sleep_summary.dart';
+import '../models/sleep_provider_selection.dart';
 import '../models/daily_record.dart';
 import '../models/recent_sleep_trend.dart';
 import '../models/weekly_sleep_summary.dart';
@@ -106,6 +107,23 @@ class BackendApiClient {
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
 
     return SleepSummary.fromJson(body);
+  }
+
+  Future<SleepProviderSelectionStatus>
+      fetchSleepProviderSelectionStatus() async {
+    final uri = Uri.parse('$baseUrl/sleep/providers');
+    final response = await http.get(uri);
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Sleep provider status API failed: HTTP ${response.statusCode}',
+      );
+    }
+
+    final body =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+
+    return SleepProviderSelectionStatus.fromJson(body);
   }
 
   Future<List<DailyRecord>> fetchDailyRecords({int limit = 30}) async {

@@ -36,8 +36,6 @@ W3_UNCHANGED_HASHES = {
     "app/lib/models/sleep_summary.dart": "f28173aeb89b996e284771243fe6cbd6e037098a634647b827ac096cef4d11e8",
     "app/lib/models/fitbit_status.dart": "3c06914f0eb992ae11fd7febf5589b5ffe44fd639d3c847d9fe26ec11b513814",
     "app/lib/models/fitbit_connect_response.dart": "b2f897316bb6dd52f271e994bc15c6ddb1096b4c5c6ca2f499cc9495de77ed1c",
-    "app/lib/services/backend_api_client.dart": "98bbd40caef0c6a55892dfd9d9a146d524e3427f0a2cfe3ce71cc36eb34fab25",
-    "app/lib/screens/home_screen.dart": "344ec16c252448ed89087818a66432522b5e162b2f58c52c3b5660bb33847e90",
     "app/test/fitbit_current_state_contract_test.dart": "d753b8163410e78dd33c354a7adfab0153358b598f741743b300b8f254e9acb0",
     "app/test/fitbit_token_status_reconnect_test.dart": "6a1390b1b0e014a8fcc1f0aa47d1e30f0716fe099e8dcd4afbf312ac67dbf15b",
     "app/pubspec.yaml": "fe4921649f69a5c9a7fe9dc4caad7d41f796cdb1b6adcd8687974a89cec85f86",
@@ -103,7 +101,7 @@ def main() -> None:
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
     require(checklist, "Current small commit: W-4", "W-4 current commit")
-    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-4 incomplete state")
+    require(checklist, "Current small-commit state: IMPLEMENTED / NOT_ACCEPTED", "W-4 incomplete state")
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
     require(checklist, "W-3 state: COMPLETED / ACCEPTED", "W-3 accepted state")

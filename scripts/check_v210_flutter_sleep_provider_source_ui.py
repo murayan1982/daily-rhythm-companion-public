@@ -1,4 +1,4 @@
-"""Validate the mock-safe W-4a sleep-provider selection status contract."""
+"""Validate the mock-safe W-4b Flutter provider/source-label UI boundary."""
 
 from __future__ import annotations
 
@@ -20,7 +20,12 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-W3_ACCEPTED_BOUNDARY_HASHES = {
+ACCEPTED_BACKEND_HASHES = {
+    "backend/app/main.py": "6ead9b1570b1453d7029496db3b554156b0e6752b1cb2369053e9341a81d3c27",
+    "backend/app/api/sleep_provider_selection.py": "7f5569e46be04ca199233b5035b90c348348268618635656fe36b5d6b4e9805d",
+    "backend/app/models/sleep_provider_selection.py": "b1fda1bfdf2755007f6dfc25e09dbef414d6b4529ef5faba948c835a9dfe46eb",
+    "backend/app/services/sleep_provider_selection_service.py": "f81ccc7b57ff99f15e3674c77b7409029afee41fc345896c3c6f2137d4ac5f9e",
+    "backend/tests/test_sleep_provider_selection_contract.py": "94af284f659fe746365108e272a67b2046ba1e52d5a9d312651842ff0e2f41c8",
     "backend/app/api/sleep.py": "80ea9be0988dee24492821990a039608be3ee7dc5a3179d758151461809e5c3a",
     "backend/app/models/sleep.py": "4fd063af3ff7cfb4f0ed1c26fe252ab60907622720081ce7cafdcb8296a72961",
     "backend/app/services/sleep_providers/factory.py": "b898031e0b499a00ff88e5355e3851b280436377d0d0f35263d68e481289c3e6",
@@ -31,19 +36,23 @@ W3_ACCEPTED_BOUNDARY_HASHES = {
     "backend/tests/test_fitbit_real_sleep_normalization.py": "ebbf3edd6ec135ad7ec10b3125e82f842acf28088952c06a6f35682abf45c7ce",
 }
 
-W4A_FILES = (
+W4B_FILES = (
     "README.md",
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
     "docs/DRC_v210_goal_checklist_small_commit.md",
-    "docs/v210_sleep_provider_selection_source_labels.md",
-    "backend/app/main.py",
-    "backend/app/api/sleep_provider_selection.py",
-    "backend/app/models/sleep_provider_selection.py",
-    "backend/app/services/sleep_provider_selection_service.py",
-    "backend/tests/test_sleep_provider_selection_contract.py",
+    "docs/v210_flutter_sleep_provider_source_ui.md",
+    "app/lib/models/sleep_provider_selection.dart",
+    "app/lib/services/backend_api_client.dart",
+    "app/lib/screens/home_screen.dart",
+    "app/test/sleep_provider_selection_test.dart",
+    "app/test/widget_test.dart",
+    "scripts/check_v210_fitbit_current_behavior_inventory.py",
+    "scripts/check_v210_fitbit_token_status_reconnect.py",
+    "scripts/check_v210_fitbit_real_sleep_normalization.py",
     "scripts/check_v210_sleep_provider_selection_source_labels.py",
+    "scripts/check_v210_flutter_sleep_provider_source_ui.py",
 )
 
 
@@ -86,86 +95,85 @@ def assert_no_sensitive_values(relative: str, text: str) -> None:
 
 
 def main() -> None:
-    files = {relative: read(relative) for relative in W4A_FILES}
+    files = {relative: read(relative) for relative in W4B_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
     require(checklist, "Current small commit: W-4b", "W-4b current commit")
     require(checklist, "Current small-commit state: IMPLEMENTED / NOT_ACCEPTED", "W-4b implementation state")
-    require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 phase state")
+    require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 parent state")
     require(checklist, "W-4a  COMPLETED / ACCEPTED", "W-4a accepted state")
-    require(checklist, "W-4b  IMPLEMENTED / NOT_ACCEPTED", "W-4b current state")
+    require(checklist, "W-4b  IMPLEMENTED / NOT_ACCEPTED", "W-4b state")
     for phase in ("W-5", "C-1", "T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
-    model = files["backend/app/models/sleep_provider_selection.py"]
+    model = files["app/lib/models/sleep_provider_selection.dart"]
     for marker in (
         "class SleepProviderOption",
         "class SleepProviderSelectionStatus",
-        "configured_provider_supported",
-        "change_requires_backend_restart",
-        "real_operator_verification_required",
+        "configuredProviderLabel",
+        "changeRequiresBackendRestart",
+        "requiresRealOperatorVerification",
+        "displayConfiguredState",
     ):
-        require(model, marker, "selection response model")
+        require(model, marker, "Flutter provider model")
 
-    service = files["backend/app/services/sleep_provider_selection_service.py"]
+    client = files["app/lib/services/backend_api_client.dart"]
+    require(client, "fetchSleepProviderSelectionStatus", "Flutter API method")
+    require(client, "$baseUrl/sleep/providers", "provider metadata route")
+
+    home = files["app/lib/screens/home_screen.dart"]
     for marker in (
-        'provider="mock"',
-        'provider="wearable_stub"',
-        'provider="google_health"',
-        'provider="fitbit_stub"',
-        'alias_for="wearable_stub"',
-        'provider="fitbit"',
-        'role="legacy_real_provider"',
-        "real_operator_verification_required=True",
-        'configured_role = "unsupported"',
-        "get_sleep_provider_selection_status",
+        "fetchSleepProviderSelectionStatus",
+        "providerSelectionStatus?.isFitbit == true",
+        "Sleep Data Source",
+        "sleep-data-source-section",
+        "設定中のprovider:",
+        "今回のデータ元:",
+        "Google Health Operator Connection Details",
+        "google-health-operator-details",
+        "Fitbit Operator Status",
+        "受け入れ確認はW-5まで未完了",
     ):
-        require(service, marker, "provider selection classification")
-    for forbidden in (
-        "create_sleep_provider",
-        "FitbitTokenStore",
-        "GoogleHealthTokenStore",
-        "httpx",
-        "requests",
-    ):
-        if forbidden in service:
-            raise AssertionError(f"W-4a service must remain metadata-only: {forbidden}")
+        require(home, marker, "W-4b Home UI")
+    if "final fitbitStatus = await widget.apiClient.fetchFitbitStatus();" in home:
+        raise AssertionError("W-4b must not fetch Fitbit status unconditionally")
 
-    api = files["backend/app/api/sleep_provider_selection.py"]
-    require(api, '@router.get("/sleep/providers"', "read-only provider endpoint")
-    require(api, "get_sleep_provider_selection_status(load_config())", "metadata-only route")
-
-    main_source = files["backend/app/main.py"]
-    require(main_source, "sleep_provider_selection,", "provider router import")
-    require(main_source, "app.include_router(sleep_provider_selection.router)", "provider router binding")
-
-    tests = files["backend/tests/test_sleep_provider_selection_contract.py"]
+    model_tests = files["app/test/sleep_provider_selection_test.dart"]
     for marker in (
-        "test_selection_status_classifies_supported_providers",
-        "test_selection_status_marks_fitbit_stub_as_deprecated_alias",
-        "test_selection_status_handles_unknown_provider_conservatively",
-        "test_sleep_provider_selection_endpoint_is_read_only_and_deterministic",
+        "parses backend-owned provider selection metadata",
+        "keeps Fitbit real operator verification visible",
+        "marks deprecated compatibility aliases conservatively",
+        "reports unsupported selection without inventing availability",
     ):
-        require(tests, marker, "W-4a backend regression")
+        require(model_tests, marker, "provider model regression")
 
-    contract = files["docs/v210_sleep_provider_selection_source_labels.md"]
-    require(contract, "Status: COMPLETED / ACCEPTED", "accepted state")
-    require(contract, "Configured real Fitbit operator verification remains W-5", "W-5 boundary")
-    require(contract, "Parent phase: W-4 CURRENT / NOT_COMPLETED", "parent W-4 boundary")
+    widget_tests = files["app/test/widget_test.dart"]
+    for marker in (
+        "Google Health user UX stays concise in sleep data source card",
+        "Google Health operator details remain under advanced tools",
+        "Mock provider stays credential-free and skips Fitbit status",
+        "Fitbit UI keeps real operator verification pending",
+        "Mock provider must not query Fitbit status.",
+    ):
+        require(widget_tests, marker, "provider/source widget regression")
+
+    contract = files["docs/v210_flutter_sleep_provider_source_ui.md"]
+    require(contract, "Status: IMPLEMENTED / NOT_ACCEPTED", "W-4b contract state")
+    require(contract, "Parent phase: W-4 CURRENT / NOT_COMPLETED", "W-4 parent state")
+    require(contract, "configured real Fitbit operator verification in W-5", "W-5 boundary")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
-    assert_hashes(W3_ACCEPTED_BOUNDARY_HASHES, "Accepted W-3 runtime boundary")
+    assert_hashes(ACCEPTED_BACKEND_HASHES, "Accepted backend boundary")
 
     for relative, text in files.items():
         assert_no_sensitive_values(relative, text)
 
-    print("v210_sleep_provider_selection_status: completed-accepted")
-    print("v210_sleep_provider_selection_completed_small_commit: W-4a")
-    print("v210_sleep_provider_selection_current_small_commit: W-4b")
-    print("v210_sleep_provider_selection_parent_phase: W-4-current-not-completed")
-    print("v210_sleep_provider_selection_real_operator_execution: false")
-    print("v210_sleep_provider_selection_release_records_changed: false")
-    print("[v210-sleep-provider-selection-source-labels-check] OK")
+    print("v210_flutter_sleep_provider_source_ui_status: implemented-not-accepted")
+    print("v210_flutter_sleep_provider_source_ui_current_small_commit: W-4b")
+    print("v210_flutter_sleep_provider_source_ui_parent_phase: W-4-current-not-completed")
+    print("v210_flutter_sleep_provider_source_ui_real_operator_execution: false")
+    print("v210_flutter_sleep_provider_source_ui_release_records_changed: false")
+    print("[v210-flutter-sleep-provider-source-ui-check] OK")
 
 
 if __name__ == "__main__":

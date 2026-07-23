@@ -11,6 +11,7 @@ import '../models/google_health_connection_ux.dart';
 import '../models/google_health_diagnostics.dart';
 import '../models/google_health_preflight.dart';
 import '../models/google_health_self_check.dart';
+import '../models/sleep_provider_selection.dart';
 import '../models/sleep_summary.dart';
 import '../models/report_handoff_context.dart';
 import '../models/voice_input_demo.dart';
@@ -140,10 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _postAdviceChatError;
   String? _googleHealthDebugError;
   String? _googleHealthConnectionUxError;
+  String? _sleepProviderSelectionError;
 
   List<CharacterPreset> _characters = [];
   CharacterPreset? _selectedCharacter;
   SleepSummary? _sleepSummary;
+  SleepProviderSelectionStatus? _sleepProviderSelectionStatus;
   FitbitStatus? _fitbitStatus;
   FitbitConnectResponse? _fitbitConnectResponse;
   DemoStatus? _demoStatus;
@@ -181,13 +184,33 @@ class _HomeScreenState extends State<HomeScreen> {
       final status = await widget.apiClient.fetchHealthStatus();
       final characters = await widget.apiClient.fetchCharacters();
       final sleepSummary = await widget.apiClient.fetchSleepSummary();
-      final fitbitStatus = await widget.apiClient.fetchFitbitStatus();
+
+      SleepProviderSelectionStatus? providerSelectionStatus;
+      String? providerSelectionError;
+      FitbitStatus? fitbitStatus;
+
+      try {
+        providerSelectionStatus =
+            await widget.apiClient.fetchSleepProviderSelectionStatus();
+      } catch (error) {
+        providerSelectionError = _formatUserFacingError(error);
+      }
+
+      if (providerSelectionStatus?.isFitbit == true) {
+        try {
+          fitbitStatus = await widget.apiClient.fetchFitbitStatus();
+        } catch (error) {
+          providerSelectionError ??= _formatUserFacingError(error);
+        }
+      }
 
       setState(() {
         _backendStatus = status;
         _characters = characters;
         _selectedCharacter = characters.isNotEmpty ? characters.first : null;
         _sleepSummary = sleepSummary;
+        _sleepProviderSelectionStatus = providerSelectionStatus;
+        _sleepProviderSelectionError = providerSelectionError;
         _fitbitStatus = fitbitStatus;
       });
     } catch (error) {
@@ -1653,6 +1676,221 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget _buildSleepDataSourceSection(BuildContext context) {
+    final selection = _sleepProviderSelectionStatus;
+    final sleepSummary = _sleepSummary;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Sleep Data Source',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'バックエンドで選ばれているproviderと、今回の睡眠データ元を分けて表示します。',
+        ),
+        const SizedBox(height: 12),
+        Container(
+          key: const Key('sleep-data-source-section'),
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (_isLoading && selection == null) ...[
+                const LinearProgressIndicator(),
+                const SizedBox(height: 12),
+                const Text('sleep provider設定を読み込み中です。'),
+              ] else if (selection == null) ...[
+                const Text(
+                  '設定中のsleep providerを確認できませんでした。睡眠サマリーは引き続き利用できます。',
+                ),
+                if (_sleepProviderSelectionError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(_sleepProviderSelectionError!),
+                ],
+                const SizedBox(height: 8),
+                Text(
+                  '今回のデータ元: ${sleepSummary?.displaySource ?? '未確認'}',
+                ),
+              ] else ...[
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildStatusChip(
+                      '設定',
+                      selection.displayConfiguredState,
+                    ),
+                    _buildStatusChip(
+                      'データ種別',
+                      sleepSummary?.displayDataKind ?? '読み込み中',
+                    ),
+                    _buildStatusChip(
+                      '取得状態',
+                      sleepSummary?.displayAvailability ?? '読み込み中',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '設定中のprovider: ${selection.configuredProviderLabel}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '今回のデータ元: ${sleepSummary?.displaySource ?? '未確認'}',
+                ),
+                Text(
+                  '選択方法: ${selection.displaySelectionMode}',
+                ),
+                const SizedBox(height: 12),
+                if (!selection.configuredProviderSupported) ...[
+                  const Text(
+                    '未対応のprovider設定です。バックエンドのSLEEP_PROVIDERを確認してください。',
+                  ),
+                ] else if (selection.isGoogleHealth) ...[
+                  _buildGoogleHealthUserSummary(context),
+                ] else if (selection.isFitbit) ...[
+                  _buildFitbitUserSummary(context),
+                ] else ...[
+                  const Text(
+                    '外部サービスへの接続は不要です。credential不要のデモデータで日次ループを確認できます。',
+                  ),
+                ],
+                if (selection.changeRequiresBackendRestart) ...[
+                  const SizedBox(height: 12),
+                  const Text(
+                    'provider変更はバックエンド設定の更新と再起動後に反映されます。',
+                  ),
+                ],
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGoogleHealthUserSummary(BuildContext context) {
+    final connectionUx = _googleHealthConnectionUx;
+
+    if (_isRefreshingGoogleHealthConnectionUx && connectionUx == null) {
+      return const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LinearProgressIndicator(),
+          SizedBox(height: 8),
+          Text('Google Healthの接続状態を確認中です。'),
+        ],
+      );
+    }
+
+    if (_googleHealthConnectionUxError != null && connectionUx == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Google Healthの接続状態を確認できませんでした。'),
+          const SizedBox(height: 4),
+          Text(_googleHealthConnectionUxError!),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: _refreshGoogleHealthConnectionUx,
+            icon: const Icon(Icons.refresh),
+            label: const Text('状態を再読み込み'),
+          ),
+        ],
+      );
+    }
+
+    if (connectionUx == null) {
+      return const Text('Google Healthの接続状態を読み込み中です。');
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          connectionUx.title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4),
+        Text(connectionUx.message),
+        if (connectionUx.hasUserGuidance) ...[
+          const SizedBox(height: 8),
+          Text(connectionUx.userGuidance),
+        ],
+        const SizedBox(height: 8),
+        Text('次の操作: ${connectionUx.nextAction}'),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: _isRefreshingGoogleHealthConnectionUx
+              ? null
+              : _refreshGoogleHealthConnectionUx,
+          icon: const Icon(Icons.refresh),
+          label: Text(
+            _isRefreshingGoogleHealthConnectionUx ? '確認中...' : '状態を再読み込み',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFitbitUserSummary(BuildContext context) {
+    final fitbitStatus = _fitbitStatus;
+    final fitbitConnectResponse = _fitbitConnectResponse;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (fitbitStatus == null) ...[
+          const Text('Fitbitのローカル接続状態を確認できませんでした。'),
+        ] else ...[
+          Text(
+            'Fitbit状態: ${fitbitStatus.displayConnectionState}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Text(fitbitStatus.displayMessage),
+        ],
+        const SizedBox(height: 8),
+        const Text(
+          '実OAuth・権限・実睡眠取得の受け入れ確認はW-5まで未完了です。',
+        ),
+        const SizedBox(height: 8),
+        FilledButton.tonal(
+          onPressed: _isConnectingHealthData ? null : _connectHealthData,
+          child: Text(
+            _isConnectingHealthData ? '確認中...' : 'Fitbit接続を確認',
+          ),
+        ),
+        if (_isConnectingHealthData) ...[
+          const SizedBox(height: 8),
+          const LinearProgressIndicator(),
+        ],
+        if (fitbitConnectResponse != null) ...[
+          const SizedBox(height: 8),
+          Text(fitbitConnectResponse.displayMessage),
+          if (fitbitConnectResponse.ready &&
+              fitbitConnectResponse.connectUrl != null &&
+              fitbitConnectResponse.connectUrl!.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: _openHealthDataConnectUrl,
+              child: const Text('認証ページを開く'),
+            ),
+          ],
+        ],
+      ],
+    );
+  }
+
   Widget _buildHealthDataStatusSection(BuildContext context) {
     final fitbitStatus = _fitbitStatus;
     final fitbitConnectResponse = _fitbitConnectResponse;
@@ -1684,12 +1922,12 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Health Data Status',
+          'Fitbit Operator Status',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         if (fitbitStatus == null)
-          const Text('ヘルスデータ連携の状態を読み込み中です。')
+          const Text('Fitbitのローカル状態を読み込み中です。')
         else
           Container(
             width: double.infinity,
@@ -1712,7 +1950,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     _isConnectingHealthData
                         ? '確認中...'
-                        : 'ヘルスデータ連携を確認',
+                        : 'Fitbit接続を確認',
                   ),
                 ),
                 if (_isConnectingHealthData) ...[
@@ -1788,7 +2026,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Expanded(
               child: Text(
-                'Google Health Connection',
+                'Google Health Operator Connection Details',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -1807,10 +2045,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'ユーザー向けのGoogle Health接続状態です。token / secret / raw command は表示せず、実APIは安全ガードがOFFにしない限り呼びません。',
+          '開発者・オペレーター向けの詳細です。通常ユーザー向け表示は上のSleep Data Sourceに限定し、token / secret / raw commandは表示しません。',
         ),
         const SizedBox(height: 12),
         Container(
+          key: const Key('google-health-operator-details'),
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -3656,6 +3895,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildVisualAssetPreviewSection(context),
 
                     const SizedBox(height: 24),
+                    _buildSleepDataSourceSection(context),
+
+                    const SizedBox(height: 24),
                     _buildSleepSummarySection(context),
 
                     const SizedBox(height: 24),
@@ -3700,8 +3942,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 32),
                     _buildMotionDemoSection(context),
 
-                    const SizedBox(height: 24),
-                    _buildHealthDataStatusSection(context),
+                    if (_sleepProviderSelectionStatus?.isFitbit == true) ...[
+                      const SizedBox(height: 24),
+                      _buildHealthDataStatusSection(context),
+                    ],
 
                     const SizedBox(height: 24),
                     _buildGoogleHealthConnectionUxSection(context),

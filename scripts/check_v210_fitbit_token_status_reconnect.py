@@ -82,7 +82,7 @@ def main() -> None:
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
     require(checklist, "Current small commit: W-4", "W-4 current commit")
-    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-4 incomplete state")
+    require(checklist, "Current small-commit state: IMPLEMENTED / NOT_ACCEPTED", "W-4 incomplete state")
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
     require(checklist, "W-2  COMPLETED / ACCEPTED", "W-2 queue state")

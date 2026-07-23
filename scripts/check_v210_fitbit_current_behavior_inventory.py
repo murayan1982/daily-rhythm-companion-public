@@ -20,7 +20,7 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-# Files outside the accepted W-2/W-3 change surfaces remain pinned to the W-1 baseline.
+# Backend and stable model files outside later accepted change surfaces remain pinned to the W-1 baseline.
 W1_UNCHANGED_IMPLEMENTATION_HASHES = {
     "backend/app/config.py": "063b9fdd7c1b5c3132a5885eddb56fc2b2202d45b202dda25b745393b35ccc06",
     "backend/app/api/fitbit.py": "44463bb3ce7c0e325c7a2a31602a68b0bc436cff615ef03ea70a3d4be6641b66",
@@ -30,8 +30,6 @@ W1_UNCHANGED_IMPLEMENTATION_HASHES = {
     "backend/app/services/sleep_providers/factory.py": "b898031e0b499a00ff88e5355e3851b280436377d0d0f35263d68e481289c3e6",
     "backend/tests/test_fitbit_current_state_contract.py": "fad33f7a99f59f60903d84cccdb14b8d58c715f2666a74c97ff7dbdaae0f67bb",
     "app/lib/models/sleep_summary.dart": "f28173aeb89b996e284771243fe6cbd6e037098a634647b827ac096cef4d11e8",
-    "app/lib/services/backend_api_client.dart": "98bbd40caef0c6a55892dfd9d9a146d524e3427f0a2cfe3ce71cc36eb34fab25",
-    "app/lib/screens/home_screen.dart": "344ec16c252448ed89087818a66432522b5e162b2f58c52c3b5660bb33847e90",
     "app/test/fitbit_current_state_contract_test.dart": "d753b8163410e78dd33c354a7adfab0153358b598f741743b300b8f254e9acb0",
     "app/pubspec.yaml": "fe4921649f69a5c9a7fe9dc4caad7d41f796cdb1b6adcd8687974a89cec85f86",
 }
@@ -121,7 +119,8 @@ def main() -> None:
     print("v210_fitbit_inventory_current_small_commit: W-4")
     print("v210_fitbit_inventory_w2_runtime_changed: True")
     print("v210_fitbit_inventory_w2_flutter_changed: True")
-    print("v210_fitbit_inventory_existing_tests_changed: False")
+    print("v210_fitbit_inventory_w4b_flutter_changed: True")
+    print("v210_fitbit_inventory_w4b_tests_changed: True")
     print("v210_fitbit_inventory_release_records_changed: False")
     print("v210_fitbit_inventory_mock_safe: True")
     print("v210_fitbit_inventory_real_operator_execution: False")

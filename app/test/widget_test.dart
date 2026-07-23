@@ -12,6 +12,7 @@ import 'package:app/models/google_health_connection_ux.dart';
 import 'package:app/models/google_health_diagnostics.dart';
 import 'package:app/models/google_health_preflight.dart';
 import 'package:app/models/google_health_self_check.dart';
+import 'package:app/models/sleep_provider_selection.dart';
 import 'package:app/models/sleep_summary.dart';
 import 'package:app/screens/home_screen.dart';
 import 'package:app/services/backend_api_client.dart';
@@ -846,10 +847,30 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    final sourceSection = find.byKey(const Key('sleep-data-source-section'));
+    expect(sourceSection, findsOneWidget);
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('設定中のprovider: Google Health'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('今回のデータ元: Google Health'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('データ種別: 実データ'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Sleep Summary'), findsOneWidget);
-    expect(find.text('状態: 連携済み'), findsOneWidget);
-    expect(find.text('Provider: Google Health'), findsNWidgets(2));
-    expect(find.text('実睡眠データを取得できています。'), findsOneWidget);
     expect(find.text('実データ'), findsOneWidget);
     expect(find.text('睡眠時間: 7時間0分'), findsOneWidget);
     expect(find.textContaining('睡眠評価:'), findsNothing);
@@ -979,7 +1000,7 @@ void main() {
   });
 
 
-  testWidgets('Google Health connection UX renders user-facing safe status', (
+  testWidgets('Google Health user UX stays concise in sleep data source card', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -989,35 +1010,167 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Google Health Connection'), findsOneWidget);
-    expect(find.textContaining('ユーザー向けのGoogle Health接続状態'), findsOneWidget);
-    expect(find.text('状態: モックモード'), findsOneWidget);
-    expect(find.text('重要度: info'), findsOneWidget);
-    expect(find.text('実API: OFF'), findsOneWidget);
-    expect(find.text('モック睡眠データで動作中'), findsOneWidget);
-    expect(find.textContaining('開発用のモック睡眠データ'), findsOneWidget);
-    expect(find.text('Real API safety: OFF / 安全ガード中'), findsOneWidget);
-    expect(find.textContaining('サマリー: 通常のローカル開発では安全なモック睡眠データ'), findsOneWidget);
-    expect(find.textContaining('ユーザー向け: 通常の確認はこのままでOK'), findsOneWidget);
-    expect(find.textContaining('安全ガード: real API requests は通常OFF'), findsOneWidget);
-    expect(find.textContaining('安全メモ: mock-safe が既定です'), findsOneWidget);
-    expect(find.text('状態の理由'), findsOneWidget);
-    expect(find.text('段階: Mock-safe development'), findsOneWidget);
-    expect(find.textContaining('理由: SLEEP_PROVIDER is not google_health'), findsOneWidget);
-    expect(find.text('Safe default: mock sleep'), findsOneWidget);
-    expect(find.text('接続ガイド'), findsOneWidget);
-    expect(find.textContaining('1. 日次ループやUI確認は'), findsOneWidget);
-    expect(find.text('接続 / 継続'), findsOneWidget);
-    expect(find.text('継続: このまま使う'), findsOneWidget);
-    expect(find.text('確認: Google Health設定は後で確認'), findsOneWidget);
-    expect(find.text('再確認 / Retry'), findsOneWidget);
-    expect(find.text('再確認: 状態を再読み込み'), findsOneWidget);
-    expect(find.text('安全性: 安全'), findsWidgets);
-    expect(find.text('開発者向け詳細'), findsOneWidget);
-    expect(find.textContaining('通常ユーザーには不要なready状態'), findsOneWidget);
-    expect(find.textContaining('サマリー: SLEEP_PROVIDER is not google_health'), findsOneWidget);
-    expect(find.text('User visible details limited: ready'), findsOneWidget);
+    final sourceSection = find.byKey(const Key('sleep-data-source-section'));
+    expect(sourceSection, findsOneWidget);
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('モック睡眠データで動作中'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.textContaining('開発用のモック睡眠データ'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.textContaining('次の操作:'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('状態の理由'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('開発者向け詳細'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('接続 / 継続'),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('Google Health operator details remain under advanced tools', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: HomeScreen(apiClient: _FakeBackendApiClient()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final operatorDetails =
+        find.byKey(const Key('google-health-operator-details'));
+    expect(operatorDetails, findsOneWidget);
+    expect(
+      find.descendant(
+        of: operatorDetails,
+        matching: find.text('状態の理由'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: operatorDetails,
+        matching: find.text('開発者向け詳細'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: operatorDetails,
+        matching: find.text('接続 / 継続'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Google Health Operator Connection Details'), findsOneWidget);
     expect(find.text('Checklist status: mock_mode'), findsOneWidget);
+  });
+
+  testWidgets('Mock provider stays credential-free and skips Fitbit status', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: HomeScreen(apiClient: _MockProviderBackendApiClient()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final sourceSection = find.byKey(const Key('sleep-data-source-section'));
+    expect(sourceSection, findsOneWidget);
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('設定中のprovider: サンプルデータ'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('今回のデータ元: サンプルデータ'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.textContaining('外部サービスへの接続は不要'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Fitbit Operator Status'), findsNothing);
+  });
+
+  testWidgets('Fitbit UI keeps real operator verification pending', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: HomeScreen(apiClient: _FitbitProviderBackendApiClient()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final sourceSection = find.byKey(const Key('sleep-data-source-section'));
+    expect(sourceSection, findsOneWidget);
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('設定中のprovider: Fitbit（実利用検証待ち）'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('Fitbit状態: ローカルトークン検出'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.textContaining('受け入れ確認はW-5まで未完了'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sourceSection,
+        matching: find.text('Fitbit状態: 連携済み'),
+      ),
+      findsNothing,
+    );
+    expect(find.text('Fitbit Operator Status'), findsOneWidget);
   });
 
   testWidgets('Google Health developer check renders safe status fields', (
@@ -1757,6 +1910,38 @@ class _FakeBackendApiClient extends BackendApiClient {
   }
 
   @override
+  Future<SleepProviderSelectionStatus>
+      fetchSleepProviderSelectionStatus() async {
+    return const SleepProviderSelectionStatus(
+      configuredProvider: 'google_health',
+      configuredProviderLabel: 'Google Health',
+      configuredProviderRole: 'configured_real_provider',
+      configuredProviderSupported: true,
+      selectionMode: 'backend_config',
+      changeRequiresBackendRestart: true,
+      availableProviders: [
+        SleepProviderOption(
+          provider: 'mock',
+          displayLabel: 'サンプルデータ',
+          role: 'credential_free_default',
+        ),
+        SleepProviderOption(
+          provider: 'google_health',
+          displayLabel: 'Google Health',
+          role: 'configured_real_provider',
+        ),
+        SleepProviderOption(
+          provider: 'fitbit',
+          displayLabel: 'Fitbit（実利用検証待ち）',
+          role: 'legacy_real_provider',
+          realOperatorVerificationRequired: true,
+        ),
+      ],
+      message: 'Selected by backend configuration.',
+    );
+  }
+
+  @override
   Future<FitbitStatus> fetchFitbitStatus() async {
     return const FitbitStatus(
       connected: false,
@@ -2150,6 +2335,99 @@ class _FakeBackendApiClient extends BackendApiClient {
         updatedAt: '2026-05-08T13:59:04.157697+00:00',
       ),
     ];
+  }
+}
+
+
+class _MockProviderBackendApiClient extends _FakeBackendApiClient {
+  const _MockProviderBackendApiClient();
+
+  @override
+  Future<SleepProviderSelectionStatus>
+      fetchSleepProviderSelectionStatus() async {
+    return const SleepProviderSelectionStatus(
+      configuredProvider: 'mock',
+      configuredProviderLabel: 'サンプルデータ',
+      configuredProviderRole: 'credential_free_default',
+      configuredProviderSupported: true,
+      selectionMode: 'backend_config',
+      changeRequiresBackendRestart: true,
+      availableProviders: [
+        SleepProviderOption(
+          provider: 'mock',
+          displayLabel: 'サンプルデータ',
+          role: 'credential_free_default',
+        ),
+      ],
+      message: 'Selected by backend configuration.',
+    );
+  }
+
+  @override
+  Future<SleepSummary> fetchSleepSummary() async {
+    return const SleepSummary(
+      date: '2026-05-04',
+      totalSleepMinutes: 390,
+      efficiency: 84,
+      source: 'mock',
+      available: true,
+      isRealData: false,
+    );
+  }
+
+  @override
+  Future<FitbitStatus> fetchFitbitStatus() async {
+    throw StateError('Mock provider must not query Fitbit status.');
+  }
+}
+
+
+class _FitbitProviderBackendApiClient extends _FakeBackendApiClient {
+  const _FitbitProviderBackendApiClient();
+
+  @override
+  Future<SleepProviderSelectionStatus>
+      fetchSleepProviderSelectionStatus() async {
+    return const SleepProviderSelectionStatus(
+      configuredProvider: 'fitbit',
+      configuredProviderLabel: 'Fitbit（実利用検証待ち）',
+      configuredProviderRole: 'legacy_real_provider',
+      configuredProviderSupported: true,
+      selectionMode: 'backend_config',
+      changeRequiresBackendRestart: true,
+      availableProviders: [
+        SleepProviderOption(
+          provider: 'fitbit',
+          displayLabel: 'Fitbit（実利用検証待ち）',
+          role: 'legacy_real_provider',
+          realOperatorVerificationRequired: true,
+        ),
+      ],
+      message: 'Selected by backend configuration.',
+    );
+  }
+
+  @override
+  Future<SleepSummary> fetchSleepSummary() async {
+    return const SleepSummary(
+      date: '2026-05-04',
+      totalSleepMinutes: 0,
+      source: 'fitbit',
+      available: false,
+      isRealData: false,
+      unavailableReason: 'refresh_required',
+    );
+  }
+
+  @override
+  Future<FitbitStatus> fetchFitbitStatus() async {
+    return const FitbitStatus(
+      connected: false,
+      provider: 'fitbit',
+      message: 'Local token-like fields were detected.',
+      connectionState: 'token_present_unverified',
+      verified: false,
+    );
   }
 }
 

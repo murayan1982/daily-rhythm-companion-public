@@ -5,7 +5,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: W-4b — Flutter provider/source-label UI and simplified Google Health user UX (**CURRENT / NOT_COMPLETED**)
+Current small commit: W-4b — Flutter provider/source-label UI and simplified Google Health user UX (**IMPLEMENTED / NOT_ACCEPTED**)
 Strategic target: v3.0.0
 
 ---
@@ -480,13 +480,13 @@ V-1  PLANNED                  Character display extraction and deterministic sta
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-W-1, W-2, W-3, and W-4a are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-4a implementation commit `1619b0b` added the read-only provider-selection metadata contract and was accepted on 2026-07-23 after compileall, W-1/W-2/W-3/W-4a checks, v2.0.x guards, 8 focused backend tests, 92 full backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4b is now the current small commit and owns Flutter provider/source-label presentation and simplified Google Health user UX while retaining operator diagnostics. W-4 remains CURRENT / NOT_COMPLETED. W-5 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, fake-HTTP success, metadata/status API success, or UI source-label work.
+W-1, W-2, W-3, and W-4a are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-4a implementation commit `1619b0b` added the read-only provider-selection metadata contract and was accepted on 2026-07-23 after compileall, W-1/W-2/W-3/W-4a checks, v2.0.x guards, 8 focused backend tests, 92 full backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4b is the current small commit. Its Flutter provider/source-label presentation, simplified Google Health user surface, and retained Advanced diagnostics are implemented but not yet accepted. W-4 remains CURRENT / NOT_COMPLETED. W-5 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, fake-HTTP success, metadata/status API success, or UI source-label work.
 
 Current W-4 split:
 
 ```text
 W-4a  COMPLETED / ACCEPTED   Read-only GET /sleep/providers metadata contract
-W-4b  CURRENT / NOT_COMPLETED  Flutter configured-provider/data-source presentation and
+W-4b  IMPLEMENTED / NOT_ACCEPTED  Flutter configured-provider/data-source presentation and
                                 simplified Google Health UX with diagnostics retained
 ```
 

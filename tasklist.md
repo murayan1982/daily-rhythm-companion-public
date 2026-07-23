@@ -12,7 +12,7 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: W-4b CURRENT / NOT_COMPLETED
+current small commit: W-4b IMPLEMENTED / NOT_ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -66,7 +66,7 @@ Status: CURRENT / NOT_COMPLETED
 
 ```text
 W-4a  COMPLETED / ACCEPTED   read-only sleep-provider selection status contract
-W-4b  CURRENT / NOT_COMPLETED  Flutter provider/source-label UI and simplified
+W-4b  IMPLEMENTED / NOT_ACCEPTED  Flutter provider/source-label UI and simplified
                                 Google Health user UX with retained diagnostics
 ```
 
@@ -98,7 +98,7 @@ Status: COMPLETED / ACCEPTED
 
 ### W-4b — Flutter provider/source-label UI and simplified Google Health user UX
 
-Status: CURRENT / NOT_COMPLETED
+Status: IMPLEMENTED / NOT_ACCEPTED
 
 目的:
 
@@ -111,7 +111,48 @@ Status: CURRENT / NOT_COMPLETED
 - W-3 backend contractとW-5 configured real Fitbit acceptanceを前倒ししない。
 ```
 
-W-4bの変更対象は、現在のFlutter実コードと既存50件のwidget/model testsを再確認してから固定する。configured real Fitbit operator verificationはW-5まで未完了である。
+W-4b実装はFlutterのprovider model/API client、Home画面の通常ユーザー向けSleep Data Source、Google Health operator detailsのAdvanced境界、mock/Fitbit/Google Healthのmodel・widget回帰テストに限定した。configured real Fitbit operator verificationはW-5まで未完了である。
+
+変更対象:
+
+```text
+app/lib/models/sleep_provider_selection.dart
+app/lib/services/backend_api_client.dart
+app/lib/screens/home_screen.dart
+app/test/sleep_provider_selection_test.dart
+app/test/widget_test.dart
+docs/v210_flutter_sleep_provider_source_ui.md
+docs/DRC_v210_goal_checklist_small_commit.md
+scripts/check_v210_sleep_provider_selection_source_labels.py
+scripts/check_v210_flutter_sleep_provider_source_ui.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+```
+
+実装済み境界:
+
+```text
+- GET /sleep/providersをFlutter model/API clientへ接続した。
+- configured providerとactual SleepSummary source/data kindを別表示する。
+- mock providerではFitbit statusを呼ばない。
+- Google Health通常表示をtitle/message/user guidance/next action/refreshへ簡略化した。
+- 詳細state/actions/developer fieldsとdiagnostics/preflight/self-checkはAdvancedに維持した。
+- Fitbit表示はW-5実利用検証待ちを明示し、verified/connectedを推測しない。
+```
+
+完了条件:
+
+```text
+- W-1/W-2/W-3/W-4a/W-4b checkが通る。
+- v2.0.x guardsが通る。
+- focused Flutter model/widget testsとfull Flutter testが通る。
+- full backend pytestが通る。
+- 差分確認とオペレーター承認が通る。
+```
+
+W-4bは実装済みだが未受け入れである。real Fitbit operator execution、smartphone Web real-provider evidence、W-4完了、W-5完了は行っていない。詳細契約は`docs/v210_flutter_sleep_provider_source_ui.md`。
 
 ---
 
