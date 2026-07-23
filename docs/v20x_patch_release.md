@@ -1,17 +1,33 @@
 # Daily Rhythm Companion v2.0.1 patch release gate
 
 Updated: 2026-07-23
-Status: CURRENT / NOT_COMPLETED
-Active small commit: M-9 patch release preparation
+Status: COMPLETED / ACCEPTED
+Active small commit: none
 Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
+
+## Release result
+
+```text
+release version: v2.0.1
+annotated tag: DRC_v2.0.1
+GitHub Release: published
+source HEAD: 3e4c9f6186ef7195045a445307e14f412924bc26
+fixed ZIP: DailyRhythmCompanion_20260723_143447.zip
+fixed ZIP size bytes: 1493130
+fixed ZIP SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
+builder invocation count: 1
+same-ZIP verification without rebuilding: passed
+post-publication downloaded-asset SHA-256 re-verification: passed
+v2.0.0 historical records: unchanged
+```
 
 ## Purpose
 
-M-9 closes the accepted v2.0.x maintenance scope without changing the published v2.0.0 release record. It adds a final committed-source gate, a one-time fixed-ZIP builder, same-artifact verification, and the patch-release record contract for v2.0.1.
+M-9 closed the accepted v2.0.x maintenance scope without changing the published v2.0.0 release record. It used a final committed-source gate, a one-time fixed-ZIP builder, same-artifact verification, an explicit approval boundary, and a post-publication SHA-256 check for v2.0.1.
 
 ## Accepted patch scope
 
-The v2.0.1 patch candidate contains only the accepted M-1 through M-8 maintenance work:
+The v2.0.1 release contains only the accepted M-1 through M-8 maintenance work:
 
 ```text
 - post-v2.0.0 maintenance source of truth
@@ -28,116 +44,86 @@ No new user-facing subsystem, real provider acceptance, production hosting work,
 
 ## Final committed-source gate
 
-The final source gate is:
+The pre-publication source gate was:
 
 ```powershell
 python scripts\check_v20x_patch_release.py --source-tree --with-flutter
 ```
 
-It requires:
+At execution time it required clean official Public `main`, `HEAD == origin/main`, one Public root commit, the immutable annotated `DRC_v2.0.0` tag, absence of `DRC_v2.0.1`, accepted M-1 through M-8 state, M-9 preparation state, compileall, backend pytest, Flutter test, historical-record hashes, and unchanged `backend/local_data`.
 
-```text
-- the official Public repository root
-- branch main
-- a clean tracked and untracked working tree
-- HEAD == main == origin/main
-- exactly one Public root commit
-- the annotated DRC_v2.0.0 baseline tag remains present
-- DRC_v2.0.1 does not exist yet
-- M-1 through M-8 remain COMPLETED / ACCEPTED
-- M-9 remains CURRENT / NOT_COMPLETED
-- compileall, backend pytest, and Flutter test pass
-- v2.0.0 historical normalized-content hashes remain unchanged
-- backend/local_data is not created or modified
-```
-
-Run `git fetch origin main --tags` before this gate so `origin/main` and local tags are current. The gate does not create a ZIP, tag, or GitHub Release.
+The gate passed for source HEAD `3e4c9f6186ef7195045a445307e14f412924bc26`.
 
 ## One-time fixed ZIP build
 
-After the committed-source gate passes and the preparation commit is pushed:
+The fixed artifact was built with:
 
 ```powershell
 .\build_v201_fixed_release_zip_from_head.ps1
 ```
 
-The builder:
+The builder invoked `build_release.bat release` exactly once from a detached worktree at the recorded committed HEAD. It produced exactly one ZIP and did not verify, rebuild, tag, or publish the artifact.
 
 ```text
-- repeats the strict committed-source gate
-- creates a detached temporary worktree from the recorded Public HEAD
-- invokes build_release.bat release exactly once
-- expects exactly one ZIP from that invocation
-- refuses to overwrite an existing destination
-- moves that ZIP to release/
-- prints the source HEAD, file size, and SHA-256
-- does not verify, rebuild, tag, or publish the artifact
+fixed ZIP: DailyRhythmCompanion_20260723_143447.zip
+size: 1493130 bytes
+SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
 ```
 
-The output is the fixed artifact. Do not rerun the builder merely to change its timestamp or filename.
+The builder must not be rerun for this release.
 
 ## Same-ZIP verification
 
-Bind the emitted path and SHA-256, then verify the same file:
+The exact fixed ZIP was verified without rebuilding:
 
 ```powershell
-$zip = "release\DailyRhythmCompanion_YYYYMMDD_HHMMSS.zip"
-$sha = "<builder-emitted-sha256>"
-$head = (git rev-parse HEAD).Trim()
-
 python scripts\check_v20x_patch_release.py `
-  --release-zip $zip `
-  --expected-sha256 $sha `
-  --expected-source-head $head `
+  --release-zip "release\DailyRhythmCompanion_20260723_143447.zip" `
+  --expected-sha256 "ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1" `
+  --expected-source-head "3e4c9f6186ef7195045a445307e14f412924bc26" `
   --with-flutter
 ```
 
-The verifier:
+The verifier checked the hash before and after inspection, file size and modification timestamp stability, release-package hygiene, ZIP CRC, one package root, v2.0.1 metadata, M-9 files, v2.0.0 historical hashes, extracted backend tests, extracted Flutter tests, and absence of builder invocation.
+
+## Approval and publication
+
+After the same-ZIP verification passed, the exact artifact tuple and gate results were presented to the operator. Explicit final approval was received before publication.
+
+The release then created and published:
 
 ```text
-- hashes the supplied ZIP before and after verification
-- records its size and modification timestamp before and after verification
-- runs the release-package hygiene validator
-- runs ZIP CRC validation
-- requires one DailyRhythmCompanion package root
-- verifies v2.0.1 metadata, M-9 files, and v2.0.0 historical hashes inside the ZIP
-- extracts the supplied ZIP to a temporary directory
-- runs the aggregate maintenance gate from the extracted ZIP
-- runs Flutter test from the extracted ZIP when --with-flutter is present
-- confirms the supplied ZIP did not change
-- never invokes a release builder
+annotated tag: DRC_v2.0.1
+annotated tag target: 3e4c9f6186ef7195045a445307e14f412924bc26
+GitHub Release title: Daily Rhythm Companion v2.0.1
+GitHub Release asset: DailyRhythmCompanion_20260723_143447.zip
 ```
 
-## SHA-256 and release record
+The uploaded asset reported the same size and SHA-256. The published asset was downloaded and independently rehashed; its SHA-256 matched `ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1`.
 
-A ZIP cannot safely contain its own final SHA-256 without changing that SHA. Therefore the exact final artifact tuple is recorded outside the ZIP in:
+## Non-circular SHA rule
 
-```text
-- the annotated DRC_v2.0.1 tag message
-- the GitHub Release body
-- an optional post-publication source record after release acceptance
+The final ZIP does not contain its own final SHA-256. The exact source HEAD, ZIP basename, size, and SHA-256 are recorded outside the ZIP in the annotated tag message, GitHub Release body, and this post-publication source record.
+
+## Current verification commands
+
+Portable post-release record gate:
+
+```powershell
+python scripts\check_v20x_patch_release.py
 ```
 
-Required tuple:
+Strict current-main and annotated-tag gate after the post-release record commit is pushed:
 
-```text
-source HEAD
-fixed ZIP basename
-fixed ZIP size in bytes
-fixed ZIP SHA-256
-same-ZIP verification result
-post-publication SHA-256 re-verification result
+```powershell
+python scripts\check_v20x_patch_release.py --source-tree --with-flutter
 ```
 
-`docs/v201_patch_release_record.md` defines the tracked record fields and current not-yet-released state.
-
-## Approval boundary
-
-After same-ZIP verification, stop and present the artifact tuple and gate outputs. Do not create `DRC_v2.0.1`, publish a GitHub Release, mark M-9 completed, or mark v2.0.1 released until the operator gives explicit final approval.
+Published fixed-ZIP re-verification remains available using the exact path, SHA-256, and release source HEAD shown above. It inspects the released ZIP as-is and never rebuilds it.
 
 ## Historical immutability
 
-The following are not edit targets:
+The following remain unchanged and must not be rewritten:
 
 ```text
 docs/DRC_v200_goal_checklist_small_commit.md

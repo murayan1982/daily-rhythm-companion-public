@@ -95,8 +95,8 @@ def main() -> None:
         require(files[relative], "docs/DRC_v20x_maintenance_checklist.md", f"{relative} active maintenance source")
         require(files[relative], "M-7", f"{relative} accepted M-7 state")
 
-    require(files["README.md"], "Current patch source version: v2.0.1", "README patch source")
-    require(files["roadmap.md"], "Status: In progress", "roadmap maintenance status")
+    require(files["README.md"], "Current released version: v2.0.1", "README released patch")
+    require(files["roadmap.md"], "Status: Completed / released", "roadmap maintenance status")
     require(files["roadmap.md"], "M-1  COMPLETED", "roadmap M-1 completion")
     require(files["roadmap.md"], "M-2  COMPLETED", "roadmap M-2 completion")
     require(files["roadmap.md"], "M-3  COMPLETED", "roadmap M-3 completion")
@@ -119,8 +119,8 @@ def main() -> None:
     require(files["scripts/README.md"], r"python scripts\check_v20x_maintenance_readiness.py", "scripts README M-8 command")
 
     checklist_text = files["docs/DRC_v20x_maintenance_checklist.md"]
-    require(checklist_text, "Status: IN_PROGRESS", "maintenance checklist status")
-    require(checklist_text, "Current small commit: M-9 (patch release preparation)", "maintenance current state")
+    require(checklist_text, "Status: COMPLETED / ACCEPTED", "maintenance checklist status")
+    require(checklist_text, "Current small commit: none (M-9 accepted; v2.0.1 released)", "maintenance current state")
     m1 = section_between(checklist_text, "# M-1", "# M-2")
     require(m1, "Status: COMPLETED", "M-1 completed status")
     m2 = section_between(checklist_text, "# M-2", "# M-3")
@@ -142,8 +142,8 @@ def main() -> None:
     require(m8, "Status: COMPLETED / ACCEPTED", "M-8 accepted status")
     require(m8, "M-8 was accepted on 2026-07-23", "M-8 acceptance record")
     m9 = section_between(checklist_text, "\n## M-9 — Patch release", "# Future-version boundary")
-    require(m9, "Status: CURRENT / NOT_COMPLETED", "M-9 current status")
-    reject(m9, "Status: COMPLETED", "M-9 early completion")
+    require(m9, "Status: COMPLETED / ACCEPTED", "M-9 accepted status")
+    require(m9, "M-9 was accepted on 2026-07-23", "M-9 acceptance record")
 
     baseline = files["docs/post_v200_release_baseline.md"]
     require(baseline, "DRC_v2.0.0", "baseline tag")
@@ -164,10 +164,10 @@ def main() -> None:
         assert_no_obvious_secrets(relative, text)
 
     print("v20x_maintenance_baseline_status: active")
-    print("v20x_maintenance_baseline_released_version: v2.0.0")
+    print("v20x_maintenance_baseline_released_version: v2.0.1")
     print("v20x_maintenance_baseline_patch_source_version: v2.0.1")
     print("v20x_maintenance_baseline_current_line: v2.0.x")
-    print("v20x_maintenance_baseline_current_small_commit: m9-patch-release-preparation")
+    print("v20x_maintenance_baseline_current_small_commit: none")
     print("v20x_maintenance_baseline_m1_completed: True")
     print("v20x_maintenance_baseline_m2_completed: True")
     print("v20x_maintenance_baseline_m3_completed: True")
@@ -176,6 +176,7 @@ def main() -> None:
     print("v20x_maintenance_baseline_m6_completed_accepted: True")
     print("v20x_maintenance_baseline_m7_completed_accepted: True")
     print("v20x_maintenance_baseline_m8_completed_accepted: True")
+    print("v20x_maintenance_baseline_m9_completed_accepted: True")
     print("v20x_maintenance_baseline_historical_records_unchanged: True")
     print("[v20x-maintenance-baseline-check] OK")
 

@@ -1,8 +1,8 @@
 # Daily Rhythm Companion v2.0.x maintenance checklist
 
 Updated: 2026-07-23
-Status: IN_PROGRESS
-Current small commit: M-9 (patch release preparation)
+Status: COMPLETED / ACCEPTED
+Current small commit: none (M-9 accepted; v2.0.1 released)
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -661,134 +661,67 @@ M-8 was accepted on 2026-07-23 after compileall, the aggregate gate with Flutter
 
 ## M-9 — Patch release
 
-Status: CURRENT / NOT_COMPLETED
-Commit title:
+Status: COMPLETED / ACCEPTED
+Preparation commit title:
 
 ```text
 release: prepare v2.0.1 fixed ZIP gate
 ```
 
-### Purpose
+Post-publication record commit title:
 
 ```text
-- Freeze the accepted M-1 through M-8 patch scope.
-- Add the final committed-source gate for the official Public main branch.
-- Add a one-time fixed-ZIP builder from detached committed HEAD.
-- Add same-ZIP verification without rebuilding or timestamp refresh.
-- Prepare v2.0.1 release notes and the patch-release record contract.
-- Stop before tag or GitHub Release publication until explicit final approval.
+docs/test: record v2.0.1 patch release completion
 ```
 
-### Change surface
+### Accepted scope
 
 ```text
-README.md
-roadmap.md
-tasklist.md
-scripts/README.md
-docs/DRC_v20x_maintenance_checklist.md
-docs/v20x_patch_release.md
-docs/v201_patch_release_record.md
-release_notes/v2.0.1.md
-build_v201_fixed_release_zip_from_head.ps1
-scripts/check_v20x_patch_release.py
-scripts/check_v20x_maintenance_baseline.py
-scripts/check_v20x_application_version_metadata.py
-scripts/check_v20x_backend_mock_safe_regression.py
-scripts/check_v20x_framework_fallback_voice_artifact_regression.py
-scripts/check_v20x_temporary_lifecycle_limits.py
-scripts/check_v20x_web_cors_origins.py
-scripts/check_v20x_fitbit_current_state_contract.py
-scripts/check_v20x_maintenance_readiness.py
+- M-1 through M-8 accepted maintenance work only.
+- No new large user-facing subsystem.
+- No configured real Fitbit acceptance.
+- No real STT, realtime voice, Live2D/VTS execution, account system, cloud sync, or production-hosting claim.
 ```
 
-### Explicit non-change surface
+### Final release record
 
 ```text
-docs/DRC_v200_goal_checklist_small_commit.md
-release_notes/v2.0.0.md
-published DRC_v2.0.0 annotated tag and GitHub Release
-published v2.0.0 fixed ZIP and SHA-256 record
-backend runtime routes, response models, and persistence behavior
-Flutter runtime and widget behavior
-real LLM, TTS, STT, health, OAuth, Fitbit, or motion execution
-build_release.bat
-scripts/check_release_package.py
+source branch: main
+source HEAD: 3e4c9f6186ef7195045a445307e14f412924bc26
+origin/main at build time: 3e4c9f6186ef7195045a445307e14f412924bc26
+annotated tag: DRC_v2.0.1
+GitHub Release: published
+fixed ZIP basename: DailyRhythmCompanion_20260723_143447.zip
+fixed ZIP size bytes: 1493130
+fixed ZIP SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
+builder invocation count: 1
+same-ZIP verification without rebuilding: passed
+backend pytest: 38 passed
+Flutter test: 43 passed
+post-publication downloaded-asset SHA-256 re-verification: passed
+v2.0.0 historical normalized hashes: unchanged
 ```
 
-### Accepted patch scope
+### Accepted process
 
 ```text
-- M-1 through M-8 are COMPLETED / ACCEPTED.
-- Backend semantic version remains 2.0.1.
-- Flutter package version remains 2.0.1+2.
-- backend pytest remains 38 tests at M-8 acceptance.
-- Flutter test remains 43 tests at M-8 acceptance.
-- No new large user-facing subsystem is added.
-- Real Fitbit completion remains v2.1.0 work.
+- The preparation commit froze the accepted M-1 through M-8 scope.
+- The final committed-source gate required clean official Public main with HEAD == origin/main.
+- The fixed ZIP was created once from a detached worktree at the recorded committed HEAD.
+- The same ZIP was verified without rebuilding or timestamp refresh.
+- The source HEAD, ZIP basename, size, and SHA-256 were presented before publication.
+- Explicit final operator approval was received before tag or GitHub Release creation.
+- DRC_v2.0.1 was created as an annotated tag pointing to the recorded source HEAD.
+- The same fixed ZIP was uploaded to the GitHub Release.
+- The published asset was downloaded and its size and SHA-256 matched the local fixed ZIP.
+- No release artifact, tag, or v2.0.0 history was rewritten after publication.
 ```
 
-### Final committed-source gate
+### Historical preparation rule
 
-```text
-- Run from the official Public repository root on main.
-- Require a clean tracked and untracked working tree.
-- Require HEAD == main == origin/main.
-- Require exactly one Public root commit.
-- Require the annotated DRC_v2.0.0 baseline tag to remain present.
-- Require DRC_v2.0.1 to be absent before publication.
-- Run compileall, accepted M-1 through M-8 checks, backend pytest, and Flutter test.
-- Preserve v2.0.0 historical normalized-content hashes and backend/local_data.
-```
+The preparation commit intentionally did not create the fixed ZIP, tag, or GitHub Release and did not mark M-9 complete. Completion was recorded only after all later artifact gates, explicit approval, publication, and post-publication hash verification passed.
 
-Command:
-
-```powershell
-python scripts\check_v20x_patch_release.py --source-tree --with-flutter
-```
-
-### Fixed artifact contract
-
-```text
-- Build only after the preparation commit is committed and pushed.
-- build_v201_fixed_release_zip_from_head.ps1 creates a detached worktree from the recorded HEAD.
-- The builder invokes build_release.bat release exactly once.
-- The builder requires exactly one output ZIP and refuses overwrite.
-- The emitted ZIP path, source HEAD, size, and SHA-256 become the fixed candidate tuple.
-- Verify that exact ZIP with scripts/check_v20x_patch_release.py --release-zip.
-- Hash, size, and modification timestamp must remain unchanged during verification.
-- Do not rebuild merely to change the filename or timestamp.
-```
-
-### Patch-release record contract
-
-```text
-- release_notes/v2.0.1.md is prepared but remains NOT_RELEASED.
-- docs/v201_patch_release_record.md remains PREPARED / NOT_RELEASED.
-- The ZIP cannot contain its own final SHA-256 without changing that SHA.
-- Record source HEAD, ZIP basename, size, and SHA-256 in the annotated tag and GitHub Release body.
-- Re-verify SHA-256 after publication.
-- A later source-record synchronization must not rewrite the tag or release asset.
-```
-
-### Completion requirements
-
-```text
-- All listed M-9 files exist and the M-9 contract check passes.
-- The preparation diff is reviewed and committed as one focused commit.
-- The preparation commit is pushed so HEAD equals origin/main.
-- The strict final committed-source gate with Flutter passes.
-- One fixed ZIP is built exactly once from detached committed HEAD.
-- The same ZIP passes package hygiene, CRC, metadata, historical-hash, backend, and Flutter verification without rebuilding.
-- The final source HEAD, ZIP basename, size, and SHA-256 are presented to the operator.
-- Explicit operator approval is received before creating DRC_v2.0.1 or a GitHub Release.
-- The published ZIP SHA-256 is re-verified after publication.
-- Only then may M-9 become COMPLETED / ACCEPTED and v2.0.1 become RELEASED.
-```
-
-Do not create the fixed ZIP in this preparation commit. Do not record M-9 as completed, create `DRC_v2.0.1`, publish a GitHub Release, or mark v2.0.1 released before the later artifact gates and explicit operator approval pass.
-
----
+M-9 was accepted on 2026-07-23. v2.0.1 is RELEASED. No small commit is currently active.
 
 # Future-version boundary
 

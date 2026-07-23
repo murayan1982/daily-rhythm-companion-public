@@ -1,10 +1,10 @@
 # Daily Rhythm Companion Roadmap
 
 Updated: 2026-07-23
-Current released baseline: v2.0.0 (**RELEASED**)
-Current maintenance line: v2.0.x
-Current patch source version: v2.0.1
-Current small commit: M-9 (patch release preparation)
+Current released version: v2.0.1 (**RELEASED**)
+Immutable capability baseline: v2.0.0
+Current maintenance line: v2.0.x (**COMPLETED**)
+Current small commit: none (M-9 accepted; v2.0.1 released)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -20,6 +20,19 @@ Release / annotated tag: DRC_v2.0.0
 Release status: RELEASED
 Fixed release ZIP: DailyRhythmCompanion_20260722_180426.zip
 Fixed release ZIP SHA-256: b32c7b8a64842480898fcc86ca7838625efb712f1429ab9fe7b33a4001ddc0c1
+Post-publication SHA-256 re-verification: completed
+```
+
+Current v2.0.1 patch release:
+
+```text
+Release / annotated tag: DRC_v2.0.1
+Release status: RELEASED
+Source HEAD: 3e4c9f6186ef7195045a445307e14f412924bc26
+Fixed release ZIP: DailyRhythmCompanion_20260723_143447.zip
+Fixed release ZIP size: 1493130 bytes
+Fixed release ZIP SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
+Same-ZIP verification without rebuilding: completed
 Post-publication SHA-256 re-verification: completed
 ```
 
@@ -165,10 +178,10 @@ The following inventory is the starting point for all post-v2.0.0 planning.
 
 ## v2.0.x - Post-release maintenance and regression hardening
 
-Status: In progress
-Current small commit: M-9 (patch release preparation)
+Status: Completed / released
+Current small commit: none (M-9 accepted; v2.0.1 released)
 Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
-First expected patch target: v2.0.1
+Released patch: v2.0.1
 
 Goal:
 
@@ -217,7 +230,7 @@ Completion direction:
 
 ### v2.0.x provisional small-commit sequence
 
-The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-8 are completed and accepted. M-9 patch release preparation is CURRENT / NOT_COMPLETED.
+The completed checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-9 are completed and accepted, and v2.0.1 is released.
 
 ```text
 M-1  COMPLETED  docs: establish post-v2.0.0 maintenance baseline
@@ -228,7 +241,7 @@ M-5  COMPLETED  fix/test: bound temporary chat sessions and TTS artifacts
 M-6  COMPLETED  fix/test: make Web CORS origins configurable
 M-7  COMPLETED  docs/test: clarify Fitbit current-state contract
 M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
-M-9  CURRENT    release: prepare the final committed-source, one-time fixed-ZIP, same-ZIP verification, and patch release record gates
+M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
 M-2 accepted contract:
@@ -317,18 +330,21 @@ M-8 accepted contract:
 
 The M-8 boundary is `docs/v20x_maintenance_readiness.md`.
 
-M-9 current contract:
+M-9 accepted contract:
 
 ```text
-- Accepted patch scope is frozen to M-1 through M-8.
-- Add a strict clean Public main / origin-main source gate.
-- Build the fixed v2.0.1 ZIP once from detached committed HEAD.
-- Verify the same ZIP without rebuilding and record its SHA-256 externally.
-- Prepare release notes and record fields without claiming release completion.
-- Tag and GitHub Release remain blocked until explicit final approval.
+- The accepted M-1 through M-8 scope was frozen for v2.0.1.
+- The clean official Public main gate passed at source HEAD 3e4c9f6186ef7195045a445307e14f412924bc26.
+- The fixed ZIP was built once from detached committed HEAD.
+- The same ZIP was verified without rebuilding.
+- Fixed ZIP: DailyRhythmCompanion_20260723_143447.zip
+- Size: 1493130 bytes
+- SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
+- Explicit final approval was received before annotated tag and GitHub Release publication.
+- The downloaded published asset matched the recorded SHA-256.
 ```
 
-The M-9 boundary is `docs/v20x_patch_release.md`; the current record template is `docs/v201_patch_release_record.md`.
+The completed M-9 boundary is `docs/v20x_patch_release.md`; the final record is `docs/v201_patch_release_record.md`.
 
 Expected initial change surface:
 

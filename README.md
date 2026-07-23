@@ -4,16 +4,32 @@ Daily Rhythm Companion is a lightweight daily rhythm companion and a public demo
 
 AI Character Framework repository: [https://github.com/murayan1982/ai-character-framework.git](https://github.com/murayan1982/ai-character-framework.git)
 
-Current released baseline: v2.0.0 (**RELEASED**)
-Current maintenance line: v2.0.x
-Current patch source version: v2.0.1
-Current small commit: M-9 (patch release preparation)
+Current released version: v2.0.1 (**RELEASED**)
+Immutable capability baseline: v2.0.0
+Current maintenance line: v2.0.x (**COMPLETED**)
+Current small commit: none (M-9 accepted; v2.0.1 released)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
 ## Current release and maintenance status
 
-Daily Rhythm Companion v2.0.0 is the immutable Public release baseline.
+Daily Rhythm Companion v2.0.1 is the current Public patch release. Daily Rhythm Companion v2.0.0 remains the immutable capability and historical release baseline.
+
+Current v2.0.1 patch release:
+
+```text
+Public repository: murayan1982/daily-rhythm-companion-public
+Release / annotated tag: DRC_v2.0.1
+Release status: RELEASED
+Source HEAD: 3e4c9f6186ef7195045a445307e14f412924bc26
+Fixed release ZIP: DailyRhythmCompanion_20260723_143447.zip
+Fixed release ZIP size: 1493130 bytes
+Fixed release ZIP SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
+Same-ZIP verification without rebuilding: completed
+Post-publication SHA-256 re-verification: completed
+```
+
+Immutable v2.0.0 baseline record:
 
 ```text
 Public repository: murayan1982/daily-rhythm-companion-public
@@ -48,7 +64,7 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 through M-8 are complete and accepted. M-9 patch release preparation is CURRENT / NOT_COMPLETED. This stage adds the committed-source, one-time fixed-ZIP, same-artifact verification, SHA-256 record, and release-note contracts; it does not build the fixed ZIP, create a tag or GitHub Release, or release v2.0.1.
+M-1 through M-9 are complete and accepted. v2.0.1 was released from the accepted M-1 through M-8 scope after the final committed-source gate, one-time fixed-ZIP build, same-artifact verification, explicit final approval, annotated tag publication, GitHub Release publication, and post-publication SHA-256 re-verification all passed.
 
 M-7 accepted contract:
 
@@ -77,15 +93,18 @@ Release artifacts: not created by M-8
 
 See [`docs/v20x_maintenance_readiness.md`](docs/v20x_maintenance_readiness.md).
 
-M-9 current contract:
+M-9 accepted release record:
 
 ```text
 Accepted scope: M-1 through M-8 only
-Final source gate: clean official main with HEAD == origin/main
-Fixed artifact: build once from detached committed HEAD
-Verification: inspect and test the same ZIP without rebuilding
-SHA-256 record: annotated tag and GitHub Release body after final approval
-Current state: NOT_COMPLETED / NOT_RELEASED; no tag or GitHub Release yet
+Final source gate: passed on source HEAD 3e4c9f6186ef7195045a445307e14f412924bc26
+Fixed artifact: DailyRhythmCompanion_20260723_143447.zip, built once from detached committed HEAD
+Fixed artifact size: 1493130 bytes
+Fixed artifact SHA-256: ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1
+Verification: same ZIP inspected and tested without rebuilding
+Release: annotated tag DRC_v2.0.1 and GitHub Release published after explicit final approval
+Post-publication SHA-256 re-verification: completed
+Current state: COMPLETED / ACCEPTED / RELEASED
 ```
 
 See [`docs/v20x_patch_release.md`](docs/v20x_patch_release.md), [`docs/v201_patch_release_record.md`](docs/v201_patch_release_record.md), and [`release_notes/v2.0.1.md`](release_notes/v2.0.1.md).
@@ -118,11 +137,18 @@ python -m pytest -q backend/tests
 # Full local M-8 gate, including Flutter
 python scripts\check_v20x_maintenance_readiness.py --with-flutter
 
-# M-9 preparation contract gate (portable, no Git topology requirement)
+# M-9 post-release record gate
 python scripts\check_v20x_patch_release.py
 
-# Final committed Public source gate after the preparation commit is pushed
+# Strict current-main / annotated-tag gate after the record commit is pushed
 python scripts\check_v20x_patch_release.py --source-tree --with-flutter
+
+# Re-verify the published fixed ZIP as-is; never rebuild it
+python scripts\check_v20x_patch_release.py `
+  --release-zip "release\DailyRhythmCompanion_20260723_143447.zip" `
+  --expected-sha256 "ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1" `
+  --expected-source-head "3e4c9f6186ef7195045a445307e14f412924bc26" `
+  --with-flutter
 ```
 
 The historical v2.0.0 release validators remain available for the tagged release surface, but they are not the primary current-main maintenance suite.

@@ -120,7 +120,7 @@ def main() -> None:
         require(inventory, needle, "M-2 version inventory")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: M-9 (patch release preparation)", "active checklist current state")
+    require(checklist, "Current small commit: none (M-9 accepted; v2.0.1 released)", "active checklist current state")
     m2 = checklist.split("# M-2", 1)[1].split("# M-3", 1)[0]
     require(m2, "Status: COMPLETED", "M-2 completed state")
     m3 = checklist.split("# M-3", 1)[1].split("# M-4", 1)[0]
@@ -139,7 +139,7 @@ def main() -> None:
     require(m8, "Status: COMPLETED / ACCEPTED", "M-8 accepted state")
     require(m8, "M-8 was accepted on 2026-07-23", "M-8 acceptance record")
     m9 = checklist.split("\n## M-9 — Patch release", 1)[1].split("# Future-version boundary", 1)[0]
-    require(m9, "Status: CURRENT / NOT_COMPLETED", "M-9 current state")
+    require(m9, "Status: COMPLETED / ACCEPTED", "M-9 accepted state")
 
     run_baseline_check()
 

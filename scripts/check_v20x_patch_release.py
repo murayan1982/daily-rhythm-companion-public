@@ -1,9 +1,9 @@
-"""Validate the M-9 v2.0.1 patch-release preparation and fixed artifact.
+"""Validate the completed M-9 v2.0.1 release record and fixed artifact.
 
-Portable default mode validates the committed release contract and reruns the
-credential-free aggregate maintenance gate. ``--source-tree`` adds the strict
-Git topology gate required before the one-time fixed-ZIP build. ``--release-zip``
-inspects and tests the supplied ZIP as-is and never invokes a release builder.
+Portable default mode validates the post-publication source record and reruns
+the credential-free aggregate maintenance gate. ``--source-tree`` adds strict
+current-main and annotated-tag validation. ``--release-zip`` inspects and tests
+the published fixed ZIP as-is and never invokes a release builder.
 """
 
 from __future__ import annotations
@@ -21,6 +21,12 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_BACKEND_VERSION = "2.0.1"
 EXPECTED_FLUTTER_VERSION = "2.0.1+2"
+RELEASE_SOURCE_HEAD = "3e4c9f6186ef7195045a445307e14f412924bc26"
+RELEASE_ZIP_BASENAME = "DailyRhythmCompanion_20260723_143447.zip"
+RELEASE_ZIP_SIZE = 1493130
+RELEASE_ZIP_SHA256 = (
+    "ac24378da3a0dcd7227591f8cbaa8bca010dda219a404c3723ae2f7d2716c1d1"
+)
 OFFICIAL_ORIGIN = re.compile(
     r"^(?:https://github\.com/|git@github\.com:)"
     r"murayan1982/daily-rhythm-companion-public(?:\.git)?$"
@@ -121,69 +127,131 @@ def assert_historical_files(*, root: Path = ROOT) -> None:
             )
 
 
-def verify_contract(*, root: Path = ROOT) -> None:
+def verify_contract(*, root: Path = ROOT, state: str = "released") -> None:
     checklist = read("docs/DRC_v20x_maintenance_checklist.md", root=root)
-    require(
-        checklist,
-        "Current small commit: M-9 (patch release preparation)",
-        "active M-9 marker",
-    )
-    for number in range(1, 9):
+    for number in range(1, 10):
         marker = f"M-{number}"
         if marker not in checklist:
             raise AssertionError(f"Missing maintenance task marker: {marker}")
+
     m8 = checklist.split("## M-8", 1)[1].split("\n## M-9 — Patch release", 1)[0]
     require(m8, "Status: COMPLETED / ACCEPTED", "M-8 accepted state")
     require(m8, "M-9 remains PLANNED", "M-8 historical non-advancement record")
     m9 = checklist.split("\n## M-9 — Patch release", 1)[1].split(
         "# Future-version boundary", 1
     )[0]
-    require(m9, "Status: CURRENT / NOT_COMPLETED", "M-9 current state")
-    require(m9, "release: prepare v2.0.1 fixed ZIP gate", "M-9 commit title")
-    require(m9, "Do not create the fixed ZIP in this preparation commit", "M-9 stop rule")
-    reject(m9, "Status: COMPLETED", "M-9 early completion")
 
     for relative in REQUIRED_PATCH_FILES:
         if not (root / relative).is_file():
             raise AssertionError(f"Missing M-9 release file: {relative}")
 
-    for relative in ("README.md", "roadmap.md", "tasklist.md", "scripts/README.md"):
-        text = read(relative, root=root)
-        require(text, "M-9", f"{relative} M-9 status")
-        require(text, "CURRENT", f"{relative} current state")
-        require(text, "v2.0.1", f"{relative} patch version")
+    if state == "candidate":
+        require(
+            checklist,
+            "Current small commit: M-9 (patch release preparation)",
+            "candidate M-9 marker",
+        )
+        require(m9, "Status: CURRENT / NOT_COMPLETED", "candidate M-9 state")
+        require(m9, "release: prepare v2.0.1 fixed ZIP gate", "M-9 commit title")
+        require(
+            m9,
+            "Do not create the fixed ZIP in this preparation commit",
+            "candidate stop rule",
+        )
+        reject(m9, "Status: COMPLETED", "candidate early completion")
 
-    release_policy = read("docs/v20x_patch_release.md", root=root)
-    for needle in (
-        "Status: CURRENT / NOT_COMPLETED",
-        "--source-tree --with-flutter",
-        "invokes build_release.bat release exactly once",
-        "verify the same file",
-        "does not verify, rebuild, tag, or publish the artifact",
-        "Do not create `DRC_v2.0.1`",
-    ):
-        require(release_policy, needle, "M-9 release policy")
+        for relative in ("README.md", "roadmap.md", "tasklist.md", "scripts/README.md"):
+            text = read(relative, root=root)
+            require(text, "M-9", f"{relative} M-9 status")
+            require(text, "CURRENT", f"{relative} candidate state")
+            require(text, "v2.0.1", f"{relative} patch version")
 
-    release_record = read("docs/v201_patch_release_record.md", root=root)
-    for needle in (
-        "Status: PREPARED / NOT_RELEASED",
-        "Release tag: NOT_CREATED",
-        "Fixed release ZIP: NOT_BUILT",
-        "Fixed release ZIP SHA-256: NOT_RECORDED",
-        "The final ZIP SHA-256 is not embedded into the ZIP",
-    ):
-        require(release_record, needle, "v2.0.1 release record")
+        release_policy = read("docs/v20x_patch_release.md", root=root)
+        for needle in (
+            "Status: CURRENT / NOT_COMPLETED",
+            "--source-tree --with-flutter",
+            "invokes build_release.bat release exactly once",
+            "verify the same file",
+            "does not verify, rebuild, tag, or publish the artifact",
+            "Do not create `DRC_v2.0.1`",
+        ):
+            require(release_policy, needle, "candidate M-9 release policy")
 
-    release_notes = read("release_notes/v2.0.1.md", root=root)
-    for needle in (
-        "Status: PREPARED / NOT_RELEASED",
-        "v2.0.1 is a maintenance and regression-hardening patch",
-        "fixed release ZIP: not built",
-        "annotated tag / GitHub Release: not created",
-        "DRC_v2.0.0",
-    ):
-        require(release_notes, needle, "v2.0.1 release notes")
-    reject(release_notes, "Status: RELEASED", "early v2.0.1 release claim")
+        release_record = read("docs/v201_patch_release_record.md", root=root)
+        for needle in (
+            "Status: PREPARED / NOT_RELEASED",
+            "Release tag: NOT_CREATED",
+            "Fixed release ZIP: NOT_BUILT",
+            "Fixed release ZIP SHA-256: NOT_RECORDED",
+            "The final ZIP SHA-256 is not embedded into the ZIP",
+        ):
+            require(release_record, needle, "candidate v2.0.1 release record")
+
+        release_notes = read("release_notes/v2.0.1.md", root=root)
+        for needle in (
+            "Status: PREPARED / NOT_RELEASED",
+            "v2.0.1 is a maintenance and regression-hardening patch",
+            "fixed release ZIP: not built",
+            "annotated tag / GitHub Release: not created",
+            "DRC_v2.0.0",
+        ):
+            require(release_notes, needle, "candidate v2.0.1 release notes")
+        reject(release_notes, "Status: RELEASED", "candidate early release claim")
+    elif state == "released":
+        require(
+            checklist,
+            "Current small commit: none (M-9 accepted; v2.0.1 released)",
+            "completed maintenance marker",
+        )
+        require(m9, "Status: COMPLETED / ACCEPTED", "M-9 accepted state")
+        require(m9, "M-9 was accepted on 2026-07-23", "M-9 acceptance record")
+        require(m9, RELEASE_SOURCE_HEAD, "M-9 source HEAD")
+        require(m9, RELEASE_ZIP_BASENAME, "M-9 fixed ZIP")
+        require(m9, RELEASE_ZIP_SHA256, "M-9 fixed ZIP SHA-256")
+
+        for relative in ("README.md", "roadmap.md", "tasklist.md", "scripts/README.md"):
+            text = read(relative, root=root)
+            require(text, "v2.0.1", f"{relative} patch version")
+            require(text, "RELEASED", f"{relative} released state")
+            require(text, "M-9", f"{relative} M-9 state")
+
+        release_policy = read("docs/v20x_patch_release.md", root=root)
+        for needle in (
+            "Status: COMPLETED / ACCEPTED",
+            "builder invocation count: 1",
+            "same-ZIP verification without rebuilding: passed",
+            "post-publication downloaded-asset SHA-256 re-verification: passed",
+            RELEASE_SOURCE_HEAD,
+            RELEASE_ZIP_BASENAME,
+            RELEASE_ZIP_SHA256,
+        ):
+            require(release_policy, needle, "completed M-9 release policy")
+
+        release_record = read("docs/v201_patch_release_record.md", root=root)
+        for needle in (
+            "Status: RELEASED / ACCEPTED",
+            "Release tag: DRC_v2.0.1",
+            "GitHub Release: PUBLISHED",
+            f"Fixed release ZIP: {RELEASE_ZIP_BASENAME}",
+            f"Fixed release ZIP size: {RELEASE_ZIP_SIZE} bytes",
+            f"Fixed release ZIP SHA-256: {RELEASE_ZIP_SHA256}",
+            "Post-publication SHA-256 re-verification: COMPLETED",
+        ):
+            require(release_record, needle, "completed v2.0.1 release record")
+
+        release_notes = read("release_notes/v2.0.1.md", root=root)
+        for needle in (
+            "Status: RELEASED",
+            "Release tag: `DRC_v2.0.1`",
+            RELEASE_SOURCE_HEAD,
+            RELEASE_ZIP_BASENAME,
+            RELEASE_ZIP_SHA256,
+            "post-publication SHA-256 re-verification: passed",
+            "DRC_v2.0.0",
+        ):
+            require(release_notes, needle, "completed v2.0.1 release notes")
+    else:
+        raise AssertionError(f"Unknown release contract state: {state}")
 
     backend_version = read("backend/app/version.py", root=root)
     require(
@@ -229,7 +297,7 @@ def verify_git_source() -> tuple[str, str]:
 
     branch = capture(["git", "branch", "--show-current"])
     if branch != "main":
-        raise AssertionError(f"Patch release source branch must be main, got {branch!r}")
+        raise AssertionError(f"Post-release record branch must be main, got {branch!r}")
 
     origin = capture(["git", "remote", "get-url", "origin"])
     if not OFFICIAL_ORIGIN.fullmatch(origin):
@@ -250,16 +318,19 @@ def verify_git_source() -> tuple[str, str]:
             f"Official Public repository must have one root commit, got {len(root_commits)}"
         )
 
-    baseline_tags = capture(["git", "tag", "--list", "DRC_v2.0.0"])
-    if baseline_tags != "DRC_v2.0.0":
-        raise AssertionError("Annotated baseline tag DRC_v2.0.0 is required")
-    baseline_type = capture(["git", "cat-file", "-t", "DRC_v2.0.0"])
-    if baseline_type != "tag":
-        raise AssertionError("DRC_v2.0.0 must remain an annotated tag")
+    for tag_name in ("DRC_v2.0.0", "DRC_v2.0.1"):
+        tag = capture(["git", "tag", "--list", tag_name])
+        if tag != tag_name:
+            raise AssertionError(f"Annotated tag {tag_name} is required")
+        tag_type = capture(["git", "cat-file", "-t", tag_name])
+        if tag_type != "tag":
+            raise AssertionError(f"{tag_name} must remain an annotated tag")
 
-    patch_tag = capture(["git", "tag", "--list", "DRC_v2.0.1"])
-    if patch_tag:
-        raise AssertionError("DRC_v2.0.1 already exists; refusing pre-release source gate")
+    patch_target = capture(["git", "rev-list", "-n", "1", "DRC_v2.0.1"])
+    if patch_target != RELEASE_SOURCE_HEAD:
+        raise AssertionError(
+            f"DRC_v2.0.1 target mismatch: {patch_target} != {RELEASE_SOURCE_HEAD}"
+        )
 
     return head, origin_main
 
@@ -299,11 +370,20 @@ def verify_release_zip(
         )
 
     if expected_source_head:
-        actual_head = capture(["git", "rev-parse", "HEAD"])
-        if actual_head != expected_source_head:
+        if expected_source_head != RELEASE_SOURCE_HEAD:
             raise AssertionError(
-                f"Current source HEAD does not match expected source HEAD: "
-                f"{actual_head} != {expected_source_head}"
+                f"Unexpected release source HEAD: {expected_source_head} "
+                f"!= {RELEASE_SOURCE_HEAD}"
+            )
+        patch_tag = capture(["git", "tag", "--list", "DRC_v2.0.1"])
+        if patch_tag:
+            actual_source = capture(["git", "rev-list", "-n", "1", "DRC_v2.0.1"])
+        else:
+            actual_source = capture(["git", "rev-parse", "HEAD"])
+        if actual_source != expected_source_head:
+            raise AssertionError(
+                f"Release source does not match expected source HEAD: "
+                f"{actual_source} != {expected_source_head}"
             )
 
     run([sys.executable, "scripts/check_release_package.py", str(zip_path)])
@@ -394,7 +474,7 @@ def verify_release_zip(
                 with package.open(info) as source, target.open("wb") as destination:
                     shutil.copyfileobj(source, destination)
         source_root = extraction_root / "DailyRhythmCompanion"
-        verify_contract(root=source_root)
+        verify_contract(root=source_root, state="candidate")
         run_aggregate(root=source_root, with_flutter=with_flutter)
 
     after_stat = zip_path.stat()
@@ -414,7 +494,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--source-tree",
         action="store_true",
-        help="require clean official Public main with HEAD equal to origin/main",
+        help="require clean official Public main plus annotated v2.0.0/v2.0.1 tags",
     )
     parser.add_argument(
         "--release-zip",
@@ -427,7 +507,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--expected-source-head",
-        help="require the current Git HEAD to match the builder-recorded source HEAD",
+        help="require the v2.0.1 tag target to match the builder-recorded source HEAD",
     )
     parser.add_argument(
         "--with-flutter",
@@ -439,7 +519,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    verify_contract()
+    verify_contract(state="released")
 
     source_head = "not-required"
     origin_main = "not-required"
@@ -459,7 +539,7 @@ def main() -> None:
             expected_source_head=args.expected_source_head,
         )
 
-    print("v20x_patch_release_status: m9-current-not-completed")
+    print("v20x_patch_release_status: m9-completed-accepted")
     print(f"v20x_patch_release_source_tree_gate: {args.source_tree}")
     print(f"v20x_patch_release_source_head: {source_head}")
     print(f"v20x_patch_release_origin_main_head: {origin_main}")
@@ -467,9 +547,14 @@ def main() -> None:
     print(f"v20x_patch_release_same_zip_verified: {args.release_zip is not None}")
     print(f"v20x_patch_release_zip_size_bytes: {zip_size}")
     print(f"v20x_patch_release_zip_sha256: {zip_sha}")
+    print(f"v20x_patch_release_release_source_head: {RELEASE_SOURCE_HEAD}")
+    print(f"v20x_patch_release_recorded_zip_size_bytes: {RELEASE_ZIP_SIZE}")
+    print(f"v20x_patch_release_recorded_zip_sha256: {RELEASE_ZIP_SHA256}")
+    print("v20x_patch_release_recorded_same_zip_verification: True")
+    print("v20x_patch_release_post_publication_sha256_verified: True")
     print("v20x_patch_release_builder_invoked: False")
-    print("v20x_patch_release_tag_created: False")
-    print("v20x_patch_release_github_release_created: False")
+    print("v20x_patch_release_tag_created: True")
+    print("v20x_patch_release_github_release_created: True")
     print("[v20x-patch-release-check] OK")
 
 
