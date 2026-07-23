@@ -1,8 +1,8 @@
 # Daily Rhythm Companion v2.0.x maintenance checklist
 
-Updated: 2026-07-22
+Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: none (M-5 accepted; M-6 planned)
+Current small commit: none (M-6 accepted; M-7 planned)
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -391,17 +391,98 @@ M-5 was accepted on 2026-07-22 after compileall, M-1 through M-5 checks, 26 back
 
 ---
 
-# Planned queue
+# M-6 — Make Web CORS origins configurable
 
-## M-6 — Make Web CORS origins configurable
-
-Status: PLANNED
+Status: COMPLETED / ACCEPTED
+Commit title:
 
 ```text
-- Preserve a documented local-demo default.
-- Allow explicit origin restrictions.
-- Add configuration and API-boundary tests.
+fix/test: make Web CORS origins configurable
 ```
+
+## Purpose
+
+```text
+- Replace the hard-coded Web CORS origin list with AppConfig ownership.
+- Preserve the released local-demo wildcard default.
+- Allow explicit comma- or space-separated origin restrictions.
+- Add mock-safe configuration and preflight boundary regression tests.
+```
+
+## Current configuration contract
+
+```text
+WEB_CORS_ORIGINS=*
+```
+
+`*` preserves the current local-demo behavior. Explicit origins are supplied as a comma- or space-separated list. Missing, blank, or separator-only values fall back to `*`.
+
+## Change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+backend/.env.example
+backend/env_profiles/mock_safe.env
+backend/app/config.py
+backend/app/main.py
+backend/tests/test_web_cors_config.py
+docs/v20x_web_cors_origins.md
+docs/DRC_v20x_maintenance_checklist.md
+scripts/check_v20x_maintenance_baseline.py
+scripts/check_v20x_application_version_metadata.py
+scripts/check_v20x_backend_mock_safe_regression.py
+scripts/check_v20x_framework_fallback_voice_artifact_regression.py
+scripts/check_v20x_temporary_lifecycle_limits.py
+scripts/check_v20x_web_cors_origins.py
+```
+
+## Explicit non-change surface
+
+```text
+docs/DRC_v200_goal_checklist_small_commit.md
+release_notes/v2.0.0.md
+existing API routes and response models
+Flutter application behavior
+authentication, reverse-proxy, trusted-host, and TLS policy
+real LLM, TTS, STT, health API, OAuth, or motion execution
+release ZIP, tag, GitHub Release, or v2.0.1 publication
+```
+
+## Current implementation contract
+
+```text
+- AppConfig owns web_cors_origins with the default tuple ("*",).
+- load_config reads WEB_CORS_ORIGINS using the existing comma/space tuple parser.
+- backend/app/main.py passes list(config.web_cors_origins) to CORSMiddleware.
+- allow_credentials remains False.
+- allow_methods and allow_headers remain ["*"].
+- Focused tests use a temporary FastAPI app and do not import the full production app.
+```
+
+## Completion requirements
+
+```text
+- Default configuration preserves wildcard preflight behavior.
+- Explicit configured origins are accepted at the CORS boundary.
+- Unlisted origins are rejected at the preflight boundary.
+- backend/.env.example and mock_safe.env document the local-demo default.
+- M-7 through M-9 remain PLANNED.
+- Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
+- python -m compileall -q backend scripts passes.
+- M-1 through M-6 checks pass.
+- python -m pytest -q backend/tests passes.
+- flutter test passes from app/.
+- The operator reviews the diff and approves the small commit.
+```
+
+M-6 was accepted on 2026-07-23 after compileall, M-1 through M-6 checks, 31 backend pytest tests, 39 Flutter tests, diff review, and operator approval passed. M-6 did not release v2.0.1.
+
+---
+
+# Planned queue
 
 ## M-7 — Clarify Fitbit current-state contract
 

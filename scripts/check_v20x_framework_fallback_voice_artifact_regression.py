@@ -93,11 +93,14 @@ def main() -> None:
     require(documentation, "M-4 was accepted before M-5", "M-4 acceptance handoff")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: none (M-5 accepted; M-6 planned)", "M-5 accepted idle state")
+    require(checklist, "Current small commit: none (M-6 accepted; M-7 planned)", "M-6 accepted state")
     m4 = checklist.split("# M-4", 1)[1].split("# M-5", 1)[0]
     require(m4, "Status: COMPLETED", "M-4 completed state")
-    m5 = checklist.split("# M-5", 1)[1].split("# Planned queue", 1)[0]
+    m5 = checklist.split("# M-5", 1)[1].split("# M-6", 1)[0]
     require(m5, "Status: COMPLETED", "M-5 completed state")
+    m6 = checklist.split("# M-6", 1)[1].split("# Planned queue", 1)[0]
+    require(m6, "Status: COMPLETED / ACCEPTED", "M-6 accepted state")
+    require(m6, "M-6 was accepted on 2026-07-23", "M-6 acceptance record")
 
     run_check("scripts/check_v20x_backend_mock_safe_regression.py")
     run_m4_pytest()

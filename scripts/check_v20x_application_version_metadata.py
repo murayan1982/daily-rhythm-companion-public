@@ -120,16 +120,19 @@ def main() -> None:
         require(inventory, needle, "M-2 version inventory")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: none (M-5 accepted; M-6 planned)", "active checklist idle state")
+    require(checklist, "Current small commit: none (M-6 accepted; M-7 planned)", "active checklist current state")
     m2 = checklist.split("# M-2", 1)[1].split("# M-3", 1)[0]
     require(m2, "Status: COMPLETED", "M-2 completed state")
     m3 = checklist.split("# M-3", 1)[1].split("# M-4", 1)[0]
     require(m3, "Status: COMPLETED", "M-3 completed state")
     m4 = checklist.split("# M-4", 1)[1].split("# M-5", 1)[0]
     require(m4, "Status: COMPLETED", "M-4 completed state")
-    m5 = checklist.split("# M-5", 1)[1].split("# Planned queue", 1)[0]
+    m5 = checklist.split("# M-5", 1)[1].split("# M-6", 1)[0]
     require(m5, "Status: COMPLETED", "M-5 completed state")
-    for item in range(6, 10):
+    m6 = checklist.split("# M-6", 1)[1].split("# Planned queue", 1)[0]
+    require(m6, "Status: COMPLETED / ACCEPTED", "M-6 accepted state")
+    require(m6, "M-6 was accepted on 2026-07-23", "M-6 acceptance record")
+    for item in range(7, 10):
         section = checklist.split(f"## M-{item}", 1)[1]
         if item < 9:
             section = section.split(f"## M-{item + 1}", 1)[0]

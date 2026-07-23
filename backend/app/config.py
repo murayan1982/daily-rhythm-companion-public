@@ -11,6 +11,7 @@ GOOGLE_HEALTH_SLEEP_READONLY_SCOPE = (
 GOOGLE_HEALTH_DEFAULT_OAUTH_SCOPES = (GOOGLE_HEALTH_SLEEP_READONLY_SCOPE,)
 GOOGLE_HEALTH_API_BASE_URL = "https://health.googleapis.com/v4"
 GOOGLE_HEALTH_SLEEP_API_PATH = "/users/me/dataTypes/sleep/dataPoints"
+WEB_CORS_DEFAULT_ORIGINS = ("*",)
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,7 @@ class AppConfig:
     """
 
     conversation_engine: str = "mock"
+    web_cors_origins: tuple[str, ...] = WEB_CORS_DEFAULT_ORIGINS
     framework_project_root: str | None = None
     framework_preset: str = "text_chat"
     framework_character: str = "default"
@@ -171,6 +173,10 @@ def load_config() -> AppConfig:
 
     return AppConfig(
         conversation_engine=os.getenv("CONVERSATION_ENGINE", "mock").lower(),
+        web_cors_origins=(
+            _env_csv_tuple("WEB_CORS_ORIGINS", WEB_CORS_DEFAULT_ORIGINS)
+            or WEB_CORS_DEFAULT_ORIGINS
+        ),
         framework_project_root=_empty_to_none(
             os.getenv("FRAMEWORK_PROJECT_ROOT") or os.getenv("FRAMEWORK_ROOT")
         ),

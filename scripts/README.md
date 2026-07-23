@@ -10,11 +10,11 @@ Current patch source and small commit:
 
 ```text
 v2.0.1
-M-5  COMPLETED / ACCEPTED
-fix/test: bound temporary chat sessions and TTS artifacts
+M-6  COMPLETED / ACCEPTED
+fix/test: make Web CORS origins configurable
 ```
 
-M-1 through M-5 are completed. No small commit is currently active; M-6 remains PLANNED. M-5 added credential-free runtime regression coverage and bounded lazy cleanup for process-local post-advice chat sessions and DRC-managed TTS artifacts.
+M-1 through M-6 are completed and accepted. No small commit is currently active; M-7 remains PLANNED. M-6 preserves `WEB_CORS_ORIGINS=*` for local demos and allows explicit comma- or space-separated origin restrictions.
 
 Install the development test dependencies and run the current checks from the repository root:
 
@@ -26,6 +26,7 @@ python scripts\check_v20x_application_version_metadata.py
 python scripts\check_v20x_backend_mock_safe_regression.py
 python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python scripts\check_v20x_temporary_lifecycle_limits.py
+python scripts\check_v20x_web_cors_origins.py
 python -m pytest -q backend/tests
 
 cd app
@@ -33,21 +34,20 @@ flutter test
 cd ..
 ```
 
-The accepted M-5 regression boundary verifies:
+The accepted M-6 regression boundary verifies:
 
 ```text
-- safe positive-integer lifecycle defaults and environment overrides
-- chat idle-TTL refresh, expiry, explicit cleanup, and LRU capacity eviction
-- unchanged chat-session 404 behavior after expiry or eviction
-- TTS publish-time expiry without lifetime refresh on resolve
-- oldest-first public artifact capacity eviction
-- staging leftover TTL/count cleanup
-- retained opaque URL, managed-path, format, traversal, and malformed-ID safety
-- tests use injected clocks and pytest tmp_path without backend/local_data
-- M-6 through M-9 remain PLANNED
+- `WEB_CORS_ORIGINS=*` preserves the existing local-demo default
+- explicit comma- or space-separated origins load into AppConfig
+- separator-only values fall back to the local-demo default
+- configured origins are passed to FastAPI CORSMiddleware
+- allowed preflight origins succeed and unlisted origins are rejected
+- credentials remain disabled and existing methods/headers remain wildcarded
+- tests remain credential-free and do not import the full production app
+- M-7 through M-9 remain PLANNED
 ```
 
-M-5 does not use a real Framework checkout, call external providers, access OAuth credentials, execute real health APIs, synthesize real audio, add a background worker or cleanup endpoint, change Flutter behavior, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
+M-6 does not add authentication, production hosting policy, reverse-proxy configuration, TLS handling, provider calls, Flutter changes, release ZIP work, a tag, or a v2.0.1 release. M-6 was accepted on 2026-07-23 after compileall, M-1 through M-6 checks, 31 backend pytest tests, 39 Flutter tests, diff review, and operator approval passed.
 
 Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They may intentionally pin v2.0.0 metadata and are not the active current-main regression suite.
 

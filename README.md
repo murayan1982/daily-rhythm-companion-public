@@ -7,7 +7,7 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: none (M-5 accepted; M-6 planned)
+Current small commit: none (M-6 accepted; M-7 planned)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -48,19 +48,19 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 through M-5 are complete. No small commit is CURRENT; M-6 remains PLANNED. M-5 added bounded lifecycle behavior to process-local post-advice chat sessions and DRC-managed TTS artifacts while preserving current API models and not-found responses.
+M-1 through M-6 are complete and accepted. No small commit is currently active; M-7 remains PLANNED. M-6 made Web CORS origins configurable while preserving the released local-demo behavior by default.
 
-M-5 lifecycle ownership:
+M-6 accepted contract:
 
 ```text
-Post-advice chat: 30-minute idle TTL, maximum 100 sessions, least-recently-used eviction
-Voice artifacts: 24-hour publish-time TTL, maximum 100 staging/public files, lazy cleanup
-Configuration: positive-integer environment overrides with bounded safe defaults
-Compatibility: unchanged chat models/routes, opaque audio URL, and existing 404 behavior
-Excluded from M-5: real providers, background workers, cleanup APIs, Flutter changes, and release work
+Local-demo default: WEB_CORS_ORIGINS=* preserves the existing all-origin behavior
+Explicit restriction: comma- or space-separated origins are passed to FastAPI CORSMiddleware
+Credentials: remain disabled
+Compatibility: existing routes, response models, Flutter behavior, and v2.0.0 history remain unchanged
+Excluded from M-6: production hosting claims, authentication, proxy policy, TLS, provider execution, and release work
 ```
 
-Install and run the accepted M-5 checks with:
+Install and run the accepted M-6 checks with:
 
 ```powershell
 python -m pip install -r backend/requirements-dev.txt
@@ -70,6 +70,7 @@ python scripts\check_v20x_application_version_metadata.py
 python scripts\check_v20x_backend_mock_safe_regression.py
 python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python scripts\check_v20x_temporary_lifecycle_limits.py
+python scripts\check_v20x_web_cors_origins.py
 python -m pytest -q backend/tests
 
 cd app
@@ -171,6 +172,7 @@ See:
 
 - [Post-v2.0.0 release baseline](docs/post_v200_release_baseline.md)
 - [v2.0.x application version metadata](docs/v20x_application_version_metadata.md)
+- [v2.0.x Web CORS origin configuration](docs/v20x_web_cors_origins.md)
 - [v2.0.x maintenance checklist](docs/DRC_v20x_maintenance_checklist.md)
 - [Public / Private development policy](docs/public_private_development_policy.md)
 - [Local quickstart](docs/quickstart_local.md)

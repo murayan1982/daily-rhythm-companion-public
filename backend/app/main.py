@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import load_config
 from app.version import APP_VERSION
 
 from app.api import (
@@ -19,6 +20,8 @@ from app.api import (
 )
 
 
+config = load_config()
+
 app = FastAPI(
     title="Daily Rhythm Companion API",
     version=APP_VERSION,
@@ -26,7 +29,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=list(config.web_cors_origins),
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
