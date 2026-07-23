@@ -1,4 +1,4 @@
-"""Validate the current W-3 Fitbit sleep normalization source-tree contract."""
+"""Validate the accepted W-3 Fitbit sleep normalization source-tree contract."""
 
 from __future__ import annotations
 
@@ -102,13 +102,15 @@ def main() -> None:
     files = {relative: read(relative) for relative in W3_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-3", "W-3 current commit")
-    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-3 incomplete state")
+    require(checklist, "Current small commit: W-4", "W-4 current commit")
+    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-4 incomplete state")
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
-    require(checklist, "Implementation state: IMPLEMENTED / VERIFICATION_PENDING", "W-3 implementation state")
-    require(checklist, "W-3 remains NOT_COMPLETED", "W-3 approval gate")
-    for phase in ("W-4", "W-5", "C-1", "T-1", "V-1", "R-1"):
+    require(checklist, "W-3 state: COMPLETED / ACCEPTED", "W-3 accepted state")
+    require(checklist, "Implementation state: COMPLETED / ACCEPTED", "W-3 implementation state")
+    require(checklist, "W-3  COMPLETED / ACCEPTED", "W-3 queue state")
+    require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 queue state")
+    for phase in ("W-5", "C-1", "T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
     api_client = files["backend/app/services/fitbit_api_client.py"]
@@ -168,7 +170,7 @@ def main() -> None:
         require(backend_test, marker, "W-3 backend regression")
 
     contract = files["docs/v210_fitbit_real_sleep_normalization.md"]
-    require(contract, "IMPLEMENTED / VERIFICATION_PENDING", "contract implementation state")
+    require(contract, "COMPLETED / ACCEPTED", "contract accepted state")
     require(contract, "Configured real acceptance remains W-5", "real operator boundary")
     require(contract, "synthetic public-safe Fitbit-shaped dictionaries", "fixture policy")
 
@@ -178,14 +180,16 @@ def main() -> None:
     for relative, text in files.items():
         assert_no_sensitive_values(relative, text)
 
-    print("v210_fitbit_real_sleep_normalization_status: implemented-verification-pending")
-    print("v210_fitbit_real_sleep_normalization_current_small_commit: W-3")
+    print("v210_fitbit_real_sleep_normalization_status: completed-accepted")
+    print("v210_fitbit_real_sleep_normalization_completed_small_commit: W-3")
+    print("v210_fitbit_real_sleep_normalization_current_small_commit: W-4")
     print("v210_fitbit_real_sleep_normalization_api_error_classification: True")
     print("v210_fitbit_real_sleep_normalization_sleep_summary_mapping: True")
     print("v210_fitbit_real_sleep_normalization_mock_safe: True")
     print("v210_fitbit_real_sleep_normalization_real_operator_execution: False")
     print("v210_fitbit_real_sleep_normalization_release_records_changed: False")
-    print("v210_fitbit_real_sleep_normalization_w3_completed_accepted: False")
+    print("v210_fitbit_real_sleep_normalization_w3_completed_accepted: True")
+    print("v210_fitbit_real_sleep_normalization_w4_current_not_completed: True")
     print("v210_fitbit_real_sleep_normalization_later_phases_planned: True")
     print("[v210-fitbit-real-sleep-normalization-check] OK")
 

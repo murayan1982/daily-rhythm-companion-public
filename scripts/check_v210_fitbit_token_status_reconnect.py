@@ -81,13 +81,15 @@ def main() -> None:
     files = {relative: read(relative) for relative in W2_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-3", "W-3 current commit")
-    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-3 incomplete state")
+    require(checklist, "Current small commit: W-4", "W-4 current commit")
+    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-4 incomplete state")
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
     require(checklist, "W-2  COMPLETED / ACCEPTED", "W-2 queue state")
-    require(checklist, "W-3  CURRENT / NOT_COMPLETED", "W-3 queue state")
-    for phase in ("W-4", "W-5", "C-1", "T-1", "V-1", "R-1"):
+    require(checklist, "W-3 state: COMPLETED / ACCEPTED", "W-3 accepted state")
+    require(checklist, "W-3  COMPLETED / ACCEPTED", "W-3 queue state")
+    require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 queue state")
+    for phase in ("W-5", "C-1", "T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
     model = files["backend/app/models/fitbit.py"]
@@ -158,14 +160,16 @@ def main() -> None:
 
     print("v210_fitbit_token_status_reconnect_status: completed-accepted")
     print("v210_fitbit_token_status_reconnect_completed_small_commit: W-2")
-    print("v210_fitbit_token_status_reconnect_current_small_commit: W-3")
+    print("v210_fitbit_token_status_reconnect_completed_small_commit_w3: W-3")
+    print("v210_fitbit_token_status_reconnect_current_small_commit: W-4")
     print("v210_fitbit_token_status_reconnect_connection_states_added: True")
     print("v210_fitbit_token_status_reconnect_status_external_http: False")
     print("v210_fitbit_token_status_reconnect_oauth_state_one_time: True")
     print("v210_fitbit_token_status_reconnect_mock_safe: True")
     print("v210_fitbit_token_status_reconnect_real_operator_execution: False")
     print("v210_fitbit_token_status_reconnect_release_records_changed: False")
-    print("v210_fitbit_token_status_reconnect_w3_current_not_completed: True")
+    print("v210_fitbit_token_status_reconnect_w3_completed_accepted: True")
+    print("v210_fitbit_token_status_reconnect_w4_current_not_completed: True")
     print("v210_fitbit_token_status_reconnect_later_phases_planned: True")
     print("[v210-fitbit-token-status-reconnect-check] OK")
 

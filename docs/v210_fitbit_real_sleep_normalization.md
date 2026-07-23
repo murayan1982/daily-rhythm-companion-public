@@ -1,8 +1,9 @@
 # v2.1.0 W-3 — Fitbit real sleep normalization and API regression contract
 
 Updated: 2026-07-23
-Status: IMPLEMENTED / VERIFICATION_PENDING
-Active small commit: W-3 — CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
+Accepted small commit: W-3
+Current small commit after acceptance: W-4 — CURRENT / NOT_COMPLETED
 
 ## Purpose
 
@@ -141,8 +142,10 @@ flutter test
 cd ..
 ```
 
-W-3 remains `CURRENT / NOT_COMPLETED` until focused checks, aggregate checks,
-Flutter tests, diff review, and operator approval pass.
+Acceptance completed on 2026-07-23 with compileall, W-1/W-2/W-3 checks,
+v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator
+approval passing. Real Fitbit operator execution was not performed, and the
+v2.0.0/v2.0.1 tags, Releases, fixed ZIPs, and publication records were unchanged.
 
 ## Explicit W-4 / W-5 boundary
 

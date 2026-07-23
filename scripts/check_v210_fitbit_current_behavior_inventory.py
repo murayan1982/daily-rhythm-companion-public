@@ -1,4 +1,4 @@
-"""Validate the accepted W-1 inventory while W-2 evolves approved files."""
+"""Validate the accepted W-1 inventory through the accepted W-3 boundary."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-# Files outside the accepted W-2 and current W-3 change surfaces remain pinned to the W-1 baseline.
+# Files outside the accepted W-2/W-3 change surfaces remain pinned to the W-1 baseline.
 W1_UNCHANGED_IMPLEMENTATION_HASHES = {
     "backend/app/config.py": "063b9fdd7c1b5c3132a5885eddb56fc2b2202d45b202dda25b745393b35ccc06",
     "backend/app/api/fitbit.py": "44463bb3ce7c0e325c7a2a31602a68b0bc436cff615ef03ea70a3d4be6641b66",
@@ -83,16 +83,18 @@ def main() -> None:
 
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
-    require(checklist, "Current small commit: W-3", "W-3 current state")
-    require(checklist, "W-3  CURRENT / NOT_COMPLETED", "W-3 queue state")
-    for phase in ("W-4", "W-5", "C-1", "T-1", "V-1", "R-1"):
+    require(checklist, "W-3 state: COMPLETED / ACCEPTED", "W-3 accepted state")
+    require(checklist, "Current small commit: W-4", "W-4 current state")
+    require(checklist, "W-3  COMPLETED / ACCEPTED", "W-3 queue state")
+    require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 queue state")
+    for phase in ("W-5", "C-1", "T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
     require(inventory, "GET /fitbit/status", "W-1 status inventory")
     require(inventory, "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE", "W-1 guarded exchange inventory")
     require(w2_contract, "token_present_unverified", "W-2 conservative state")
     require(w2_contract, "Configured real acceptance remains W-5", "W-5 boundary")
-    require(w3_contract, "IMPLEMENTED / VERIFICATION_PENDING", "W-3 implementation state")
+    require(w3_contract, "COMPLETED / ACCEPTED", "W-3 accepted state")
     require(w3_contract, "Configured real acceptance remains W-5", "W-3/W-5 boundary")
     read("backend/tests/test_fitbit_real_sleep_normalization.py")
     read("scripts/check_v210_fitbit_real_sleep_normalization.py")
@@ -115,7 +117,8 @@ def main() -> None:
     print("v210_fitbit_inventory_status: completed-accepted")
     print("v210_fitbit_inventory_completed_small_commit: W-1")
     print("v210_fitbit_inventory_completed_small_commit_w2: W-2")
-    print("v210_fitbit_inventory_current_small_commit: W-3")
+    print("v210_fitbit_inventory_completed_small_commit_w3: W-3")
+    print("v210_fitbit_inventory_current_small_commit: W-4")
     print("v210_fitbit_inventory_w2_runtime_changed: True")
     print("v210_fitbit_inventory_w2_flutter_changed: True")
     print("v210_fitbit_inventory_existing_tests_changed: False")
@@ -123,8 +126,9 @@ def main() -> None:
     print("v210_fitbit_inventory_mock_safe: True")
     print("v210_fitbit_inventory_real_operator_execution: False")
     print("v210_fitbit_inventory_w2_completed_accepted: True")
-    print("v210_fitbit_inventory_w3_current_not_completed: True")
+    print("v210_fitbit_inventory_w3_completed_accepted: True")
     print("v210_fitbit_inventory_w3_implementation_present: True")
+    print("v210_fitbit_inventory_w4_current_not_completed: True")
     print("v210_fitbit_inventory_later_phases_planned: True")
     print("[v210-fitbit-current-behavior-inventory-check] OK")
 

@@ -2,10 +2,11 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: W-3 — Fitbit real sleep normalization and API regression tests
+Current small commit: W-4 — Sleep-provider selection and source-label UI
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
+W-3 state: COMPLETED / ACCEPTED
 Current released version: v2.0.1
 
 ## Source-of-truth rule
@@ -64,8 +65,8 @@ with Fitbit real-use completion as the main new capability.
 ```text
 W-1  COMPLETED / ACCEPTED   Fitbit current behavior inventory and contract
 W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
-W-3  CURRENT / NOT_COMPLETED  Fitbit real sleep normalization and API regression tests
-W-4  PLANNED                  Sleep-provider selection, source-label UI, and simplified
+W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression tests
+W-4  CURRENT / NOT_COMPLETED  Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
 W-5  PLANNED                  Configured real Fitbit operator verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
@@ -75,7 +76,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 and W-2 are completed and accepted. W-3 is current but not completed; W-4 through R-1 remain planned.
+W-1, W-2, and W-3 are completed and accepted. W-4 is current but not completed; W-5 through R-1 remain planned.
 
 ---
 
@@ -362,8 +363,8 @@ Configured real acceptance remains W-5.
 
 # W-3 — Fitbit real sleep normalization and API regression tests
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / VERIFICATION_PENDING
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 
 Commit title candidate:
 
@@ -445,15 +446,31 @@ Completion gate:
 ```
 
 The detailed contract is `docs/v210_fitbit_real_sleep_normalization.md`.
-W-3 remains NOT_COMPLETED until the complete gate and approval pass.
+
+Acceptance result:
+
+```text
+- compileall passed;
+- W-1, W-2, and W-3 source-tree checks passed;
+- v2.0.x Fitbit and maintenance guards passed;
+- full backend pytest passed: 84 tests;
+- full Flutter test passed: 50 tests;
+- no private Fitbit values or raw payload fixture was committed;
+- diff review passed;
+- operator approval was received;
+- real Fitbit operator execution was not performed;
+- v2.0.0 / v2.0.1 publication records remained unchanged.
+```
+
+W-3 was completed and accepted on 2026-07-23. This acceptance validates the mock-safe Fitbit sleep normalization/API contract; configured real Fitbit acceptance remains W-5.
 
 ---
 
 # W-4 — Sleep-provider selection and source-label UI
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
-Planned boundary:
+Current planning boundary:
 
 ```text
 - Present the configured sleep provider and app-facing data source consistently.
@@ -462,6 +479,8 @@ Planned boundary:
   in an advanced or explicitly labeled surface.
 - Preserve mock-safe operation and conservative health wording.
 ```
+
+W-4 implementation has not started. Its exact change files and first small-commit boundary must be fixed after reading the current Flutter/provider-selection implementation and accepted W-3 response contract. W-5 and later phases remain PLANNED.
 
 ---
 

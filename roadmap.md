@@ -5,7 +5,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: W-3 — Fitbit real sleep normalization and API regression tests (**CURRENT / NOT_COMPLETED**)
+Current small commit: W-4 — Sleep-provider selection and source-label UI (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ---
@@ -373,7 +373,7 @@ Historical v2.0.0 checklist files are not part of the normal edit scope.
 
 ## v2.1.0 - Real wearable daily loop
 
-Status: In progress — W-1/W-2 COMPLETED / ACCEPTED; W-3 CURRENT / NOT_COMPLETED
+Status: In progress — W-1/W-2/W-3 COMPLETED / ACCEPTED; W-4 CURRENT / NOT_COMPLETED
 Source of truth: `docs/DRC_v210_goal_checklist_small_commit.md`
 Authority status: accepted by W-1 verification, diff review, and operator approval
 
@@ -470,8 +470,8 @@ Implementation phases:
 ```text
 W-1  COMPLETED / ACCEPTED   Fitbit current behavior inventory and contract
 W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
-W-3  CURRENT / NOT_COMPLETED  Fitbit real sleep normalization and API regression tests
-W-4  PLANNED                  Sleep-provider selection, source-label UI, and simplified
+W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression tests
+W-4  CURRENT / NOT_COMPLETED  Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX while retaining operator diagnostics
 W-5  PLANNED                  Configured real Fitbit operator verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
@@ -480,7 +480,7 @@ V-1  PLANNED                  Character display extraction and deterministic sta
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-W-1 and W-2 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. It was accepted on 2026-07-23 after compileall, W-1/W-2 checks, v2.0.x guards, 57 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-3 is the only current small commit. Its API classification, positive-duration normalization, `SleepSummary` real-data mapping, and deterministic regression implementation are present but remain verification-pending and NOT_COMPLETED. W-4 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, or fake-HTTP success.
+W-1, W-2, and W-3 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-3 was accepted on 2026-07-23 after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is the only current small commit; W-5 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, fake-HTTP success, or UI source-label work.
 
 Expected W-1 change surface:
 
