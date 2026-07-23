@@ -15,12 +15,13 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: W-5 CURRENT / NOT_COMPLETED
+current small commit: W-5a IMPLEMENTED / NOT_ACCEPTED
+parent phase: W-5 CURRENT / NOT_COMPLETED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5 is current but not completed.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a is implemented but not accepted; parent W-5 remains current and not completed.
 
 Run the W-1 checks from the repository root:
 
@@ -107,8 +108,8 @@ release records. It does not load local operator tokens, call Fitbit, open OAuth
 collect smartphone Web evidence, or build a release artifact.
 
 W-3 is `COMPLETED / ACCEPTED`. Acceptance recorded 84 backend tests and 50
-Flutter tests, with real Fitbit execution remaining false. W-4 is
-`CURRENT / NOT_COMPLETED`; W-5 through R-1 remain planned.
+Flutter tests, with real Fitbit execution remaining false. W-4 is also
+`COMPLETED / ACCEPTED`; W-5a is the current implemented/not-accepted commit and W-5b through R-1 remain incomplete or planned.
 
 
 ## v2.1.0 W-4a sleep-provider selection status check
@@ -4217,3 +4218,46 @@ release_status: NOT_RELEASED
 ## Public-P3.1 generated-cache hardening
 
 The canonical Public export must remain untouched. Run Python and Flutter verification in a disposable export copy. Public-P2 strict inspection rejects `__pycache__`, `.pyc`, `.pyo`, and Flutter generated directories before Public Git initialization.
+
+## v2.1.0 W-5a Fitbit real operator contract and preflight
+
+Detailed runbook: `docs/v210_fitbit_real_operator_runbook.md`.
+
+Run the public-safe source-tree gate from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\smoke_v210_fitbit_real_operator_preflight.py
+python scripts\smoke_v210_fitbit_real_operator_preflight.py --check-example
+python scripts\check_v210_fitbit_real_operator_contract.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The default/example preflight is credential-free and network-free. A private
+operator profile is validated with key names and safe markers only:
+
+```powershell
+python scripts\smoke_v210_fitbit_real_operator_preflight.py `
+  --env-file .\backend\env_profiles\fitbit_real_operator.local.env
+
+powershell -ExecutionPolicy Bypass -File `
+  .\backend\scripts\run_fitbit_real_operator.ps1 `
+  -EnvFile .\backend\env_profiles\fitbit_real_operator.local.env `
+  -ValidateOnly
+```
+
+Actual backend verification remains explicit W-5b operator work and refuses to
+run without consent:
+
+```powershell
+python scripts\smoke_v210_fitbit_real_operator_execution.py `
+  --base-url http://127.0.0.1:8000 `
+  --allow-real-request
+```
+
+W-5a does not perform OAuth, print token/env values, call Fitbit, verify
+smartphone Web, accept W-5, build a release ZIP, or change release records.

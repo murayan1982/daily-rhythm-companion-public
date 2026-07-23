@@ -2,12 +2,13 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: W-5 — Configured real Fitbit operator verification
-Current small-commit state: CURRENT / NOT_COMPLETED
+Current small commit: W-5a — Fitbit real operator contract and preflight
+Current small-commit state: IMPLEMENTED / NOT_ACCEPTED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
 W-4 state: COMPLETED / ACCEPTED
+W-5 state: CURRENT / NOT_COMPLETED
 Current released version: v2.0.1
 
 ## Source-of-truth rule
@@ -70,6 +71,8 @@ W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression t
 W-4  COMPLETED / ACCEPTED   Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
 W-5  CURRENT / NOT_COMPLETED  Configured real Fitbit operator verification
+  W-5a  IMPLEMENTED / NOT_ACCEPTED  Fitbit real operator contract and preflight
+  W-5b  PLANNED                     Actual OAuth/token/sleep/smartphone Web verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
@@ -658,15 +661,85 @@ and smartphone Web real-provider evidence remain unperformed W-5 work.
 
 Status: CURRENT / NOT_COMPLETED
 
-Planned boundary:
+## W-5 split
 
 ```text
-- Execute the accepted real Fitbit path only through explicit operator opt-in.
-- Validate OAuth, refresh, permissions, real sleep retrieval, normalization,
-  source labels, and smartphone Web presentation.
-- Keep tokens, codes, raw payloads, raw screenshots, exact private sleep values,
-  private paths, and LAN addresses outside Public commits and release artifacts.
+W-5a  IMPLEMENTED / NOT_ACCEPTED  Fitbit real operator contract and preflight
+W-5b  PLANNED                     Actual OAuth/token/sleep/smartphone Web verification
 ```
+
+## W-5a purpose
+
+```text
+- Add a dedicated ignored Fitbit operator env template.
+- Add a credential-free/network-free default and example preflight.
+- Add a private env validator that prints key names and safe markers only.
+- Add a guarded PowerShell launcher with backend/.env override disabled and -ValidateOnly.
+- Add an explicit --allow-real-request backend smoke without printing private sleep values.
+- Define the later W-5b OAuth/token/sleep/smartphone Web and private-evidence procedure.
+```
+
+Detailed contract: `docs/v210_fitbit_real_operator_runbook.md`
+
+## W-5a change surface
+
+```text
+backend/env_profiles/fitbit_real_operator.env.example
+backend/scripts/run_fitbit_real_operator.ps1
+docs/v210_fitbit_real_operator_runbook.md
+scripts/smoke_v210_fitbit_real_operator_preflight.py
+scripts/smoke_v210_fitbit_real_operator_execution.py
+scripts/check_v210_fitbit_real_operator_contract.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+scripts/check_v210_fitbit_current_behavior_inventory.py
+scripts/check_v210_fitbit_token_status_reconnect.py
+scripts/check_v210_fitbit_real_sleep_normalization.py
+scripts/check_v210_sleep_provider_selection_source_labels.py
+scripts/check_v210_flutter_sleep_provider_source_ui.py
+```
+
+## W-5a explicit non-change surface
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/**
+app/test/**
+app/pubspec.yaml
+backend/.env.example
+post-advice chat, TTS, motion, and character runtime
+version metadata
+v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
+```
+
+## W-5a mock-safe verification boundary
+
+```text
+- default/example preflight does not read private env or backend/local_data;
+- private env validation prints key names and status only, never values or paths;
+- real execution smoke refuses to run without --allow-real-request;
+- source-tree guard verifies accepted W-2/W-3/W-4 runtime through newline-normalized hashes;
+- full backend pytest and Flutter test remain required for acceptance;
+- real OAuth, token exchange/refresh, Fitbit API, and smartphone Web are not executed.
+```
+
+## W-5b required later boundary
+
+```text
+- validate an ignored dedicated private env;
+- complete real OAuth and guarded token exchange/refresh;
+- retrieve real Fitbit sleep data;
+- confirm W-3 normalization into a real-data SleepSummary;
+- confirm W-4 configured provider/source/data-kind presentation on smartphone Web;
+- keep raw evidence under ignored private storage;
+- review only public-safe markers before accepting W-5.
+```
+
+W-5a implementation does not complete W-5. C-1 and later phases remain planned.
 
 ---
 

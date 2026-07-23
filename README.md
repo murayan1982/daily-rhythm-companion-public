@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1/W-2/W-3/W-4 COMPLETED / ACCEPTED; W-5 CURRENT / NOT_COMPLETED**)
-Current small commit: W-5 — Configured real Fitbit operator verification (**CURRENT / NOT_COMPLETED**)
+Current small commit: W-5a — Fitbit real operator contract and preflight (**IMPLEMENTED / NOT_ACCEPTED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -128,7 +128,7 @@ real operator execution: false
 release records changed: false
 ```
 
-W-3 is COMPLETED / ACCEPTED. The backend classifies allow-listed Fitbit sleep API failures, requires usable normalized sleep duration, maps real-provider fields into `SleepSummary`, and includes deterministic fake-HTTP/API regression tests. Acceptance passed after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval. The detailed contract is [`docs/v210_fitbit_real_sleep_normalization.md`](docs/v210_fitbit_real_sleep_normalization.md). Real OAuth, live token exchange/refresh, configured permission/scope evidence, real Fitbit sleep retrieval, and smartphone Web acceptance remain W-5 work. W-4 later completed the provider-selection, source-label UI, and simplified Google Health UX boundary without changing the accepted W-3 backend contract.
+W-3 is COMPLETED / ACCEPTED. The backend classifies allow-listed Fitbit sleep API failures, requires usable normalized sleep duration, maps real-provider fields into `SleepSummary`, and includes deterministic fake-HTTP/API regression tests. Acceptance passed after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval. The detailed contract is [`docs/v210_fitbit_real_sleep_normalization.md`](docs/v210_fitbit_real_sleep_normalization.md). Real OAuth, live token exchange/refresh, configured permission/scope evidence, real Fitbit sleep retrieval, and smartphone Web acceptance remain W-5 work. W-4 later completed and was accepted without changing the accepted W-3 backend contract.
 
 W-4 is COMPLETED / ACCEPTED. W-4a implementation commit `1619b0b` added a read-only `GET /sleep/providers` contract without provider execution. W-4b implementation commit `1fbea58` connected that metadata to Flutter, separated the configured provider from the actual `SleepSummary` source/data kind, kept mock providers credential-free, limited normal Google Health copy to concise guidance, and retained detailed diagnostics below Advanced Demo Tools. W-4b acceptance passed after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused Flutter model tests, 35 widget tests, 92 backend tests, 57 full Flutter tests, diff review, and operator approval. Fitbit still shows real-operator verification as pending. W-5 is now CURRENT / NOT_COMPLETED. See [`docs/v210_sleep_provider_selection_source_labels.md`](docs/v210_sleep_provider_selection_source_labels.md) and [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md).
 
@@ -152,6 +152,15 @@ cd ..
 
 W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5 is current but not completed.
 
+W-5 is split into a public-safe preparation commit and the later private execution checkpoint:
+
+```text
+W-5a  IMPLEMENTED / NOT_ACCEPTED  Fitbit real operator contract and preflight
+W-5b  PLANNED                     Actual OAuth/token/sleep/smartphone Web verification
+```
+
+W-5a adds a dedicated ignored env template, a network-free preflight, a guarded PowerShell launcher with `-ValidateOnly`, an explicit `--allow-real-request` backend smoke, and the operator runbook [`docs/v210_fitbit_real_operator_runbook.md`](docs/v210_fitbit_real_operator_runbook.md). It does not perform real OAuth, read token values, call Fitbit, or complete W-5.
+
 Run the W-4b mock-safe gate with:
 
 ```powershell
@@ -172,6 +181,22 @@ cd ..
 ```
 
 This gate is credential-free. It does not perform real OAuth, real token refresh, Fitbit or Google Health live API requests, smartphone Web real-provider acceptance, or release work.
+
+Run the W-5a public-safe implementation gate with:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\smoke_v210_fitbit_real_operator_preflight.py
+python scripts\smoke_v210_fitbit_real_operator_preflight.py --check-example
+python scripts\check_v210_fitbit_real_operator_contract.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The default and example preflight modes are credential-free and network-free. The real execution smoke refuses to run unless the operator supplies `--allow-real-request`; actual OAuth, token exchange/refresh, Fitbit sleep retrieval, and smartphone Web evidence remain W-5b work.
 
 Run the accepted W-3 regression gate with:
 
