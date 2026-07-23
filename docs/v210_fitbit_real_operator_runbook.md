@@ -1,20 +1,20 @@
 # DRC v2.1.0 W-5 Fitbit real operator runbook
 
-Updated: 2026-07-23
+Updated: 2026-07-24
 
 ## Status
 
 ```text
-W-5a: IMPLEMENTED / NOT_ACCEPTED
-W-5b: PLANNED
+W-5a: COMPLETED / ACCEPTED
+W-5b: CURRENT / NOT_COMPLETED
 parent W-5: CURRENT / NOT_COMPLETED
 real operator execution: NOT_PERFORMED
 smartphone Web verification: NOT_PERFORMED
 ```
 
-W-5a prepares the public-safe operator contract. It does not perform OAuth,
+W-5a completed and accepted the public-safe operator contract. It did not perform OAuth,
 token exchange/refresh, Fitbit sleep retrieval, or smartphone Web acceptance.
-Those remain W-5b operator work.
+Those are the current W-5b operator work.
 
 ## Safety boundary
 
@@ -215,10 +215,13 @@ invalid_response
 
 ## Completion boundary
 
-W-5a may be accepted after source-tree checks, full backend/Flutter tests, diff
-review, and operator approval. W-5 remains `CURRENT / NOT_COMPLETED`.
+W-5a was completed and accepted on 2026-07-24 with implementation commit
+`7f84980`. Default/example network-free preflight, W-1 through W-5a checks,
+v2.0.x guards, 92 backend tests, 57 Flutter tests, diff review, and operator
+approval passed. Real operator execution remained false. W-5 remains
+`CURRENT / NOT_COMPLETED`.
 
-W-5b requires all of the following before W-5 can be accepted:
+W-5b is CURRENT / NOT_COMPLETED and requires all of the following before W-5 can be accepted:
 
 ```text
 explicit private env validation

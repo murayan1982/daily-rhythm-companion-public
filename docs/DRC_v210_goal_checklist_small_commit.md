@@ -1,9 +1,9 @@
 # Daily Rhythm Companion v2.1.0 goal checklist — small commits
 
-Updated: 2026-07-23
+Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: W-5a — Fitbit real operator contract and preflight
-Current small-commit state: IMPLEMENTED / NOT_ACCEPTED
+Current small commit: W-5b — Actual OAuth/token/sleep/smartphone Web verification
+Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
@@ -71,8 +71,8 @@ W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression t
 W-4  COMPLETED / ACCEPTED   Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
 W-5  CURRENT / NOT_COMPLETED  Configured real Fitbit operator verification
-  W-5a  IMPLEMENTED / NOT_ACCEPTED  Fitbit real operator contract and preflight
-  W-5b  PLANNED                     Actual OAuth/token/sleep/smartphone Web verification
+  W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
+  W-5b  CURRENT / NOT_COMPLETED  Actual OAuth/token/sleep/smartphone Web verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
@@ -80,7 +80,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-4 are completed and accepted. W-5 is current but not completed; C-1 through R-1 remain planned.
+W-1 through W-4 and W-5a are completed and accepted. W-5b is current, parent W-5 remains not completed, and C-1 through R-1 remain planned.
 
 ---
 
@@ -664,8 +664,8 @@ Status: CURRENT / NOT_COMPLETED
 ## W-5 split
 
 ```text
-W-5a  IMPLEMENTED / NOT_ACCEPTED  Fitbit real operator contract and preflight
-W-5b  PLANNED                     Actual OAuth/token/sleep/smartphone Web verification
+W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
+W-5b  CURRENT / NOT_COMPLETED  Actual OAuth/token/sleep/smartphone Web verification
 ```
 
 ## W-5a purpose
@@ -727,7 +727,27 @@ v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
 - real OAuth, token exchange/refresh, Fitbit API, and smartphone Web are not executed.
 ```
 
-## W-5b required later boundary
+## W-5a accepted completion record
+
+W-5a was completed and accepted on 2026-07-24. The accepted implementation commit is `7f84980`.
+
+```text
+compileall: passed
+default network-free preflight: passed
+example env preflight: passed
+W-1/W-2/W-3/W-4a/W-4b/W-5a checks: passed
+v2.0.x compatibility and maintenance guards: passed
+full backend pytest: 92 passed
+full Flutter test: 57 passed
+diff review: passed
+operator approval: passed
+real operator execution: false
+release records changed: false
+```
+
+W-5a acceptance validates only the public-safe operator contract and preflight. It does not prove OAuth, token exchange/refresh, Fitbit API success, real sleep normalization, or smartphone Web presentation.
+
+## W-5b current boundary
 
 ```text
 - validate an ignored dedicated private env;
@@ -739,7 +759,7 @@ v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
 - review only public-safe markers before accepting W-5.
 ```
 
-W-5a implementation does not complete W-5. C-1 and later phases remain planned.
+W-5a acceptance does not complete W-5. W-5b is CURRENT / NOT_COMPLETED, and C-1 and later phases remain planned.
 
 ---
 

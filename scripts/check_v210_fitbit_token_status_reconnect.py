@@ -81,8 +81,9 @@ def main() -> None:
     files = {relative: read(relative) for relative in W2_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-5a", "W-5 current commit")
-    require(checklist, "Current small-commit state: IMPLEMENTED / NOT_ACCEPTED", "W-5 incomplete state")
+    require(checklist, "Current small commit: W-5b", "W-5 current commit")
+    require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
+    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5 incomplete state")
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
     require(checklist, "W-2  COMPLETED / ACCEPTED", "W-2 queue state")
@@ -162,7 +163,7 @@ def main() -> None:
     print("v210_fitbit_token_status_reconnect_status: completed-accepted")
     print("v210_fitbit_token_status_reconnect_completed_small_commit: W-2")
     print("v210_fitbit_token_status_reconnect_completed_small_commit_w3: W-3")
-    print("v210_fitbit_token_status_reconnect_current_small_commit: W-5a")
+    print("v210_fitbit_token_status_reconnect_current_small_commit: W-5b")
     print("v210_fitbit_token_status_reconnect_connection_states_added: True")
     print("v210_fitbit_token_status_reconnect_status_external_http: False")
     print("v210_fitbit_token_status_reconnect_oauth_state_one_time: True")
@@ -173,6 +174,7 @@ def main() -> None:
     print("v210_fitbit_token_status_reconnect_w4_completed_accepted: True")
     print("v210_fitbit_token_status_reconnect_w5_current_not_completed: True")
     print("v210_fitbit_token_status_reconnect_later_phases_planned: True")
+    print("v210_fitbit_token_status_reconnect_w5a_completed_accepted: True")
     print("[v210-fitbit-token-status-reconnect-check] OK")
 
 

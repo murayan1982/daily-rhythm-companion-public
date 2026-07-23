@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-23
+更新日: 2026-07-24
 
 ## 1. 現在地
 
@@ -12,7 +12,7 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: W-5a IMPLEMENTED / NOT_ACCEPTED
+current small commit: W-5b CURRENT / NOT_COMPLETED
 parent phase: W-5 CURRENT / NOT_COMPLETED
 strategic target: v3.0.0
 ```
@@ -66,8 +66,8 @@ Status: CURRENT / NOT_COMPLETED
 実装分割:
 
 ```text
-W-5a  IMPLEMENTED / NOT_ACCEPTED  Fitbit real operator contract and preflight
-W-5b  PLANNED                     Actual OAuth/token/sleep/smartphone Web verification
+W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
+W-5b  CURRENT / NOT_COMPLETED  Actual OAuth/token/sleep/smartphone Web verification
 ```
 
 ### W-5a — Fitbit real operator contract and preflight
@@ -111,6 +111,34 @@ W-5a境界:
 ```
 
 詳細契約: `docs/v210_fitbit_real_operator_runbook.md`
+
+受け入れ結果:
+
+```text
+- implementation commit: 7f84980
+- default/example network-free preflight: passed
+- W-1〜W-5a check: passed
+- v2.0.x guards: passed
+- backend pytest: 92 passed
+- Flutter test: 57 passed
+- diff review / operator approval: passed
+- real operator execution: false
+- release records changed: false
+```
+
+W-5aは2026-07-24にCOMPLETED / ACCEPTEDとなった。W-5bはCURRENT / NOT_COMPLETEDであり、real OAuth、token exchange/refresh、real sleep取得、smartphone Web確認はまだ実施していない。
+
+### W-5b — Actual OAuth/token/sleep/smartphone Web verification
+
+Status: CURRENT / NOT_COMPLETED
+
+```text
+- ignored private envを実値でvalidateする。
+- real OAuth callbackとtoken save/refresh pathを確認する。
+- real Fitbit sleepを取得し、W-3 normalizationへ接続する。
+- W-4 provider/source/data-kind表示をsmartphone Webで確認する。
+- private evidenceをGit外に保持し、Publicへsafe markerだけを残す。
+```
 
 ---
 
@@ -518,7 +546,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-4も受け入れ済みで、現在はW-5aのoperator contract/preflight実装を検証する。real Fitbit実行はW-5bまで未実施である。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-4とW-5aも受け入れ済みで、現在はW-5bのreal OAuth/token/sleep/smartphone Web verificationを進める。real Fitbit実行はまだ未実施である。
 
 ---
 
@@ -539,4 +567,4 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-4まで受け入れ済みで、W-5がCURRENT / NOT_COMPLETEDである。W-5aのdedicated env、network-free preflight、ValidateOnly launcher、explicit real-execution smoke、runbookはIMPLEMENTED / NOT_ACCEPTEDで、configured real Fitbit実利用はW-5bまで未実施である。chat、TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。
+v2.1.0はW-1からW-4とW-5aまで受け入れ済みで、W-5bがCURRENT / NOT_COMPLETEDである。dedicated env、network-free preflight、ValidateOnly launcher、explicit real-execution smoke、runbookは受け入れ済みだが、configured real Fitbit実利用はまだ未実施である。chat、TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。

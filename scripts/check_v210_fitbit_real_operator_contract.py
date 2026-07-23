@@ -91,12 +91,13 @@ def main() -> None:
         require(text, "W-5b", f"{label} W-5b boundary")
         require(text, "W-5", f"{label} parent W-5 state")
 
-    require(checklist, "Current small commit: W-5a", "current small commit")
-    require(checklist, "Current small-commit state: IMPLEMENTED / NOT_ACCEPTED", "W-5a implementation state")
+    require(checklist, "Current small commit: W-5b", "current small commit")
+    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5b current state")
+    require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
     require(checklist, "W-5 state: CURRENT / NOT_COMPLETED", "parent W-5 state")
     require(checklist, "C-1  PLANNED", "later phase boundary")
-    require(roadmap, "Current small commit: W-5a", "roadmap current commit")
-    require(tasklist, "W-5a — Fitbit real operator contract and preflight", "tasklist current commit")
+    require(roadmap, "Current small commit: W-5b", "roadmap current commit")
+    require(tasklist, "W-5b — Actual OAuth/token/sleep/smartphone Web verification", "tasklist current commit")
 
     for fragment in (
         "FITBIT_CLIENT_ID=<fitbit-client-id>",
@@ -225,8 +226,9 @@ def main() -> None:
                 f"Accepted W-2/W-3/W-4 runtime changed: {relative}: {actual} != {expected}"
             )
 
-    print("v210_fitbit_real_operator_contract_status: implemented-not-accepted")
-    print("v210_fitbit_real_operator_contract_current_small_commit: W-5a")
+    print("v210_fitbit_real_operator_contract_status: completed-accepted")
+    print("v210_fitbit_real_operator_contract_completed_small_commit: W-5a")
+    print("v210_fitbit_real_operator_contract_current_small_commit: W-5b")
     print("v210_fitbit_real_operator_contract_parent_phase: W-5-current-not-completed")
     print("v210_fitbit_real_operator_contract_mock_safe: True")
     print("v210_fitbit_real_operator_contract_real_operator_execution: False")
