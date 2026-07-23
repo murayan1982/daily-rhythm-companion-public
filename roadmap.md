@@ -3,9 +3,9 @@
 Updated: 2026-07-23
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
-Current maintenance line: v2.0.x (**COMPLETED**)
-Current small commit: none (M-9 accepted; v2.0.1 released)
-Next feature release: v2.1.0
+Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
+Current development line: v2.1.0
+Current small commit: W-2 — Fitbit token/status/reconnect hardening (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ---
@@ -373,7 +373,9 @@ Historical v2.0.0 checklist files are not part of the normal edit scope.
 
 ## v2.1.0 - Real wearable daily loop
 
-Status: Planned after v2.0.x stabilization
+Status: In progress — W-1 COMPLETED / ACCEPTED; W-2 CURRENT / NOT_COMPLETED
+Source of truth: `docs/DRC_v210_goal_checklist_small_commit.md`
+Authority status: accepted by W-1 verification, diff review, and operator approval
 
 Goal:
 
@@ -394,6 +396,25 @@ Primary scope:
 6. Simplify Google Health connection UX while preserving operator diagnostics and guarded real execution.
 ```
 
+### Current implementation boundary before v2.1.0 changes
+
+```text
+- Fitbit status, connect, callback, OAuth state, guarded token exchange, token refresh,
+  sleep-by-date API, raw-payload normalization, and legacy SleepSummary provider code exist.
+- /fitbit/status currently treats configured credentials plus local access/refresh token-like
+  fields as connected=true; it does not validate the live token, scopes, permissions, or API.
+- /fitbit/connect ready=true means only that an authorization URL and local OAuth state were prepared.
+- Fitbit normalization retains start/end values internally, but the legacy Fitbit SleepSummary
+  mapping does not currently expose sleep_start, sleep_end, quality_label, confidence, or
+  is_real_data=true.
+- Fitbit API errors are not yet classified into reconnect, permission, scope, rate-limit,
+  no-data, and provider-outage user states.
+- Flutter keeps conservative M-7 wording and has no app-side sleep-provider selector.
+- Existing post-advice chat TTL/capacity and TTS artifact retention are accepted v2.0.x behavior.
+```
+
+The complete source inventory is `docs/v210_fitbit_current_behavior_inventory.md`.
+
 ### Fitbit completion target
 
 ```text
@@ -408,7 +429,9 @@ Primary scope:
 ### LLM chat target
 
 ```text
-- Define bounded chat-session lifetime and turn limits.
+- Keep the accepted 30-minute idle TTL and 100-session default capacity unless a later accepted
+  contract intentionally changes them.
+- Add bounded chat turns and clearer expired, unavailable, fallback, and user-facing states.
 - Preserve mock, framework, framework_fallback, skipped, blocked, and unavailable distinctions.
 - Separate developer/operator gate wording from normal user-facing copy.
 - Reuse only stable AI Character Framework public session APIs.
@@ -419,7 +442,7 @@ Primary scope:
 ```text
 - Play generated voice output inside the Flutter UI.
 - Provide play, stop, replay, loading, failure, and expired-artifact states.
-- Keep the DRC-owned opaque artifact boundary.
+- Keep the DRC-owned opaque artifact boundary and accepted retention limits.
 - Do not expose FW-managed paths or provider payloads.
 ```
 
@@ -442,21 +465,36 @@ Out of scope for v2.1.0:
 - Account system, cloud profile sync, or production multi-user service.
 ```
 
-Provisional implementation phases:
+Implementation phases:
 
 ```text
-W-1  Fitbit current behavior inventory and contract
-W-2  Fitbit token/status/reconnect hardening
-W-3  Fitbit real sleep normalization and API regression tests
-W-4  Sleep-provider selection and source-label UI
-W-5  Configured real Fitbit operator verification
-C-1  Post-advice chat lifecycle and UI-state hardening
-T-1  Flutter in-app TTS player and artifact-expiry handling
-V-1  Character display extraction and deterministic state presentation
-R-1  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
+W-1  COMPLETED / ACCEPTED   Fitbit current behavior inventory and contract
+W-2  CURRENT / NOT_COMPLETED  Fitbit token/status/reconnect hardening
+W-3  PLANNED                  Fitbit real sleep normalization and API regression tests
+W-4  PLANNED                  Sleep-provider selection, source-label UI, and simplified
+                              Google Health user UX while retaining operator diagnostics
+W-5  PLANNED                  Configured real Fitbit operator verification
+C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
+T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
+V-1  PLANNED                  Character display extraction and deterministic state presentation
+R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-The v2.1.0 small-commit checklist becomes authoritative only after it is created and accepted.
+W-1 is completed and accepted. It created and validated the v2.1.0 source of truth, recorded the existing implementation, protected released records and inspected runtime files, and performed no real-provider execution. W-2 is now the only current small commit; W-3 through R-1 remain planned and must not be marked complete from W-1 documentation or source discovery.
+
+Expected W-1 change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_fitbit_current_behavior_inventory.md
+scripts/check_v210_fitbit_current_behavior_inventory.py
+```
+
+W-1 changed no backend runtime, Flutter runtime, existing tests, version metadata, release builders, fixed ZIPs, tags, GitHub Releases, or v2.0.0/v2.0.1 publication records. It was accepted on 2026-07-23 after compileall, the W-1 source-tree check, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. W-2 implementation has not begun in the W-1 acceptance synchronization.
 
 ---
 

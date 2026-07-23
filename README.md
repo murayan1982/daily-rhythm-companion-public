@@ -6,12 +6,12 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
-Current maintenance line: v2.0.x (**COMPLETED**)
-Current small commit: none (M-9 accepted; v2.0.1 released)
-Next feature release: v2.1.0
+Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
+Current development line: v2.1.0 (**W-1 COMPLETED / ACCEPTED; W-2 CURRENT / NOT_COMPLETED**)
+Current small commit: W-2 — Fitbit token/status/reconnect hardening
 Strategic target: v3.0.0
 
-## Current release and maintenance status
+## Current release and development status
 
 Daily Rhythm Companion v2.0.1 is the current Public patch release. Daily Rhythm Companion v2.0.0 remains the immutable capability and historical release baseline.
 
@@ -58,13 +58,46 @@ The completed v2.0.0 records remain:
 
 They are historical release records and are not the active task list for post-release work.
 
-The active post-release source of truth is:
+The authoritative v2.1.0 source of truth is:
 
-- [`docs/DRC_v20x_maintenance_checklist.md`](docs/DRC_v20x_maintenance_checklist.md)
+- [`docs/DRC_v210_goal_checklist_small_commit.md`](docs/DRC_v210_goal_checklist_small_commit.md)
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
+W-1 established and accepted this source of truth after source-tree verification, diff review, and operator approval passed.
+
+The completed v2.0.x maintenance source of truth remains available as historical accepted work:
+
+- [`docs/DRC_v20x_maintenance_checklist.md`](docs/DRC_v20x_maintenance_checklist.md)
+
 M-1 through M-9 are complete and accepted. v2.0.1 was released from the accepted M-1 through M-8 scope after the final committed-source gate, one-time fixed-ZIP build, same-artifact verification, explicit final approval, annotated tag publication, GitHub Release publication, and post-publication SHA-256 re-verification all passed.
+
+W-1 is completed and accepted. It inventoried the existing Fitbit OAuth, token, refresh, sleep API, normalization, provider, and Flutter presentation boundaries without changing runtime behavior or claiming configured real Fitbit success.
+
+Accepted W-1 verification on 2026-07-23:
+
+```text
+compileall: passed
+W-1 source-tree check: passed
+backend pytest: 38 passed
+Flutter test: 43 passed
+runtime / Flutter / existing tests / release records changed: false
+real operator execution: false
+```
+
+Run the accepted W-1 source-tree check with:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+W-2 is now CURRENT / NOT_COMPLETED. It may harden token/status/reconnect behavior through a separately reviewed small commit, but W-1 acceptance itself includes no W-2 runtime implementation. Real OAuth, token exchange, token refresh, Fitbit sleep retrieval, and smartphone Web acceptance remain explicit operator work for later v2.1.0 phases and were not performed by W-1.
 
 M-7 accepted contract:
 

@@ -2,9 +2,54 @@
 
 This directory contains development, verification, release, compatibility, and configured-demo helper scripts for Daily Rhythm Companion.
 
-## v2.0.x current maintenance baseline
+## v2.1.0 W-1 accepted source-tree boundary
 
-v2.0.0 is **RELEASED** as the immutable Public baseline. The active detailed source of truth is `docs/DRC_v20x_maintenance_checklist.md`.
+The authoritative v2.1.0 source of truth is `docs/DRC_v210_goal_checklist_small_commit.md`. W-1 established it after source-tree verification, diff review, and operator approval passed.
+
+Current state:
+
+```text
+current released version: v2.0.1 RELEASED
+completed maintenance line: v2.0.x COMPLETED / ACCEPTED
+current development line: v2.1.0
+W-1: COMPLETED / ACCEPTED
+current small commit: W-2 CURRENT / NOT_COMPLETED
+```
+
+W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records. W-2 implementation is not part of the W-1 acceptance synchronization.
+
+Run the W-1 checks from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The W-1 source-tree check verifies:
+
+```text
+- README, roadmap, tasklist, checklist, and inventory describe W-1 as COMPLETED / ACCEPTED
+- W-2 is CURRENT / NOT_COMPLETED
+- W-3 through W-5, C-1, T-1, V-1, and R-1 remain PLANNED
+- the existing Fitbit status/connect/callback, OAuth-state, guarded token-exchange,
+  refresh, sleep API, normalization, provider, and Flutter presentation files match
+  the inspected W-1 baseline
+- v2.0.0 and v2.0.1 release records, builders, and patch-release validator are unchanged
+- no credential, token, raw Fitbit payload, private path, or LAN value is added to W-1 docs
+```
+
+It does not read `backend/local_data`, make network calls, open an OAuth browser, exchange or refresh a real token, retrieve real Fitbit sleep data, build a release ZIP, or modify the repository.
+
+Accepted W-1 verification recorded compileall success, the W-1 source-tree check, 38 backend pytest tests, and 43 Flutter tests. Configured real Fitbit verification remains explicit opt-in W-5 work. W-1 success must not be reported as live token validation, permission acceptance, real sleep retrieval, smartphone Web acceptance, or v2.1.0 completion.
+
+## v2.0.x completed maintenance baseline
+
+v2.0.0 is **RELEASED** as the immutable Public baseline. The completed v2.0.x maintenance source of truth is `docs/DRC_v20x_maintenance_checklist.md`.
 
 Current released patch and maintenance status:
 
