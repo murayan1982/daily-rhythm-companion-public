@@ -19,11 +19,14 @@ class NormalizedFitbitSleepSummary:
 
     date: str
     source: str
-    total_sleep_minutes: int | None
+    total_sleep_minutes: int
     time_in_bed_minutes: int | None
     efficiency: int | None
     main_sleep_start_time: str | None
     main_sleep_end_time: str | None
+    quality_label: str
+    confidence: str
+    is_real_data: bool
     message: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -37,6 +40,9 @@ class NormalizedFitbitSleepSummary:
             "efficiency": self.efficiency,
             "main_sleep_start_time": self.main_sleep_start_time,
             "main_sleep_end_time": self.main_sleep_end_time,
+            "quality_label": self.quality_label,
+            "confidence": self.confidence,
+            "is_real_data": self.is_real_data,
             "message": self.message,
         }
 
@@ -61,56 +67,69 @@ def normalize_fitbit_sleep_response(
     target_date: str,
 ) -> FitbitSleepNormalizeResult:
     """
-    Normalize raw Fitbit sleep API data into an app-facing summary shape.
+    Normalize Fitbit sleep API data into a conservative app-facing summary.
 
-    Fitbit's sleep/date response usually contains a `sleep` list and a
-    `summary` object. This normalizer prefers the main sleep entry when
-    available, and falls back to summary-level values.
+    The normalizer prefers the main sleep entry and may fall back to the
+    summary-level total. A positive usable sleep duration is required before
+    the result can be treated as accepted real-provider data.
     """
+
+    if not isinstance(data, dict):
+        return _invalid_response("Fitbit sleep response was not an object.")
 
     sleep_entries = data.get("sleep")
     summary_data = data.get("summary")
 
     if sleep_entries is not None and not isinstance(sleep_entries, list):
-        return FitbitSleepNormalizeResult(
-            success=False,
-            error=FITBIT_SLEEP_NORMALIZE_ERROR_INVALID_RESPONSE,
-            message="Fitbit sleep response had an invalid sleep field.",
-        )
+        return _invalid_response("Fitbit sleep response had an invalid sleep field.")
 
     if summary_data is not None and not isinstance(summary_data, dict):
-        return FitbitSleepNormalizeResult(
-            success=False,
-            error=FITBIT_SLEEP_NORMALIZE_ERROR_INVALID_RESPONSE,
-            message="Fitbit sleep response had an invalid summary field.",
-        )
+        return _invalid_response("Fitbit sleep response had an invalid summary field.")
 
     if not sleep_entries and not summary_data:
-        return FitbitSleepNormalizeResult(
-            success=False,
-            error=FITBIT_SLEEP_NORMALIZE_ERROR_NO_SLEEP_DATA,
-            message="Fitbit sleep response did not contain sleep data.",
-        )
+        return _no_sleep_data()
 
     main_sleep = _find_main_sleep_entry(sleep_entries or [])
-
-    total_sleep_minutes = _extract_total_sleep_minutes(
+    total_result = _extract_total_sleep_minutes(
         main_sleep=main_sleep,
         summary_data=summary_data or {},
     )
-    time_in_bed_minutes = _extract_time_in_bed_minutes(
-        main_sleep=main_sleep,
+
+    if total_result.invalid:
+        return _invalid_response("Fitbit sleep duration had an invalid value.")
+
+    total_sleep_minutes = total_result.value
+    if total_sleep_minutes is None or total_sleep_minutes <= 0:
+        return _no_sleep_data()
+
+    start_time = _optional_string(main_sleep or {}, "startTime")
+    end_time = _optional_string(main_sleep or {}, "endTime")
+    used_complete_main_sleep = (
+        total_result.used_main_sleep
+        and start_time is not None
+        and end_time is not None
     )
 
     normalized_summary = NormalizedFitbitSleepSummary(
         date=target_date,
         source="fitbit",
         total_sleep_minutes=total_sleep_minutes,
-        time_in_bed_minutes=time_in_bed_minutes,
-        efficiency=_optional_int(main_sleep or {}, "efficiency"),
-        main_sleep_start_time=_optional_string(main_sleep or {}, "startTime"),
-        main_sleep_end_time=_optional_string(main_sleep or {}, "endTime"),
-        message="Fitbit sleep summary was normalized.",
+        time_in_bed_minutes=_optional_non_negative_int(
+            main_sleep or {},
+            "timeInBed",
+        ),
+        efficiency=_optional_bounded_int(
+            main_sleep or {},
+            "efficiency",
+            minimum=0,
+            maximum=100,
+        ),
+        main_sleep_start_time=start_time,
+        main_sleep_end_time=end_time,
+        quality_label=_quality_label(total_sleep_minutes),
+        confidence="high" if used_complete_main_sleep else "medium",
+        is_real_data=True,
+        message="Fitbit sleep summary was normalized into SleepSummary fields.",
     )
 
     return FitbitSleepNormalizeResult(
@@ -121,19 +140,19 @@ def normalize_fitbit_sleep_response(
     )
 
 
+@dataclass(frozen=True)
+class _TotalSleepResult:
+    value: int | None
+    used_main_sleep: bool
+    invalid: bool
+
+
 def _find_main_sleep_entry(
     sleep_entries: list[Any],
 ) -> dict[str, Any] | None:
-    """
-    Return the main sleep entry when available.
+    """Return the main sleep entry, or the first object entry as fallback."""
 
-    Fitbit can return multiple sleep entries. The entry with `isMainSleep=true`
-    is the best fit for a daily summary.
-    """
-
-    dict_entries = [
-        entry for entry in sleep_entries if isinstance(entry, dict)
-    ]
+    dict_entries = [entry for entry in sleep_entries if isinstance(entry, dict)]
 
     for entry in dict_entries:
         if entry.get("isMainSleep") is True:
@@ -149,24 +168,23 @@ def _extract_total_sleep_minutes(
     *,
     main_sleep: dict[str, Any] | None,
     summary_data: dict[str, Any],
-) -> int | None:
-    if main_sleep:
-        minutes_asleep = _optional_int(main_sleep, "minutesAsleep")
+) -> _TotalSleepResult:
+    if main_sleep and "minutesAsleep" in main_sleep:
+        value, valid = _parse_non_negative_int(main_sleep.get("minutesAsleep"))
+        if not valid:
+            return _TotalSleepResult(None, True, True)
+        if value is not None:
+            return _TotalSleepResult(value, True, False)
 
-        if minutes_asleep is not None:
-            return minutes_asleep
+    if "totalMinutesAsleep" in summary_data:
+        value, valid = _parse_non_negative_int(
+            summary_data.get("totalMinutesAsleep")
+        )
+        if not valid:
+            return _TotalSleepResult(None, False, True)
+        return _TotalSleepResult(value, False, False)
 
-    return _optional_int(summary_data, "totalMinutesAsleep")
-
-
-def _extract_time_in_bed_minutes(
-    *,
-    main_sleep: dict[str, Any] | None,
-) -> int | None:
-    if not main_sleep:
-        return None
-
-    return _optional_int(main_sleep, "timeInBed")
+    return _TotalSleepResult(None, False, False)
 
 
 def _optional_string(
@@ -175,22 +193,68 @@ def _optional_string(
 ) -> str | None:
     value = data.get(key)
 
-    if isinstance(value, str) and value:
-        return value
+    if isinstance(value, str) and value.strip():
+        return value.strip()
 
     return None
 
 
-def _optional_int(
+def _optional_non_negative_int(
     data: dict[str, Any],
     key: str,
 ) -> int | None:
-    value = data.get(key)
+    value, valid = _parse_non_negative_int(data.get(key))
+    return value if valid else None
+
+
+def _optional_bounded_int(
+    data: dict[str, Any],
+    key: str,
+    *,
+    minimum: int,
+    maximum: int,
+) -> int | None:
+    value = _optional_non_negative_int(data, key)
+    if value is None or value < minimum or value > maximum:
+        return None
+    return value
+
+
+def _parse_non_negative_int(value: Any) -> tuple[int | None, bool]:
+    if value is None:
+        return None, True
+
+    if isinstance(value, bool):
+        return None, False
 
     if isinstance(value, int):
-        return value
+        return (value, True) if value >= 0 else (None, False)
 
     if isinstance(value, str) and value.isdigit():
-        return int(value)
+        return int(value), True
 
-    return None
+    return None, False
+
+
+def _quality_label(total_sleep_minutes: int) -> str:
+    if total_sleep_minutes >= 420:
+        return "good"
+    if total_sleep_minutes >= 360:
+        return "fair"
+    return "short"
+
+
+def _no_sleep_data() -> FitbitSleepNormalizeResult:
+    return FitbitSleepNormalizeResult(
+        success=False,
+        error=FITBIT_SLEEP_NORMALIZE_ERROR_NO_SLEEP_DATA,
+        message="Fitbit sleep response did not contain usable sleep data.",
+    )
+
+
+def _invalid_response(message: str) -> FitbitSleepNormalizeResult:
+    return FitbitSleepNormalizeResult(
+        success=False,
+        error=FITBIT_SLEEP_NORMALIZE_ERROR_INVALID_RESPONSE,
+        message=message,
+    )

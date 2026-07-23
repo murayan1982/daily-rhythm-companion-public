@@ -19,7 +19,7 @@ current small commit: W-3 CURRENT / NOT_COMPLETED
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is current but not implemented.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is current, implemented, and awaiting the full verification gate and operator approval.
 
 Run the W-1 checks from the repository root:
 
@@ -74,6 +74,37 @@ cd ..
 ```
 
 The accepted W-2 check verifies the new response states, backward-compatible fields, no-network status boundary, one-time OAuth state marker, fake-HTTP injection, conservative Flutter wording, W-3 current status, and unchanged v2.0.0/v2.0.1 release records. Accepted verification recorded 57 backend tests and 50 Flutter tests. It does not load local credentials, call Fitbit, open OAuth, retrieve sleep data, or build a release artifact.
+
+## v2.1.0 W-3 Fitbit sleep normalization check
+
+Detailed contract: `docs/v210_fitbit_real_sleep_normalization.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python scripts\check_v210_fitbit_token_status_reconnect.py
+python scripts\check_v210_fitbit_real_sleep_normalization.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests/test_fitbit_real_sleep_normalization.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The W-3 check verifies allow-listed API error classification, safe exception
+text, positive-duration normalization, main-sleep and summary fallback behavior,
+`SleepSummary` real-data fields, unavailable reasons, synthetic fixture policy,
+unchanged Flutter/runtime boundaries outside W-3, and immutable v2.0.0/v2.0.1
+release records. It does not load local operator tokens, call Fitbit, open OAuth,
+collect smartphone Web evidence, or build a release artifact.
+
+W-3 remains `CURRENT / NOT_COMPLETED` until the complete gate, diff review, and
+operator approval pass. W-4 through R-1 remain planned.
 
 ## v2.0.x completed maintenance baseline
 

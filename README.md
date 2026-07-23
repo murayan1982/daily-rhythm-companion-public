@@ -128,7 +128,23 @@ real operator execution: false
 release records changed: false
 ```
 
-W-3 is CURRENT / NOT_COMPLETED. Fitbit API error classification, real-data `SleepSummary` mapping, and deterministic API/normalization regression tests are the next boundary. Real OAuth, live token exchange/refresh, Fitbit permission, configured real sleep retrieval, provider-selection UI, and smartphone Web acceptance remain later W-3 through W-5 work and are not completed by W-2.
+W-3 is CURRENT / NOT_COMPLETED with implementation ready for verification. The backend now classifies allow-listed Fitbit sleep API failures, requires usable normalized sleep duration, maps real-provider fields into `SleepSummary`, and includes deterministic fake-HTTP/API regression tests. The detailed contract is [`docs/v210_fitbit_real_sleep_normalization.md`](docs/v210_fitbit_real_sleep_normalization.md). Real OAuth, live token exchange/refresh, configured permission/scope evidence, real Fitbit sleep retrieval, provider-selection UI, and smartphone Web acceptance remain W-4/W-5 work and are not completed by W-3 source presence or mock-safe success.
+
+Run the current W-3 verification with:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python scripts\check_v210_fitbit_token_status_reconnect.py
+python scripts\check_v210_fitbit_real_sleep_normalization.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
 
 M-7 accepted contract:
 

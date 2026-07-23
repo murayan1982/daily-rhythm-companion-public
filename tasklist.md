@@ -72,7 +72,39 @@ Status: CURRENT / NOT_COMPLETED
 - configured real sleep retrievalを完了扱いしない。
 ```
 
-W-3の変更対象は、実コード・既存テスト・W-2受け入れ状態を再確認してから別途固定する。現時点ではW-3実装、configured real Fitbit実行、provider選択UI、smartphone Web受け入れを開始していない。
+実装状態: IMPLEMENTED / VERIFICATION_PENDING
+
+変更対象:
+
+```text
+backend/app/services/fitbit_api_client.py
+backend/app/services/fitbit_sleep_service.py
+backend/app/services/fitbit_sleep_normalizer.py
+backend/app/services/sleep_providers/fitbit.py
+backend/tests/test_fitbit_real_sleep_normalization.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_fitbit_real_sleep_normalization.md
+scripts/check_v210_fitbit_current_behavior_inventory.py
+scripts/check_v210_fitbit_real_sleep_normalization.py
+```
+
+実装済み境界:
+
+```text
+- HTTP/API失敗をallow-list済みreasonへ分類する。
+- raw payload、provider message、token、Authorization headerを公開しない。
+- 正のsleep durationがある場合だけnormalization成功とする。
+- main sleepとsummary fallbackを決定的に扱う。
+- sleep_start / sleep_end / quality_label / confidence / is_real_data /
+  unavailable_reasonをSleepSummaryへ接続する。
+- fake HTTP、synthetic fixture、provider、API responseをmock-safeに回帰テストする。
+```
+
+W-3はまだCURRENT / NOT_COMPLETEDであり、full backend/Flutter gate、差分確認、オペレーター承認後まで完了扱いしない。configured real Fitbit実行、provider選択UI、Google Health UX整理、smartphone Web受け入れは開始していない。詳細契約は`docs/v210_fitbit_real_sleep_normalization.md`。
 
 ---
 

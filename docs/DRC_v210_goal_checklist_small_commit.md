@@ -363,16 +363,89 @@ Configured real acceptance remains W-5.
 # W-3 — Fitbit real sleep normalization and API regression tests
 
 Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / VERIFICATION_PENDING
 
-Planned boundary:
+Commit title candidate:
 
 ```text
-- Classify Fitbit API errors without exposing raw payloads.
-- Map accepted normalized fields into SleepSummary, including real-data semantics.
-- Add deterministic API/normalization fixtures and regression tests.
-- Do not use private raw Fitbit payloads in Public fixtures.
-- Do not claim configured real sleep retrieval; that remains W-5.
+fix/test: harden Fitbit sleep normalization and API states
 ```
+
+Implemented boundary:
+
+```text
+- Classify 401, permission, scope, rate-limit, provider-outage, network,
+  invalid-response, and generic HTTP failures through allow-listed codes.
+- Keep provider error messages, raw payloads, tokens, and Authorization headers
+  outside app-facing responses and exception text.
+- Require a positive usable sleep duration before normalization succeeds.
+- Prefer the main sleep entry and retain summary.totalMinutesAsleep fallback.
+- Map sleep_start, sleep_end, quality_label, confidence, is_real_data, and
+  unavailable_reason into SleepSummary.
+- Add deterministic fake-HTTP, synthetic-normalization, provider, and API tests.
+- Keep configured real Fitbit execution and smartphone Web acceptance in W-5.
+```
+
+Changed runtime and test files:
+
+```text
+backend/app/services/fitbit_api_client.py
+backend/app/services/fitbit_sleep_service.py
+backend/app/services/fitbit_sleep_normalizer.py
+backend/app/services/sleep_providers/fitbit.py
+backend/tests/test_fitbit_real_sleep_normalization.py
+```
+
+Changed contract and verification files:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_fitbit_real_sleep_normalization.md
+scripts/check_v210_fitbit_current_behavior_inventory.py
+scripts/check_v210_fitbit_real_sleep_normalization.py
+```
+
+Explicitly unchanged:
+
+```text
+backend/app/api/fitbit.py
+backend/app/api/sleep.py
+backend/app/models/fitbit.py
+backend/app/models/sleep.py
+backend/app/config.py
+backend/app/services/fitbit_service.py
+backend/app/services/fitbit_token_store.py
+backend/app/services/fitbit_oauth_state_store.py
+backend/app/services/fitbit_token_exchange.py
+backend/app/services/sleep_providers/factory.py
+backend/tests/test_fitbit_current_state_contract.py
+backend/tests/test_fitbit_token_status_reconnect.py
+app/lib/**
+app/test/**
+app/pubspec.yaml
+version metadata
+v2.0.0 / v2.0.1 tags, Releases, fixed ZIPs, and publication records
+```
+
+Completion gate:
+
+```text
+- compileall passes;
+- W-1, W-2, and W-3 source-tree checks pass;
+- v2.0.x Fitbit and maintenance guards pass;
+- full backend pytest passes;
+- full Flutter test passes;
+- no private Fitbit values or raw payload fixture is committed;
+- diff review passes;
+- operator approval is received.
+```
+
+The detailed contract is `docs/v210_fitbit_real_sleep_normalization.md`.
+W-3 remains NOT_COMPLETED until the complete gate and approval pass.
 
 ---
 

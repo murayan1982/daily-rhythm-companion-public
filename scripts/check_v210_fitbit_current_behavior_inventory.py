@@ -20,18 +20,14 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-# Files outside the accepted W-2 change surface remain pinned to the W-1 baseline.
+# Files outside the accepted W-2 and current W-3 change surfaces remain pinned to the W-1 baseline.
 W1_UNCHANGED_IMPLEMENTATION_HASHES = {
     "backend/app/config.py": "063b9fdd7c1b5c3132a5885eddb56fc2b2202d45b202dda25b745393b35ccc06",
     "backend/app/api/fitbit.py": "44463bb3ce7c0e325c7a2a31602a68b0bc436cff615ef03ea70a3d4be6641b66",
     "backend/app/api/sleep.py": "80ea9be0988dee24492821990a039608be3ee7dc5a3179d758151461809e5c3a",
     "backend/app/models/sleep.py": "4fd063af3ff7cfb4f0ed1c26fe252ab60907622720081ce7cafdcb8296a72961",
-    "backend/app/services/fitbit_api_client.py": "3b296b544c77e66f7213f91f2269eb279ad94a0c4feaea06ac181eaec0a0c3e0",
     "backend/app/services/fitbit_http_client.py": "9bde5276055f9f022f6fae3c7e3868c77c8bda902f9b4c29c605e8a808ae5713",
-    "backend/app/services/fitbit_sleep_service.py": "9bc7fe4df3f2fc0d7b261faac21604d2be66ce5685f62411178fe0048aa63c3e",
-    "backend/app/services/fitbit_sleep_normalizer.py": "940ec681a914c1791fc5dd6bb73e37196312fe7a127a0cb6662f592ecd0b380c",
     "backend/app/services/sleep_providers/factory.py": "b898031e0b499a00ff88e5355e3851b280436377d0d0f35263d68e481289c3e6",
-    "backend/app/services/sleep_providers/fitbit.py": "7ebf9d1f5e12e1080cfac36e9d528ce56433b83b023a8e6bd04376247366b5e4",
     "backend/tests/test_fitbit_current_state_contract.py": "fad33f7a99f59f60903d84cccdb14b8d58c715f2666a74c97ff7dbdaae0f67bb",
     "app/lib/models/sleep_summary.dart": "f28173aeb89b996e284771243fe6cbd6e037098a634647b827ac096cef4d11e8",
     "app/lib/services/backend_api_client.dart": "98bbd40caef0c6a55892dfd9d9a146d524e3427f0a2cfe3ce71cc36eb34fab25",
@@ -83,6 +79,7 @@ def main() -> None:
     checklist = read("docs/DRC_v210_goal_checklist_small_commit.md")
     inventory = read("docs/v210_fitbit_current_behavior_inventory.md")
     w2_contract = read("docs/v210_fitbit_token_status_reconnect.md")
+    w3_contract = read("docs/v210_fitbit_real_sleep_normalization.md")
 
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
@@ -95,6 +92,10 @@ def main() -> None:
     require(inventory, "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE", "W-1 guarded exchange inventory")
     require(w2_contract, "token_present_unverified", "W-2 conservative state")
     require(w2_contract, "Configured real acceptance remains W-5", "W-5 boundary")
+    require(w3_contract, "IMPLEMENTED / VERIFICATION_PENDING", "W-3 implementation state")
+    require(w3_contract, "Configured real acceptance remains W-5", "W-3/W-5 boundary")
+    read("backend/tests/test_fitbit_real_sleep_normalization.py")
+    read("scripts/check_v210_fitbit_real_sleep_normalization.py")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
     assert_hashes(W1_UNCHANGED_IMPLEMENTATION_HASHES, "W-1 non-W-2 implementation")
@@ -107,6 +108,7 @@ def main() -> None:
         "docs/DRC_v210_goal_checklist_small_commit.md",
         "docs/v210_fitbit_current_behavior_inventory.md",
         "docs/v210_fitbit_token_status_reconnect.md",
+        "docs/v210_fitbit_real_sleep_normalization.md",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
@@ -122,6 +124,7 @@ def main() -> None:
     print("v210_fitbit_inventory_real_operator_execution: False")
     print("v210_fitbit_inventory_w2_completed_accepted: True")
     print("v210_fitbit_inventory_w3_current_not_completed: True")
+    print("v210_fitbit_inventory_w3_implementation_present: True")
     print("v210_fitbit_inventory_later_phases_planned: True")
     print("[v210-fitbit-current-behavior-inventory-check] OK")
 

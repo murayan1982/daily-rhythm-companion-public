@@ -1,17 +1,27 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from typing import Any
 
 from app.config import load_config
 from app.services.fitbit_api_client import (
+    FITBIT_API_ERROR_HTTP,
+    FITBIT_API_ERROR_INVALID_RESPONSE,
+    FITBIT_API_ERROR_PERMISSION_DENIED,
+    FITBIT_API_ERROR_PROVIDER_UNAVAILABLE,
+    FITBIT_API_ERROR_RATE_LIMITED,
+    FITBIT_API_ERROR_REQUEST_FAILED,
+    FITBIT_API_ERROR_SCOPE_MISSING,
+    FITBIT_API_ERROR_UNAUTHORIZED,
     FitbitApiClientError,
     FitbitApiRequestPreview,
     build_fitbit_api_request_preview,
     build_fitbit_sleep_date_endpoint,
     get_fitbit_json,
 )
+from app.services.fitbit_http_client import FitbitHttpResponse
 from app.services.fitbit_token_exchange import refresh_fitbit_access_token
 from app.services.fitbit_token_store import FitbitTokenStore
 
@@ -20,6 +30,12 @@ FITBIT_SLEEP_ERROR_NO_TOKEN = "no_fitbit_token"
 FITBIT_SLEEP_ERROR_NO_ACCESS_TOKEN_AFTER_REFRESH = "no_access_token_after_refresh"
 FITBIT_SLEEP_ERROR_REFRESH_FAILED = "fitbit_token_refresh_failed"
 FITBIT_SLEEP_ERROR_API_REQUEST_FAILED = "fitbit_sleep_api_request_failed"
+FITBIT_SLEEP_ERROR_RECONNECT_REQUIRED = "reconnect_required"
+FITBIT_SLEEP_ERROR_PERMISSION_DENIED = "permission_denied"
+FITBIT_SLEEP_ERROR_SCOPE_MISSING = "scope_missing"
+FITBIT_SLEEP_ERROR_RATE_LIMITED = "rate_limited"
+FITBIT_SLEEP_ERROR_PROVIDER_UNAVAILABLE = "provider_unavailable"
+FITBIT_SLEEP_ERROR_INVALID_RESPONSE = "invalid_response"
 
 
 @dataclass(frozen=True)
@@ -46,14 +62,14 @@ class FitbitSleepApiResult:
 def fetch_fitbit_sleep_for_date(
     target_date: date,
     token_store: FitbitTokenStore | None = None,
+    api_get: Callable[..., FitbitHttpResponse] | None = None,
 ) -> FitbitSleepApiResult:
     """
     Fetch raw Fitbit sleep data for a single date.
 
     This is an internal service boundary used by the Fitbit sleep provider.
-    If the locally stored access token is expired or near expiration, it will
-    pass through the guarded refresh-token boundary before calling the sleep
-    API.
+    `api_get` exists for deterministic mock-safe regression tests; normal
+    runtime uses the guarded Fitbit API client.
     """
 
     store = token_store or FitbitTokenStore()
@@ -124,20 +140,23 @@ def fetch_fitbit_sleep_for_date(
             uses_bearer_auth=bool(tokens.access_token),
         )
 
+    request = api_get or get_fitbit_json
+
     try:
-        response = get_fitbit_json(
+        response = request(
             endpoint=endpoint,
             access_token=tokens.access_token,
         )
-    except FitbitApiClientError:
+    except FitbitApiClientError as exc:
+        safe_error = _map_api_error(exc.code)
         return FitbitSleepApiResult(
             attempted=True,
             success=False,
             date=date_text,
             request_preview=request_preview,
             raw_data=None,
-            error=FITBIT_SLEEP_ERROR_API_REQUEST_FAILED,
-            message="Fitbit sleep API request failed.",
+            error=safe_error,
+            message=_safe_api_error_message(safe_error),
             refresh_attempted=refresh_attempted,
             refresh_succeeded=refresh_succeeded,
             refresh_error=refresh_error,
@@ -155,3 +174,41 @@ def fetch_fitbit_sleep_for_date(
         refresh_succeeded=refresh_succeeded,
         refresh_error=refresh_error,
     )
+
+
+def _map_api_error(api_error: str) -> str:
+    mapping = {
+        FITBIT_API_ERROR_UNAUTHORIZED: FITBIT_SLEEP_ERROR_RECONNECT_REQUIRED,
+        FITBIT_API_ERROR_PERMISSION_DENIED: FITBIT_SLEEP_ERROR_PERMISSION_DENIED,
+        FITBIT_API_ERROR_SCOPE_MISSING: FITBIT_SLEEP_ERROR_SCOPE_MISSING,
+        FITBIT_API_ERROR_RATE_LIMITED: FITBIT_SLEEP_ERROR_RATE_LIMITED,
+        FITBIT_API_ERROR_PROVIDER_UNAVAILABLE: FITBIT_SLEEP_ERROR_PROVIDER_UNAVAILABLE,
+        FITBIT_API_ERROR_REQUEST_FAILED: FITBIT_SLEEP_ERROR_PROVIDER_UNAVAILABLE,
+        FITBIT_API_ERROR_INVALID_RESPONSE: FITBIT_SLEEP_ERROR_INVALID_RESPONSE,
+        FITBIT_API_ERROR_HTTP: FITBIT_SLEEP_ERROR_API_REQUEST_FAILED,
+    }
+    return mapping.get(api_error, FITBIT_SLEEP_ERROR_API_REQUEST_FAILED)
+
+
+def _safe_api_error_message(error: str) -> str:
+    messages = {
+        FITBIT_SLEEP_ERROR_RECONNECT_REQUIRED: (
+            "Fitbit sleep access requires reconnection."
+        ),
+        FITBIT_SLEEP_ERROR_PERMISSION_DENIED: (
+            "Fitbit sleep access was denied by the provider."
+        ),
+        FITBIT_SLEEP_ERROR_SCOPE_MISSING: (
+            "Fitbit sleep access is missing the required scope."
+        ),
+        FITBIT_SLEEP_ERROR_RATE_LIMITED: (
+            "Fitbit sleep access is temporarily rate limited."
+        ),
+        FITBIT_SLEEP_ERROR_PROVIDER_UNAVAILABLE: (
+            "Fitbit sleep service is temporarily unavailable."
+        ),
+        FITBIT_SLEEP_ERROR_INVALID_RESPONSE: (
+            "Fitbit sleep service returned an invalid response."
+        ),
+    }
+    return messages.get(error, "Fitbit sleep API request failed.")

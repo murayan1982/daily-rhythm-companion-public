@@ -480,7 +480,7 @@ V-1  PLANNED                  Character display extraction and deterministic sta
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-W-1 and W-2 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. It was accepted on 2026-07-23 after compileall, W-1/W-2 checks, v2.0.x guards, 57 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-3 is the only current small commit; W-4 through R-1 remain planned and must not be marked complete from source presence, local token classification, or fake-HTTP success.
+W-1 and W-2 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. It was accepted on 2026-07-23 after compileall, W-1/W-2 checks, v2.0.x guards, 57 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-3 is the only current small commit. Its API classification, positive-duration normalization, `SleepSummary` real-data mapping, and deterministic regression implementation are present but remain verification-pending and NOT_COMPLETED. W-4 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, or fake-HTTP success.
 
 Expected W-1 change surface:
 
