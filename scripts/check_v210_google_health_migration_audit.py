@@ -37,16 +37,20 @@ def main()->None:
         (runner,'Legacy Fitbit Web API execution is retired'),
         (execution,'legacy Fitbit Web API execution is retired'),
         (doc,'September 2026'),
-        (checklist,'Current small commit: W-5b1'),
-        (checklist,'W-5b2  PLANNED'),
+        (checklist,'Current small commit: W-5b2'),
+        (checklist,'W-5b1  COMPLETED / ACCEPTED'),
+        (doc,'Status: COMPLETED / ACCEPTED'),
+        (doc,'implementation commit: 081cfdd'),
+        (checklist,'W-5b2  CURRENT / NOT_COMPLETED'),
     ]: require(text,fragment,"migration audit contract")
     proc=subprocess.run([sys.executable,'-m','pytest','-q','backend/tests/test_google_health_v4_migration_contract.py'],cwd=ROOT,capture_output=True,text=True,check=False)
     if proc.returncode!=0: raise AssertionError(proc.stdout+proc.stderr)
     denied=subprocess.run([sys.executable,'scripts/smoke_v210_fitbit_real_operator_execution.py','--allow-real-request'],cwd=ROOT,capture_output=True,text=True,check=False)
     if denied.returncode==0: raise AssertionError('Legacy Fitbit execution was not blocked')
     require(denied.stdout,'network_request: False','legacy execution network denial')
-    print('v210_google_health_migration_audit_status: implemented-not-accepted')
-    print('v210_google_health_migration_audit_current_small_commit: W-5b1')
+    print('v210_google_health_migration_audit_status: completed-accepted')
+    print('v210_google_health_migration_audit_completed_small_commit: W-5b1')
+    print('v210_google_health_migration_audit_current_small_commit: W-5b2')
     print('v210_google_health_migration_audit_parent_phase: W-5-current-not-completed')
     print('v210_google_health_migration_audit_legacy_fitbit_execution: retired')
     print('v210_google_health_migration_audit_real_operator_execution: false')

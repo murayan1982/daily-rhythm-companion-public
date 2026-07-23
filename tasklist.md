@@ -12,7 +12,7 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: W-5b1 CURRENT / NOT_COMPLETED
+current small commit: W-5b2 CURRENT / NOT_COMPLETED
 parent phase: W-5 CURRENT / NOT_COMPLETED
 strategic target: v3.0.0
 ```
@@ -67,8 +67,8 @@ Status: CURRENT / NOT_COMPLETED
 
 ```text
 W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
-W-5b1  CURRENT / NOT_COMPLETED  Google Health API migration audit and legacy Fitbit execution retirement
-  W-5b2  PLANNED                Configured Google Health API operator verification
+W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
+  W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification
 ```
 
 ### W-5a — Fitbit real operator contract and preflight
@@ -131,7 +131,7 @@ W-5aは2026-07-24にCOMPLETED / ACCEPTEDとなった。W-5bはCURRENT / NOT_COMP
 
 ### W-5b1 — Google Health API migration audit and legacy Fitbit execution retirement
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 ```text
 - Google公式のFitbit Web APIからGoogle Health APIへの移行方針を固定する。
@@ -143,6 +143,39 @@ Status: CURRENT / NOT_COMPLETED
 ```
 
 詳細契約: `docs/v210_google_health_migration_audit.md`
+
+受け入れ結果:
+
+```text
+- implementation commit: 081cfdd
+- legacy Fitbit execution: retired before network
+- Google Health v4 focused tests: 8 passed
+- provider selection + migration focused tests: 16 passed
+- backend pytest: 100 passed
+- Flutter test: 57 passed
+- W-1〜W-5b1 checks / v2.0.x guards: passed
+- diff review / operator approval: passed
+- real Google Health operator execution: false
+- release records changed: false
+```
+
+W-5b1は2026-07-24にCOMPLETED / ACCEPTEDとなった。W-5b2はCURRENT / NOT_COMPLETEDであり、Google OAuth、real Google Health API sleep取得、Fitbit-origin data確認、smartphone Web evidenceはまだ実施していない。
+
+### W-5b2 — Configured Google Health API operator verification
+
+Status: CURRENT / NOT_COMPLETED
+
+```text
+- ignoredなGoogle Health operator環境を使用する。
+- Google OAuth 2.0のconfigured接続を明示操作で確認する。
+- Google Health API v4からreal sleepを取得する。
+- Fitbit-origin sleepが利用可能な場合はsourceを確認する。
+- normalized SleepSummaryとFlutter Webのprovider/source/data-kind表示を確認する。
+- private token、raw payload、正確な睡眠値、private path、LAN URL、raw screenshotはGitへ入れない。
+- public-safe markerだけを受け入れ記録へ同期する。
+```
+
+W-5b2のreal operator実行はまだ開始していない。W-5親フェーズ、C-1以降、release readinessは未完了のままである。
 
 ---
 
@@ -550,7 +583,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-4とW-5aも受け入れ済みで、現在はW-5b1のGoogle Health migration auditと旧Fitbit実行停止を進める。real provider executionはまだ未実施で、W-5b2はPLANNEDである。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-4とW-5aも受け入れ済みで、W-5b1のGoogle Health migration auditと旧Fitbit実行停止は受け入れ済みで、現在はW-5b2のconfigured Google Health operator verificationを進める。real provider executionはまだ未実施である。
 
 ---
 
@@ -571,4 +604,4 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-4とW-5aまで受け入れ済みで、W-5bがCURRENT / NOT_COMPLETEDである。dedicated env、network-free preflight、ValidateOnly launcher、explicit real-execution smoke、runbookは受け入れ済みだが、configured real Fitbit実利用はまだ未実施である。chat、TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。
+v2.1.0はW-1からW-4とW-5aまで受け入れ済みで、W-5b2がCURRENT / NOT_COMPLETEDである。W-5b1でlegacy Fitbit executionは停止され、Google Health APIがconfigured-real経路として固定されたが、configured Google Health OAuth/APIとsmartphone Web verificationはまだ未実施である。chat、TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。

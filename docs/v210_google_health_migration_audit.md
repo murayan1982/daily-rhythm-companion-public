@@ -1,6 +1,6 @@
 # v2.1.0 W-5b1 — Google Health API migration audit
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 ## Official platform direction
 
@@ -41,7 +41,7 @@ The legacy `fitbit` provider remains source-compatible only as a migration/refer
 
 ```text
 W-5a   COMPLETED / ACCEPTED   Historical public-safe Fitbit operator contract; no real execution
-W-5b1  IMPLEMENTED / NOT_ACCEPTED  Google Health migration audit and legacy Fitbit execution retirement
+W-5b1  COMPLETED / ACCEPTED   Google Health migration audit and legacy Fitbit execution retirement
 W-5b2  PLANNED                Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
 ```
 
@@ -56,3 +56,23 @@ W-5b1 may inspect source, run synthetic Google Health v4 payload tests, validate
 - Flutter parses `provider_options` from the actual backend contract.
 - Legacy Fitbit user-facing labels and operator actions no longer imply future configured-real acceptance.
 - W-5b2 and all later phases remain not completed.
+
+## Accepted verification
+
+```text
+implementation commit: 081cfdd
+compileall: passed
+W-1 through W-5b1 checks: passed
+v2.0.x guards: passed
+Google Health v4 focused tests: 8 passed
+provider selection + migration focused tests: 16 passed
+backend pytest: 100 passed
+Flutter test: 57 passed
+diff review: passed
+operator approval: passed
+legacy Fitbit execution: retired before network
+real Google Health operator execution: false
+release records changed: false
+```
+
+W-5b1 was completed and accepted on 2026-07-24. W-5b2 remains current and must separately verify configured Google OAuth, Google Health API sleep retrieval, Fitbit-origin sleep where available, normalized `SleepSummary`, and smartphone Web provider/source/data-kind presentation.

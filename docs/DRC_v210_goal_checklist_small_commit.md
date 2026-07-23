@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: W-5b1 — Google Health API migration audit and legacy Fitbit execution retirement
+Current small commit: W-5b2 — Configured Google Health API operator verification
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -72,8 +72,8 @@ W-4  COMPLETED / ACCEPTED   Sleep-provider selection, source-label UI, and simpl
                               Google Health user UX with retained operator diagnostics
 W-5  CURRENT / NOT_COMPLETED  Wearable migration correction and configured Google Health verification
   W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
-  W-5b1  CURRENT / NOT_COMPLETED  Google Health API migration audit and legacy Fitbit execution retirement
-  W-5b2  PLANNED                Configured Google Health API operator verification
+  W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
+  W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
@@ -81,7 +81,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-4 and W-5a are completed and accepted. W-5b1 is current, parent W-5 remains not completed, W-5b2 is planned, and C-1 through R-1 remain planned.
+W-1 through W-4, W-5a, and W-5b1 are completed and accepted. W-5b2 is current, parent W-5 remains not completed, and C-1 through R-1 remain planned.
 
 ---
 
@@ -666,8 +666,8 @@ Status: CURRENT / NOT_COMPLETED
 
 ```text
 W-5a   COMPLETED / ACCEPTED   Historical Fitbit operator contract and preflight; no real execution
-W-5b1  CURRENT / NOT_COMPLETED  Google Health API migration audit and legacy Fitbit execution retirement
-W-5b2  PLANNED                Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
+W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
+W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
 ```
 
 ## W-5a accepted historical record
@@ -687,6 +687,26 @@ W-5a was completed and accepted on 2026-07-24 at implementation commit `7f84980`
 ```
 
 Detailed contract: `docs/v210_google_health_migration_audit.md`
+
+## W-5b1 accepted verification
+
+```text
+implementation commit: 081cfdd
+compileall: passed
+W-1 through W-5b1 checks: passed
+v2.0.x compatibility and maintenance guards: passed
+Google Health v4 focused tests: 8 passed
+provider selection + migration focused tests: 16 passed
+full backend pytest: 100 passed
+full Flutter test: 57 passed
+diff review: passed
+operator approval: passed
+legacy Fitbit network request: false
+real Google Health operator execution: false
+release records changed: false
+```
+
+W-5b1 was completed and accepted on 2026-07-24. This acceptance covers the mock-safe migration correction, legacy Fitbit execution retirement, Google Health v4 contract guard, and Flutter provider parsing correction only. W-5b2 owns configured Google OAuth, real Google Health API sleep retrieval, Fitbit-origin data confirmation when available, and smartphone Web evidence.
 
 ## W-5b1 change surface
 

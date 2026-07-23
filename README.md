@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1/W-2/W-3/W-4 COMPLETED / ACCEPTED; W-5 CURRENT / NOT_COMPLETED**)
-Current small commit: W-5b1 — Google Health API migration audit and legacy Fitbit execution retirement (**CURRENT / NOT_COMPLETED**)
+Current small commit: W-5b2 — Configured Google Health API operator verification (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -156,11 +156,11 @@ W-5 is split into a public-safe preparation commit and the later private executi
 
 ```text
 W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
-W-5b1  CURRENT / NOT_COMPLETED  Google Health API migration audit and legacy Fitbit execution retirement
-  W-5b2  PLANNED                Configured Google Health API operator verification
+W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
+  W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification
 ```
 
-W-5a is completed and accepted as a historical public-safe contract. It performed no OAuth or provider request. W-5b1 is now current after rechecking the official migration direction: Google Health API is the new configured-real path, legacy Fitbit Web API execution is retired, and W-5b2 will later own configured Google Health OAuth/API and smartphone Web verification. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md).
+W-5a remains accepted as a historical public-safe contract and performed no OAuth or provider request. W-5b1 was completed and accepted at implementation commit `081cfdd`: Google Health API is the configured-real path, legacy Fitbit Web API execution is retired, the Google Health v4 contract is mock-safe guarded, and the Flutter `provider_options` mismatch is corrected. W-5b2 is now current for configured Google Health OAuth/API and smartphone Web verification. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md).
 
 Run the W-4b mock-safe gate with:
 

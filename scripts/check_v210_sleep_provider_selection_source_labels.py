@@ -89,7 +89,8 @@ def main() -> None:
     files = {relative: read(relative) for relative in W4A_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-5b1", "W-5 current commit")
+    require(checklist, "Current small commit: W-5b2", "W-5 current commit")
+    require(checklist, "W-5b1  COMPLETED / ACCEPTED", "W-5b1 accepted state")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
     require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5 current state")
     require(checklist, "W-4  COMPLETED / ACCEPTED", "W-4 phase state")
@@ -163,11 +164,12 @@ def main() -> None:
 
     print("v210_sleep_provider_selection_status: completed-accepted")
     print("v210_sleep_provider_selection_completed_small_commit: W-4a")
-    print("v210_sleep_provider_selection_current_small_commit: W-5b1")
+    print("v210_sleep_provider_selection_current_small_commit: W-5b2")
     print("v210_sleep_provider_selection_parent_phase: W-4-completed-accepted")
     print("v210_sleep_provider_selection_real_operator_execution: false")
     print("v210_sleep_provider_selection_release_records_changed: false")
     print("v210_sleep_provider_selection_w5a_completed_accepted: True")
+    print("v210_sleep_provider_selection_source_labels_w5b1_completed_accepted: True")
     print("[v210-sleep-provider-selection-source-labels-check] OK")
 
 

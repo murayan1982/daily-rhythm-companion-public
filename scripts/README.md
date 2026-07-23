@@ -15,7 +15,7 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: W-5b1 CURRENT / NOT_COMPLETED
+current small commit: W-5b2 CURRENT / NOT_COMPLETED
 parent phase: W-5 CURRENT / NOT_COMPLETED
 ```
 
