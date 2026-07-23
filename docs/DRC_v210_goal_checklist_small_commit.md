@@ -2,7 +2,7 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: W-4a — Read-only sleep-provider selection status contract
+Current small commit: W-4b — Flutter provider/source-label UI and simplified Google Health user UX
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -473,12 +473,13 @@ Status: CURRENT / NOT_COMPLETED
 ## W-4 implementation split
 
 ```text
-W-4a  CURRENT / NOT_COMPLETED  Read-only sleep-provider selection status contract
-W-4b  PLANNED                 Flutter provider/source-label UI and simplified
-                               Google Health user UX with retained diagnostics
+W-4a  COMPLETED / ACCEPTED   Read-only sleep-provider selection status contract
+W-4b  CURRENT / NOT_COMPLETED  Flutter provider/source-label UI and simplified
+                                Google Health user UX with retained diagnostics
 ```
 
-W-4a implementation state: IMPLEMENTED / NOT_ACCEPTED
+W-4a state: COMPLETED / ACCEPTED
+W-4b state: CURRENT / NOT_COMPLETED
 
 ## W-4a purpose
 
@@ -541,10 +542,26 @@ v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
   pytest, full Flutter test, diff review, and operator approval pass.
 ```
 
-W-4a is not accepted merely because the source and tests are present. W-4 remains
-CURRENT / NOT_COMPLETED after W-4a acceptance. W-4b then owns the Flutter
-provider/source-label UI and simplified Google Health user UX. W-5 and later phases
-remain PLANNED.
+## W-4a accepted verification
+
+```text
+implementation commit: 1619b0b
+compileall: passed
+W-1/W-2/W-3/W-4a checks: passed
+v2.0.x compatibility and maintenance guards: passed
+focused backend pytest: 8 passed
+full backend pytest: 92 passed
+Flutter test: 50 passed
+diff review: passed
+operator approval: passed
+real operator execution: false
+release records changed: false
+```
+
+W-4a was completed and accepted on 2026-07-23. W-4 remains CURRENT /
+NOT_COMPLETED and W-4b is now the current small commit. W-4b owns the Flutter
+configured-provider/data-source UI and simplified Google Health user UX while
+retaining operator diagnostics. W-5 and later phases remain PLANNED.
 
 ---
 

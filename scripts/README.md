@@ -15,12 +15,12 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: W-4a CURRENT / NOT_COMPLETED
+current small commit: W-4b CURRENT / NOT_COMPLETED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is current. W-4a is implemented but not accepted; W-4b remains planned.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 remains current. W-4a is completed and accepted after 8 focused backend tests, 92 full backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4b is now current.
 
 Run the W-1 checks from the repository root:
 
@@ -139,9 +139,11 @@ release records, and public-safe source text. It does not instantiate a provider
 read local token stores, refresh credentials, open OAuth, call Fitbit or Google
 Health, collect smartphone Web evidence, or build a release artifact.
 
-W-4a remains `CURRENT / NOT_COMPLETED` until compileall, accepted W-1/W-2/W-3
-checks, the W-4a check, v2.0.x guards, full backend pytest, full Flutter test,
-diff review, and operator approval pass. W-4 and W-5 remain incomplete.
+W-4a is `COMPLETED / ACCEPTED`. Acceptance recorded implementation commit
+`1619b0b`, 8 focused backend tests, 92 full backend tests, 50 Flutter tests, diff
+review, and operator approval. Real operator execution remained false and release
+records remained unchanged. W-4b is now `CURRENT / NOT_COMPLETED`; W-4 and W-5
+remain incomplete.
 
 ## v2.0.x completed maintenance baseline
 

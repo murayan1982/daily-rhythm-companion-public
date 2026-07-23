@@ -89,11 +89,11 @@ def main() -> None:
     files = {relative: read(relative) for relative in W4A_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-4a", "W-4a current commit")
-    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-4a incomplete state")
+    require(checklist, "Current small commit: W-4b", "W-4b current commit")
+    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-4b incomplete state")
     require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 phase state")
-    require(checklist, "W-4a  CURRENT / NOT_COMPLETED", "W-4a queue state")
-    require(checklist, "W-4b  PLANNED", "W-4b planned state")
+    require(checklist, "W-4a  COMPLETED / ACCEPTED", "W-4a accepted state")
+    require(checklist, "W-4b  CURRENT / NOT_COMPLETED", "W-4b current state")
     for phase in ("W-5", "C-1", "T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
@@ -149,9 +149,9 @@ def main() -> None:
         require(tests, marker, "W-4a backend regression")
 
     contract = files["docs/v210_sleep_provider_selection_source_labels.md"]
-    require(contract, "Status: IMPLEMENTED / NOT_ACCEPTED", "pre-acceptance state")
+    require(contract, "Status: COMPLETED / ACCEPTED", "accepted state")
     require(contract, "Configured real Fitbit operator verification remains W-5", "W-5 boundary")
-    require(contract, "W-4 remains CURRENT / NOT_COMPLETED", "parent W-4 boundary")
+    require(contract, "Parent phase: W-4 CURRENT / NOT_COMPLETED", "parent W-4 boundary")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
     assert_hashes(W3_ACCEPTED_BOUNDARY_HASHES, "Accepted W-3 runtime boundary")
@@ -159,8 +159,9 @@ def main() -> None:
     for relative, text in files.items():
         assert_no_sensitive_values(relative, text)
 
-    print("v210_sleep_provider_selection_status: implemented-not-accepted")
-    print("v210_sleep_provider_selection_current_small_commit: W-4a")
+    print("v210_sleep_provider_selection_status: completed-accepted")
+    print("v210_sleep_provider_selection_completed_small_commit: W-4a")
+    print("v210_sleep_provider_selection_current_small_commit: W-4b")
     print("v210_sleep_provider_selection_parent_phase: W-4-current-not-completed")
     print("v210_sleep_provider_selection_real_operator_execution: false")
     print("v210_sleep_provider_selection_release_records_changed: false")

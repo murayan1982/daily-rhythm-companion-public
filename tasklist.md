@@ -12,7 +12,7 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: W-4a CURRENT / NOT_COMPLETED
+current small commit: W-4b CURRENT / NOT_COMPLETED
 strategic target: v3.0.0
 ```
 
@@ -65,56 +65,53 @@ Status: CURRENT / NOT_COMPLETED
 実装分割:
 
 ```text
-W-4a  CURRENT / NOT_COMPLETED  read-only sleep-provider selection status contract
-W-4b  PLANNED                 Flutter provider/source-label UI and simplified
-                               Google Health user UX with retained diagnostics
+W-4a  COMPLETED / ACCEPTED   read-only sleep-provider selection status contract
+W-4b  CURRENT / NOT_COMPLETED  Flutter provider/source-label UI and simplified
+                                Google Health user UX with retained diagnostics
 ```
 
 ### W-4a — Read-only sleep-provider selection status contract
 
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+
+実装コミット:
+
+```text
+1619b0b feat/test: add sleep-provider selection status contract
+```
+
+受け入れ結果:
+
+```text
+- GET /sleep/providersがbackend-ownedのconfigured provider metadataをread-onlyで返す。
+- mock / wearable_stub / google_health / fitbit_stub / fitbitを区別する。
+- fitbit_stubはwearable_stubのdeprecated aliasとして維持する。
+- fitbitはlegacy_real_providerかつW-5 real operator verification待ちと表示する。
+- provider生成、token store、OAuth、refresh、sleep取得、外部HTTPを実行しない。
+- /sleep/summary、W-3 Fitbit runtime/normalization、Flutter runtimeを変更していない。
+- compileall、W-1/W-2/W-3/W-4a check、v2.0.x guards、focused backend pytest 8件、
+  full backend pytest 92件、Flutter test 50件、差分確認、オペレーター承認が通過した。
+- real Fitbit operator executionとrelease作業は行っていない。
+```
+
+詳細契約: `docs/v210_sleep_provider_selection_source_labels.md`
+
+### W-4b — Flutter provider/source-label UI and simplified Google Health user UX
+
+Status: CURRENT / NOT_COMPLETED
 
 目的:
 
 ```text
-- backendのSLEEP_PROVIDER選択状態をread-only APIで公開する。
-- configured providerとSleepSummary.sourceを別概念として固定する。
-- credentials、OAuth、token refresh、sleep取得をendpointから実行しない。
-- W-3で受け入れたFitbit backend normalization/API contractを変更しない。
-- Flutter UI変更やconfigured real Fitbit実行を完了扱いしない。
+- accepted GET /sleep/providers contractをFlutterから読み込む。
+- configured providerとSleepSummary.source / available / is_real_dataを別表示する。
+- mock / Google Health / Fitbitで一貫したapp-facing source labelを表示する。
+- Google Health通常ユーザー向けUXを簡略化する。
+- diagnostics、preflight、self-check等のoperator情報をAdvanced境界に維持する。
+- W-3 backend contractとW-5 configured real Fitbit acceptanceを前倒ししない。
 ```
 
-変更対象:
-
-```text
-backend/app/main.py
-backend/app/api/sleep_provider_selection.py
-backend/app/models/sleep_provider_selection.py
-backend/app/services/sleep_provider_selection_service.py
-backend/tests/test_sleep_provider_selection_contract.py
-docs/v210_sleep_provider_selection_source_labels.md
-docs/DRC_v210_goal_checklist_small_commit.md
-scripts/check_v210_sleep_provider_selection_source_labels.py
-README.md
-roadmap.md
-tasklist.md
-scripts/README.md
-```
-
-変更しない対象:
-
-```text
-backend/app/api/sleep.py
-backend/app/models/sleep.py
-backend/app/services/sleep_providers/factory.py
-W-3 Fitbit API / normalization / provider mapping / regression files
-app/lib/**
-app/test/**
-version metadata
-v2.0.0 / v2.0.1 tag、GitHub Release、固定ZIP、公開後記録
-```
-
-W-4aのsource実装だけでは受け入れない。compileall、W-1/W-2/W-3 check、W-4a check、v2.0.x guards、backend pytest、Flutter test、差分確認、オペレーター承認が必要である。W-4a受け入れ後もW-4はCURRENT / NOT_COMPLETEDで、W-4bがprovider/source-label UIとGoogle Health通常UXを担当する。configured real Fitbit operator verificationはW-5まで未完了である。
+W-4bの変更対象は、現在のFlutter実コードと既存50件のwidget/model testsを再確認してから固定する。configured real Fitbit operator verificationはW-5まで未完了である。
 
 ---
 
@@ -505,4 +502,4 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1、W-2、W-3を受け入れ済みで、W-4がCURRENT / NOT_COMPLETEDである。W-4aのread-only provider selection status contractは実装済みだが未受け入れで、Flutter provider/source-label UIとGoogle Health通常UX整理はW-4bでこれから着手する。configured real Fitbit実利用、chat、TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。
+v2.1.0はW-1、W-2、W-3、W-4aを受け入れ済みで、W-4がCURRENT / NOT_COMPLETED、W-4bがCURRENT / NOT_COMPLETEDである。W-4aのread-only provider selection status contractは実装コミット`1619b0b`とmock-safe受け入れゲートを通過した。Flutter provider/source-label UIとGoogle Health通常UX整理はW-4bでこれから着手する。configured real Fitbit実利用、chat、TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。

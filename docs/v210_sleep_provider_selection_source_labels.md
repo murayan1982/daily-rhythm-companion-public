@@ -1,7 +1,7 @@
 # v2.1.0 W-4a — Sleep-provider selection status contract
 
 Updated: 2026-07-23
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 Parent phase: W-4 CURRENT / NOT_COMPLETED
 
 ## Purpose
@@ -33,7 +33,7 @@ configured_provider_role
 configured_provider_supported
 selection_mode=backend_config
 change_requires_backend_restart=true
-provider_options[]
+available_providers[]
 message
 ```
 
@@ -59,7 +59,7 @@ wearable_stub
   role: deterministic_sample
   label: ウェアラブル連携サンプル
 
-google_health
+existing google_health
   role: configured_real_provider
   label: Google Health
 
@@ -170,7 +170,7 @@ Not allowed or required:
 
 ## Acceptance conditions
 
-W-4a remains NOT_ACCEPTED until all of the following pass:
+W-4a acceptance required all of the following to pass:
 
 ```text
 - compileall
@@ -183,6 +183,24 @@ W-4a remains NOT_ACCEPTED until all of the following pass:
 - operator approval
 ```
 
-W-4 remains CURRENT / NOT_COMPLETED after W-4a acceptance. Flutter provider/source
+## Accepted verification result
+
+```text
+implementation commit: 1619b0b
+compileall: passed
+accepted W-1/W-2/W-3 checks: passed
+W-4a source-tree check: passed
+v2.0.x compatibility and maintenance guards: passed
+focused backend pytest: 8 passed
+full backend pytest: 92 passed
+full Flutter test: 50 passed
+diff review: passed
+operator approval: passed
+real operator execution: false
+release records changed: false
+```
+
+W-4a was completed and accepted on 2026-07-23. W-4 remains CURRENT /
+NOT_COMPLETED and W-4b is now CURRENT / NOT_COMPLETED. Flutter provider/source
 labels and simplified Google Health user UX remain the next W-4 implementation work.
 Configured real Fitbit operator verification remains W-5.
