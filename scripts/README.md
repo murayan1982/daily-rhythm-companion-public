@@ -13,10 +13,13 @@ current released version: v2.0.1 RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
-current small commit: W-2 CURRENT / NOT_COMPLETED
+W-2: COMPLETED / ACCEPTED
+current small commit: W-3 CURRENT / NOT_COMPLETED
 ```
 
-W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records. W-2 implementation is not part of the W-1 acceptance synchronization.
+W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
+
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is current but not implemented.
 
 Run the W-1 checks from the repository root:
 
@@ -34,11 +37,12 @@ The W-1 source-tree check verifies:
 
 ```text
 - README, roadmap, tasklist, checklist, and inventory describe W-1 as COMPLETED / ACCEPTED
-- W-2 is CURRENT / NOT_COMPLETED
-- W-3 through W-5, C-1, T-1, V-1, and R-1 remain PLANNED
-- the existing Fitbit status/connect/callback, OAuth-state, guarded token-exchange,
-  refresh, sleep API, normalization, provider, and Flutter presentation files match
-  the inspected W-1 baseline
+- W-2 is COMPLETED / ACCEPTED
+- W-3 is CURRENT / NOT_COMPLETED
+- W-4 through W-5, C-1, T-1, V-1, and R-1 remain PLANNED
+- the accepted W-1 inventory and W-1 acceptance state remain recorded
+- files outside the accepted W-2 change surface still match the inspected W-1 baseline
+- approved W-2 runtime and Flutter files carry the separately checked W-2 contract
 - v2.0.0 and v2.0.1 release records, builders, and patch-release validator are unchanged
 - no credential, token, raw Fitbit payload, private path, or LAN value is added to W-1 docs
 ```
@@ -46,6 +50,30 @@ The W-1 source-tree check verifies:
 It does not read `backend/local_data`, make network calls, open an OAuth browser, exchange or refresh a real token, retrieve real Fitbit sleep data, build a release ZIP, or modify the repository.
 
 Accepted W-1 verification recorded compileall success, the W-1 source-tree check, 38 backend pytest tests, and 43 Flutter tests. Configured real Fitbit verification remains explicit opt-in W-5 work. W-1 success must not be reported as live token validation, permission acceptance, real sleep retrieval, smartphone Web acceptance, or v2.1.0 completion.
+
+
+## v2.1.0 W-2 accepted token/status/reconnect check
+
+Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python scripts\check_v210_fitbit_token_status_reconnect.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests/test_fitbit_current_state_contract.py
+python -m pytest -q backend/tests/test_fitbit_token_status_reconnect.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The accepted W-2 check verifies the new response states, backward-compatible fields, no-network status boundary, one-time OAuth state marker, fake-HTTP injection, conservative Flutter wording, W-3 current status, and unchanged v2.0.0/v2.0.1 release records. Accepted verification recorded 57 backend tests and 50 Flutter tests. It does not load local credentials, call Fitbit, open OAuth, retrieve sleep data, or build a release artifact.
 
 ## v2.0.x completed maintenance baseline
 

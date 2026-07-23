@@ -2,9 +2,10 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: W-2 — Fitbit token/status/reconnect hardening
+Current small commit: W-3 — Fitbit real sleep normalization and API regression tests
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
+W-2 state: COMPLETED / ACCEPTED
 Current released version: v2.0.1
 
 ## Source-of-truth rule
@@ -62,8 +63,8 @@ with Fitbit real-use completion as the main new capability.
 
 ```text
 W-1  COMPLETED / ACCEPTED   Fitbit current behavior inventory and contract
-W-2  CURRENT / NOT_COMPLETED  Fitbit token/status/reconnect hardening
-W-3  PLANNED                  Fitbit real sleep normalization and API regression tests
+W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
+W-3  CURRENT / NOT_COMPLETED  Fitbit real sleep normalization and API regression tests
 W-4  PLANNED                  Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
 W-5  PLANNED                  Configured real Fitbit operator verification
@@ -74,7 +75,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-Only W-1 is completed and accepted. W-2 is current but not completed; W-3 through R-1 remain planned.
+W-1 and W-2 are completed and accepted. W-3 is current but not completed; W-4 through R-1 remain planned.
 
 ---
 
@@ -254,23 +255,114 @@ Source-tree success, fake HTTP responses, token-file shape checks, or an authori
 
 # W-2 — Fitbit token/status/reconnect hardening
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
-Planned boundary:
+Commit title:
 
 ```text
-- Define provider-neutral connection states for unconfigured, authorization-ready,
-  token-present-unverified, connected, refresh-required, reconnect-required,
-  permission-blocked, unavailable, and error states.
-- Use fake HTTP responses and temporary token/state stores for normal tests.
-- Do not perform configured real Fitbit verification or mark W-5 complete.
+feat/test: harden Fitbit token status and reconnect states
 ```
+
+Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`
+
+## Purpose
+
+```text
+- Add provider-neutral connection_state and verified fields without removing
+  connected/provider/message compatibility fields.
+- Classify local token presence, expiry, refresh need, reconnect need, permission
+  denial, malformed storage, and authorization readiness without external calls.
+- Consume matching OAuth state once before token exchange and reject replay.
+- Add deterministic temporary-store and fake-HTTP regression coverage.
+- Keep live OAuth, live token validity, permission, sleep retrieval, and UI evidence
+  deferred to W-5.
+```
+
+## Change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+backend/app/models/fitbit.py
+backend/app/services/fitbit_service.py
+backend/app/services/fitbit_token_store.py
+backend/app/services/fitbit_oauth_state_store.py
+backend/app/services/fitbit_token_exchange.py
+backend/tests/test_fitbit_token_status_reconnect.py
+app/lib/models/fitbit_status.dart
+app/lib/models/fitbit_connect_response.dart
+app/test/fitbit_token_status_reconnect_test.dart
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_fitbit_token_status_reconnect.md
+scripts/check_v210_fitbit_current_behavior_inventory.py
+scripts/check_v210_fitbit_token_status_reconnect.py
+```
+
+## Explicit non-change surface
+
+```text
+Fitbit API routes and SleepSummary models
+Fitbit sleep API/error/normalization/provider implementation
+Flutter home screen, API client, provider selection, and sleep summary model
+existing M-7 backend and Flutter regression tests
+version metadata
+v2.0.0/v2.0.1 release records, builders, tags, GitHub Releases, and fixed ZIPs
+```
+
+## Accepted implementation state
+
+```text
+- W-2 implementation and focused mock-safe tests are accepted.
+- Normal /fitbit/status performs no HTTP or token refresh.
+- connected remains a backward-compatible legacy bool; verified remains false.
+- connected connection_state is reserved for W-5 and is not emitted by W-2 status.
+- W-3 is CURRENT / NOT_COMPLETED; W-4 through R-1 remain PLANNED.
+```
+
+## Completion conditions
+
+```text
+- old and new Fitbit response shapes remain parseable;
+- token values, authorization codes, OAuth state values, and Authorization headers
+  are absent from app-facing responses and logs;
+- expired/near-expiry/missing-expiry token states fail closed;
+- matching OAuth state is one-time and replay is rejected;
+- access_denied is distinguishable from malformed/error state;
+- fake refresh success and failure pass without network access;
+- compileall, W-1/W-2 checks, v2.0.x guards, full backend pytest, and Flutter test pass;
+- W-3 through R-1 remain incomplete;
+- operator diff review and explicit approval are received.
+```
+
+Accepted verification on 2026-07-23:
+
+```text
+compileall: passed
+W-1/W-2 source-tree checks: passed
+v2.0.x compatibility and historical guards: passed
+backend pytest: 57 passed
+Flutter test: 50 passed
+diff review and operator approval: passed
+real operator execution: false
+release records changed: false
+```
+
+## Mock-safe / real operator boundary
+
+W-2 may use temporary token/state files, fixed time, fake HTTP responses, public-safe
+placeholder strings, source-tree checks, backend pytest, and Flutter tests.
+
+W-2 does not open OAuth, exchange or refresh real tokens, call Fitbit sleep APIs,
+verify permission/scope, retrieve real sleep values, or collect smartphone Web evidence.
+Configured real acceptance remains W-5.
 
 ---
 
 # W-3 — Fitbit real sleep normalization and API regression tests
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 Planned boundary:
 

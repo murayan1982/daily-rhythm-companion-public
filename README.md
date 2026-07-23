@@ -7,8 +7,8 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1 COMPLETED / ACCEPTED; W-2 CURRENT / NOT_COMPLETED**)
-Current small commit: W-2 — Fitbit token/status/reconnect hardening
+Current development line: v2.1.0 (**W-1/W-2 COMPLETED / ACCEPTED; W-3 CURRENT / NOT_COMPLETED**)
+Current small commit: W-3 — Fitbit real sleep normalization and API regression tests
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -97,7 +97,38 @@ flutter test
 cd ..
 ```
 
-W-2 is now CURRENT / NOT_COMPLETED. It may harden token/status/reconnect behavior through a separately reviewed small commit, but W-1 acceptance itself includes no W-2 runtime implementation. Real OAuth, token exchange, token refresh, Fitbit sleep retrieval, and smartphone Web acceptance remain explicit operator work for later v2.1.0 phases and were not performed by W-1.
+W-2 is completed and accepted. It added conservative `connection_state` / `verified` response fields, deterministic local token-expiry classification, one-time OAuth state consumption, fake-HTTP refresh tests, and old/new Flutter response parsing. The existing `connected/provider/message` fields remain backward compatible. Normal status inspection performs no external HTTP and does not refresh a token.
+
+The detailed W-2 contract is [`docs/v210_fitbit_token_status_reconnect.md`](docs/v210_fitbit_token_status_reconnect.md).
+
+Run the accepted W-2 checks with:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python scripts\check_v210_fitbit_token_status_reconnect.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+Accepted W-2 verification on 2026-07-23:
+
+```text
+compileall: passed
+W-1/W-2 source-tree checks: passed
+v2.0.x compatibility and historical guards: passed
+backend pytest: 57 passed
+Flutter test: 50 passed
+real operator execution: false
+release records changed: false
+```
+
+W-3 is CURRENT / NOT_COMPLETED. Fitbit API error classification, real-data `SleepSummary` mapping, and deterministic API/normalization regression tests are the next boundary. Real OAuth, live token exchange/refresh, Fitbit permission, configured real sleep retrieval, provider-selection UI, and smartphone Web acceptance remain later W-3 through W-5 work and are not completed by W-2.
 
 M-7 accepted contract:
 

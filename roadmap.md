@@ -5,7 +5,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: W-2 — Fitbit token/status/reconnect hardening (**CURRENT / NOT_COMPLETED**)
+Current small commit: W-3 — Fitbit real sleep normalization and API regression tests (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ---
@@ -373,7 +373,7 @@ Historical v2.0.0 checklist files are not part of the normal edit scope.
 
 ## v2.1.0 - Real wearable daily loop
 
-Status: In progress — W-1 COMPLETED / ACCEPTED; W-2 CURRENT / NOT_COMPLETED
+Status: In progress — W-1/W-2 COMPLETED / ACCEPTED; W-3 CURRENT / NOT_COMPLETED
 Source of truth: `docs/DRC_v210_goal_checklist_small_commit.md`
 Authority status: accepted by W-1 verification, diff review, and operator approval
 
@@ -469,8 +469,8 @@ Implementation phases:
 
 ```text
 W-1  COMPLETED / ACCEPTED   Fitbit current behavior inventory and contract
-W-2  CURRENT / NOT_COMPLETED  Fitbit token/status/reconnect hardening
-W-3  PLANNED                  Fitbit real sleep normalization and API regression tests
+W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
+W-3  CURRENT / NOT_COMPLETED  Fitbit real sleep normalization and API regression tests
 W-4  PLANNED                  Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX while retaining operator diagnostics
 W-5  PLANNED                  Configured real Fitbit operator verification
@@ -480,7 +480,7 @@ V-1  PLANNED                  Character display extraction and deterministic sta
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-W-1 is completed and accepted. It created and validated the v2.1.0 source of truth, recorded the existing implementation, protected released records and inspected runtime files, and performed no real-provider execution. W-2 is now the only current small commit; W-3 through R-1 remain planned and must not be marked complete from W-1 documentation or source discovery.
+W-1 and W-2 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. It was accepted on 2026-07-23 after compileall, W-1/W-2 checks, v2.0.x guards, 57 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-3 is the only current small commit; W-4 through R-1 remain planned and must not be marked complete from source presence, local token classification, or fake-HTTP success.
 
 Expected W-1 change surface:
 
@@ -494,7 +494,22 @@ docs/v210_fitbit_current_behavior_inventory.md
 scripts/check_v210_fitbit_current_behavior_inventory.py
 ```
 
-W-1 changed no backend runtime, Flutter runtime, existing tests, version metadata, release builders, fixed ZIPs, tags, GitHub Releases, or v2.0.0/v2.0.1 publication records. It was accepted on 2026-07-23 after compileall, the W-1 source-tree check, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. W-2 implementation has not begun in the W-1 acceptance synchronization.
+W-1 changed no backend runtime, Flutter runtime, existing tests, version metadata, release builders, fixed ZIPs, tags, GitHub Releases, or v2.0.0/v2.0.1 publication records. It was accepted on 2026-07-23 after compileall, the W-1 source-tree check, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed.
+
+Accepted W-2 implementation boundary:
+
+```text
+- preserve existing Fitbit routes and connected/provider/message fields;
+- add connection_state and verified fields;
+- classify unconfigured, authorization-ready, token-present-unverified,
+  refresh-required, reconnect-required, permission-blocked, unavailable, and error;
+- reserve connected state and verified=true for configured real acceptance;
+- consume matching OAuth state once and reject replay;
+- use temporary token/state files, fixed time, and fake HTTP in normal tests;
+- do not change Fitbit sleep API/normalization/provider mapping or the Flutter home screen.
+```
+
+Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ---
 

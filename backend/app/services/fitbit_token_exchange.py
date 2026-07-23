@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import base64
 from dataclasses import dataclass
+from collections.abc import Callable
 from typing import Any
 
 from app.config import AppConfig
 from app.services.fitbit_http_client import (
     FitbitHttpClientError,
+    FitbitHttpResponse,
     post_fitbit_form,
 )
 from app.services.fitbit_token_store import FitbitTokenStore
@@ -329,6 +331,9 @@ def normalize_fitbit_token_response(
 def _exchange_fitbit_code_real(
     config: AppConfig,
     request_parts: FitbitTokenRequestParts,
+    *,
+    token_store: FitbitTokenStore | None = None,
+    http_post: Callable[..., FitbitHttpResponse] | None = None,
 ) -> FitbitTokenExchangeResult:
     """
     Exchange a Fitbit authorization code through the guarded real HTTP path.
@@ -356,7 +361,8 @@ def _exchange_fitbit_code_real(
         )
 
     try:
-        response = post_fitbit_form(
+        post = http_post or post_fitbit_form
+        response = post(
             endpoint=request_parts.endpoint,
             headers=request_parts.headers,
             form_data=request_parts.form_data,
@@ -385,7 +391,8 @@ def _exchange_fitbit_code_real(
             error=TOKEN_EXCHANGE_ERROR_INVALID_TOKEN_RESPONSE,
         )
 
-    FitbitTokenStore().save_real_tokens(
+    store = token_store or FitbitTokenStore()
+    store.save_real_tokens(
         token_data=token_data.to_storage_dict(),
         source="fitbit_oauth_token_exchange",
     )
@@ -404,6 +411,9 @@ def _exchange_fitbit_code_real(
 def _exchange_fitbit_refresh_token_real(
     config: AppConfig,
     request_parts: FitbitTokenRequestParts,
+    *,
+    token_store: FitbitTokenStore | None = None,
+    http_post: Callable[..., FitbitHttpResponse] | None = None,
 ) -> FitbitTokenExchangeResult:
     """
     Refresh a Fitbit access token through the guarded real HTTP path.
@@ -431,7 +441,8 @@ def _exchange_fitbit_refresh_token_real(
         )
 
     try:
-        response = post_fitbit_form(
+        post = http_post or post_fitbit_form
+        response = post(
             endpoint=request_parts.endpoint,
             headers=request_parts.headers,
             form_data=request_parts.form_data,
@@ -460,7 +471,8 @@ def _exchange_fitbit_refresh_token_real(
             error=TOKEN_EXCHANGE_ERROR_INVALID_TOKEN_RESPONSE,
         )
 
-    FitbitTokenStore().save_real_tokens(
+    store = token_store or FitbitTokenStore()
+    store.save_real_tokens(
         token_data=token_data.to_storage_dict(),
         source="fitbit_refresh_token_exchange",
     )
@@ -481,6 +493,9 @@ def exchange_fitbit_code_stub(
     code: str,
     state: str | None = None,
     save_dummy_token: bool = False,
+    *,
+    token_store: FitbitTokenStore | None = None,
+    http_post: Callable[..., FitbitHttpResponse] | None = None,
 ) -> FitbitTokenExchangeResult:
     """
     Placeholder-compatible Fitbit OAuth token exchange entry point.
@@ -501,12 +516,15 @@ def exchange_fitbit_code_stub(
         return _exchange_fitbit_code_real(
             config=config,
             request_parts=request_parts,
+            token_store=token_store,
+            http_post=http_post,
         )
 
     saved = False
 
     if save_dummy_token:
-        FitbitTokenStore().save_dummy_tokens_for_development(
+        store = token_store or FitbitTokenStore()
+        store.save_dummy_tokens_for_development(
             authorization_code=code,
             state=state,
         )
@@ -537,6 +555,9 @@ def exchange_fitbit_code_stub(
 def refresh_fitbit_access_token(
     config: AppConfig,
     refresh_token: str | None,
+    *,
+    token_store: FitbitTokenStore | None = None,
+    http_post: Callable[..., FitbitHttpResponse] | None = None,
 ) -> FitbitTokenExchangeResult:
     """
     Refresh a Fitbit access token using a locally stored refresh token.
@@ -568,6 +589,8 @@ def refresh_fitbit_access_token(
         return _exchange_fitbit_refresh_token_real(
             config=config,
             request_parts=request_parts,
+            token_store=token_store,
+            http_post=http_post,
         )
 
     return FitbitTokenExchangeResult(
