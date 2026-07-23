@@ -1,9 +1,9 @@
 # v2.1.0 W-4b Flutter sleep-provider/source-label UI contract
 
 Updated: 2026-07-23
-Status: IMPLEMENTED / NOT_ACCEPTED
-Parent phase: W-4 CURRENT / NOT_COMPLETED
-Current small commit: W-4b
+Status: COMPLETED / ACCEPTED
+Parent phase: W-4 COMPLETED / ACCEPTED
+Current small commit: W-5
 
 ## Purpose
 
@@ -143,19 +143,21 @@ raw provider payload
 private operator evidence
 ```
 
-## Completion conditions
-
-W-4b remains `IMPLEMENTED / NOT_ACCEPTED` until all of the following pass:
+## Accepted verification result
 
 ```text
-- compileall;
-- W-1/W-2/W-3/W-4a/W-4b source-tree checks;
-- v2.0.x compatibility and maintenance guards;
-- focused Flutter provider model/widget tests;
-- full backend pytest;
-- full Flutter test;
-- diff review;
-- operator approval.
+implementation commit: 1fbea58
+compileall: passed
+W-1/W-2/W-3/W-4a/W-4b source-tree checks: passed
+v2.0.x compatibility and maintenance guards: passed
+focused Flutter provider model tests: 4 passed
+focused Flutter widget tests: 35 passed
+full backend pytest: 92 passed
+full Flutter test: 57 passed
+diff review: passed
+operator approval: passed
+real operator execution: false
+release records changed: false
 ```
 
-W-4 remains `CURRENT / NOT_COMPLETED` after W-4b implementation. W-5 and later phases remain `PLANNED`. W-4b source and mock-safe UI evidence do not prove configured real Fitbit acceptance or smartphone Web real-provider acceptance.
+W-4b and parent phase W-4 were completed and accepted on 2026-07-23. W-5 is now `CURRENT / NOT_COMPLETED`; C-1 and later phases remain `PLANNED`. This mock-safe UI acceptance does not prove configured real Fitbit acceptance or smartphone Web real-provider acceptance.

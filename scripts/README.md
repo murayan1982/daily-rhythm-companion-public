@@ -15,12 +15,12 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: W-4b IMPLEMENTED / NOT_ACCEPTED
+current small commit: W-5 CURRENT / NOT_COMPLETED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 remains current. W-4a is completed and accepted after 8 focused backend tests, 92 full backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4b is implemented but not accepted.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5 is current but not completed.
 
 Run the W-1 checks from the repository root:
 
@@ -40,8 +40,9 @@ The W-1 source-tree check verifies:
 - README, roadmap, tasklist, checklist, and inventory describe W-1 as COMPLETED / ACCEPTED
 - W-2 is COMPLETED / ACCEPTED
 - W-3 is COMPLETED / ACCEPTED
-- W-4 is CURRENT / NOT_COMPLETED
-- W-5, C-1, T-1, V-1, and R-1 remain PLANNED
+- W-4 is COMPLETED / ACCEPTED
+- W-5 is CURRENT / NOT_COMPLETED
+- C-1, T-1, V-1, and R-1 remain PLANNED
 - the accepted W-1 inventory and W-1 acceptance state remain recorded
 - files outside the accepted W-2 change surface still match the inspected W-1 baseline
 - approved W-2 runtime and Flutter files carry the separately checked W-2 contract
@@ -142,8 +143,8 @@ Health, collect smartphone Web evidence, or build a release artifact.
 W-4a is `COMPLETED / ACCEPTED`. Acceptance recorded implementation commit
 `1619b0b`, 8 focused backend tests, 92 full backend tests, 50 Flutter tests, diff
 review, and operator approval. Real operator execution remained false and release
-records remained unchanged. W-4b is `IMPLEMENTED / NOT_ACCEPTED`; W-4 and W-5
-remain incomplete.
+records remained unchanged. W-4b and W-4 are `COMPLETED / ACCEPTED`; W-5 is
+`CURRENT / NOT_COMPLETED`.
 
 ## v2.1.0 W-4b Flutter provider/source-label UI check
 
@@ -176,8 +177,9 @@ boundaries, immutable release records, and public-safe source text.
 
 It does not open OAuth, read real tokens, call external providers, validate live
 Fitbit scopes or permissions, collect smartphone Web evidence, or build release
-artifacts. W-4b remains `IMPLEMENTED / NOT_ACCEPTED` until the full local gate,
-diff review, and operator approval pass.
+artifacts. W-4b and W-4 are `COMPLETED / ACCEPTED` after implementation commit
+`1fbea58`, 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter
+tests, diff review, and operator approval. W-5 is `CURRENT / NOT_COMPLETED`.
 
 ## v2.0.x completed maintenance baseline
 

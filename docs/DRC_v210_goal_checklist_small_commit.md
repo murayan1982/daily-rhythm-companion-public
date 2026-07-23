@@ -2,11 +2,12 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: W-4b — Flutter provider/source-label UI and simplified Google Health user UX
-Current small-commit state: IMPLEMENTED / NOT_ACCEPTED
+Current small commit: W-5 — Configured real Fitbit operator verification
+Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
+W-4 state: COMPLETED / ACCEPTED
 Current released version: v2.0.1
 
 ## Source-of-truth rule
@@ -66,9 +67,9 @@ with Fitbit real-use completion as the main new capability.
 W-1  COMPLETED / ACCEPTED   Fitbit current behavior inventory and contract
 W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
 W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression tests
-W-4  CURRENT / NOT_COMPLETED  Sleep-provider selection, source-label UI, and simplified
+W-4  COMPLETED / ACCEPTED   Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
-W-5  PLANNED                  Configured real Fitbit operator verification
+W-5  CURRENT / NOT_COMPLETED  Configured real Fitbit operator verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
@@ -76,7 +77,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1, W-2, and W-3 are completed and accepted. W-4 is current but not completed; W-5 through R-1 remain planned.
+W-1 through W-4 are completed and accepted. W-5 is current but not completed; C-1 through R-1 remain planned.
 
 ---
 
@@ -468,18 +469,18 @@ W-3 was completed and accepted on 2026-07-23. This acceptance validates the mock
 
 # W-4 — Sleep-provider selection and source-label UI
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 ## W-4 implementation split
 
 ```text
 W-4a  COMPLETED / ACCEPTED   Read-only sleep-provider selection status contract
-W-4b  IMPLEMENTED / NOT_ACCEPTED  Flutter provider/source-label UI and simplified
+W-4b  COMPLETED / ACCEPTED   Flutter provider/source-label UI and simplified
                                 Google Health user UX with retained diagnostics
 ```
 
 W-4a state: COMPLETED / ACCEPTED
-W-4b state: IMPLEMENTED / NOT_ACCEPTED
+W-4b state: COMPLETED / ACCEPTED
 
 ## W-4a purpose
 
@@ -558,8 +559,8 @@ real operator execution: false
 release records changed: false
 ```
 
-W-4a was completed and accepted on 2026-07-23. W-4 remains CURRENT /
-NOT_COMPLETED and W-4b is now the current small commit.
+W-4a was completed and accepted on 2026-07-23. At W-4a acceptance time,
+W-4 remained CURRENT / NOT_COMPLETED and W-4b became the next small commit.
 
 ## W-4b purpose
 
@@ -629,27 +630,33 @@ v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
 - full Flutter test is required for acceptance.
 ```
 
-## W-4b completion conditions
+## W-4b accepted verification
 
 ```text
-- W-1/W-2/W-3/W-4a/W-4b checks pass;
-- v2.0.x compatibility and maintenance guards pass;
-- focused Flutter provider model/widget tests pass;
-- full backend pytest and full Flutter test pass;
-- diff review and operator approval pass;
-- W-4 remains CURRENT / NOT_COMPLETED;
-- W-5 and later phases remain PLANNED.
+implementation commit: 1fbea58
+compileall: passed
+W-1/W-2/W-3/W-4a/W-4b checks: passed
+v2.0.x compatibility and maintenance guards: passed
+focused Flutter provider model tests: 4 passed
+focused Flutter widget tests: 35 passed
+full backend pytest: 92 passed
+full Flutter test: 57 passed
+diff review: passed
+operator approval: passed
+real operator execution: false
+release records changed: false
 ```
 
-W-4b source is implemented but not accepted. Real Fitbit operator execution,
-smartphone Web real-provider evidence, W-4 completion, and W-5 completion have not
-been performed.
+W-4b and parent phase W-4 were completed and accepted on 2026-07-23. This
+acceptance covers the mock-safe provider/source-label UI and Google Health UX
+boundary only. Real Fitbit OAuth, token/permission validation, live sleep retrieval,
+and smartphone Web real-provider evidence remain unperformed W-5 work.
 
 ---
 
 # W-5 — Configured real Fitbit operator verification
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 Planned boundary:
 

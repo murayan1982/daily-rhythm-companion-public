@@ -98,12 +98,13 @@ def main() -> None:
     files = {relative: read(relative) for relative in W4B_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-4b", "W-4b current commit")
-    require(checklist, "Current small-commit state: IMPLEMENTED / NOT_ACCEPTED", "W-4b implementation state")
-    require(checklist, "W-4  CURRENT / NOT_COMPLETED", "W-4 parent state")
+    require(checklist, "Current small commit: W-5", "W-5 current commit")
+    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5 current state")
+    require(checklist, "W-4  COMPLETED / ACCEPTED", "W-4 parent state")
     require(checklist, "W-4a  COMPLETED / ACCEPTED", "W-4a accepted state")
-    require(checklist, "W-4b  IMPLEMENTED / NOT_ACCEPTED", "W-4b state")
-    for phase in ("W-5", "C-1", "T-1", "V-1", "R-1"):
+    require(checklist, "W-4b  COMPLETED / ACCEPTED", "W-4b state")
+    require(checklist, "W-5  CURRENT / NOT_COMPLETED", "W-5 current state")
+    for phase in ("C-1", "T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
     model = files["app/lib/models/sleep_provider_selection.dart"]
@@ -158,8 +159,8 @@ def main() -> None:
         require(widget_tests, marker, "provider/source widget regression")
 
     contract = files["docs/v210_flutter_sleep_provider_source_ui.md"]
-    require(contract, "Status: IMPLEMENTED / NOT_ACCEPTED", "W-4b contract state")
-    require(contract, "Parent phase: W-4 CURRENT / NOT_COMPLETED", "W-4 parent state")
+    require(contract, "Status: COMPLETED / ACCEPTED", "W-4b contract state")
+    require(contract, "Parent phase: W-4 COMPLETED / ACCEPTED", "W-4 parent state")
     require(contract, "configured real Fitbit operator verification in W-5", "W-5 boundary")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
@@ -168,9 +169,10 @@ def main() -> None:
     for relative, text in files.items():
         assert_no_sensitive_values(relative, text)
 
-    print("v210_flutter_sleep_provider_source_ui_status: implemented-not-accepted")
-    print("v210_flutter_sleep_provider_source_ui_current_small_commit: W-4b")
-    print("v210_flutter_sleep_provider_source_ui_parent_phase: W-4-current-not-completed")
+    print("v210_flutter_sleep_provider_source_ui_status: completed-accepted")
+    print("v210_flutter_sleep_provider_source_ui_completed_small_commit: W-4b")
+    print("v210_flutter_sleep_provider_source_ui_current_small_commit: W-5")
+    print("v210_flutter_sleep_provider_source_ui_parent_phase: W-4-completed-accepted")
     print("v210_flutter_sleep_provider_source_ui_real_operator_execution: false")
     print("v210_flutter_sleep_provider_source_ui_release_records_changed: false")
     print("[v210-flutter-sleep-provider-source-ui-check] OK")
