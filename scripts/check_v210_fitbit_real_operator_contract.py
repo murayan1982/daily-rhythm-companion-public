@@ -91,13 +91,13 @@ def main() -> None:
         require(text, "W-5b", f"{label} W-5b boundary")
         require(text, "W-5", f"{label} parent W-5 state")
 
-    require(checklist, "Current small commit: W-5b2", "current small commit")
+    require(checklist, "Current small commit: C-1", "current small commit")
     require(checklist, "W-5b1  COMPLETED / ACCEPTED", "W-5b1 accepted state")
     require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5b current state")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
-    require(checklist, "W-5 state: CURRENT / NOT_COMPLETED", "parent W-5 state")
-    require(checklist, "C-1  PLANNED", "later phase boundary")
-    require(roadmap, "Current small commit: W-5b2", "roadmap current commit")
+    require(checklist, "W-5 state: COMPLETED / ACCEPTED", "parent W-5 state")
+    require(checklist, "C-1  CURRENT / NOT_COMPLETED", "current C-1 boundary")
+    require(roadmap, "Current small commit: C-1", "roadmap current commit")
     require(tasklist, "W-5b2 — Configured Google Health API operator verification", "tasklist current commit")
 
     for fragment in (
@@ -227,13 +227,14 @@ def main() -> None:
 
     print("v210_fitbit_real_operator_contract_status: completed-accepted")
     print("v210_fitbit_real_operator_contract_completed_small_commit: W-5a")
-    print("v210_fitbit_real_operator_contract_current_small_commit: W-5b2")
-    print("v210_fitbit_real_operator_contract_parent_phase: W-5-current-not-completed")
+    print("v210_fitbit_real_operator_contract_current_small_commit: C-1")
+    print("v210_fitbit_real_operator_contract_parent_phase: W-5-completed-accepted")
     print("v210_fitbit_real_operator_contract_mock_safe: True")
     print("v210_fitbit_real_operator_contract_real_operator_execution: False")
     print("v210_fitbit_real_operator_contract_runtime_changed: False")
     print("v210_fitbit_real_operator_contract_release_records_changed: False")
     print("v210_fitbit_real_operator_contract_w5b1_completed_accepted: True")
+    print("v210_fitbit_real_operator_contract_w5b2_completed_accepted: True")
     print("[v210-fitbit-real-operator-contract-check] OK")
 
 

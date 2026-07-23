@@ -7,8 +7,8 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1/W-2/W-3/W-4 COMPLETED / ACCEPTED; W-5 CURRENT / NOT_COMPLETED**)
-Current small commit: W-5b2 — Configured Google Health API operator verification (**CURRENT / NOT_COMPLETED; execution recorded, acceptance pending**)
+Current development line: v2.1.0 (**W-1 through W-5 COMPLETED / ACCEPTED; C-1 CURRENT / NOT_COMPLETED**)
+Current small commit: C-1 — Post-advice chat lifecycle and UI-state hardening (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -130,7 +130,7 @@ release records changed: false
 
 W-3 is COMPLETED / ACCEPTED. The backend classifies allow-listed Fitbit sleep API failures, requires usable normalized sleep duration, maps real-provider fields into `SleepSummary`, and includes deterministic fake-HTTP/API regression tests. Acceptance passed after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval. The detailed contract is [`docs/v210_fitbit_real_sleep_normalization.md`](docs/v210_fitbit_real_sleep_normalization.md). Real OAuth, live token exchange/refresh, configured permission/scope evidence, real Fitbit sleep retrieval, and smartphone Web acceptance remain W-5 work. W-4 later completed and was accepted without changing the accepted W-3 backend contract.
 
-W-4 is COMPLETED / ACCEPTED. W-4a implementation commit `1619b0b` added a read-only `GET /sleep/providers` contract without provider execution. W-4b implementation commit `1fbea58` connected that metadata to Flutter, separated the configured provider from the actual `SleepSummary` source/data kind, kept mock providers credential-free, limited normal Google Health copy to concise guidance, and retained detailed diagnostics below Advanced Demo Tools. W-4b acceptance passed after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused Flutter model tests, 35 widget tests, 92 backend tests, 57 full Flutter tests, diff review, and operator approval. Fitbit still shows real-operator verification as pending. W-5 is now CURRENT / NOT_COMPLETED. See [`docs/v210_sleep_provider_selection_source_labels.md`](docs/v210_sleep_provider_selection_source_labels.md) and [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md).
+W-4 is COMPLETED / ACCEPTED. W-4a implementation commit `1619b0b` added a read-only `GET /sleep/providers` contract without provider execution. W-4b implementation commit `1fbea58` connected that metadata to Flutter, separated the configured provider from the actual `SleepSummary` source/data kind, kept mock providers credential-free, limited normal Google Health copy to concise guidance, and retained detailed diagnostics below Advanced Demo Tools. W-4b acceptance passed after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused Flutter model tests, 35 widget tests, 92 backend tests, 57 full Flutter tests, diff review, and operator approval. Fitbit still shows real-operator verification as pending. W-5 is COMPLETED / ACCEPTED; C-1 is CURRENT / NOT_COMPLETED. See [`docs/v210_sleep_provider_selection_source_labels.md`](docs/v210_sleep_provider_selection_source_labels.md) and [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md).
 
 Run the accepted W-4a mock-safe gate with:
 
@@ -150,17 +150,17 @@ flutter test
 cd ..
 ```
 
-W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5 is current but not completed.
+W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5 is completed and accepted; C-1 is current but not completed.
 
 W-5 is split into a public-safe preparation commit and the later private execution checkpoint:
 
 ```text
 W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
 W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
-  W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification
+W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 ```
 
-W-5a remains accepted as a historical public-safe contract and performed no OAuth or provider request. W-5b1 was completed and accepted at implementation commit `081cfdd`: Google Health API is the configured-real path, legacy Fitbit Web API execution is retired, the Google Health v4 contract is mock-safe guarded, and the Flutter `provider_options` mismatch is corrected. W-5b2 execution is recorded and acceptance is pending: the ignored operator profile passed, stored-token refresh succeeded, the real Google Health request returned HTTP 200, normalized real data reached `/sleep/summary`, and PC/smartphone Web showed Google Health / 実データ / 取得済み. Raw screenshots and private sleep values remain outside Git, and separate Fitbit-device provenance is not asserted. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md) and [`docs/v210_google_health_real_operator_verification.md`](docs/v210_google_health_real_operator_verification.md).
+W-5 is completed and accepted. W-5a remains an accepted historical public-safe contract and performed no OAuth or provider request. W-5b1 was accepted at implementation commit `081cfdd`: Google Health API is the configured-real path, legacy Fitbit Web API execution is retired, the Google Health v4 contract is mock-safe guarded, and the Flutter `provider_options` mismatch is corrected. W-5b2 was accepted from execution-record commit `ed50d9e`: the ignored operator profile passed, stored-token refresh succeeded, the real Google Health request returned HTTP 200, normalized real data reached `/sleep/summary`, and PC/smartphone Web showed Google Health / 実データ / 取得済み. The operator confirmed that the displayed sleep was measured by a Fitbit Versa 2 and delivered through Google Health. Raw screenshots, device identifiers, and private sleep values remain outside Git. C-1 is now current. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md) and [`docs/v210_google_health_real_operator_verification.md`](docs/v210_google_health_real_operator_verification.md).
 
 Run the W-4b mock-safe gate with:
 

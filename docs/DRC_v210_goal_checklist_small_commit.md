@@ -2,13 +2,13 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: W-5b2 — Configured Google Health API operator verification
-Current small-commit state: CURRENT / NOT_COMPLETED — execution recorded, acceptance pending
+Current small commit: C-1 — Post-advice chat lifecycle and UI-state hardening
+Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
 W-4 state: COMPLETED / ACCEPTED
-W-5 state: CURRENT / NOT_COMPLETED
+W-5 state: COMPLETED / ACCEPTED
 Current released version: v2.0.1
 
 ## Source-of-truth rule
@@ -70,18 +70,18 @@ W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
 W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression tests
 W-4  COMPLETED / ACCEPTED   Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
-W-5  CURRENT / NOT_COMPLETED  Wearable migration correction and configured Google Health verification
+W-5  COMPLETED / ACCEPTED   Wearable migration correction and configured Google Health verification
   W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
   W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
-  W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification
-C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
+  W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
+C-1  CURRENT / NOT_COMPLETED  Post-advice chat lifecycle and UI-state hardening
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-4, W-5a, and W-5b1 are completed and accepted. W-5b2 is current with the configured real execution recorded but not yet accepted, parent W-5 remains not completed, and C-1 through R-1 remain planned.
+W-1 through W-5 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1 is current and not completed; T-1 through R-1 remain planned.
 
 ---
 
@@ -660,14 +660,14 @@ and smartphone Web real-provider evidence remain unperformed W-5 work.
 
 # W-5 — Wearable migration correction and configured Google Health verification
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 ## W-5 split
 
 ```text
 W-5a   COMPLETED / ACCEPTED   Historical Fitbit operator contract and preflight; no real execution
 W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
-W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
+W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
 ```
 
 ## W-5a accepted historical record
@@ -740,9 +740,9 @@ existing v2.1.0 check scripts
 - W-5b2 and C-1 onward remain not completed.
 ```
 
-## W-5b2 configured execution record
+## W-5b2 accepted configured execution
 
-Status: EXECUTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 Detailed record: `docs/v210_google_health_real_operator_verification.md`
 
@@ -756,8 +756,9 @@ Detailed record: `docs/v210_google_health_real_operator_verification.md`
 - PC and smartphone Flutter Web both showed Google Health / 実データ / 取得済み;
 - normalized SleepSummary was visible on both form factors;
 - reviewed screenshots remain outside Git and exact private sleep values are not recorded;
-- current UI/API source is Google Health; separate Fitbit-device provenance is not asserted;
-- W-5b2 and parent W-5 remain NOT_COMPLETED until acceptance synchronization.
+- current UI/API source is Google Health; the operator confirmed the displayed sleep was measured by a Fitbit Versa 2;
+- no device identifier, exact private sleep value, raw payload, or screenshot is recorded;
+- W-5b2 and parent W-5 are COMPLETED / ACCEPTED.
 ```
 
 Public-safe source-tree guard:
@@ -766,11 +767,33 @@ Public-safe source-tree guard:
 python scripts\check_v210_google_health_real_operator_verification.py
 ```
 
+Accepted verification:
+
+```text
+execution-record commit: ed50d9e
+operator env / ValidateOnly: passed
+token refresh: succeeded
+real Google Health HTTP status: 200
+normalized backend summary: confirmed real data
+PC Web display: passed
+smartphone Web display: passed
+Fitbit-origin device model: operator-confirmed Fitbit Versa 2
+W-1 through W-5b2 checks: passed
+v2.0.x guards: passed
+backend pytest: 100 passed
+Flutter test: 57 passed
+diff review / operator approval: passed
+raw screenshot committed: false
+release records changed: false
+```
+
+W-5b2 and parent W-5 were completed and accepted on 2026-07-24. C-1 is now CURRENT / NOT_COMPLETED. T-1, V-1, and R-1 remain PLANNED.
+
 ---
 
 # C-1 — Post-advice chat lifecycle and UI-state hardening
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 Planned boundary:
 

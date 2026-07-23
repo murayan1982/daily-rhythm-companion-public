@@ -42,7 +42,7 @@ The legacy `fitbit` provider remains source-compatible only as a migration/refer
 ```text
 W-5a   COMPLETED / ACCEPTED   Historical public-safe Fitbit operator contract; no real execution
 W-5b1  COMPLETED / ACCEPTED   Google Health migration audit and legacy Fitbit execution retirement
-W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification; execution recorded, acceptance pending
+W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 ```
 
 ## Mock-safe boundary
@@ -55,7 +55,7 @@ W-5b1 may inspect source, run synthetic Google Health v4 payload tests, validate
 - Google Health v4 endpoint, scope, filter, and sleep payload tests pass.
 - Flutter parses `provider_options` from the actual backend contract.
 - Legacy Fitbit user-facing labels and operator actions no longer imply future configured-real acceptance.
-- W-5b2 and all later phases remain not completed.
+- W-5b2 is accepted; C-1 is current and later phases remain not completed.
 
 ## Accepted verification
 
@@ -71,8 +71,18 @@ Flutter test: 57 passed
 diff review: passed
 operator approval: passed
 legacy Fitbit execution: retired before network
-real Google Health operator execution: false
+real Google Health operator execution: accepted in W-5b2
 release records changed: false
 ```
 
-W-5b1 was completed and accepted on 2026-07-24. W-5b2 remains current. Its configured Google Health execution, guarded token refresh, real HTTP 200 response, normalized `SleepSummary`, and PC/smartphone Web provider/source/data-kind presentation are recorded in `docs/v210_google_health_real_operator_verification.md`, but W-5b2 acceptance is still pending. Separate Fitbit-device provenance is not inferred from the current Google Health source response.
+W-5b1 was completed and accepted on 2026-07-24. W-5b2 was also accepted after configured Google Health execution, guarded token refresh, a real HTTP 200 response, normalized `SleepSummary`, and PC/smartphone Web provider/source/data-kind presentation. The operator independently confirmed Fitbit Versa 2 device-model provenance; the Google Health response itself is not claimed to expose that provenance field.
+
+
+## W-5b2 accepted handoff
+
+W-5b2 was completed and accepted on 2026-07-24 from execution-record commit
+`ed50d9e`. The configured Google Health v4 path returned HTTP 200, normalized
+real sleep reached PC and smartphone Flutter Web, and the operator confirmed the
+displayed sleep was measured by a Fitbit Versa 2. Raw screenshots, device
+identifiers, tokens, and exact private sleep values remain outside Git. Parent
+W-5 is completed and accepted; C-1 is current.

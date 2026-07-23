@@ -1,4 +1,4 @@
-"""Source-tree guard for the W-5b2 Google Health real operator record.
+"""Source-tree guard for accepted W-5b2 Google Health real operator verification.
 
 This check reads Public source and documentation only. It does not read ignored
 operator env files, credentials, tokens, screenshots, or private evidence; start
@@ -51,7 +51,7 @@ def main() -> None:
     scripts_readme = read("scripts/README.md")
 
     required_doc_markers = (
-        "Status: EXECUTED / NOT_ACCEPTED",
+        "Status: COMPLETED / ACCEPTED",
         "operator_env_validation=accepted",
         "operator_private_files_git_ignored=True",
         "credentials_file_exists=True",
@@ -76,26 +76,32 @@ def main() -> None:
         "availability_label=取得済み",
         "normalized_sleep_summary_visible=True",
         "raw_screenshot_committed=False",
-        "fitbit_origin_provenance=not-separately-confirmed",
+        "fitbit_origin_provenance=operator-confirmed",
+        "fitbit_origin_device_model=Fitbit Versa 2",
+        "backend_pytest=100 passed",
+        "flutter_test=57 passed",
+        "diff_review=passed",
+        "operator_approval=passed",
         "release_records_changed=False",
     )
     for marker in required_doc_markers:
         require(doc, marker, "W-5b2 public-safe marker")
 
     for text, fragment, label in (
-        (checklist, "Current small commit: W-5b2", "checklist current commit"),
-        (checklist, "W-5b2  CURRENT / NOT_COMPLETED", "checklist W-5b2 state"),
-        (checklist, "W-5  CURRENT / NOT_COMPLETED", "checklist parent state"),
-        (checklist, "Status: EXECUTED / NOT_ACCEPTED", "checklist execution record"),
+        (checklist, "Current small commit: C-1", "checklist current commit"),
+        (checklist, "W-5b2  COMPLETED / ACCEPTED", "checklist W-5b2 state"),
+        (checklist, "W-5  COMPLETED / ACCEPTED", "checklist parent state"),
+        (checklist, "Status: COMPLETED / ACCEPTED", "checklist execution record"),
         (tasklist, "W-5b2 — Configured Google Health API operator verification", "tasklist W-5b2"),
-        (tasklist, "execution record: EXECUTED / NOT_ACCEPTED", "tasklist execution status"),
-        (readme, "W-5b2 execution is recorded and acceptance is pending", "README execution status"),
-        (roadmap, "W-5b2 execution is recorded with acceptance pending", "roadmap execution status"),
+        (tasklist, "W-5b2と親W-5は2026-07-24にCOMPLETED / ACCEPTED", "tasklist acceptance status"),
+        (readme, "W-5 is completed and accepted", "README acceptance status"),
+        (roadmap, "W-5b2 and parent W-5 are completed and accepted", "roadmap acceptance status"),
         (scripts_readme, "check_v210_google_health_real_operator_verification.py", "scripts README command"),
     ):
         require(text, fragment, label)
 
-    for phase in ("C-1", "T-1", "V-1", "R-1"):
+    require(checklist, "C-1  CURRENT / NOT_COMPLETED", "C-1 current state")
+    for phase in ("T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
     for relative, text in (
@@ -108,9 +114,10 @@ def main() -> None:
     ):
         assert_public_safe(relative, text)
 
-    print("v210_google_health_real_operator_verification_status: executed-not-accepted")
-    print("v210_google_health_real_operator_verification_current_small_commit: W-5b2")
-    print("v210_google_health_real_operator_verification_parent_phase: W-5-current-not-completed")
+    print("v210_google_health_real_operator_verification_status: completed-accepted")
+    print("v210_google_health_real_operator_verification_completed_small_commit: W-5b2")
+    print("v210_google_health_real_operator_verification_current_small_commit: C-1")
+    print("v210_google_health_real_operator_verification_parent_phase: W-5-completed-accepted")
     print("v210_google_health_real_operator_verification_operator_env_validation: accepted")
     print("v210_google_health_real_operator_verification_token_refresh: succeeded")
     print("v210_google_health_real_operator_verification_real_http_attempted: true")
@@ -118,7 +125,8 @@ def main() -> None:
     print("v210_google_health_real_operator_verification_normalized_summary: confirmed")
     print("v210_google_health_real_operator_verification_pc_web_display: true")
     print("v210_google_health_real_operator_verification_smartphone_web_display: true")
-    print("v210_google_health_real_operator_verification_fitbit_origin_provenance: not-separately-confirmed")
+    print("v210_google_health_real_operator_verification_fitbit_origin_provenance: operator-confirmed")
+    print("v210_google_health_real_operator_verification_fitbit_origin_device_model: Fitbit Versa 2")
     print("v210_google_health_real_operator_verification_raw_screenshot_committed: false")
     print("v210_google_health_real_operator_verification_release_records_changed: false")
     print("[v210-google-health-real-operator-verification-check] OK")
