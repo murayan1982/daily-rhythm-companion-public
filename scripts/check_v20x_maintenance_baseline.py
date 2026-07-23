@@ -120,7 +120,7 @@ def main() -> None:
 
     checklist_text = files["docs/DRC_v20x_maintenance_checklist.md"]
     require(checklist_text, "Status: IN_PROGRESS", "maintenance checklist status")
-    require(checklist_text, "Current small commit: none (M-8 accepted; M-9 planned)", "maintenance current state")
+    require(checklist_text, "Current small commit: M-9 (patch release preparation)", "maintenance current state")
     m1 = section_between(checklist_text, "# M-1", "# M-2")
     require(m1, "Status: COMPLETED", "M-1 completed status")
     m2 = section_between(checklist_text, "# M-2", "# M-3")
@@ -142,7 +142,7 @@ def main() -> None:
     require(m8, "Status: COMPLETED / ACCEPTED", "M-8 accepted status")
     require(m8, "M-8 was accepted on 2026-07-23", "M-8 acceptance record")
     m9 = section_between(checklist_text, "\n## M-9 — Patch release", "# Future-version boundary")
-    require(m9, "Status: PLANNED", "M-9 planned status")
+    require(m9, "Status: CURRENT / NOT_COMPLETED", "M-9 current status")
     reject(m9, "Status: COMPLETED", "M-9 early completion")
 
     baseline = files["docs/post_v200_release_baseline.md"]
@@ -167,7 +167,7 @@ def main() -> None:
     print("v20x_maintenance_baseline_released_version: v2.0.0")
     print("v20x_maintenance_baseline_patch_source_version: v2.0.1")
     print("v20x_maintenance_baseline_current_line: v2.0.x")
-    print("v20x_maintenance_baseline_current_small_commit: none")
+    print("v20x_maintenance_baseline_current_small_commit: m9-patch-release-preparation")
     print("v20x_maintenance_baseline_m1_completed: True")
     print("v20x_maintenance_baseline_m2_completed: True")
     print("v20x_maintenance_baseline_m3_completed: True")

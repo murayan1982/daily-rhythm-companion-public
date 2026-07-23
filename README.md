@@ -7,7 +7,7 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: none (M-8 accepted; M-9 planned)
+Current small commit: M-9 (patch release preparation)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -48,7 +48,7 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 through M-8 are complete and accepted. No small commit is currently active, and M-9 remains PLANNED. M-8 adds the credential-free aggregate maintenance gate plus the M-9 entry contract; it does not release v2.0.1.
+M-1 through M-8 are complete and accepted. M-9 patch release preparation is CURRENT / NOT_COMPLETED. This stage adds the committed-source, one-time fixed-ZIP, same-artifact verification, SHA-256 record, and release-note contracts; it does not build the fixed ZIP, create a tag or GitHub Release, or release v2.0.1.
 
 M-7 accepted contract:
 
@@ -77,6 +77,19 @@ Release artifacts: not created by M-8
 
 See [`docs/v20x_maintenance_readiness.md`](docs/v20x_maintenance_readiness.md).
 
+M-9 current contract:
+
+```text
+Accepted scope: M-1 through M-8 only
+Final source gate: clean official main with HEAD == origin/main
+Fixed artifact: build once from detached committed HEAD
+Verification: inspect and test the same ZIP without rebuilding
+SHA-256 record: annotated tag and GitHub Release body after final approval
+Current state: NOT_COMPLETED / NOT_RELEASED; no tag or GitHub Release yet
+```
+
+See [`docs/v20x_patch_release.md`](docs/v20x_patch_release.md), [`docs/v201_patch_release_record.md`](docs/v201_patch_release_record.md), and [`release_notes/v2.0.1.md`](release_notes/v2.0.1.md).
+
 M-6 accepted contract:
 
 ```text
@@ -104,6 +117,12 @@ python -m pytest -q backend/tests
 
 # Full local M-8 gate, including Flutter
 python scripts\check_v20x_maintenance_readiness.py --with-flutter
+
+# M-9 preparation contract gate (portable, no Git topology requirement)
+python scripts\check_v20x_patch_release.py
+
+# Final committed Public source gate after the preparation commit is pushed
+python scripts\check_v20x_patch_release.py --source-tree --with-flutter
 ```
 
 The historical v2.0.0 release validators remain available for the tagged release surface, but they are not the primary current-main maintenance suite.

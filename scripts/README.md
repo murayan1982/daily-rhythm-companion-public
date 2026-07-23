@@ -11,10 +11,11 @@ Current patch source and small commit:
 ```text
 v2.0.1
 M-8  COMPLETED / ACCEPTED
-test/docs: add v2.0.x aggregate maintenance readiness
+M-9  CURRENT / NOT_COMPLETED
+release: prepare v2.0.1 fixed ZIP gate
 ```
 
-M-1 through M-8 are completed and accepted. No small commit is currently active, and M-9 remains PLANNED. M-8 adds the normal aggregate maintenance gate while keeping historical release evidence separate.
+M-1 through M-8 are completed and accepted. M-9 patch release preparation is CURRENT / NOT_COMPLETED. It adds the strict committed-source gate, one-time fixed-ZIP builder, same-ZIP verifier, SHA-256 record contract, and v2.0.1 release notes without creating or publishing the release.
 
 Install the development test dependencies and run the current checks from the repository root:
 
@@ -33,6 +34,18 @@ python -m pytest -q backend/tests
 
 # Full M-8 operator gate
 python scripts\check_v20x_maintenance_readiness.py --with-flutter
+
+# M-9 portable preparation contract gate
+python scripts\check_v20x_patch_release.py
+
+# M-9 final committed Public source gate after commit + push
+python scripts\check_v20x_patch_release.py --source-tree --with-flutter
+
+# Run exactly once after the final committed-source gate passes
+.\build_v201_fixed_release_zip_from_head.ps1
+
+# Verify the builder-emitted same ZIP without rebuilding
+python scripts\check_v20x_patch_release.py --release-zip <FIXED_ZIP> --expected-sha256 <SHA256> --expected-source-head <HEAD> --with-flutter
 ```
 
 The accepted M-6 regression boundary verifies:
@@ -75,6 +88,20 @@ The M-8 aggregate maintenance boundary verifies:
 ```
 
 M-8 was accepted on 2026-07-23 after compileall, the aggregate gate with Flutter, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. M-8 does not build or inspect a ZIP, create a tag or GitHub Release, call real providers, or change runtime/API/Flutter behavior.
+
+The M-9 patch release boundary verifies:
+
+```text
+- current release documents remain PREPARED / NOT_RELEASED
+- final source is clean official Public main with HEAD equal to origin/main
+- DRC_v2.0.0 remains an annotated baseline tag and DRC_v2.0.1 is absent before approval
+- the builder invokes build_release.bat exactly once from detached committed HEAD
+- the verifier hashes and tests the supplied same ZIP without invoking a builder
+- v2.0.0 historical normalized hashes remain unchanged
+- tag and GitHub Release remain blocked until explicit final approval
+```
+
+See `docs/v20x_patch_release.md`, `docs/v201_patch_release_record.md`, and `release_notes/v2.0.1.md`.
 
 M-6 does not add authentication, production hosting policy, reverse-proxy configuration, TLS handling, provider calls, Flutter changes, release ZIP work, a tag, or a v2.0.1 release. M-6 was accepted on 2026-07-23 after compileall, M-1 through M-6 checks, 31 backend pytest tests, 39 Flutter tests, diff review, and operator approval passed.
 
