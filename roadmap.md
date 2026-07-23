@@ -4,7 +4,7 @@ Updated: 2026-07-23
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: none (M-7 accepted; M-8 planned)
+Current small commit: none (M-8 accepted; M-9 planned)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -166,7 +166,7 @@ The following inventory is the starting point for all post-v2.0.0 planning.
 ## v2.0.x - Post-release maintenance and regression hardening
 
 Status: In progress
-Current small commit: none (M-7 accepted; M-8 planned)
+Current small commit: none (M-8 accepted; M-9 planned)
 Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
 First expected patch target: v2.0.1
 
@@ -217,7 +217,7 @@ Completion direction:
 
 ### v2.0.x provisional small-commit sequence
 
-The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-7 are completed and accepted, no small commit is currently active, and M-8 through M-9 remain planned.
+The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-8 are completed and accepted, no small commit is currently active, and M-9 remains planned.
 
 ```text
 M-1  COMPLETED  docs: establish post-v2.0.0 maintenance baseline
@@ -227,7 +227,7 @@ M-4  COMPLETED  test: cover Framework fallback and voice artifact safety
 M-5  COMPLETED  fix/test: bound temporary chat sessions and TTS artifacts
 M-6  COMPLETED  fix/test: make Web CORS origins configurable
 M-7  COMPLETED  docs/test: clarify Fitbit current-state contract
-M-8  PLANNED    test/docs: add v2.0.x aggregate maintenance readiness
+M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  PLANNED    release: fixed-ZIP verification and patch release record, only when the patch scope is accepted
 ```
 
@@ -298,10 +298,24 @@ M-7 accepted contract:
 - Existing Fitbit routes, response models, and provider implementation remain backward compatible.
 - Configured real Fitbit completion and operator acceptance remain v2.1.0 work.
 - M-7 was accepted after compileall, M-1 through M-7 checks, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed.
-- M-8 and M-9 remain PLANNED.
+- At M-7 acceptance, M-8 and M-9 remained PLANNED.
 ```
 
 See `docs/v20x_application_version_metadata.md` for version ownership, `docs/v20x_backend_mock_safe_regression.md` for the M-3 foundation, `docs/v20x_framework_fallback_voice_artifact_regression.md` for the accepted M-4 boundary, `docs/v20x_temporary_lifecycle_limits.md` for the accepted M-5 boundary, and `docs/v20x_web_cors_origins.md` for the accepted M-6 boundary. The accepted M-7 boundary is `docs/v20x_fitbit_current_state_contract.md`.
+
+M-8 accepted contract:
+
+```text
+- Add one credential-free aggregate command for the accepted M-1 through M-7 maintenance chain.
+- Run compileall and full backend pytest in the portable default path.
+- Run Flutter test only when --with-flutter is explicitly requested; it remains required for acceptance.
+- Keep historical v2.0.0 release-evidence validators outside the current-main aggregate.
+- Define, but do not execute, the M-9 fixed-ZIP patch-release entry contract.
+- M-9 remains PLANNED and v2.0.1 is not released by M-8.
+- M-8 was accepted after compileall, the aggregate gate with Flutter, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed.
+```
+
+The M-8 boundary is `docs/v20x_maintenance_readiness.md`.
 
 Expected initial change surface:
 

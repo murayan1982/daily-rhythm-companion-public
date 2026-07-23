@@ -7,7 +7,7 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: none (M-7 accepted; M-8 planned)
+Current small commit: none (M-8 accepted; M-9 planned)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -48,7 +48,7 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 through M-7 are complete and accepted. No small commit is currently active; M-8 remains PLANNED. M-7 clarified the retained Fitbit compatibility boundary without claiming configured real-use success.
+M-1 through M-8 are complete and accepted. No small commit is currently active, and M-9 remains PLANNED. M-8 adds the credential-free aggregate maintenance gate plus the M-9 entry contract; it does not release v2.0.1.
 
 M-7 accepted contract:
 
@@ -65,6 +65,18 @@ M-7 acceptance: compileall, M-1 through M-7 checks, 38 backend pytest tests, 43 
 
 See [`docs/v20x_fitbit_current_state_contract.md`](docs/v20x_fitbit_current_state_contract.md).
 
+M-8 accepted contract:
+
+```text
+Default aggregate: compileall + accepted M-7 terminal chain + full backend pytest
+Full local gate: add --with-flutter to run Flutter test from app/
+Historical release validators: retained but not invoked by the current-main aggregate
+Patch release: M-9 remains PLANNED after M-8 acceptance
+Release artifacts: not created by M-8
+```
+
+See [`docs/v20x_maintenance_readiness.md`](docs/v20x_maintenance_readiness.md).
+
 M-6 accepted contract:
 
 ```text
@@ -75,7 +87,7 @@ Compatibility: existing routes, response models, Flutter behavior, and v2.0.0 hi
 Excluded from M-6: production hosting claims, authentication, proxy policy, TLS, provider execution, and release work
 ```
 
-Install and run the accepted M-7 checks with:
+Install and run the accepted v2.0.x maintenance checks with:
 
 ```powershell
 python -m pip install -r backend/requirements-dev.txt
@@ -87,11 +99,11 @@ python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python scripts\check_v20x_temporary_lifecycle_limits.py
 python scripts\check_v20x_web_cors_origins.py
 python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_readiness.py
 python -m pytest -q backend/tests
 
-cd app
-flutter test
-cd ..
+# Full local M-8 gate, including Flutter
+python scripts\check_v20x_maintenance_readiness.py --with-flutter
 ```
 
 The historical v2.0.0 release validators remain available for the tagged release surface, but they are not the primary current-main maintenance suite.

@@ -2,7 +2,7 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: none (M-7 accepted; M-8 planned)
+Current small commit: none (M-8 accepted; M-9 planned)
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -562,7 +562,7 @@ release ZIP, tag, GitHub Release, or v2.0.1 publication
 - Existing route and response-model compatibility is preserved.
 - Backend tests remain credential-free, network-free, and independent from backend/local_data.
 - Flutter tests verify conservative legacy status and authorization-URL wording.
-- M-8 and M-9 remain PLANNED.
+- At M-7 acceptance, M-8 and M-9 remained PLANNED.
 - Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
 - python -m compileall -q backend scripts passes.
 - M-1 through M-7 checks pass.
@@ -575,13 +575,89 @@ M-7 was accepted on 2026-07-23 after compileall, M-1 through M-7 checks, 38 back
 
 ## M-8 — Add aggregate maintenance readiness
 
-Status: PLANNED
+Status: COMPLETED / ACCEPTED
+Commit title:
 
 ```text
-- Aggregate the accepted v2.0.x regression surface.
-- Keep historical release evidence separate.
-- Define patch-release entry conditions.
+test/docs: add v2.0.x aggregate maintenance readiness
 ```
+
+### Purpose
+
+```text
+- Provide one credential-free current-main maintenance command.
+- Aggregate the accepted M-1 through M-7 regression chain.
+- Keep historical v2.0.0 release-evidence validators outside the normal maintenance aggregate.
+- Define the conditions required before M-9 patch-release work may become CURRENT.
+```
+
+### Change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v20x_maintenance_checklist.md
+docs/v20x_maintenance_readiness.md
+scripts/check_v20x_maintenance_readiness.py
+scripts/check_v20x_maintenance_baseline.py
+scripts/check_v20x_application_version_metadata.py
+scripts/check_v20x_backend_mock_safe_regression.py
+scripts/check_v20x_framework_fallback_voice_artifact_regression.py
+scripts/check_v20x_temporary_lifecycle_limits.py
+scripts/check_v20x_web_cors_origins.py
+scripts/check_v20x_fitbit_current_state_contract.py
+```
+
+### Aggregate contract
+
+```text
+- The default aggregate runs compileall, the accepted M-7 terminal maintenance chain, and full backend pytest.
+- The M-7 terminal chain reaches the accepted M-1 through M-6 checks.
+- --with-flutter additionally runs flutter test from app/.
+- The portable default does not require Flutter, but Flutter remains required for operator acceptance.
+- Historical normalized-content hashes remain protected.
+- backend/local_data must not be created or modified.
+- No real provider, network, credential, private evidence, release ZIP, tag, or GitHub Release is required.
+```
+
+### Historical release separation
+
+```text
+- v2.0.0 Web evidence, screenshot, fixed-ZIP, final-release, and publication validators remain historical.
+- The M-8 aggregate does not invoke those validators.
+- M-8 does not reinterpret historical evidence as current-main runtime regression coverage.
+- docs/DRC_v200_goal_checklist_small_commit.md and release_notes/v2.0.0.md remain unchanged.
+```
+
+### M-9 entry conditions
+
+```text
+- M-1 through M-8 must be COMPLETED / ACCEPTED.
+- The final M-8 aggregate must pass from the intended committed Public source state.
+- backend pytest and Flutter test must pass without real-provider execution.
+- The accepted patch scope must be frozen and unrelated changes excluded.
+- One fixed ZIP must be built from the final committed Public source and that same ZIP must be verified without rebuilding.
+- The DRC_v2.0.0 tag and release asset must remain untouched.
+- At M-8 acceptance, M-9 remained PLANNED.
+```
+
+### Completion requirements
+
+```text
+- docs/v20x_maintenance_readiness.md documents the aggregate and M-9 entry contract.
+- scripts/check_v20x_maintenance_readiness.py is credential-free and mock-safe.
+- python -m compileall -q backend scripts passes.
+- python scripts/check_v20x_maintenance_readiness.py passes.
+- python scripts/check_v20x_maintenance_readiness.py --with-flutter passes in the operator environment.
+- backend pytest and Flutter test pass.
+- Historical v2.0.0 normalized-content hashes remain unchanged.
+- M-9 remains PLANNED.
+- The operator reviews the diff and approves the small commit.
+```
+
+M-8 was accepted on 2026-07-23 after compileall, the aggregate gate with Flutter, 38 backend pytest tests, 43 Flutter tests, historical-record and backend/local_data protection checks, diff review, and operator approval passed. M-8 did not build a release ZIP, create a tag or GitHub Release, or release v2.0.1. M-9 remains PLANNED.
 
 ## M-9 — Patch release
 

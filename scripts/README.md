@@ -10,11 +10,11 @@ Current patch source and small commit:
 
 ```text
 v2.0.1
-M-7  COMPLETED / ACCEPTED
-docs/test: clarify Fitbit current-state contract
+M-8  COMPLETED / ACCEPTED
+test/docs: add v2.0.x aggregate maintenance readiness
 ```
 
-M-1 through M-7 are completed and accepted. No small commit is currently active; M-8 remains PLANNED. M-7 fixes the mock-safe current-state contract for retained Fitbit compatibility surfaces without claiming configured real-use success.
+M-1 through M-8 are completed and accepted. No small commit is currently active, and M-9 remains PLANNED. M-8 adds the normal aggregate maintenance gate while keeping historical release evidence separate.
 
 Install the development test dependencies and run the current checks from the repository root:
 
@@ -28,11 +28,11 @@ python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python scripts\check_v20x_temporary_lifecycle_limits.py
 python scripts\check_v20x_web_cors_origins.py
 python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_readiness.py
 python -m pytest -q backend/tests
 
-cd app
-flutter test
-cd ..
+# Full M-8 operator gate
+python scripts\check_v20x_maintenance_readiness.py --with-flutter
 ```
 
 The accepted M-6 regression boundary verifies:
@@ -57,10 +57,24 @@ The accepted M-7 regression boundary verifies:
 - existing Fitbit routes and response fields remain compatible
 - backend tests use fakes and never access backend/local_data or the network
 - Flutter presentation tests remain deterministic
-- M-8 and M-9 remain PLANNED
+- At M-7 acceptance, M-8 and M-9 remained PLANNED
 ```
 
 M-7 was accepted on 2026-07-23 after compileall, M-1 through M-7 checks, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. M-7 did not release v2.0.1.
+
+The M-8 aggregate maintenance boundary verifies:
+
+```text
+- the accepted M-7 terminal chain still reaches M-1 through M-6
+- compileall and full backend pytest pass in the portable default path
+- --with-flutter adds Flutter test for the operator acceptance gate
+- backend/local_data is not created or modified
+- historical v2.0.0 release-evidence validators are not invoked
+- M-9 entry conditions are documented without creating a release artifact
+- M-9 remains PLANNED after M-8 acceptance
+```
+
+M-8 was accepted on 2026-07-23 after compileall, the aggregate gate with Flutter, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. M-8 does not build or inspect a ZIP, create a tag or GitHub Release, call real providers, or change runtime/API/Flutter behavior.
 
 M-6 does not add authentication, production hosting policy, reverse-proxy configuration, TLS handling, provider calls, Flutter changes, release ZIP work, a tag, or a v2.0.1 release. M-6 was accepted on 2026-07-23 after compileall, M-1 through M-6 checks, 31 backend pytest tests, 39 Flutter tests, diff review, and operator approval passed.
 

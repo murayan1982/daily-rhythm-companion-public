@@ -93,7 +93,7 @@ def main() -> None:
     require(documentation, "M-4 was accepted before M-5", "M-4 acceptance handoff")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: none (M-7 accepted; M-8 planned)", "M-6 accepted state")
+    require(checklist, "Current small commit: none (M-8 accepted; M-9 planned)", "M-6 accepted state")
     m4 = checklist.split("# M-4", 1)[1].split("# M-5", 1)[0]
     require(m4, "Status: COMPLETED", "M-4 completed state")
     m5 = checklist.split("# M-5", 1)[1].split("# M-6", 1)[0]
@@ -104,11 +104,11 @@ def main() -> None:
     m7 = checklist.split("## M-7", 1)[1].split("## M-8", 1)[0]
     require(m7, "Status: COMPLETED / ACCEPTED", "M-7 accepted state")
     require(m7, "M-7 was accepted on 2026-07-23", "M-7 acceptance record")
-    for item in range(8, 10):
-        section = checklist.split(f"## M-{item}", 1)[1]
-        if item < 9:
-            section = section.split(f"## M-{item + 1}", 1)[0]
-        require(section, "Status: PLANNED", f"M-{item} planned state")
+    m8 = checklist.split("## M-8", 1)[1].split("\n## M-9 — Patch release", 1)[0]
+    require(m8, "Status: COMPLETED / ACCEPTED", "M-8 accepted state")
+    require(m8, "M-8 was accepted on 2026-07-23", "M-8 acceptance record")
+    m9 = checklist.split("\n## M-9 — Patch release", 1)[1].split("# Future-version boundary", 1)[0]
+    require(m9, "Status: PLANNED", "M-9 planned state")
 
     run_check("scripts/check_v20x_backend_mock_safe_regression.py")
     run_m4_pytest()
