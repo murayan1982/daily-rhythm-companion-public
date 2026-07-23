@@ -21,7 +21,7 @@ parent phase: W-5 CURRENT / NOT_COMPLETED
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 is current; parent W-5 remains not completed, and W-5b2 is planned.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 is completed and accepted. W-5b2 is current; its configured real execution is recorded with acceptance pending, and parent W-5 remains not completed.
 
 Run the W-1 checks from the repository root:
 
@@ -109,7 +109,7 @@ collect smartphone Web evidence, or build a release artifact.
 
 W-3 is `COMPLETED / ACCEPTED`. Acceptance recorded 84 backend tests and 50
 Flutter tests, with real Fitbit execution remaining false. W-4 is also
-`COMPLETED / ACCEPTED`; W-5a is completed and accepted; W-5b1 is current and not completed; W-5b2 is planned, while C-1 through R-1 remain planned.
+`COMPLETED / ACCEPTED`; W-5a and W-5b1 are completed and accepted; W-5b2 is current with execution recorded but not accepted, while C-1 through R-1 remain planned.
 
 
 ## v2.1.0 W-4a sleep-provider selection status check
@@ -4271,3 +4271,34 @@ python -m pytest -q backend/tests/test_google_health_v4_migration_contract.py
 ```
 
 This gate is mock-safe, makes no OAuth or provider request, and confirms that legacy Fitbit execution is blocked.
+
+## v2.1.0 W-5b2 configured Google Health operator verification record
+
+Detailed record: `docs/v210_google_health_real_operator_verification.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_google_health_migration_audit.py
+python scripts\check_v210_google_health_real_operator_verification.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The W-5b2 source-tree check reads Public documentation only. It records that the
+ignored operator profile and ValidateOnly launcher passed, the guarded stored-token
+refresh succeeded, the explicit real Google Health request returned HTTP 200, the
+backend normalized available real Google Health sleep data, and PC/smartphone Web
+showed Google Health / 実データ / 取得済み. It does not read local env, credentials,
+tokens, raw provider data, or screenshots and does not make a network request.
+
+W-5b2 remains `CURRENT / NOT_COMPLETED` with `EXECUTED / NOT_ACCEPTED` evidence
+until focused/full checks, diff review, operator approval, and a separate acceptance
+synchronization pass. Separate Fitbit-device provenance is not asserted by this
+record. Parent W-5 and all later phases remain not completed.

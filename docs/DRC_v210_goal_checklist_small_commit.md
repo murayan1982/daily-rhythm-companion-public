@@ -3,7 +3,7 @@
 Updated: 2026-07-24
 Status: IN_PROGRESS
 Current small commit: W-5b2 — Configured Google Health API operator verification
-Current small-commit state: CURRENT / NOT_COMPLETED
+Current small-commit state: CURRENT / NOT_COMPLETED — execution recorded, acceptance pending
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
@@ -81,7 +81,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-4, W-5a, and W-5b1 are completed and accepted. W-5b2 is current, parent W-5 remains not completed, and C-1 through R-1 remain planned.
+W-1 through W-4, W-5a, and W-5b1 are completed and accepted. W-5b2 is current with the configured real execution recorded but not yet accepted, parent W-5 remains not completed, and C-1 through R-1 remain planned.
 
 ---
 
@@ -740,13 +740,30 @@ existing v2.1.0 check scripts
 - W-5b2 and C-1 onward remain not completed.
 ```
 
-## W-5b2 planned boundary
+## W-5b2 configured execution record
+
+Status: EXECUTED / NOT_ACCEPTED
+
+Detailed record: `docs/v210_google_health_real_operator_verification.md`
 
 ```text
-- use the ignored Google Health operator environment and Google OAuth 2.0;
-- verify configured Google Health v4 sleep retrieval, including Fitbit-origin data when available;
-- confirm normalized SleepSummary and W-4 smartphone Web provider/source/data-kind display;
-- retain private evidence outside Git and record public-safe markers only.
+- ignored operator env, credentials, and token files were present and Git-ignored;
+- public-safe env preflight, actual-run checkpoint, and launcher ValidateOnly passed;
+- the stored token required refresh and the guarded refresh path succeeded;
+- post-refresh preflight reported ready_for_real_api;
+- the explicit real Google Health v4 request returned HTTP 200;
+- backend /sleep/summary returned available real Google Health data with positive duration;
+- PC and smartphone Flutter Web both showed Google Health / 実データ / 取得済み;
+- normalized SleepSummary was visible on both form factors;
+- reviewed screenshots remain outside Git and exact private sleep values are not recorded;
+- current UI/API source is Google Health; separate Fitbit-device provenance is not asserted;
+- W-5b2 and parent W-5 remain NOT_COMPLETED until acceptance synchronization.
+```
+
+Public-safe source-tree guard:
+
+```powershell
+python scripts\check_v210_google_health_real_operator_verification.py
 ```
 
 ---

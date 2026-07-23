@@ -42,7 +42,7 @@ The legacy `fitbit` provider remains source-compatible only as a migration/refer
 ```text
 W-5a   COMPLETED / ACCEPTED   Historical public-safe Fitbit operator contract; no real execution
 W-5b1  COMPLETED / ACCEPTED   Google Health migration audit and legacy Fitbit execution retirement
-W-5b2  PLANNED                Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
+W-5b2  CURRENT / NOT_COMPLETED  Configured Google Health API operator verification; execution recorded, acceptance pending
 ```
 
 ## Mock-safe boundary
@@ -75,4 +75,4 @@ real Google Health operator execution: false
 release records changed: false
 ```
 
-W-5b1 was completed and accepted on 2026-07-24. W-5b2 remains current and must separately verify configured Google OAuth, Google Health API sleep retrieval, Fitbit-origin sleep where available, normalized `SleepSummary`, and smartphone Web provider/source/data-kind presentation.
+W-5b1 was completed and accepted on 2026-07-24. W-5b2 remains current. Its configured Google Health execution, guarded token refresh, real HTTP 200 response, normalized `SleepSummary`, and PC/smartphone Web provider/source/data-kind presentation are recorded in `docs/v210_google_health_real_operator_verification.md`, but W-5b2 acceptance is still pending. Separate Fitbit-device provenance is not inferred from the current Google Health source response.

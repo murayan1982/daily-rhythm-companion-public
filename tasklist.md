@@ -159,7 +159,7 @@ Status: COMPLETED / ACCEPTED
 - release records changed: false
 ```
 
-W-5b1は2026-07-24にCOMPLETED / ACCEPTEDとなった。W-5b2はCURRENT / NOT_COMPLETEDであり、Google OAuth、real Google Health API sleep取得、Fitbit-origin data確認、smartphone Web evidenceはまだ実施していない。
+W-5b1は2026-07-24にCOMPLETED / ACCEPTEDとなった。W-5b2はCURRENT / NOT_COMPLETEDであり、configured Google Health APIとPC/スマートフォンWebの実行記録は作成済みだが、受け入れ同期はまだ実施していない。Fitbit端末由来は現在のprovider responseから別途確認できないため推定しない。
 
 ### W-5b2 — Configured Google Health API operator verification
 
@@ -175,7 +175,20 @@ Status: CURRENT / NOT_COMPLETED
 - public-safe markerだけを受け入れ記録へ同期する。
 ```
 
-W-5b2のreal operator実行はまだ開始していない。W-5親フェーズ、C-1以降、release readinessは未完了のままである。
+W-5b2のconfigured real operator実行は完了し、public-safe markerだけを記録した。execution record: EXECUTED / NOT_ACCEPTED。保存済みtokenのguarded refresh、Google Health API v4 HTTP 200、normalized SleepSummary、PC/スマートフォンWebのGoogle Health・実データ・取得済み表示を確認した。raw screenshot、正確な睡眠値、token、private path、LAN URLはGitへ入れていない。現在のUI/APIはGoogle Health sourceを確認したが、Fitbit端末由来は別フィールドとして確認できないため推定していない。W-5b2とW-5親フェーズ、C-1以降、release readinessは未完了のままである。
+
+詳細記録: `docs/v210_google_health_real_operator_verification.md`
+
+```text
+operator env validation: accepted
+token refresh: succeeded
+real Google Health HTTP: 200
+normalized SleepSummary: confirmed
+PC Web display: confirmed
+smartphone Web display: confirmed
+raw screenshot committed: false
+release records changed: false
+```
 
 ---
 
