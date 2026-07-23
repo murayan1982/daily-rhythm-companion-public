@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1/W-2/W-3 COMPLETED / ACCEPTED; W-4 CURRENT / NOT_COMPLETED**)
-Current small commit: W-4 — Sleep-provider selection and source-label UI
+Current small commit: W-4a — Read-only sleep-provider selection status contract
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -129,6 +129,26 @@ release records changed: false
 ```
 
 W-3 is COMPLETED / ACCEPTED. The backend classifies allow-listed Fitbit sleep API failures, requires usable normalized sleep duration, maps real-provider fields into `SleepSummary`, and includes deterministic fake-HTTP/API regression tests. Acceptance passed after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval. The detailed contract is [`docs/v210_fitbit_real_sleep_normalization.md`](docs/v210_fitbit_real_sleep_normalization.md). Real OAuth, live token exchange/refresh, configured permission/scope evidence, real Fitbit sleep retrieval, and smartphone Web acceptance remain W-5 work. W-4 is now CURRENT / NOT_COMPLETED and owns provider selection, source-label UI, and simplified Google Health user UX without changing the accepted W-3 backend contract.
+
+W-4a is the current implementation commit. It adds a read-only `GET /sleep/providers` contract that reports the backend-owned `SLEEP_PROVIDER` selection, supported provider roles, the deprecated `fitbit_stub` alias, and the fact that `fitbit` still requires W-5 real operator verification. The endpoint does not instantiate a provider, read tokens, refresh credentials, retrieve sleep data, or make external requests. The accepted `/sleep/summary` and W-3 Fitbit files remain unchanged. W-4a is implemented but not accepted; W-4b will add the Flutter configured-provider/data-source UI and simplify normal Google Health UX while retaining advanced diagnostics. See [`docs/v210_sleep_provider_selection_source_labels.md`](docs/v210_sleep_provider_selection_source_labels.md).
+
+Run the W-4a mock-safe gate with:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python scripts\check_v210_fitbit_token_status_reconnect.py
+python scripts\check_v210_fitbit_real_sleep_normalization.py
+python scripts\check_v210_sleep_provider_selection_source_labels.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests/test_sleep_provider_selection_contract.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
 
 Run the accepted W-3 regression gate with:
 

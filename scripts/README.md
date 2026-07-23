@@ -15,12 +15,12 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: W-4 CURRENT / NOT_COMPLETED
+current small commit: W-4a CURRENT / NOT_COMPLETED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is current but not implemented.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is current. W-4a is implemented but not accepted; W-4b remains planned.
 
 Run the W-1 checks from the repository root:
 
@@ -108,6 +108,40 @@ collect smartphone Web evidence, or build a release artifact.
 W-3 is `COMPLETED / ACCEPTED`. Acceptance recorded 84 backend tests and 50
 Flutter tests, with real Fitbit execution remaining false. W-4 is
 `CURRENT / NOT_COMPLETED`; W-5 through R-1 remain planned.
+
+
+## v2.1.0 W-4a sleep-provider selection status check
+
+Detailed contract: `docs/v210_sleep_provider_selection_source_labels.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fitbit_current_behavior_inventory.py
+python scripts\check_v210_fitbit_token_status_reconnect.py
+python scripts\check_v210_fitbit_real_sleep_normalization.py
+python scripts\check_v210_sleep_provider_selection_source_labels.py
+python scripts\check_v20x_fitbit_current_state_contract.py
+python scripts\check_v20x_maintenance_baseline.py
+python -m pytest -q backend/tests/test_sleep_provider_selection_contract.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The W-4a check verifies the read-only `GET /sleep/providers` route, backend-config
+selection mode, stable provider roles, deprecated `fitbit_stub` alias, conservative
+unknown-provider behavior, unchanged W-3 runtime files, immutable v2.0.0/v2.0.1
+release records, and public-safe source text. It does not instantiate a provider,
+read local token stores, refresh credentials, open OAuth, call Fitbit or Google
+Health, collect smartphone Web evidence, or build a release artifact.
+
+W-4a remains `CURRENT / NOT_COMPLETED` until compileall, accepted W-1/W-2/W-3
+checks, the W-4a check, v2.0.x guards, full backend pytest, full Flutter test,
+diff review, and operator approval pass. W-4 and W-5 remain incomplete.
 
 ## v2.0.x completed maintenance baseline
 

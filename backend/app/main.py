@@ -15,6 +15,7 @@ from app.api import (
     health,
     motion_demo,
     sleep,
+    sleep_provider_selection,
     voice_input_demo,
     voice_output_demo,
 )
@@ -38,6 +39,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(characters.router)
 app.include_router(sleep.router)
+app.include_router(sleep_provider_selection.router)
 app.include_router(advice.router)
 app.include_router(chat.router)
 app.include_router(daily_records.router)

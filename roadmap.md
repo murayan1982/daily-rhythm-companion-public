@@ -5,7 +5,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: W-4 — Sleep-provider selection and source-label UI (**CURRENT / NOT_COMPLETED**)
+Current small commit: W-4a — Read-only sleep-provider selection status contract (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ---
@@ -480,7 +480,18 @@ V-1  PLANNED                  Character display extraction and deterministic sta
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-W-1, W-2, and W-3 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-3 was accepted on 2026-07-23 after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is the only current small commit; W-5 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, fake-HTTP success, or UI source-label work.
+W-1, W-2, and W-3 are completed and accepted. W-2 added provider-neutral token/status/reconnect states, one-time OAuth state consumption, fake-HTTP refresh regression tests, and conservative old/new Flutter response parsing. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-3 was accepted on 2026-07-23 after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 remains the current phase and is split into W-4a read-only provider selection metadata followed by W-4b Flutter provider/source-label UI and simplified Google Health user UX. W-4a is implemented but not accepted; W-4 remains CURRENT / NOT_COMPLETED. W-5 through R-1 remain planned and must not be marked complete from source presence, local token classification, normalized synthetic fixtures, fake-HTTP success, metadata/status API success, or UI source-label work.
+
+Current W-4 split:
+
+```text
+W-4a  CURRENT / NOT_COMPLETED  Read-only GET /sleep/providers contract; implementation
+                               prepared, local acceptance gate still pending
+W-4b  PLANNED                 Flutter configured-provider/data-source presentation and
+                               simplified Google Health UX with diagnostics retained
+```
+
+W-4a preserves `backend/app/api/sleep.py`, `backend/app/models/sleep.py`, the existing provider factory, W-3 Fitbit runtime/normalization files, and all Flutter files. It does not instantiate providers or execute OAuth, token refresh, external network, Fitbit, or Google Health paths. Detailed contract: `docs/v210_sleep_provider_selection_source_labels.md`.
 
 Expected W-1 change surface:
 

@@ -2,7 +2,7 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: W-4 — Sleep-provider selection and source-label UI
+Current small commit: W-4a — Read-only sleep-provider selection status contract
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -470,17 +470,81 @@ W-3 was completed and accepted on 2026-07-23. This acceptance validates the mock
 
 Status: CURRENT / NOT_COMPLETED
 
-Current planning boundary:
+## W-4 implementation split
 
 ```text
-- Present the configured sleep provider and app-facing data source consistently.
-- Add a clear selection/configuration UX without making credentials client-owned.
-- Simplify normal Google Health connection UX while retaining operator diagnostics
-  in an advanced or explicitly labeled surface.
-- Preserve mock-safe operation and conservative health wording.
+W-4a  CURRENT / NOT_COMPLETED  Read-only sleep-provider selection status contract
+W-4b  PLANNED                 Flutter provider/source-label UI and simplified
+                               Google Health user UX with retained diagnostics
 ```
 
-W-4 implementation has not started. Its exact change files and first small-commit boundary must be fixed after reading the current Flutter/provider-selection implementation and accepted W-3 response contract. W-5 and later phases remain PLANNED.
+W-4a implementation state: IMPLEMENTED / NOT_ACCEPTED
+
+## W-4a purpose
+
+```text
+- Expose the backend-owned SLEEP_PROVIDER selection through a read-only API.
+- Separate configured provider metadata from SleepSummary.source and real/demo state.
+- Keep provider credentials, OAuth, token refresh, and sleep retrieval outside the route.
+- Preserve the accepted W-3 Fitbit API, normalization, and SleepSummary contract.
+- Prepare the later Flutter UI without completing W-4 or W-5.
+```
+
+Detailed contract: `docs/v210_sleep_provider_selection_source_labels.md`
+
+## W-4a change surface
+
+```text
+backend/app/main.py
+backend/app/api/sleep_provider_selection.py
+backend/app/models/sleep_provider_selection.py
+backend/app/services/sleep_provider_selection_service.py
+backend/tests/test_sleep_provider_selection_contract.py
+docs/v210_sleep_provider_selection_source_labels.md
+docs/DRC_v210_goal_checklist_small_commit.md
+scripts/check_v210_sleep_provider_selection_source_labels.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+```
+
+## W-4a explicit non-change surface
+
+```text
+backend/app/api/sleep.py
+backend/app/models/sleep.py
+backend/app/services/sleep_providers/factory.py
+backend/app/services/fitbit_api_client.py
+backend/app/services/fitbit_sleep_service.py
+backend/app/services/fitbit_sleep_normalizer.py
+backend/app/services/sleep_providers/fitbit.py
+backend/tests/test_fitbit_real_sleep_normalization.py
+app/lib/**
+app/test/**
+app/pubspec.yaml
+Fitbit and Google Health OAuth/token/runtime services
+version metadata
+v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
+```
+
+## W-4a completion conditions
+
+```text
+- GET /sleep/providers reports configured provider metadata without provider execution.
+- mock, wearable_stub, google_health, fitbit_stub, and fitbit remain distinct.
+- fitbit_stub remains a deprecated alias of wearable_stub.
+- fitbit remains legacy_real_provider and requires W-5 real operator verification.
+- unknown configuration is reported conservatively as unsupported.
+- existing /sleep/summary and accepted W-3 runtime files remain unchanged.
+- compileall, W-1/W-2/W-3 checks, W-4a check, v2.0.x guards, full backend
+  pytest, full Flutter test, diff review, and operator approval pass.
+```
+
+W-4a is not accepted merely because the source and tests are present. W-4 remains
+CURRENT / NOT_COMPLETED after W-4a acceptance. W-4b then owns the Flutter
+provider/source-label UI and simplified Google Health user UX. W-5 and later phases
+remain PLANNED.
 
 ---
 
