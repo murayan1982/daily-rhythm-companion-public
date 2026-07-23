@@ -2,11 +2,11 @@
 
 Updated: 2026-07-22
 Small commit: M-4
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED
 
 ## Purpose
 
-M-4 extends the normal credential-free backend regression suite to two already-implemented runtime boundaries: configured AI Character Framework advice and DRC-managed voice output artifacts. It adds tests only; it does not change runtime behavior.
+M-4 extended the normal credential-free backend regression suite to two already-implemented runtime boundaries: configured AI Character Framework advice and DRC-managed voice output artifacts. It adds tests only; it does not change runtime behavior.
 
 ## Framework advice boundary
 
@@ -106,3 +106,5 @@ cd ..
 ```
 
 M-4 does not alter the published DRC_v2.0.0 asset or historical release records.
+
+M-4 was accepted before M-5 runtime lifecycle work began. Its original safety assertions remain protected by the M-4 check.

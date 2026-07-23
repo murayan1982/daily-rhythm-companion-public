@@ -4,7 +4,7 @@ Updated: 2026-07-22
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: M-4
+Current small commit: none (M-5 accepted; M-6 planned)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -166,7 +166,7 @@ The following inventory is the starting point for all post-v2.0.0 planning.
 ## v2.0.x - Post-release maintenance and regression hardening
 
 Status: In progress
-Current small commit: M-4
+Current small commit: none (M-5 accepted; M-6 planned)
 Source of truth: `docs/DRC_v20x_maintenance_checklist.md`
 First expected patch target: v2.0.1
 
@@ -217,14 +217,14 @@ Completion direction:
 
 ### v2.0.x provisional small-commit sequence
 
-The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-3 are completed, M-4 is current/not completed, and M-5 through M-9 remain planned.
+The active checklist is `docs/DRC_v20x_maintenance_checklist.md`. M-1 through M-5 are completed, no small commit is currently active, and M-6 through M-9 remain planned.
 
 ```text
 M-1  COMPLETED  docs: establish post-v2.0.0 maintenance baseline
 M-2  COMPLETED  fix/test: align application version metadata
 M-3  COMPLETED  test: add backend mock-safe regression foundation
-M-4  CURRENT    test: cover Framework fallback and voice artifact safety
-M-5  PLANNED    fix: bound temporary chat sessions and TTS artifacts
+M-4  COMPLETED  test: cover Framework fallback and voice artifact safety
+M-5  COMPLETED  fix/test: bound temporary chat sessions and TTS artifacts
 M-6  PLANNED    fix: make Web CORS origins configurable
 M-7  PLANNED    docs/test: clarify Fitbit current-state contract
 M-8  PLANNED    test/docs: add v2.0.x aggregate maintenance readiness
@@ -252,7 +252,7 @@ M-3 accepted contract:
 - M-3 was accepted without backend runtime changes or real-provider execution.
 ```
 
-M-4 current contract:
+M-4 accepted contract:
 
 ```text
 - Use a temporary fake framework package and the public create_text_chat_session boundary for configured advice success.
@@ -261,10 +261,22 @@ M-4 current contract:
 - Verify only managed MP3 files become opaque DRC URLs.
 - Reject outside paths, unsupported formats, traversal, and malformed artifact IDs.
 - Do not call a real Framework checkout, provider, network, or TTS runtime.
-- Keep M-5 through M-9 PLANNED.
+- M-4 was accepted without backend runtime changes or real-provider execution.
 ```
 
-See `docs/v20x_application_version_metadata.md` for version ownership, `docs/v20x_backend_mock_safe_regression.md` for the M-3 foundation, and `docs/v20x_framework_fallback_voice_artifact_regression.md` for the M-4 boundary.
+M-5 accepted contract:
+
+```text
+- Chat sessions use a 30-minute idle TTL and maximum capacity of 100 by default.
+- Successful get/message operations refresh chat recency; capacity eviction is least-recently-used.
+- TTS public artifacts use a 24-hour publish-time TTL and maximum count of 100 by default.
+- Resolving an audio artifact does not refresh its lifetime.
+- Lazy cleanup covers staging leftovers and public artifacts without adding a worker or public cleanup endpoint.
+- Existing chat/audio routes, response models, opaque URL shape, and 404 behavior remain compatible.
+- M-6 through M-9 remain PLANNED.
+```
+
+See `docs/v20x_application_version_metadata.md` for version ownership, `docs/v20x_backend_mock_safe_regression.md` for the M-3 foundation, `docs/v20x_framework_fallback_voice_artifact_regression.md` for the accepted M-4 boundary, and `docs/v20x_temporary_lifecycle_limits.md` for the accepted M-5 boundary.
 
 Expected initial change surface:
 

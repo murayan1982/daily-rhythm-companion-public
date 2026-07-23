@@ -32,12 +32,16 @@ class AppConfig:
     framework_text_chat_preflight_enabled: bool = False
     framework_text_chat_session_preflight_enabled: bool = False
     framework_text_chat_live_message_enabled: bool = False
+    post_advice_chat_ttl_seconds: int = 1800
+    post_advice_chat_max_sessions: int = 100
     voice_input_demo_enabled: bool = False
     voice_input_adapter_mode: str = "disabled"
     voice_output_demo_enabled: bool = False
     voice_output_adapter_mode: str = "disabled"
     voice_output_real_tts_enabled: bool = False
     voice_output_utterance_purpose: str = "demo"
+    voice_output_artifact_ttl_seconds: int = 86400
+    voice_output_artifact_max_count: int = 100
     motion_demo_enabled: bool = False
     motion_adapter_mode: str = "disabled"
     gemini_api_key: str | None = None
@@ -114,6 +118,21 @@ def _env_csv_tuple(name: str, default: tuple[str, ...]) -> tuple[str, ...]:
     return parts
 
 
+def _env_positive_int(name: str, default: int) -> int:
+    """Load a positive integer environment value with a bounded safe fallback."""
+
+    value = os.getenv(name)
+    if value is None or not value.strip():
+        return default
+
+    try:
+        parsed = int(value.strip())
+    except ValueError:
+        return default
+
+    return parsed if parsed > 0 else default
+
+
 def _env_float(name: str, default: float) -> float:
     """Load a float environment value, falling back to a safe default."""
 
@@ -175,6 +194,14 @@ def load_config() -> AppConfig:
         framework_text_chat_live_message_enabled=_env_flag(
             "DRC_FW40_ENABLE_LIVE_TEXT_CHAT_MESSAGE"
         ),
+        post_advice_chat_ttl_seconds=_env_positive_int(
+            "POST_ADVICE_CHAT_TTL_SECONDS",
+            1800,
+        ),
+        post_advice_chat_max_sessions=_env_positive_int(
+            "POST_ADVICE_CHAT_MAX_SESSIONS",
+            100,
+        ),
         voice_input_demo_enabled=_env_flag("VOICE_INPUT_DEMO_ENABLED"),
         voice_input_adapter_mode=os.getenv(
             "VOICE_INPUT_ADAPTER_MODE",
@@ -190,6 +217,14 @@ def load_config() -> AppConfig:
             "VOICE_OUTPUT_UTTERANCE_PURPOSE",
             "demo",
         ).strip() or "demo",
+        voice_output_artifact_ttl_seconds=_env_positive_int(
+            "VOICE_OUTPUT_ARTIFACT_TTL_SECONDS",
+            86400,
+        ),
+        voice_output_artifact_max_count=_env_positive_int(
+            "VOICE_OUTPUT_ARTIFACT_MAX_COUNT",
+            100,
+        ),
         motion_demo_enabled=_env_flag("MOTION_DEMO_ENABLED"),
         motion_adapter_mode=os.getenv(
             "MOTION_DEMO_ADAPTER_MODE",

@@ -120,12 +120,14 @@ def main() -> None:
         require(documentation, needle, "M-3 documentation")
 
     checklist = read("docs/DRC_v20x_maintenance_checklist.md")
-    require(checklist, "Current small commit: M-4", "active checklist current item")
+    require(checklist, "Current small commit: none (M-5 accepted; M-6 planned)", "active checklist idle state")
     m3 = checklist.split("# M-3", 1)[1].split("# M-4", 1)[0]
     require(m3, "Status: COMPLETED", "M-3 completed state")
-    m4 = checklist.split("# M-4", 1)[1].split("# Planned queue", 1)[0]
-    require(m4, "Status: CURRENT / NOT_COMPLETED", "M-4 current state")
-    for item in range(5, 10):
+    m4 = checklist.split("# M-4", 1)[1].split("# M-5", 1)[0]
+    require(m4, "Status: COMPLETED", "M-4 completed state")
+    m5 = checklist.split("# M-5", 1)[1].split("# Planned queue", 1)[0]
+    require(m5, "Status: COMPLETED", "M-5 completed state")
+    for item in range(6, 10):
         section = checklist.split(f"## M-{item}", 1)[1]
         if item < 9:
             section = section.split(f"## M-{item + 1}", 1)[0]

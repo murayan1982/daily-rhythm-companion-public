@@ -86,7 +86,7 @@ class VoiceOutputDemoService:
         artifact_store: VoiceOutputArtifactStore | None = None,
     ) -> None:
         self._config = config
-        self._artifact_store = artifact_store or VoiceOutputArtifactStore()
+        self._artifact_store = artifact_store or VoiceOutputArtifactStore(config=config)
 
     def build_status(self) -> VoiceOutputDemoStatusResponse:
         """Return a standalone voice output demo status response."""

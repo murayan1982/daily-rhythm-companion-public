@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
+from threading import RLock
+from time import monotonic
+from typing import Callable
 from uuid import uuid4
 
 from app.config import AppConfig, load_config
@@ -15,14 +19,19 @@ from app.models.chat import (
 from app.services.framework_text_chat_adapter import FrameworkPostAdviceChatAdapter
 
 
-class PostAdviceChatService:
-    """In-memory post-advice chat session service.
+@dataclass(frozen=True)
+class _StoredChatSession:
+    session: ChatSessionResponse
+    last_used_at: float
+    sequence: int
 
-    The default path remains mock-safe and provider-free. When
-    DRC_FW40_ENABLE_FRAMEWORK_TEXT_CHAT_SMOKE is explicitly enabled, this service
-    routes message replies through the framework text chat adapter boundary.
-    Day32 lets that adapter return a real FW reply only when the separate
-    DRC_FW40_ENABLE_LIVE_TEXT_CHAT_MESSAGE gate is explicitly enabled.
+
+class PostAdviceChatService:
+    """Bounded in-memory post-advice chat session service.
+
+    The default path remains mock-safe and provider-free. Sessions expire after
+    an idle TTL and the least-recently-used session is evicted when capacity is
+    reached. The existing API response models remain unchanged.
     """
 
     def __init__(
@@ -30,72 +39,105 @@ class PostAdviceChatService:
         *,
         config: AppConfig | None = None,
         framework_adapter: FrameworkPostAdviceChatAdapter | None = None,
+        now: Callable[[], float] | None = None,
     ) -> None:
         self._config = config or load_config()
         self._framework_adapter = framework_adapter or FrameworkPostAdviceChatAdapter(
             self._config
         )
-        self._sessions: dict[str, ChatSessionResponse] = {}
+        self._now = now or monotonic
+        self._ttl_seconds = max(1, self._config.post_advice_chat_ttl_seconds)
+        self._max_sessions = max(1, self._config.post_advice_chat_max_sessions)
+        self._sessions: dict[str, _StoredChatSession] = {}
+        self._sequence = 0
+        self._lock = RLock()
 
     def create_session(
         self,
         request: ChatSessionCreateRequest,
     ) -> ChatSessionResponse:
-        session_id = f"chat_{uuid4().hex[:12]}"
-        source = self._build_source(request.context)
+        with self._lock:
+            current_time = self._now()
+            self._cleanup_expired_locked(current_time)
+            self._evict_for_new_session_locked()
 
-        messages = [
-            ChatMessage(
-                role="assistant",
-                content=self._build_opening_message(request.context),
-            )
-        ]
-
-        session = ChatSessionResponse(
-            session_id=session_id,
-            status="active",
-            source=source,
-            context=request.context,
-            messages=messages,
-        )
-        self._sessions[session_id] = session
-
-        if request.initial_user_message:
-            reply_response = self.add_message(
+            session_id = f"chat_{uuid4().hex[:12]}"
+            source = self._build_source(request.context)
+            session = ChatSessionResponse(
                 session_id=session_id,
-                request=ChatMessageRequest(message=request.initial_user_message),
+                status="active",
+                source=source,
+                context=request.context,
+                messages=[
+                    ChatMessage(
+                        role="assistant",
+                        content=self._build_opening_message(request.context),
+                    )
+                ],
             )
-            session = session.model_copy(
-                update={
-                    "messages": reply_response.messages,
-                    "source": reply_response.source,
-                }
-            )
-            self._sessions[session_id] = session
+            self._store_session_locked(session, current_time)
 
-        return session
+            if request.initial_user_message:
+                reply_response = self.add_message(
+                    session_id=session_id,
+                    request=ChatMessageRequest(message=request.initial_user_message),
+                )
+                if reply_response is not None:
+                    session = session.model_copy(
+                        update={
+                            "messages": reply_response.messages,
+                            "source": reply_response.source,
+                        }
+                    )
+                    self._store_session_locked(session, self._now())
+
+            return session
 
     def get_session(self, session_id: str) -> ChatSessionResponse | None:
-        return self._sessions.get(session_id)
+        with self._lock:
+            current_time = self._now()
+            self._cleanup_expired_locked(current_time)
+            stored = self._sessions.get(session_id)
+            if stored is None:
+                return None
+
+            self._store_session_locked(stored.session, current_time)
+            return stored.session
 
     def add_message(
         self,
         session_id: str,
         request: ChatMessageRequest,
     ) -> ChatMessageResponse | None:
-        session = self._sessions.get(session_id)
-        if session is None:
-            return None
+        with self._lock:
+            current_time = self._now()
+            self._cleanup_expired_locked(current_time)
+            stored = self._sessions.get(session_id)
+            if stored is None:
+                return None
 
-        user_message = ChatMessage(role="user", content=request.message)
+            session = stored.session
+            user_message = ChatMessage(role="user", content=request.message)
 
-        if self._config.framework_text_chat_smoke_enabled:
-            return self._add_framework_boundary_message(
-                session=session,
-                user_message=user_message,
-            )
+            if self._config.framework_text_chat_smoke_enabled:
+                return self._add_framework_boundary_message(
+                    session=session,
+                    user_message=user_message,
+                )
 
-        return self._add_mock_message(session=session, user_message=user_message)
+            return self._add_mock_message(session=session, user_message=user_message)
+
+    def cleanup(self) -> int:
+        """Remove expired sessions and return the number removed."""
+
+        with self._lock:
+            return self._cleanup_expired_locked(self._now())
+
+    @property
+    def session_count(self) -> int:
+        with self._lock:
+            self._cleanup_expired_locked(self._now())
+            return len(self._sessions)
 
     def _add_mock_message(
         self,
@@ -111,7 +153,12 @@ class PostAdviceChatService:
             ),
         )
         source = self._build_mock_source(session.context)
-        return self._store_reply(session=session, user_message=user_message, reply=reply, source=source)
+        return self._store_reply(
+            session=session,
+            user_message=user_message,
+            reply=reply,
+            source=source,
+        )
 
     def _add_framework_boundary_message(
         self,
@@ -144,7 +191,7 @@ class PostAdviceChatService:
         updated_session = session.model_copy(
             update={"messages": messages, "source": source}
         )
-        self._sessions[session.session_id] = updated_session
+        self._store_session_locked(updated_session, self._now())
 
         return ChatMessageResponse(
             session_id=session.session_id,
@@ -152,6 +199,41 @@ class PostAdviceChatService:
             source=source,
             messages=messages,
         )
+
+    def _store_session_locked(
+        self,
+        session: ChatSessionResponse,
+        last_used_at: float,
+    ) -> None:
+        self._sequence += 1
+        self._sessions[session.session_id] = _StoredChatSession(
+            session=session,
+            last_used_at=last_used_at,
+            sequence=self._sequence,
+        )
+
+    def _cleanup_expired_locked(self, current_time: float) -> int:
+        expired_ids = [
+            session_id
+            for session_id, stored in self._sessions.items()
+            if current_time - stored.last_used_at
+            >= self._ttl_seconds
+        ]
+        for session_id in expired_ids:
+            self._sessions.pop(session_id, None)
+        return len(expired_ids)
+
+    def _evict_for_new_session_locked(self) -> None:
+        while len(self._sessions) >= self._max_sessions:
+            oldest_session_id = min(
+                self._sessions,
+                key=lambda session_id: (
+                    self._sessions[session_id].last_used_at,
+                    self._sessions[session_id].sequence,
+                    session_id,
+                ),
+            )
+            self._sessions.pop(oldest_session_id, None)
 
     def _build_source(self, context: PostAdviceChatContext) -> ChatSource:
         if self._config.framework_text_chat_smoke_enabled:

@@ -2,7 +2,7 @@
 
 Updated: 2026-07-22
 Status: IN_PROGRESS
-Current small commit: M-4
+Current small commit: none (M-5 accepted; M-6 planned)
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -20,7 +20,7 @@ GitHub Release / annotated tag: DRC_v2.0.0
 ## Progress rule
 
 ```text
-- Only one small commit is CURRENT at a time.
+- At most one small commit is CURRENT at a time.
 - A task remains NOT_COMPLETED until its files, checks, and operator review pass.
 - Later tasks remain PLANNED and must not be marked complete early.
 - A guarded boundary is not counted as real runtime implementation.
@@ -238,21 +238,59 @@ M-3 was accepted and committed before M-4 began. M-3 did not release v2.0.1.
 
 # M-4 — Cover Framework fallback and voice artifact safety
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED
 Commit title:
 
 ```text
 test: cover Framework fallback and voice artifact safety
 ```
 
+## Accepted outcomes
+
+```text
+- FrameworkConversationEngine calls the public create_text_chat_session facade in a temporary fake package.
+- Framework success preserves framework source and character-mapping metadata.
+- Empty Framework responses raise FrameworkEngineError.
+- Framework failure remains visible as framework_fallback without claiming provider success.
+- Managed staging MP3 publication returns an opaque DRC URL.
+- Outside paths, unsupported formats, traversal strings, and malformed IDs are rejected.
+- The normal tests remain credential-free and do not modify backend/local_data.
+- M-4 changed tests and documentation only; backend runtime behavior was unchanged.
+```
+
+M-4 was accepted before M-5 began. M-4 did not release v2.0.1.
+
+---
+
+# M-5 — Bound temporary chat sessions and TTS artifacts
+
+Status: COMPLETED
+Commit title:
+
+```text
+fix/test: bound temporary chat sessions and TTS artifacts
+```
+
 ## Purpose
 
 ```text
-- Extend the normal backend regression suite to the configured Framework advice boundary.
-- Preserve visible framework_fallback metadata when Framework execution fails.
-- Verify DRC-managed voice artifacts never expose arbitrary local paths.
-- Keep the tests credential-free, provider-free, network-free, and audio-generation-free.
+- Bound process-local post-advice chat sessions by idle TTL and count capacity.
+- Bound DRC-managed TTS staging/public artifacts by TTL and count capacity.
+- Add lazy cleanup without background workers or new public cleanup endpoints.
+- Preserve existing chat and voice-output API response models and not-found behavior.
+- Keep the implementation mock-safe and covered by deterministic clock-driven tests.
 ```
+
+## Accepted default configuration
+
+```text
+POST_ADVICE_CHAT_TTL_SECONDS=1800
+POST_ADVICE_CHAT_MAX_SESSIONS=100
+VOICE_OUTPUT_ARTIFACT_TTL_SECONDS=86400
+VOICE_OUTPUT_ARTIFACT_MAX_COUNT=100
+```
+
+All four settings require positive integers. Missing, zero, negative, or malformed values fall back to the bounded defaults rather than disabling cleanup.
 
 ## Change surface
 
@@ -261,71 +299,99 @@ README.md
 roadmap.md
 tasklist.md
 scripts/README.md
-backend/tests/test_framework_advice.py
+backend/.env.example
+backend/env_profiles/mock_safe.env
+backend/app/config.py
+backend/app/services/post_advice_chat_service.py
+backend/app/services/voice_output_artifact_store.py
+backend/app/services/voice_output_demo_service.py
+backend/tests/test_post_advice_chat_lifecycle.py
+backend/tests/test_temporary_lifecycle_config.py
 backend/tests/test_voice_output_artifact_store.py
-docs/v20x_backend_mock_safe_regression.md
 docs/v20x_framework_fallback_voice_artifact_regression.md
+docs/v20x_temporary_lifecycle_limits.md
 docs/DRC_v20x_maintenance_checklist.md
 scripts/check_v20x_maintenance_baseline.py
 scripts/check_v20x_application_version_metadata.py
 scripts/check_v20x_backend_mock_safe_regression.py
 scripts/check_v20x_framework_fallback_voice_artifact_regression.py
+scripts/check_v20x_temporary_lifecycle_limits.py
 ```
+
+## Inspected but intentionally unchanged
+
+```text
+backend/app/api/voice_output_demo.py
+backend/app/api/chat.py
+backend/app/models/chat.py
+backend/app/models/voice_output_demo.py
+```
+
+The audio resolver retains its historical no-argument `VoiceOutputArtifactStore()` construction so existing fake-store smoke replacement remains compatible. The store loads active lifecycle configuration internally.
 
 ## Explicit non-change surface
 
 ```text
-backend runtime implementation
-FrameworkConversationEngine behavior
-/advice fallback behavior
-VoiceOutputArtifactStore behavior
-provider credentials or network access
+docs/DRC_v200_goal_checklist_small_commit.md
+release_notes/v2.0.0.md
+chat API models and route paths
+voice-output response models and opaque URL shape
+Framework provider implementation
 real LLM, TTS, STT, health API, OAuth, or motion execution
-chat session and TTS artifact lifecycle limits
+Flutter application behavior
+persistence schema
 release ZIP, tag, and GitHub Release handling
 ```
 
-## Test boundary
+## Chat-session lifecycle contract
 
 ```text
-- A temporary fake framework package exposes create_text_chat_session from framework/__init__.py.
-- The fake session writes only under pytest tmp_path and returns deterministic text.
-- The fallback test imports app.api.advice only after replacing default persistence stores, so backend/local_data is not created.
-- Voice artifact tests use a temporary VoiceOutputArtifactStore root.
-- Dummy MP3 bytes are not real synthesized audio and are never committed outside the test source.
+- TTL is measured from the last successful create, get, or message operation.
+- Expired sessions are removed lazily before create/get/message operations and by cleanup().
+- Capacity eviction removes the least-recently-used session before a new session is stored.
+- Successful get and message operations refresh recency.
+- Expired or evicted sessions preserve the existing 404 Chat session not found API behavior.
+- ChatSessionResponse and ChatMessageResponse remain unchanged.
+```
+
+## TTS-artifact lifecycle contract
+
+```text
+- Public artifact TTL is measured from DRC publication time, stored in file mtime.
+- Resolving an artifact does not extend its lifetime.
+- Staging leftovers and public artifacts receive lazy TTL/count cleanup.
+- framework_artifact_dir reserves capacity for the next generated staging file.
+- Public capacity cleanup retains the newly published artifact and removes older files first.
+- Cleanup operates only on direct regular files under managed staging/public directories.
+- Symlinks are not followed or deleted by cleanup and are never served as artifacts.
+- Expired or evicted artifacts preserve the existing 404 voice artifact behavior.
+- The opaque /demo/voice-output/audio/<artifact-id> URL contract remains unchanged.
 ```
 
 ## Completion requirements
 
 ```text
-- FrameworkConversationEngine calls the public facade and returns engine=framework.
-- framework_preset, framework_character, and framework_character_source remain visible and correct.
-- Empty framework responses raise FrameworkEngineError.
-- Framework failure returns engine=framework_fallback without claiming framework/provider success.
-- Managed staging MP3 publication returns a 32-character opaque artifact ID and root-relative URL.
-- Published artifact resolution remains within the managed public directory.
-- Outside files, unsupported/mismatched formats, traversal strings, and malformed IDs are rejected.
-- The normal suite does not create backend/local_data.
-- M-5 through M-9 remain PLANNED.
-- compileall, M-1 through M-4 checks, backend pytest, and flutter test pass.
+- AppConfig exposes all four bounded lifecycle settings and load_config parses them safely.
+- backend/.env.example and mock_safe.env document the same bounded defaults.
+- PostAdviceChatService implements idle expiry, LRU capacity, explicit cleanup, and deterministic clock injection.
+- VoiceOutputArtifactStore implements publish-time TTL, staging/public cleanup, capacity limits, and deterministic clock injection.
+- VoiceOutputDemoService passes active AppConfig and the audio resolver preserves its no-argument store construction; both resolve lifecycle settings through VoiceOutputArtifactStore.
+- Tests verify chat TTL refresh, expiry, LRU eviction, cleanup, and unchanged 404 behavior.
+- Tests verify TTS expiry, count eviction, staging cleanup, and existing unsafe-path rejection.
+- M-6 through M-9 remain PLANNED.
+- Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
+- python -m compileall -q backend scripts passes.
+- M-1 through M-5 checks pass.
+- python -m pytest -q backend/tests passes.
+- flutter test passes from app/.
 - The operator reviews the diff and approves the small commit.
 ```
 
-M-4 must remain `CURRENT / NOT_COMPLETED` until all checks and final operator approval complete. M-4 does not release v2.0.1.
+M-5 was accepted on 2026-07-22 after compileall, M-1 through M-5 checks, 26 backend pytest tests, 39 Flutter tests, diff review, and operator approval passed. M-5 did not release v2.0.1.
 
 ---
 
 # Planned queue
-
-## M-5 — Bound temporary chat sessions and TTS artifacts
-
-Status: PLANNED
-
-```text
-- Define capacity and expiry behavior.
-- Add deterministic cleanup tests.
-- Preserve current API compatibility where possible.
-```
 
 ## M-6 — Make Web CORS origins configurable
 

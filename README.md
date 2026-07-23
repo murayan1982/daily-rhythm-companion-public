@@ -7,7 +7,7 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: M-4 Framework fallback and voice artifact safety regression
+Current small commit: none (M-5 accepted; M-6 planned)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -48,18 +48,19 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 through M-3 are complete. M-4 is the current small commit and extends the normal credential-free regression suite to the configured Framework advice boundary and DRC-managed voice artifact safety. Backend runtime behavior is unchanged.
+M-1 through M-5 are complete. No small commit is CURRENT; M-6 remains PLANNED. M-5 added bounded lifecycle behavior to process-local post-advice chat sessions and DRC-managed TTS artifacts while preserving current API models and not-found responses.
 
-M-4 regression ownership:
+M-5 lifecycle ownership:
 
 ```text
-Framework success: temporary fake framework package using the public create_text_chat_session boundary
-Framework failure: visible framework_fallback source metadata
-Voice artifact safety: temporary managed staging/public directories, opaque MP3 URL, and unsafe-path rejection
-Excluded from M-4: real Framework checkout, provider credentials, network calls, real TTS, lifecycle cleanup, and release work
+Post-advice chat: 30-minute idle TTL, maximum 100 sessions, least-recently-used eviction
+Voice artifacts: 24-hour publish-time TTL, maximum 100 staging/public files, lazy cleanup
+Configuration: positive-integer environment overrides with bounded safe defaults
+Compatibility: unchanged chat models/routes, opaque audio URL, and existing 404 behavior
+Excluded from M-5: real providers, background workers, cleanup APIs, Flutter changes, and release work
 ```
 
-Install and run the current M-4 checks with:
+Install and run the accepted M-5 checks with:
 
 ```powershell
 python -m pip install -r backend/requirements-dev.txt
@@ -68,6 +69,7 @@ python scripts\check_v20x_maintenance_baseline.py
 python scripts\check_v20x_application_version_metadata.py
 python scripts\check_v20x_backend_mock_safe_regression.py
 python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
+python scripts\check_v20x_temporary_lifecycle_limits.py
 python -m pytest -q backend/tests
 
 cd app

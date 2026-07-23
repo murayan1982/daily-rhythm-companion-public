@@ -10,11 +10,11 @@ Current patch source and small commit:
 
 ```text
 v2.0.1
-M-4  CURRENT / NOT_COMPLETED
-test: cover Framework fallback and voice artifact safety
+M-5  COMPLETED / ACCEPTED
+fix/test: bound temporary chat sessions and TTS artifacts
 ```
 
-M-1 through M-3 are completed. M-4 adds credential-free regression coverage for configured Framework advice success/fallback and the DRC-managed voice artifact boundary.
+M-1 through M-5 are completed. No small commit is currently active; M-6 remains PLANNED. M-5 added credential-free runtime regression coverage and bounded lazy cleanup for process-local post-advice chat sessions and DRC-managed TTS artifacts.
 
 Install the development test dependencies and run the current checks from the repository root:
 
@@ -25,6 +25,7 @@ python scripts\check_v20x_maintenance_baseline.py
 python scripts\check_v20x_application_version_metadata.py
 python scripts\check_v20x_backend_mock_safe_regression.py
 python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
+python scripts\check_v20x_temporary_lifecycle_limits.py
 python -m pytest -q backend/tests
 
 cd app
@@ -32,21 +33,21 @@ flutter test
 cd ..
 ```
 
-The M-4 regression boundary verifies:
+The accepted M-5 regression boundary verifies:
 
 ```text
-- a temporary fake Framework public package returns deterministic configured advice
-- Framework source and character-mapping metadata remain visible
-- empty Framework responses fail safely
-- FrameworkEngineError becomes explicit framework_fallback metadata
-- managed staging MP3 files move behind opaque root-relative URLs
-- outside paths, unsupported formats, traversal, and malformed IDs are rejected
-- tests use pytest tmp_path and do not create backend/local_data
-- backend runtime implementation remains unchanged
-- M-5 through M-9 remain PLANNED
+- safe positive-integer lifecycle defaults and environment overrides
+- chat idle-TTL refresh, expiry, explicit cleanup, and LRU capacity eviction
+- unchanged chat-session 404 behavior after expiry or eviction
+- TTS publish-time expiry without lifetime refresh on resolve
+- oldest-first public artifact capacity eviction
+- staging leftover TTL/count cleanup
+- retained opaque URL, managed-path, format, traversal, and malformed-ID safety
+- tests use injected clocks and pytest tmp_path without backend/local_data
+- M-6 through M-9 remain PLANNED
 ```
 
-M-4 does not use a real Framework checkout, call external providers, access OAuth credentials, execute real health APIs, synthesize real audio, start a browser, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
+M-5 does not use a real Framework checkout, call external providers, access OAuth credentials, execute real health APIs, synthesize real audio, add a background worker or cleanup endpoint, change Flutter behavior, build a release ZIP, create a tag, publish v2.0.1, or mark later maintenance items complete.
 
 Historical v2.0.0 release-evidence validators remain available for the released/tagged surface. They may intentionally pin v2.0.0 metadata and are not the active current-main regression suite.
 
