@@ -19,16 +19,18 @@ class FitbitConnectResponse {
 
   String get displayMessage {
     if (ready && connectUrl != null && connectUrl!.isNotEmpty) {
-      return 'ヘルスデータ連携の認証URLを準備しました。';
+      return '互換用ウェアラブル認証URLを準備しました。'
+          '実連携や実睡眠データ取得の確認完了を意味しません。';
     }
 
     if (message.contains('not available yet') ||
         message.contains('not configured')) {
-      return 'ヘルスデータ連携はまだ利用できません。現在はサンプルデータまたは未取得状態で確認できます。';
+      return '互換用ウェアラブル認証経路はまだ利用できません。'
+          '現在は設定済みの睡眠データ経路またはサンプルデータで確認できます。';
     }
 
     if (message.trim().isEmpty) {
-      return 'ヘルスデータ連携の準備状態を確認できませんでした。';
+      return '互換用ウェアラブル認証経路の準備状態を確認できませんでした。';
     }
 
     return message;

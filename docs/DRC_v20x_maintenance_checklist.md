@@ -2,7 +2,7 @@
 
 Updated: 2026-07-23
 Status: IN_PROGRESS
-Current small commit: none (M-6 accepted; M-7 planned)
+Current small commit: none (M-7 accepted; M-8 planned)
 Expected first patch release: v2.0.1
 
 ## Source-of-truth rule
@@ -469,7 +469,7 @@ release ZIP, tag, GitHub Release, or v2.0.1 publication
 - Explicit configured origins are accepted at the CORS boundary.
 - Unlisted origins are rejected at the preflight boundary.
 - backend/.env.example and mock_safe.env document the local-demo default.
-- M-7 through M-9 remain PLANNED.
+- At M-6 acceptance, M-7 through M-9 remained PLANNED.
 - Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
 - python -m compileall -q backend scripts passes.
 - M-1 through M-6 checks pass.
@@ -486,13 +486,92 @@ M-6 was accepted on 2026-07-23 after compileall, M-1 through M-6 checks, 31 back
 
 ## M-7 — Clarify Fitbit current-state contract
 
-Status: PLANNED
+Status: COMPLETED / ACCEPTED
+
+Commit title:
 
 ```text
-- Inventory real, legacy, stub, unavailable, and migration wording.
-- Do not claim real-use acceptance before explicit operator verification.
-- Define the handoff into the v2.1.0 Fitbit feature scope.
+docs/test: clarify Fitbit current-state contract
 ```
+
+### Purpose
+
+```text
+- Inventory recommended, stub, deprecated alias, legacy, unavailable, and migration roles from the actual implementation.
+- Keep retained Fitbit source boundaries distinct from configured real-use acceptance.
+- Prevent local token-like data or OAuth URL preparation from appearing as verified connection success in Flutter presentation.
+- Add mock-safe backend and Flutter regression coverage.
+- Define the handoff into the v2.1.0 Fitbit completion scope.
+```
+
+### Change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+backend/tests/test_fitbit_current_state_contract.py
+app/lib/models/fitbit_status.dart
+app/lib/models/fitbit_connect_response.dart
+app/test/fitbit_current_state_contract_test.dart
+docs/fitbit_integration_plan.md
+docs/legacy_fitbit_cleanup_plan.md
+docs/v20x_fitbit_current_state_contract.md
+docs/DRC_v20x_maintenance_checklist.md
+scripts/check_legacy_fitbit_boundary.py
+scripts/check_v20x_maintenance_baseline.py
+scripts/check_v20x_application_version_metadata.py
+scripts/check_v20x_backend_mock_safe_regression.py
+scripts/check_v20x_framework_fallback_voice_artifact_regression.py
+scripts/check_v20x_temporary_lifecycle_limits.py
+scripts/check_v20x_web_cors_origins.py
+scripts/check_v20x_fitbit_current_state_contract.py
+```
+
+### Explicit non-change surface
+
+```text
+docs/DRC_v200_goal_checklist_small_commit.md
+release_notes/v2.0.0.md
+/fitbit/status, /fitbit/connect, and /fitbit/callback route shapes
+Fitbit response-model fields
+OAuth state, token exchange, refresh, token storage, sleep API, and normalization logic
+Google Health behavior accepted in v2.0.0
+real Fitbit/provider execution or private operator evidence
+release ZIP, tag, GitHub Release, or v2.0.1 publication
+```
+
+### Current implementation contract
+
+```text
+- mock is the credential-free default.
+- wearable_stub is the recommended deterministic wearable-shaped sample.
+- fitbit_stub is a deprecated compatibility alias for wearable_stub behavior.
+- fitbit is a retained legacy migration/reference provider.
+- /fitbit/status connected=true means local credentials and token-like fields were detected; it does not prove live token validity or real sleep retrieval.
+- /fitbit/connect ready=true means an authorization URL was prepared; it does not prove authorization, token exchange, connection, or sleep retrieval.
+- Flutter presents the legacy connected state as local-token detection / unverified, not an unqualified connected or available state.
+- Real Fitbit completion and configured operator acceptance remain v2.1.0 work.
+```
+
+### Completion requirements
+
+```text
+- The real / legacy / stub / unavailable / migration distinctions are documented from inspected source.
+- Existing route and response-model compatibility is preserved.
+- Backend tests remain credential-free, network-free, and independent from backend/local_data.
+- Flutter tests verify conservative legacy status and authorization-URL wording.
+- M-8 and M-9 remain PLANNED.
+- Historical v2.0.0 checklist and release-note normalized content hashes remain unchanged.
+- python -m compileall -q backend scripts passes.
+- M-1 through M-7 checks pass.
+- python -m pytest -q backend/tests passes.
+- flutter test passes from app/.
+- The operator reviews the diff and approves the small commit.
+```
+
+M-7 was accepted on 2026-07-23 after compileall, M-1 through M-7 checks, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. Source-tree checks and mock-safe tests still do not count as configured real Fitbit execution evidence, and M-7 did not release v2.0.1.
 
 ## M-8 — Add aggregate maintenance readiness
 

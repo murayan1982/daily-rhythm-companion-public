@@ -7,7 +7,7 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released baseline: v2.0.0 (**RELEASED**)
 Current maintenance line: v2.0.x
 Current patch source version: v2.0.1
-Current small commit: none (M-6 accepted; M-7 planned)
+Current small commit: none (M-7 accepted; M-8 planned)
 Next feature release: v2.1.0
 Strategic target: v3.0.0
 
@@ -48,7 +48,22 @@ The active post-release source of truth is:
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
 
-M-1 through M-6 are complete and accepted. No small commit is currently active; M-7 remains PLANNED. M-6 made Web CORS origins configurable while preserving the released local-demo behavior by default.
+M-1 through M-7 are complete and accepted. No small commit is currently active; M-8 remains PLANNED. M-7 clarified the retained Fitbit compatibility boundary without claiming configured real-use success.
+
+M-7 accepted contract:
+
+```text
+mock: credential-free default
+wearable_stub: recommended deterministic wearable-shaped sample
+fitbit_stub: deprecated compatibility alias
+fitbit: retained legacy migration/reference provider
+/fitbit/status connected=true: local credentials and token-like fields detected, not live validation
+/fitbit/connect ready=true: authorization URL prepared, not connection success
+real Fitbit operator acceptance: deferred to v2.1.0
+M-7 acceptance: compileall, M-1 through M-7 checks, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed
+```
+
+See [`docs/v20x_fitbit_current_state_contract.md`](docs/v20x_fitbit_current_state_contract.md).
 
 M-6 accepted contract:
 
@@ -60,7 +75,7 @@ Compatibility: existing routes, response models, Flutter behavior, and v2.0.0 hi
 Excluded from M-6: production hosting claims, authentication, proxy policy, TLS, provider execution, and release work
 ```
 
-Install and run the accepted M-6 checks with:
+Install and run the accepted M-7 checks with:
 
 ```powershell
 python -m pip install -r backend/requirements-dev.txt
@@ -71,6 +86,7 @@ python scripts\check_v20x_backend_mock_safe_regression.py
 python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python scripts\check_v20x_temporary_lifecycle_limits.py
 python scripts\check_v20x_web_cors_origins.py
+python scripts\check_v20x_fitbit_current_state_contract.py
 python -m pytest -q backend/tests
 
 cd app

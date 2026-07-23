@@ -1,6 +1,8 @@
 # Daily Rhythm Companion v0.17.0 Day2
 # Legacy Fitbit Cleanup Plan
 
+> v2.0.x maintenance note (2026-07-23): Google Health real sleep display was accepted in v2.0.0, but compatibility Fitbit routes and providers remain retained for backward compatibility. M-7 clarified and accepted their current maintenance state in `docs/v20x_fitbit_current_state_contract.md`; removal or real Fitbit completion is deferred to an explicit v2.1.0 scope.
+
 ## Purpose
 
 Daily Rhythm Companion is moving the public wearable direction away from legacy Fitbit Web API integration and toward Google Health / future wearable provider boundaries.

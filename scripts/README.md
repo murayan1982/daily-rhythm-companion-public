@@ -10,11 +10,11 @@ Current patch source and small commit:
 
 ```text
 v2.0.1
-M-6  COMPLETED / ACCEPTED
-fix/test: make Web CORS origins configurable
+M-7  COMPLETED / ACCEPTED
+docs/test: clarify Fitbit current-state contract
 ```
 
-M-1 through M-6 are completed and accepted. No small commit is currently active; M-7 remains PLANNED. M-6 preserves `WEB_CORS_ORIGINS=*` for local demos and allows explicit comma- or space-separated origin restrictions.
+M-1 through M-7 are completed and accepted. No small commit is currently active; M-8 remains PLANNED. M-7 fixes the mock-safe current-state contract for retained Fitbit compatibility surfaces without claiming configured real-use success.
 
 Install the development test dependencies and run the current checks from the repository root:
 
@@ -27,6 +27,7 @@ python scripts\check_v20x_backend_mock_safe_regression.py
 python scripts\check_v20x_framework_fallback_voice_artifact_regression.py
 python scripts\check_v20x_temporary_lifecycle_limits.py
 python scripts\check_v20x_web_cors_origins.py
+python scripts\check_v20x_fitbit_current_state_contract.py
 python -m pytest -q backend/tests
 
 cd app
@@ -44,8 +45,22 @@ The accepted M-6 regression boundary verifies:
 - allowed preflight origins succeed and unlisted origins are rejected
 - credentials remain disabled and existing methods/headers remain wildcarded
 - tests remain credential-free and do not import the full production app
-- M-7 through M-9 remain PLANNED
+- At M-6 acceptance, M-7 through M-9 remained PLANNED
 ```
+
+The accepted M-7 regression boundary verifies:
+
+```text
+- provider roles remain explicit: mock, wearable_stub, fitbit_stub, and legacy fitbit
+- local token-like data does not become verified real-use wording
+- authorization URL readiness does not become connection-success wording
+- existing Fitbit routes and response fields remain compatible
+- backend tests use fakes and never access backend/local_data or the network
+- Flutter presentation tests remain deterministic
+- M-8 and M-9 remain PLANNED
+```
+
+M-7 was accepted on 2026-07-23 after compileall, M-1 through M-7 checks, 38 backend pytest tests, 43 Flutter tests, diff review, and operator approval passed. M-7 did not release v2.0.1.
 
 M-6 does not add authentication, production hosting policy, reverse-proxy configuration, TLS handling, provider calls, Flutter changes, release ZIP work, a tag, or a v2.0.1 release. M-6 was accepted on 2026-07-23 after compileall, M-1 through M-6 checks, 31 backend pytest tests, 39 Flutter tests, diff review, and operator approval passed.
 

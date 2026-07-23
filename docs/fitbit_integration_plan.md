@@ -1,5 +1,8 @@
 # Fitbit Integration Plan
 
+
+> v2.0.x maintenance note (2026-07-23): this document contains historical implementation chronology. The active Fitbit status contract is `docs/v20x_fitbit_current_state_contract.md`. Retained Fitbit OAuth/token/read code is a legacy migration/reference boundary and has not completed configured real-use operator acceptance.
+
 ## Purpose
 
 Daily Rhythm Companion will use sleep data as one of the main context sources for daily advice generation.

@@ -1,8 +1,9 @@
 """Check that legacy Fitbit wording does not leak into public-facing paths.
 
 This script intentionally allows the legacy Fitbit implementation itself.
-Daily Rhythm Companion still keeps that code as a migration/reference boundary
-until the Google Health sleep summary path is verified.
+Daily Rhythm Companion keeps that code as a compatibility migration/reference
+boundary after the v2.0.0 Google Health acceptance. Real Fitbit completion and
+any later removal decision remain explicit v2.1.0 work.
 
 Run from the repository root:
 
@@ -54,6 +55,7 @@ ALLOWED_LEGACY_PATHS = {
     "backend/app/services/sleep_providers/fitbit.py",
     "backend/app/services/sleep_providers/fitbit_stub.py",
     "docs/fitbit_integration_plan.md",
+    "docs/v20x_fitbit_current_state_contract.md",
 }
 
 ALLOWED_LEGACY_PREFIXES = (
