@@ -1,3 +1,9 @@
+# Correction notice — legacy execution retired
+
+The real-execution direction in this accepted W-5a record is superseded by W-5b1/W-5b21. Google Health API is the configured-real path. Do not enter new Fitbit client credentials, open legacy Fitbit OAuth, or run a legacy provider request. `-ValidateOnly` remains available only to confirm that the retired profile cannot start execution.
+
+See `docs/v210_google_health_migration_audit.md`.
+
 # DRC v2.1.0 W-5 Fitbit real operator runbook
 
 Updated: 2026-07-24
@@ -6,7 +12,7 @@ Updated: 2026-07-24
 
 ```text
 W-5a: COMPLETED / ACCEPTED
-W-5b: CURRENT / NOT_COMPLETED
+W-5b1/W-5b2: CURRENT / NOT_COMPLETED
 parent W-5: CURRENT / NOT_COMPLETED
 real operator execution: NOT_PERFORMED
 smartphone Web verification: NOT_PERFORMED
@@ -14,7 +20,7 @@ smartphone Web verification: NOT_PERFORMED
 
 W-5a completed and accepted the public-safe operator contract. It did not perform OAuth,
 token exchange/refresh, Fitbit sleep retrieval, or smartphone Web acceptance.
-Those are the current W-5b operator work.
+Those are the current W-5b1/W-5b2 operator work.
 
 ## Safety boundary
 
@@ -141,10 +147,10 @@ From a second private terminal:
 ```powershell
 python scripts\smoke_v210_fitbit_real_operator_execution.py `
   --base-url http://127.0.0.1:8000 `
-  --allow-real-request
+  --allow-real-request (retired; always blocked)
 ```
 
-The command intentionally fails without `--allow-real-request`.
+The command intentionally fails without `--allow-real-request (retired; always blocked)`.
 
 Required safe markers for an API-success checkpoint:
 
@@ -185,7 +191,7 @@ Fitbit data. Do not include the OAuth URL, callback URL, token data, exact sleep
 values, private path, or LAN address in a public screenshot.
 
 Store any raw screenshot only under ignored `operator_evidence/` or another
-private location. W-5b will define and validate the minimal public-safe marker
+private location. W-5b1/W-5b2 will define and validate the minimal public-safe marker
 record after the actual run.
 
 ## 8. Failure classification
@@ -221,7 +227,7 @@ v2.0.x guards, 92 backend tests, 57 Flutter tests, diff review, and operator
 approval passed. Real operator execution remained false. W-5 remains
 `CURRENT / NOT_COMPLETED`.
 
-W-5b is CURRENT / NOT_COMPLETED and requires all of the following before W-5 can be accepted:
+W-5b1/W-5b2 is CURRENT / NOT_COMPLETED and requires all of the following before W-5 can be accepted:
 
 ```text
 explicit private env validation

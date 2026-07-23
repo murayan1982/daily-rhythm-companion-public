@@ -161,3 +161,7 @@ release records changed: false
 ```
 
 W-4b and parent phase W-4 were completed and accepted on 2026-07-23. W-5 is now `CURRENT / NOT_COMPLETED`; C-1 and later phases remain `PLANNED`. This mock-safe UI acceptance does not prove configured real Fitbit acceptance or smartphone Web real-provider acceptance.
+
+## W-5b1 correction
+
+Flutter now reads the backend `provider_options` field (the previous `available_providers` key was inconsistent), labels legacy Fitbit as migration-reference only, and removes the normal-user legacy OAuth action.

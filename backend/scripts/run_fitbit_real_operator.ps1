@@ -62,7 +62,7 @@ foreach ($RawLine in [System.IO.File]::ReadAllLines($ResolvedEnvFile)) {
 $RequiredExactValues = @{
     "CONVERSATION_ENGINE" = "mock"
     "SLEEP_PROVIDER" = "fitbit"
-    "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE" = "1"
+    "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE" = "0"
     "FITBIT_DEV_SAVE_DUMMY_TOKEN" = "0"
 }
 
@@ -101,13 +101,4 @@ if ($Reload) {
     $UvicornArgs += "--reload"
 }
 
-Write-Host "[fitbit-operator-run] Starting actual DRC backend API."
-Write-Host "[fitbit-operator-run] OAuth URLs, state, tokens, private network details, and raw payloads must remain local-only."
-
-Push-Location $BackendRoot
-try {
-    & python @UvicornArgs
-    exit $LASTEXITCODE
-} finally {
-    Pop-Location
-}
+throw "Legacy Fitbit Web API execution is retired. Use the Google Health API operator path."

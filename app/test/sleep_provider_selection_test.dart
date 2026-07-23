@@ -11,7 +11,7 @@ void main() {
       'configured_provider_supported': true,
       'selection_mode': 'backend_config',
       'change_requires_backend_restart': true,
-      'available_providers': [
+      'provider_options': [
         {
           'provider': 'google_health',
           'display_label': 'Google Health',
@@ -33,31 +33,31 @@ void main() {
     expect(status.changeRequiresBackendRestart, isTrue);
   });
 
-  test('keeps Fitbit real operator verification visible', () {
+  test('marks legacy Fitbit as migration reference', () {
     final status = SleepProviderSelectionStatus.fromJson({
       'configured_provider': 'fitbit',
-      'configured_provider_label': 'Fitbit（実利用検証待ち）',
-      'configured_provider_role': 'legacy_real_provider',
+      'configured_provider_label': 'Fitbit（旧Web API・移行参照）',
+      'configured_provider_role': 'legacy_migration_reference',
       'configured_provider_supported': true,
       'selection_mode': 'backend_config',
       'change_requires_backend_restart': true,
-      'available_providers': [
+      'provider_options': [
         {
           'provider': 'fitbit',
-          'display_label': 'Fitbit（実利用検証待ち）',
-          'role': 'legacy_real_provider',
+          'display_label': 'Fitbit（旧Web API・移行参照）',
+          'role': 'legacy_migration_reference',
           'deprecated': false,
           'alias_for': null,
-          'real_operator_verification_required': true,
+          'real_operator_verification_required': false,
         },
       ],
       'message': 'Selected by backend configuration.',
     });
 
     expect(status.isFitbit, isTrue);
-    expect(status.requiresRealOperatorVerification, isTrue);
-    expect(status.displayConfiguredState, '実利用検証待ち');
-    expect(status.configuredOption?.displayRole, '実利用検証待ち');
+    expect(status.requiresRealOperatorVerification, isFalse);
+    expect(status.displayConfiguredState, '移行参照のみ');
+    expect(status.configuredOption?.displayRole, '旧Web API・移行参照');
   });
 
   test('marks deprecated compatibility aliases conservatively', () {
@@ -66,7 +66,7 @@ void main() {
       'configured_provider_label': 'ウェアラブル連携サンプル（旧設定）',
       'configured_provider_role': 'deprecated_alias',
       'configured_provider_supported': true,
-      'available_providers': [
+      'provider_options': [
         {
           'provider': 'fitbit_stub',
           'display_label': 'ウェアラブル連携サンプル（旧設定）',
@@ -89,7 +89,7 @@ void main() {
       'configured_provider_label': '未対応のsleep provider設定',
       'configured_provider_role': 'unsupported',
       'configured_provider_supported': false,
-      'available_providers': const [],
+      'provider_options': const [],
       'message': '',
     });
 

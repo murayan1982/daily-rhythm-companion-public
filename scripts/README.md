@@ -15,13 +15,13 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: W-5b CURRENT / NOT_COMPLETED
+current small commit: W-5b1 CURRENT / NOT_COMPLETED
 parent phase: W-5 CURRENT / NOT_COMPLETED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b is current; parent W-5 remains not completed.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 is current; parent W-5 remains not completed, and W-5b2 is planned.
 
 Run the W-1 checks from the repository root:
 
@@ -109,7 +109,7 @@ collect smartphone Web evidence, or build a release artifact.
 
 W-3 is `COMPLETED / ACCEPTED`. Acceptance recorded 84 backend tests and 50
 Flutter tests, with real Fitbit execution remaining false. W-4 is also
-`COMPLETED / ACCEPTED`; W-5a is completed and accepted; W-5b is current and not completed, while C-1 through R-1 remain planned.
+`COMPLETED / ACCEPTED`; W-5a is completed and accepted; W-5b1 is current and not completed; W-5b2 is planned, while C-1 through R-1 remain planned.
 
 
 ## v2.1.0 W-4a sleep-provider selection status check
@@ -4250,7 +4250,7 @@ powershell -ExecutionPolicy Bypass -File `
   -ValidateOnly
 ```
 
-Actual backend verification is now the current W-5b operator work and refuses to
+Legacy Fitbit backend execution is retired in W-5b1 and refuses to
 run without consent:
 
 ```powershell
@@ -4259,5 +4259,15 @@ python scripts\smoke_v210_fitbit_real_operator_execution.py `
   --allow-real-request
 ```
 
-W-5a acceptance did not perform OAuth, print token/env values, call Fitbit, verify
+W-5a acceptance did not perform OAuth, print token/env values, call Fitbit, or verify
 smartphone Web, accept W-5, build a release ZIP, or change release records.
+
+
+## v2.1.0 W-5b1 Google Health migration audit
+
+```powershell
+python scripts\check_v210_google_health_migration_audit.py
+python -m pytest -q backend/tests/test_google_health_v4_migration_contract.py
+```
+
+This gate is mock-safe, makes no OAuth or provider request, and confirms that legacy Fitbit execution is blocked.

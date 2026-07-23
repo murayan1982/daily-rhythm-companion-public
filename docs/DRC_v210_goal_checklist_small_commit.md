@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: W-5b — Actual OAuth/token/sleep/smartphone Web verification
+Current small commit: W-5b1 — Google Health API migration audit and legacy Fitbit execution retirement
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -70,9 +70,10 @@ W-2  COMPLETED / ACCEPTED   Fitbit token/status/reconnect hardening
 W-3  COMPLETED / ACCEPTED   Fitbit real sleep normalization and API regression tests
 W-4  COMPLETED / ACCEPTED   Sleep-provider selection, source-label UI, and simplified
                               Google Health user UX with retained operator diagnostics
-W-5  CURRENT / NOT_COMPLETED  Configured real Fitbit operator verification
+W-5  CURRENT / NOT_COMPLETED  Wearable migration correction and configured Google Health verification
   W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
-  W-5b  CURRENT / NOT_COMPLETED  Actual OAuth/token/sleep/smartphone Web verification
+  W-5b1  CURRENT / NOT_COMPLETED  Google Health API migration audit and legacy Fitbit execution retirement
+  W-5b2  PLANNED                Configured Google Health API operator verification
 C-1  PLANNED                  Post-advice chat lifecycle and UI-state hardening
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
@@ -80,7 +81,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-4 and W-5a are completed and accepted. W-5b is current, parent W-5 remains not completed, and C-1 through R-1 remain planned.
+W-1 through W-4 and W-5a are completed and accepted. W-5b1 is current, parent W-5 remains not completed, W-5b2 is planned, and C-1 through R-1 remain planned.
 
 ---
 
@@ -657,109 +658,76 @@ and smartphone Web real-provider evidence remain unperformed W-5 work.
 
 ---
 
-# W-5 — Configured real Fitbit operator verification
+# W-5 — Wearable migration correction and configured Google Health verification
 
 Status: CURRENT / NOT_COMPLETED
 
 ## W-5 split
 
 ```text
-W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
-W-5b  CURRENT / NOT_COMPLETED  Actual OAuth/token/sleep/smartphone Web verification
+W-5a   COMPLETED / ACCEPTED   Historical Fitbit operator contract and preflight; no real execution
+W-5b1  CURRENT / NOT_COMPLETED  Google Health API migration audit and legacy Fitbit execution retirement
+W-5b2  PLANNED                Configured Google Health API operator verification for Fitbit-origin sleep and smartphone Web evidence
 ```
 
-## W-5a purpose
+## W-5a accepted historical record
+
+W-5a was completed and accepted on 2026-07-24 at implementation commit `7f84980`. It established a public-safe preflight and operator boundary but performed no OAuth or provider request. After the official migration direction was rechecked, its legacy real-execution direction was superseded. The accepted history remains; new legacy Fitbit execution is now blocked.
+
+## W-5b1 purpose
 
 ```text
-- Add a dedicated ignored Fitbit operator env template.
-- Add a credential-free/network-free default and example preflight.
-- Add a private env validator that prints key names and safe markers only.
-- Add a guarded PowerShell launcher with backend/.env override disabled and -ValidateOnly.
-- Add an explicit --allow-real-request backend smoke without printing private sleep values.
-- Define the later W-5b OAuth/token/sleep/smartphone Web and private-evidence procedure.
+- Record the official Google Health API migration direction.
+- Audit the existing google_health v4 endpoint, scope, filter, and sleep schema.
+- Add mock-safe Google Health v4 contract tests.
+- Fix Flutter parsing from available_providers to the backend provider_options field.
+- Relabel fitbit as a legacy migration reference and remove normal-user legacy OAuth actions.
+- Hard-stop the legacy Fitbit runner and execution smoke.
+- Keep real Google Health OAuth/API and smartphone Web evidence in W-5b2.
 ```
 
-Detailed contract: `docs/v210_fitbit_real_operator_runbook.md`
+Detailed contract: `docs/v210_google_health_migration_audit.md`
 
-## W-5a change surface
+## W-5b1 change surface
 
 ```text
+backend/app/services/sleep_provider_selection_service.py
 backend/env_profiles/fitbit_real_operator.env.example
 backend/scripts/run_fitbit_real_operator.ps1
-docs/v210_fitbit_real_operator_runbook.md
-scripts/smoke_v210_fitbit_real_operator_preflight.py
+backend/tests/test_sleep_provider_selection_contract.py
+backend/tests/test_google_health_v4_migration_contract.py
+app/lib/models/sleep_provider_selection.dart
+app/lib/screens/home_screen.dart
+app/test/sleep_provider_selection_test.dart
+app/test/widget_test.dart
+docs/v210_google_health_migration_audit.md
+scripts/check_v210_google_health_migration_audit.py
 scripts/smoke_v210_fitbit_real_operator_execution.py
-scripts/check_v210_fitbit_real_operator_contract.py
 README.md
 roadmap.md
 tasklist.md
 scripts/README.md
-docs/DRC_v210_goal_checklist_small_commit.md
-scripts/check_v210_fitbit_current_behavior_inventory.py
-scripts/check_v210_fitbit_token_status_reconnect.py
-scripts/check_v210_fitbit_real_sleep_normalization.py
-scripts/check_v210_sleep_provider_selection_source_labels.py
-scripts/check_v210_flutter_sleep_provider_source_ui.py
+existing v2.1.0 check scripts
 ```
 
-## W-5a explicit non-change surface
+## W-5b1 mock-safe boundary
 
 ```text
-backend/app/**
-backend/tests/**
-app/lib/**
-app/test/**
-app/pubspec.yaml
-backend/.env.example
-post-advice chat, TTS, motion, and character runtime
-version metadata
-v2.0.0 / v2.0.1 release records, tags, GitHub Releases, and fixed ZIPs
+- no OAuth browser, credential read, token exchange/refresh, or provider network request;
+- synthetic public-safe Google Health v4 payloads only;
+- legacy Fitbit execution entry points must return non-zero before network;
+- no exact private sleep values, raw payloads, private paths, or screenshots;
+- W-5b2 and C-1 onward remain not completed.
 ```
 
-## W-5a mock-safe verification boundary
+## W-5b2 planned boundary
 
 ```text
-- default/example preflight does not read private env or backend/local_data;
-- private env validation prints key names and status only, never values or paths;
-- real execution smoke refuses to run without --allow-real-request;
-- source-tree guard verifies accepted W-2/W-3/W-4 runtime through newline-normalized hashes;
-- full backend pytest and Flutter test remain required for acceptance;
-- real OAuth, token exchange/refresh, Fitbit API, and smartphone Web are not executed.
+- use the ignored Google Health operator environment and Google OAuth 2.0;
+- verify configured Google Health v4 sleep retrieval, including Fitbit-origin data when available;
+- confirm normalized SleepSummary and W-4 smartphone Web provider/source/data-kind display;
+- retain private evidence outside Git and record public-safe markers only.
 ```
-
-## W-5a accepted completion record
-
-W-5a was completed and accepted on 2026-07-24. The accepted implementation commit is `7f84980`.
-
-```text
-compileall: passed
-default network-free preflight: passed
-example env preflight: passed
-W-1/W-2/W-3/W-4a/W-4b/W-5a checks: passed
-v2.0.x compatibility and maintenance guards: passed
-full backend pytest: 92 passed
-full Flutter test: 57 passed
-diff review: passed
-operator approval: passed
-real operator execution: false
-release records changed: false
-```
-
-W-5a acceptance validates only the public-safe operator contract and preflight. It does not prove OAuth, token exchange/refresh, Fitbit API success, real sleep normalization, or smartphone Web presentation.
-
-## W-5b current boundary
-
-```text
-- validate an ignored dedicated private env;
-- complete real OAuth and guarded token exchange/refresh;
-- retrieve real Fitbit sleep data;
-- confirm W-3 normalization into a real-data SleepSummary;
-- confirm W-4 configured provider/source/data-kind presentation on smartphone Web;
-- keep raw evidence under ignored private storage;
-- review only public-safe markers before accepting W-5.
-```
-
-W-5a acceptance does not complete W-5. W-5b is CURRENT / NOT_COMPLETED, and C-1 and later phases remain planned.
 
 ---
 

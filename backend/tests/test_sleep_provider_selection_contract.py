@@ -37,9 +37,9 @@ from app.services.sleep_provider_selection_service import (
         ),
         (
             "fitbit",
-            "Fitbit（実利用検証待ち）",
-            "legacy_real_provider",
-            True,
+            "Fitbit（旧Web API・移行参照）",
+            "legacy_migration_reference",
+            False,
         ),
     ],
 )
@@ -109,7 +109,7 @@ def test_sleep_provider_selection_endpoint_is_read_only_and_deterministic(
     payload = response.json()
     assert payload["configured_provider"] == "fitbit"
     assert payload["configured_provider_supported"] is True
-    assert payload["configured_provider_role"] == "legacy_real_provider"
+    assert payload["configured_provider_role"] == "legacy_migration_reference"
     assert payload["selection_mode"] == "backend_config"
     assert payload["change_requires_backend_restart"] is True
     assert [item["provider"] for item in payload["provider_options"]] == [
@@ -121,5 +121,5 @@ def test_sleep_provider_selection_endpoint_is_read_only_and_deterministic(
     ]
     assert payload["provider_options"][-1][
         "real_operator_verification_required"
-    ] is True
+    ] is False
     assert "SLEEP_PROVIDER" in payload["message"]

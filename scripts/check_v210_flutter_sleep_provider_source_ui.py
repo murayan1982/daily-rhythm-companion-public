@@ -24,8 +24,8 @@ ACCEPTED_BACKEND_HASHES = {
     "backend/app/main.py": "6ead9b1570b1453d7029496db3b554156b0e6752b1cb2369053e9341a81d3c27",
     "backend/app/api/sleep_provider_selection.py": "7f5569e46be04ca199233b5035b90c348348268618635656fe36b5d6b4e9805d",
     "backend/app/models/sleep_provider_selection.py": "b1fda1bfdf2755007f6dfc25e09dbef414d6b4529ef5faba948c835a9dfe46eb",
-    "backend/app/services/sleep_provider_selection_service.py": "f81ccc7b57ff99f15e3674c77b7409029afee41fc345896c3c6f2137d4ac5f9e",
-    "backend/tests/test_sleep_provider_selection_contract.py": "94af284f659fe746365108e272a67b2046ba1e52d5a9d312651842ff0e2f41c8",
+    "backend/app/services/sleep_provider_selection_service.py": "10904eadd11bf90409c9604cbaa7e1f3c6b19b3c43ffc5f78286d3a2ce58ddb5",
+    "backend/tests/test_sleep_provider_selection_contract.py": "b173c7a164b24a45e4f00276eb298c3effade8af82286d484c89326d248bc472",
     "backend/app/api/sleep.py": "80ea9be0988dee24492821990a039608be3ee7dc5a3179d758151461809e5c3a",
     "backend/app/models/sleep.py": "4fd063af3ff7cfb4f0ed1c26fe252ab60907622720081ce7cafdcb8296a72961",
     "backend/app/services/sleep_providers/factory.py": "b898031e0b499a00ff88e5355e3851b280436377d0d0f35263d68e481289c3e6",
@@ -98,7 +98,7 @@ def main() -> None:
     files = {relative: read(relative) for relative in W4B_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: W-5b", "W-5 current commit")
+    require(checklist, "Current small commit: W-5b1", "W-5 current commit")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
     require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5 current state")
     require(checklist, "W-4  COMPLETED / ACCEPTED", "W-4 parent state")
@@ -134,7 +134,7 @@ def main() -> None:
         "Google Health Operator Connection Details",
         "google-health-operator-details",
         "Fitbit Operator Status",
-        "受け入れ確認はW-5まで未完了",
+        "新しい実利用経路にはGoogle Health",
     ):
         require(home, marker, "W-4b Home UI")
     if "final fitbitStatus = await widget.apiClient.fetchFitbitStatus();" in home:
@@ -143,7 +143,7 @@ def main() -> None:
     model_tests = files["app/test/sleep_provider_selection_test.dart"]
     for marker in (
         "parses backend-owned provider selection metadata",
-        "keeps Fitbit real operator verification visible",
+        "marks legacy Fitbit as migration reference",
         "marks deprecated compatibility aliases conservatively",
         "reports unsupported selection without inventing availability",
     ):
@@ -154,7 +154,7 @@ def main() -> None:
         "Google Health user UX stays concise in sleep data source card",
         "Google Health operator details remain under advanced tools",
         "Mock provider stays credential-free and skips Fitbit status",
-        "Fitbit UI keeps real operator verification pending",
+        "Fitbit UI retires legacy OAuth guidance",
         "Mock provider must not query Fitbit status.",
     ):
         require(widget_tests, marker, "provider/source widget regression")
@@ -162,7 +162,7 @@ def main() -> None:
     contract = files["docs/v210_flutter_sleep_provider_source_ui.md"]
     require(contract, "Status: COMPLETED / ACCEPTED", "W-4b contract state")
     require(contract, "Parent phase: W-4 COMPLETED / ACCEPTED", "W-4 parent state")
-    require(contract, "configured real Fitbit operator verification in W-5", "W-5 boundary")
+    require(contract, "W-5b1 correction", "W-5 boundary")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
     assert_hashes(ACCEPTED_BACKEND_HASHES, "Accepted backend boundary")
@@ -172,7 +172,7 @@ def main() -> None:
 
     print("v210_flutter_sleep_provider_source_ui_status: completed-accepted")
     print("v210_flutter_sleep_provider_source_ui_completed_small_commit: W-4b")
-    print("v210_flutter_sleep_provider_source_ui_current_small_commit: W-5b")
+    print("v210_flutter_sleep_provider_source_ui_current_small_commit: W-5b1")
     print("v210_flutter_sleep_provider_source_ui_parent_phase: W-4-completed-accepted")
     print("v210_flutter_sleep_provider_source_ui_real_operator_execution: false")
     print("v210_flutter_sleep_provider_source_ui_release_records_changed: false")

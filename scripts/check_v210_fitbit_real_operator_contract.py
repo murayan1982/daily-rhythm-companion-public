@@ -32,10 +32,10 @@ ACCEPTED_RUNTIME_HASHES = {
     "backend/app/services/sleep_providers/fitbit.py": "41f48c65245515ac429ad4380f00052ca9010258782eb90e15e04dafc065f356",
     "app/lib/models/fitbit_status.dart": "3c06914f0eb992ae11fd7febf5589b5ffe44fd639d3c847d9fe26ec11b513814",
     "app/lib/models/fitbit_connect_response.dart": "b2f897316bb6dd52f271e994bc15c6ddb1096b4c5c6ca2f499cc9495de77ed1c",
-    "app/lib/models/sleep_provider_selection.dart": "6a72ec79eb35199858c62a505b510ebbc6c134cfb322b69e4f5f1916c2c36cf9",
+    "app/lib/models/sleep_provider_selection.dart": "3d25703232dbb34b22d9d876d97125695d3870c3448bfd47d5fe10b8581b0241",
     "app/lib/models/sleep_summary.dart": "f28173aeb89b996e284771243fe6cbd6e037098a634647b827ac096cef4d11e8",
     "app/lib/services/backend_api_client.dart": "8f790252327c65e7908bd37e13233e4ec5bee6a68b1f2e11b5f536750a82a362",
-    "app/lib/screens/home_screen.dart": "eee51b37081692a40b3c4e2b946ce21763fbebaedd112dc68057dc8ea022fbf5",
+    "app/lib/screens/home_screen.dart": "3933240c97ec55308342da4b84c8b5087b3eb78f674c7be03f93a0540195d950",
 }
 
 
@@ -91,19 +91,19 @@ def main() -> None:
         require(text, "W-5b", f"{label} W-5b boundary")
         require(text, "W-5", f"{label} parent W-5 state")
 
-    require(checklist, "Current small commit: W-5b", "current small commit")
+    require(checklist, "Current small commit: W-5b1", "current small commit")
     require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5b current state")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
     require(checklist, "W-5 state: CURRENT / NOT_COMPLETED", "parent W-5 state")
     require(checklist, "C-1  PLANNED", "later phase boundary")
-    require(roadmap, "Current small commit: W-5b", "roadmap current commit")
-    require(tasklist, "W-5b — Actual OAuth/token/sleep/smartphone Web verification", "tasklist current commit")
+    require(roadmap, "Current small commit: W-5b1", "roadmap current commit")
+    require(tasklist, "W-5b1 — Google Health API migration audit and legacy Fitbit execution retirement", "tasklist current commit")
 
     for fragment in (
         "FITBIT_CLIENT_ID=<fitbit-client-id>",
         "FITBIT_CLIENT_SECRET=<fitbit-client-secret>",
         "FITBIT_REDIRECT_URI=http://127.0.0.1:8000/fitbit/callback",
-        "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE=1",
+        "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE=0",
         "FITBIT_DEV_SAVE_DUMMY_TOKEN=0",
     ):
         require(env_example, fragment, "operator env template")
@@ -126,7 +126,7 @@ def main() -> None:
         "DRC_SKIP_BACKEND_DOTENV",
         "loaded_key_names",
         "token_file_exists",
-        "Starting actual DRC backend API",
+        "Legacy Fitbit Web API execution is retired",
     ):
         require(runner, fragment, "guarded PowerShell runner")
 
@@ -170,10 +170,8 @@ def main() -> None:
         valid_env.write_text(
             "CONVERSATION_ENGINE=mock\n"
             "SLEEP_PROVIDER=fitbit\n"
-            "FITBIT_CLIENT_ID=public-test-client-id\n"
-            "FITBIT_CLIENT_SECRET=public-test-client-secret\n"
             "FITBIT_REDIRECT_URI=http://127.0.0.1:8000/fitbit/callback\n"
-            "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE=1\n"
+            "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE=0\n"
             "FITBIT_DEV_SAVE_DUMMY_TOKEN=0\n"
             "FITBIT_OAUTH_STATE_TTL_SECONDS=600\n",
             encoding="utf-8",
@@ -186,7 +184,7 @@ def main() -> None:
         if strict_preflight.returncode != 0:
             raise AssertionError(strict_preflight.stdout + strict_preflight.stderr)
         require(strict_preflight.stdout, "env_file_status: accepted", "strict env validation")
-        for private_value in ("public-test-client-id", "public-test-client-secret", str(valid_env)):
+        for private_value in (str(valid_env),):
             if private_value in strict_preflight.stdout:
                 raise AssertionError("Strict preflight printed a private value or path")
 
@@ -215,7 +213,7 @@ def main() -> None:
         raise AssertionError("Real execution smoke ran without explicit opt-in")
     require(
         denied_execution.stdout,
-        "explicit --allow-real-request is required",
+        "legacy Fitbit Web API execution is retired; use Google Health API",
         "real execution opt-in guard",
     )
 
@@ -228,7 +226,7 @@ def main() -> None:
 
     print("v210_fitbit_real_operator_contract_status: completed-accepted")
     print("v210_fitbit_real_operator_contract_completed_small_commit: W-5a")
-    print("v210_fitbit_real_operator_contract_current_small_commit: W-5b")
+    print("v210_fitbit_real_operator_contract_current_small_commit: W-5b1")
     print("v210_fitbit_real_operator_contract_parent_phase: W-5-current-not-completed")
     print("v210_fitbit_real_operator_contract_mock_safe: True")
     print("v210_fitbit_real_operator_contract_real_operator_execution: False")

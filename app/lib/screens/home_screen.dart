@@ -1844,8 +1844,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFitbitUserSummary(BuildContext context) {
     final fitbitStatus = _fitbitStatus;
-    final fitbitConnectResponse = _fitbitConnectResponse;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1861,32 +1859,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         const SizedBox(height: 8),
         const Text(
-          '実OAuth・権限・実睡眠取得の受け入れ確認はW-5まで未完了です。',
+          'このproviderは旧Fitbit Web APIの移行参照です。新しい実利用経路にはGoogle Healthを使用してください。',
         ),
         const SizedBox(height: 8),
-        FilledButton.tonal(
-          onPressed: _isConnectingHealthData ? null : _connectHealthData,
-          child: Text(
-            _isConnectingHealthData ? '確認中...' : 'Fitbit接続を確認',
-          ),
+        const Text(
+          '旧Fitbit OAuthの新規接続や実行受け入れは行いません。',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        if (_isConnectingHealthData) ...[
-          const SizedBox(height: 8),
-          const LinearProgressIndicator(),
-        ],
-        if (fitbitConnectResponse != null) ...[
-          const SizedBox(height: 8),
-          Text(fitbitConnectResponse.displayMessage),
-          if (fitbitConnectResponse.ready &&
-              fitbitConnectResponse.connectUrl != null &&
-              fitbitConnectResponse.connectUrl!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            OutlinedButton(
-              onPressed: _openHealthDataConnectUrl,
-              child: const Text('認証ページを開く'),
-            ),
-          ],
-        ],
       ],
     );
   }

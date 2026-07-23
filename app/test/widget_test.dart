@@ -1130,7 +1130,7 @@ void main() {
     expect(find.text('Fitbit Operator Status'), findsNothing);
   });
 
-  testWidgets('Fitbit UI keeps real operator verification pending', (
+  testWidgets('Fitbit UI retires legacy OAuth guidance', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -1145,7 +1145,7 @@ void main() {
     expect(
       find.descendant(
         of: sourceSection,
-        matching: find.text('設定中のprovider: Fitbit（実利用検証待ち）'),
+        matching: find.text('設定中のprovider: Fitbit（旧Web API・移行参照）'),
       ),
       findsOneWidget,
     );
@@ -1159,7 +1159,7 @@ void main() {
     expect(
       find.descendant(
         of: sourceSection,
-        matching: find.textContaining('受け入れ確認はW-5まで未完了'),
+        matching: find.textContaining('新しい実利用経路にはGoogle Health'),
       ),
       findsOneWidget,
     );
@@ -1932,9 +1932,9 @@ class _FakeBackendApiClient extends BackendApiClient {
         ),
         SleepProviderOption(
           provider: 'fitbit',
-          displayLabel: 'Fitbit（実利用検証待ち）',
-          role: 'legacy_real_provider',
-          realOperatorVerificationRequired: true,
+          displayLabel: 'Fitbit（旧Web API・移行参照）',
+          role: 'legacy_migration_reference',
+          realOperatorVerificationRequired: false,
         ),
       ],
       message: 'Selected by backend configuration.',
@@ -2390,17 +2390,17 @@ class _FitbitProviderBackendApiClient extends _FakeBackendApiClient {
       fetchSleepProviderSelectionStatus() async {
     return const SleepProviderSelectionStatus(
       configuredProvider: 'fitbit',
-      configuredProviderLabel: 'Fitbit（実利用検証待ち）',
-      configuredProviderRole: 'legacy_real_provider',
+      configuredProviderLabel: 'Fitbit（旧Web API・移行参照）',
+      configuredProviderRole: 'legacy_migration_reference',
       configuredProviderSupported: true,
       selectionMode: 'backend_config',
       changeRequiresBackendRestart: true,
       availableProviders: [
         SleepProviderOption(
           provider: 'fitbit',
-          displayLabel: 'Fitbit（実利用検証待ち）',
-          role: 'legacy_real_provider',
-          realOperatorVerificationRequired: true,
+          displayLabel: 'Fitbit（旧Web API・移行参照）',
+          role: 'legacy_migration_reference',
+          realOperatorVerificationRequired: false,
         ),
       ],
       message: 'Selected by backend configuration.',

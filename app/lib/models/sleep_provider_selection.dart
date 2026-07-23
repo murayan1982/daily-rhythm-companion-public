@@ -37,8 +37,8 @@ class SleepProviderOption {
         return '設定済み実データ候補';
       case 'deprecated_alias':
         return '旧設定';
-      case 'legacy_real_provider':
-        return '実利用検証待ち';
+      case 'legacy_migration_reference':
+        return '旧Web API・移行参照';
       default:
         return role;
     }
@@ -67,7 +67,7 @@ class SleepProviderSelectionStatus {
   final String message;
 
   factory SleepProviderSelectionStatus.fromJson(Map<String, dynamic> json) {
-    final rawProviders = json['available_providers'];
+    final rawProviders = json['provider_options'];
 
     return SleepProviderSelectionStatus(
       configuredProvider:
@@ -127,6 +127,9 @@ class SleepProviderSelectionStatus {
     }
     if (configuredOption?.deprecated == true) {
       return '旧設定';
+    }
+    if (configuredProviderRole == 'legacy_migration_reference') {
+      return '移行参照のみ';
     }
     if (requiresRealOperatorVerification) {
       return '実利用検証待ち';

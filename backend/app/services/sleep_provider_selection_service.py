@@ -44,9 +44,9 @@ _SLEEP_PROVIDER_DEFINITIONS = (
     ),
     _SleepProviderDefinition(
         provider="fitbit",
-        display_label="Fitbit（実利用検証待ち）",
-        role="legacy_real_provider",
-        real_operator_verification_required=True,
+        display_label="Fitbit（旧Web API・移行参照）",
+        role="legacy_migration_reference",
+        real_operator_verification_required=False,
     ),
 )
 

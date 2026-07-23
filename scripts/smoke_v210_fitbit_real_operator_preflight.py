@@ -19,17 +19,16 @@ EXAMPLE_ENV = ROOT / "backend/env_profiles/fitbit_real_operator.env.example"
 REQUIRED_EXACT = {
     "CONVERSATION_ENGINE": "mock",
     "SLEEP_PROVIDER": "fitbit",
-    "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE": "1",
+    "FITBIT_ENABLE_REAL_TOKEN_EXCHANGE": "0",
     "FITBIT_DEV_SAVE_DUMMY_TOKEN": "0",
 }
-REQUIRED_PRIVATE = {
-    "FITBIT_CLIENT_ID",
-    "FITBIT_CLIENT_SECRET",
-    "FITBIT_REDIRECT_URI",
-}
+REQUIRED_PRIVATE: set[str] = set()
 OPTIONAL_KEYS = {
     "WEB_CORS_ORIGINS",
     "FITBIT_OAUTH_STATE_TTL_SECONDS",
+    "FITBIT_CLIENT_ID",
+    "FITBIT_CLIENT_SECRET",
+    "FITBIT_REDIRECT_URI",
 }
 ALLOWED_KEYS = set(REQUIRED_EXACT) | REQUIRED_PRIVATE | OPTIONAL_KEYS
 FORBIDDEN_KEYS = {
@@ -112,6 +111,12 @@ def validate_env(env: dict[str, str], *, allow_placeholders: bool) -> Validation
         if not valid:
             invalid.append(key)
 
+
+    for key in ("FITBIT_CLIENT_ID", "FITBIT_CLIENT_SECRET"):
+        value = env.get(key, "")
+        if value and not _is_placeholder(value):
+            invalid.append(key)
+
     ttl = env.get("FITBIT_OAUTH_STATE_TTL_SECONDS")
     if ttl is not None:
         try:
@@ -138,7 +143,7 @@ def validate_env(env: dict[str, str], *, allow_placeholders: bool) -> Validation
 
 
 def _print_contract() -> None:
-    print("v210_fitbit_real_operator_preflight_status: contract-ready")
+    print("v210_fitbit_real_operator_preflight_status: legacy-retired")
     print("v210_fitbit_real_operator_preflight_small_commit: W-5a")
     print("v210_fitbit_real_operator_preflight_parent_phase: W-5-current-not-completed")
     print("v210_fitbit_real_operator_preflight_mock_safe_default: True")
@@ -168,7 +173,7 @@ def _print_validation(prefix: str, result: ValidationResult) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Validate public-safe Fitbit W-5 operator env markers."
+        description="Validate retired legacy Fitbit migration-reference markers."
     )
     parser.add_argument("--env-file", type=Path)
     parser.add_argument("--check-example", action="store_true")

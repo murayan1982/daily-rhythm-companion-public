@@ -204,3 +204,7 @@ W-4a was completed and accepted on 2026-07-23. W-4 remains CURRENT /
 NOT_COMPLETED and W-4b is now CURRENT / NOT_COMPLETED. Flutter provider/source
 labels and simplified Google Health user UX remain the next W-4 implementation work.
 Configured real Fitbit operator verification remains W-5.
+
+## W-5b1 correction
+
+The accepted W-4a API shape remains, but `fitbit` is now labeled as a legacy migration reference and no longer requires configured-real operator verification. `google_health` is the configured-real provider.
