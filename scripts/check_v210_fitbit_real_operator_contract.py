@@ -34,8 +34,6 @@ ACCEPTED_RUNTIME_HASHES = {
     "app/lib/models/fitbit_connect_response.dart": "b2f897316bb6dd52f271e994bc15c6ddb1096b4c5c6ca2f499cc9495de77ed1c",
     "app/lib/models/sleep_provider_selection.dart": "3d25703232dbb34b22d9d876d97125695d3870c3448bfd47d5fe10b8581b0241",
     "app/lib/models/sleep_summary.dart": "f28173aeb89b996e284771243fe6cbd6e037098a634647b827ac096cef4d11e8",
-    "app/lib/services/backend_api_client.dart": "8f790252327c65e7908bd37e13233e4ec5bee6a68b1f2e11b5f536750a82a362",
-    "app/lib/screens/home_screen.dart": "3933240c97ec55308342da4b84c8b5087b3eb78f674c7be03f93a0540195d950",
 }
 
 
@@ -225,6 +223,11 @@ def main() -> None:
                 f"Accepted W-2/W-3/W-4 runtime changed: {relative}: {actual} != {expected}"
             )
 
+    flutter_client = read("app/lib/services/backend_api_client.dart")
+    flutter_home = read("app/lib/screens/home_screen.dart")
+    require(flutter_client, "throw PostAdviceChatApiException", "C-1c typed chat error")
+    require(flutter_home, "post-advice-chat-restart-button", "C-1c chat recovery UI")
+
     print("v210_fitbit_real_operator_contract_status: completed-accepted")
     print("v210_fitbit_real_operator_contract_completed_small_commit: W-5a")
     print("v210_fitbit_real_operator_contract_current_small_commit: C-1c")
@@ -232,6 +235,7 @@ def main() -> None:
     print("v210_fitbit_real_operator_contract_mock_safe: True")
     print("v210_fitbit_real_operator_contract_real_operator_execution: False")
     print("v210_fitbit_real_operator_contract_runtime_changed: False")
+    print("v210_fitbit_real_operator_contract_c1c_flutter_runtime_started: True")
     print("v210_fitbit_real_operator_contract_release_records_changed: False")
     print("v210_fitbit_real_operator_contract_w5b1_completed_accepted: True")
     print("v210_fitbit_real_operator_contract_w5b2_completed_accepted: True")

@@ -16,13 +16,6 @@ PROTECTED_RELEASE_HASHES = {
     "release_notes/v2.0.1.md": "1e90c85e51ef848b64bddaa73f1f40c659457935e30831027310ea95fc94656b",
 }
 
-UNCHANGED_FLUTTER_HASHES = {
-    "app/lib/models/chat.dart": "b145e7c335a734ef8609ff579e3533fb0e11f701982ba9a8f7ab48bdb817f1e9",
-    "app/lib/services/backend_api_client.dart": "8f790252327c65e7908bd37e13233e4ec5bee6a68b1f2e11b5f536750a82a362",
-    "app/lib/screens/home_screen.dart": "3933240c97ec55308342da4b84c8b5087b3eb78f674c7be03f93a0540195d950",
-    "app/test/widget_test.dart": "175eec29a41f1cd1731137eeb74444c4e11c02ec6e7494385eb7ca322a2fcfb1",
-}
-
 
 def read(relative: str) -> str:
     path = ROOT / relative
@@ -141,8 +134,15 @@ def main() -> None:
         if forbidden in lifecycle_tests + outcome_tests:
             raise AssertionError(f"C-1b tests are not mock-safe: {forbidden}")
 
+    flutter_models = read("app/lib/models/chat.dart")
+    flutter_client = read("app/lib/services/backend_api_client.dart")
+    flutter_home = read("app/lib/screens/home_screen.dart")
+    require(flutter_models, "class ChatLifecycle", "C-1c lifecycle parser")
+    require(flutter_models, "class ChatSessionProblem", "C-1c problem parser")
+    require(flutter_client, "throw PostAdviceChatApiException", "C-1c typed error")
+    require(flutter_home, "post-advice-chat-restart-button", "C-1c recovery UI")
+
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
-    assert_hashes(UNCHANGED_FLUTTER_HASHES, "Flutter C-1c surface")
 
     for relative in (
         "README.md",
@@ -165,7 +165,8 @@ def main() -> None:
     print("v210_post_advice_chat_backend_lifecycle_missing_reason_classification: true")
     print("v210_post_advice_chat_backend_lifecycle_turn_limit_http_status: 409")
     print("v210_post_advice_chat_backend_lifecycle_backend_runtime_changed: true")
-    print("v210_post_advice_chat_backend_lifecycle_flutter_runtime_changed: false")
+    print("v210_post_advice_chat_backend_lifecycle_flutter_runtime_changed_by_c1b: false")
+    print("v210_post_advice_chat_backend_lifecycle_c1c_flutter_runtime_started: true")
     print("v210_post_advice_chat_backend_lifecycle_real_framework_execution: false")
     print("v210_post_advice_chat_backend_lifecycle_release_records_changed: false")
     print("[v210-post-advice-chat-backend-lifecycle-check] OK")

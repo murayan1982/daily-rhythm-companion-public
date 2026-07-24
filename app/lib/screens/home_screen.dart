@@ -139,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _voiceOutputDemoError;
   String? _motionDemoError;
   String? _postAdviceChatError;
+  ChatSessionProblem? _postAdviceChatProblem;
   String? _googleHealthDebugError;
   String? _googleHealthConnectionUxError;
   String? _sleepProviderSelectionError;
@@ -248,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _adviceResponse = null;
       _postAdviceChatSession = null;
       _postAdviceChatError = null;
+      _postAdviceChatProblem = null;
       _postAdviceChatSkipped = false;
       _postAdviceChatMessageController.clear();
     });
@@ -290,6 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _isStartingPostAdviceChat = true;
       _postAdviceChatError = null;
+      _postAdviceChatProblem = null;
       _postAdviceChatSkipped = false;
     });
 
@@ -302,6 +305,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
       setState(() {
         _postAdviceChatSession = session;
+        _postAdviceChatError = null;
+        _postAdviceChatProblem = null;
+      });
+    } on PostAdviceChatApiException catch (error) {
+      setState(() {
+        _postAdviceChatSession = null;
+        _postAdviceChatProblem = error.problem;
+        _postAdviceChatError = error.userMessage;
       });
     } catch (error) {
       setState(() {
@@ -318,9 +329,21 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _postAdviceChatSkipped = true;
       _postAdviceChatError = null;
+      _postAdviceChatProblem = null;
       _postAdviceChatSession = null;
       _postAdviceChatMessageController.clear();
     });
+  }
+
+  Future<void> _restartPostAdviceChat() async {
+    setState(() {
+      _postAdviceChatSession = null;
+      _postAdviceChatProblem = null;
+      _postAdviceChatError = null;
+      _postAdviceChatSkipped = false;
+      _postAdviceChatMessageController.clear();
+    });
+    await _startPostAdviceChat();
   }
 
   Future<void> _sendPostAdviceChatMessage() async {
@@ -330,6 +353,16 @@ class _HomeScreenState extends State<HomeScreen> {
     if (session == null) {
       setState(() {
         _postAdviceChatError = '先に「少し話す」からチャットを開始してください。';
+      });
+      return;
+    }
+
+    if (!session.canSendMessage) {
+      setState(() {
+        _postAdviceChatError =
+            session.outcome.userMessage.isNotEmpty
+                ? session.outcome.userMessage
+                : 'この会話は終了しています。新しい会話を始めてください。';
       });
       return;
     }
@@ -344,6 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _isSendingPostAdviceChatMessage = true;
       _postAdviceChatError = null;
+      _postAdviceChatProblem = null;
     });
 
     try {
@@ -355,11 +389,20 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _postAdviceChatSession = ChatSession(
           sessionId: response.sessionId,
-          status: session.status,
+          status: response.lifecycle.state,
           source: response.source,
           context: session.context,
           messages: response.messages,
+          lifecycle: response.lifecycle,
+          outcome: response.outcome,
         );
+        _postAdviceChatMessageController.clear();
+      });
+    } on PostAdviceChatApiException catch (error) {
+      setState(() {
+        _postAdviceChatSession = null;
+        _postAdviceChatProblem = error.problem;
+        _postAdviceChatError = error.userMessage;
         _postAdviceChatMessageController.clear();
       });
     } catch (error) {
@@ -3340,12 +3383,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildPostAdviceChatSection(BuildContext context) {
     final adviceResponse = _adviceResponse;
     final session = _postAdviceChatSession;
+    final problem = _postAdviceChatProblem;
 
     if (adviceResponse == null) {
       return const SizedBox.shrink();
     }
 
     return Column(
+      key: const Key('post-advice-chat-section'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -3396,7 +3441,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   '今日はここまでを選びました。アドバイスはこのままDailyRecord / Historyで確認できます。',
                 ),
               ],
-              if (_postAdviceChatError != null) ...[
+              if (problem != null) ...[
+                const SizedBox(height: 12),
+                Container(
+                  key: const Key('post-advice-chat-problem-card'),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).colorScheme.errorContainer,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        problem.displayLabel,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(problem.userMessage),
+                      if (problem.canRestart) ...[
+                        const SizedBox(height: 8),
+                        _buildPostAdviceChatRestartButton(),
+                      ],
+                    ],
+                  ),
+                ),
+              ] else if (_postAdviceChatError != null) ...[
                 const SizedBox(height: 12),
                 Text(
                   _postAdviceChatError!,
@@ -3405,38 +3476,95 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               if (session != null) ...[
                 const SizedBox(height: 12),
-                _buildDiagnosticRow('Chat session', session.sessionId),
-                _buildDiagnosticRow('Chat source', session.source.displayLabel),
-                _buildDiagnosticRow('Status', session.status),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildStatusChip(
+                      '会話状態',
+                      session.lifecycle.displayState,
+                    ),
+                    _buildStatusChip(
+                      '会話回数',
+                      session.lifecycle.displayProgress,
+                    ),
+                    _buildStatusChip(
+                      '応答状態',
+                      session.outcome.displayLabel,
+                    ),
+                  ],
+                ),
+                if (session.outcome.userMessage.trim().isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(session.outcome.userMessage),
+                ],
                 const SizedBox(height: 12),
                 ...session.messages.map(_buildPostAdviceChatMessage),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _postAdviceChatMessageController,
-                  decoration: const InputDecoration(
-                    labelText: 'メッセージ',
-                    hintText: '例: もう少しゆるく過ごすには？',
-                    border: OutlineInputBorder(),
+                if (session.canSendMessage) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    key: const Key('post-advice-chat-message-field'),
+                    controller: _postAdviceChatMessageController,
+                    enabled: !_isSendingPostAdviceChatMessage,
+                    decoration: const InputDecoration(
+                      labelText: 'メッセージ',
+                      hintText: '例: もう少しゆるく過ごすには？',
+                      border: OutlineInputBorder(),
+                    ),
+                    minLines: 1,
+                    maxLines: 3,
                   ),
-                  minLines: 1,
-                  maxLines: 3,
-                ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      key: const Key('post-advice-chat-send-button'),
+                      onPressed: _isSendingPostAdviceChatMessage
+                          ? null
+                          : _sendPostAdviceChatMessage,
+                      icon: _isSendingPostAdviceChatMessage
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.send),
+                      label: const Text('送信'),
+                    ),
+                  ),
+                ] else if (session.canRestart) ...[
+                  const SizedBox(height: 12),
+                  _buildPostAdviceChatRestartButton(),
+                ],
                 const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: OutlinedButton.icon(
-                    onPressed: _isSendingPostAdviceChatMessage
-                        ? null
-                        : _sendPostAdviceChatMessage,
-                    icon: _isSendingPostAdviceChatMessage
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.send),
-                    label: const Text('送信'),
-                  ),
+                ExpansionTile(
+                  title: const Text('開発者向け詳細'),
+                  initiallyExpanded: true,
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: const EdgeInsets.only(bottom: 8),
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDiagnosticRow(
+                            'Chat source',
+                            session.source.displayLabel,
+                          ),
+                          _buildDiagnosticRow('Status', session.status),
+                          _buildDiagnosticRow(
+                            'Technical code',
+                            session.outcome.technicalCode ?? '-',
+                          ),
+                          _buildDiagnosticRow(
+                            'Chat session',
+                            session.sessionId,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ],
@@ -3445,6 +3573,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
+  Widget _buildPostAdviceChatRestartButton() {
+    return OutlinedButton.icon(
+      key: const Key('post-advice-chat-restart-button'),
+      onPressed: _isStartingPostAdviceChat ? null : _restartPostAdviceChat,
+      icon: const Icon(Icons.refresh),
+      label: const Text('新しい会話を始める'),
+    );
+  }
+
 
   Widget _buildPostAdviceChatMessage(ChatMessage message) {
     final isUser = message.role == 'user';

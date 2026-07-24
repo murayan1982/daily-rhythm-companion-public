@@ -1,8 +1,8 @@
 """Validate the accepted C-1a post-advice chat behavior inventory.
 
 C-1a is historical after acceptance. This check preserves the accepted inventory,
-release records, Framework boundary, and unchanged Flutter baseline while allowing
-C-1b to modify the explicitly assigned Backend lifecycle files and tests.
+release records, and Framework boundary while allowing C-1b Backend work and the
+explicitly assigned C-1c Flutter lifecycle/recovery surface.
 """
 
 from __future__ import annotations
@@ -25,13 +25,9 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-C1A_UNCHANGED_AFTER_BACKEND_WORK_HASHES = {
+C1A_UNCHANGED_FRAMEWORK_HASHES = {
     "backend/app/services/framework_text_chat_adapter.py": "706691dfbba83989cbe9ebffbb7e986f95d15e97d3be22ae8ae7ab6644ab6225",
     "backend/app/services/framework_text_chat_drc_live_reply.py": "fada52eed7c6322a87ff6b731904143ba0cd9899f235eb83875ca0a113cdc46f",
-    "app/lib/models/chat.dart": "b145e7c335a734ef8609ff579e3533fb0e11f701982ba9a8f7ab48bdb817f1e9",
-    "app/lib/services/backend_api_client.dart": "8f790252327c65e7908bd37e13233e4ec5bee6a68b1f2e11b5f536750a82a362",
-    "app/lib/screens/home_screen.dart": "3933240c97ec55308342da4b84c8b5087b3eb78f674c7be03f93a0540195d950",
-    "app/test/widget_test.dart": "175eec29a41f1cd1731137eeb74444c4e11c02ec6e7494385eb7ca322a2fcfb1",
 }
 
 
@@ -115,11 +111,12 @@ def main() -> None:
     require(config, "post_advice_chat_max_turns: int = 8", "C-1b turn bound")
     for status in ("skipped", "unavailable", "blocked-live-message-gate", "responded"):
         require(adapter, f'status="{status}"', f"adapter status {status}")
-    require(flutter_client, "Post-advice chat message API failed: HTTP", "unchanged generic Flutter error")
-    require(home, "_postAdviceChatError = _formatUserFacingError(error)", "unchanged Flutter presentation")
+    require(flutter_client, "throw PostAdviceChatApiException", "C-1c typed Flutter error")
+    require(home, "Future<void> _restartPostAdviceChat()", "C-1c restart action")
+    require(home, "post-advice-chat-restart-button", "C-1c restart UI")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
-    assert_hashes(C1A_UNCHANGED_AFTER_BACKEND_WORK_HASHES, "C-1a unchanged Framework/Flutter baseline")
+    assert_hashes(C1A_UNCHANGED_FRAMEWORK_HASHES, "C-1a unchanged Framework boundary")
 
     for relative in (
         "README.md",
@@ -139,7 +136,8 @@ def main() -> None:
     print("v210_post_advice_chat_inventory_accepted_ttl_seconds: 1800")
     print("v210_post_advice_chat_inventory_accepted_max_sessions: 100")
     print("v210_post_advice_chat_inventory_c1b_backend_runtime_started: true")
-    print("v210_post_advice_chat_inventory_flutter_runtime_changed: false")
+    print("v210_post_advice_chat_inventory_c1c_flutter_runtime_started: true")
+    print("v210_post_advice_chat_inventory_flutter_runtime_changed_by_c1a: false")
     print("v210_post_advice_chat_inventory_real_framework_execution: false")
     print("v210_post_advice_chat_inventory_release_records_changed: false")
     print("[v210-post-advice-chat-current-behavior-inventory-check] OK")

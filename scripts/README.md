@@ -21,7 +21,7 @@ completed phase: W-5 COMPLETED / ACCEPTED
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 is completed and accepted. W-5b2 and parent W-5 are completed and accepted; C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is current, while C-1c and T-1 through R-1 remain planned.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c is implemented but not accepted. T-1 through R-1 remain planned.
 
 Run the W-1 checks from the repository root:
 
@@ -397,7 +397,7 @@ flutter test
 cd ..
 ```
 
-The accepted C-1a check is credential-free and provider-free. It preserves the historical pre-change inventory and verifies that the Framework adapter and Flutter C-1c surface remain unchanged while C-1b modifies only its assigned Backend files.
+The accepted C-1a check is credential-free and provider-free. It preserves the historical pre-change inventory and unchanged Framework boundary while allowing the separately checked C-1b Backend files and C-1c Flutter lifecycle/recovery surface.
 
 ## C-1b Backend lifecycle and outcome contract
 
@@ -414,6 +414,23 @@ cd ..
 ```
 
 The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b is COMPLETED / ACCEPTED at implementation commit `3055995`; C-1c is CURRENT / NOT_COMPLETED.
+
+## C-1c Flutter lifecycle and recovery UI
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_post_advice_chat_current_behavior_inventory.py
+python scripts\check_v210_post_advice_chat_backend_lifecycle.py
+python scripts\check_v210_post_advice_chat_flutter_lifecycle.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test test/post_advice_chat_lifecycle_test.dart test/post_advice_chat_lifecycle_widget_test.dart
+flutter test
+cd ..
+```
+
+The C-1c check is credential-free and provider-free. It verifies structured Flutter lifecycle/outcome/problem parsing, legacy payload compatibility, typed HTTP problem handling, turn-progress presentation, terminal send disabling, direct restart after expired/evicted/not-found/turn-limit outcomes, user-facing unavailable/blocked/skipped/fallback distinctions, developer-detail separation, unchanged Backend runtime, and unchanged release records. C-1c is IMPLEMENTED / NOT_ACCEPTED; parent C-1 remains CURRENT / NOT_COMPLETED.
 
 
 ## Script categories

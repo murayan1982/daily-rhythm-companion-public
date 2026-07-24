@@ -170,7 +170,7 @@ C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and te
 C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acceptance
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`: the Backend keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. Flutter runtime remained unchanged. C-1c is current and will consume these fields in the app UI. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md) and [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md).
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`: the Backend keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. C-1c implementation is present but not yet accepted: Flutter parses the structured lifecycle/outcome/problem fields, keeps legacy payload compatibility, shows turn progress and user-facing outcome copy, clears stale terminal sessions, and offers a direct restart action. Parent C-1 remains CURRENT / NOT_COMPLETED until focused/full tests, diff review, and operator approval pass. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md), [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md), and [`docs/v210_post_advice_chat_flutter_lifecycle.md`](docs/v210_post_advice_chat_flutter_lifecycle.md).
 
 The accepted C-1b mock-safe gate is:
 
@@ -186,6 +186,24 @@ flutter test
 cd ..
 ```
 
+
+
+The C-1c implementation gate is:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_post_advice_chat_current_behavior_inventory.py
+python scripts\check_v210_post_advice_chat_backend_lifecycle.py
+python scripts\check_v210_post_advice_chat_flutter_lifecycle.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test test/post_advice_chat_lifecycle_test.dart test/post_advice_chat_lifecycle_widget_test.dart
+flutter test
+cd ..
+```
+
+This gate is mock-safe. It does not configure or call a real AI Character Framework checkout, LLM provider, wearable provider, TTS/STT runtime, or release workflow. C-1c and parent C-1 remain not accepted until review and operator approval.
 
 Run the W-4b mock-safe gate with:
 

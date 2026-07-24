@@ -101,7 +101,7 @@ C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acc
 - release records changed: false
 ```
 
-C-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。C-1bはCURRENT / NOT_COMPLETED、親C-1はCURRENT / NOT_COMPLETEDのままである。
+C-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。C-1bも同日にCOMPLETED / ACCEPTEDとなり、C-1cがCURRENT / NOT_COMPLETEDである。親C-1はCURRENT / NOT_COMPLETEDのままである。
 
 ### C-1b — Backend lifecycle outcomes, bounded turns, and tests
 
@@ -120,18 +120,52 @@ Status: COMPLETED / ACCEPTED
 
 詳細: `docs/v210_post_advice_chat_backend_lifecycle.md`
 
-実装時点:
+受け入れ結果:
 
 ```text
-- C-1b source-tree check: passed locally
+- implementation commit: 3055995
+- C-1a / C-1b source-tree checks: passed
 - focused Backend tests: 17 passed
 - backend pytest: 110 passed
-- Flutter runtime changed: false
+- Flutter test: 57 passed
+- diff review / operator approval: passed
+- Flutter runtime changed by C-1b: false
 - real Framework execution: false
 - release records changed: false
 ```
 
-C-1bは実装済みだが、diff reviewとoperator approval前なのでNOT_ACCEPTEDのままである。
+C-1bは2026-07-24にCOMPLETED / ACCEPTEDとなった。C-1cはCURRENT / NOT_COMPLETEDである。
+
+### C-1c — Flutter lifecycle state, recovery UI, and C-1 acceptance
+
+Status: CURRENT / NOT_COMPLETED
+
+```text
+- ChatLifecycle / ChatOutcome / ChatSessionProblemをFlutterでparseする。
+- lifecycle/outcomeなしの旧payloadも安全に読み込む。
+- structured HTTP problemをtyped exceptionへ変換する。
+- 会話状態、turn進捗、mock/configured/fallback/unavailable/blocked/skippedを表示する。
+- terminal stateでは送信欄を閉じ、期限切れ・evicted・unknown・turn limitから直接再開できるようにする。
+- normal-user copyとdeveloper detailsを分離する。
+- Backend runtime、T-1、V-1、R-1、release recordsを変更しない。
+```
+
+詳細: `docs/v210_post_advice_chat_flutter_lifecycle.md`
+
+実装時点:
+
+```text
+- C-1c status: IMPLEMENTED / NOT_ACCEPTED
+- focused Flutter tests: expected 7
+- full Flutter tests: expected 64
+- backend pytest baseline: 110
+- Backend runtime changed: false
+- Flutter runtime changed: true
+- real Framework execution: false
+- release records changed: false
+```
+
+C-1cと親C-1は、focused/full test、diff review、operator approval前なのでNOT_ACCEPTEDのままである。
 
 ---
 

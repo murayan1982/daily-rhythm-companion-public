@@ -490,8 +490,25 @@ class BackendApiClient {
     );
 
     if (response.statusCode != 200) {
-      throw Exception(
-        'Post-advice chat message API failed: HTTP ${response.statusCode}',
+      final fallbackMessage =
+          'Post-advice chat message API failed: HTTP ${response.statusCode}';
+      ChatSessionProblem? problem;
+
+      try {
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        if (decoded is Map && decoded['detail'] is Map) {
+          problem = ChatSessionProblem.fromJson(
+            Map<String, dynamic>.from(decoded['detail'] as Map),
+          );
+        }
+      } catch (_) {
+        problem = null;
+      }
+
+      throw PostAdviceChatApiException(
+        statusCode: response.statusCode,
+        fallbackMessage: fallbackMessage,
+        problem: problem,
       );
     }
 

@@ -979,28 +979,74 @@ C-1b acceptance record:
 
 C-1b was completed and accepted on 2026-07-24. Parent C-1 remains CURRENT / NOT_COMPLETED and C-1c is CURRENT / NOT_COMPLETED.
 
----
 
 ## C-1c — Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 
-Status: CURRENT / NOT_COMPLETED
+Status: IMPLEMENTED / NOT_ACCEPTED
+
+Detailed contract: `docs/v210_post_advice_chat_flutter_lifecycle.md`
 
 Implementation boundary:
 
 ```text
-- consume ChatLifecycle, ChatOutcome, and ChatSessionProblem in Flutter;
-- represent active, sending, turn_limit_reached, expired, evicted, unavailable,
-  blocked, fallback, skipped, and restart states deterministically;
-- clear stale local sessions after restartable terminal failures;
-- support direct new-session restart without requiring skip first;
-- separate normal-user copy from optional operator diagnostics;
-- add focused model/client/widget tests;
-- preserve the accepted Backend TTL/capacity/LRU/turn bounds;
-- keep T-1, V-1, and R-1 planned until separately accepted.
+- add Flutter ChatLifecycle, ChatOutcome, ChatSessionProblem, and typed API exception models;
+- parse the accepted C-1b lifecycle/outcome/problem payloads while keeping old payloads readable;
+- show active/turn-limit and mock/configured/fallback/unavailable/blocked/skipped user states;
+- show turn count / limit and disable message sending when the lifecycle or outcome is terminal;
+- clear stale local sessions after structured expired/evicted/not-found/turn-limit failures;
+- offer a direct new-conversation action after restartable terminal states;
+- keep technical source/session/code metadata in a separate developer-details section;
+- use fake BackendApiClient implementations only in normal Flutter tests;
+- leave Backend runtime/tests, T-1, V-1, R-1, and release records unchanged.
 ```
 
-C-1c and parent C-1 remain NOT_COMPLETED until implementation, focused checks,
-full Backend/Flutter tests, diff review, and operator approval pass.
+C-1c change surface:
+
+```text
+app/lib/models/chat.dart
+app/lib/services/backend_api_client.dart
+app/lib/screens/home_screen.dart
+app/test/post_advice_chat_lifecycle_test.dart
+app/test/post_advice_chat_lifecycle_widget_test.dart
+docs/v210_post_advice_chat_flutter_lifecycle.md
+scripts/check_v210_post_advice_chat_flutter_lifecycle.py
+scripts/check_v210_post_advice_chat_current_behavior_inventory.py
+scripts/check_v210_post_advice_chat_backend_lifecycle.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+```
+
+Explicit non-change surface:
+
+```text
+backend/app/**
+backend/tests/**
+backend/.env.example
+backend/env_profiles/**
+AI Character Framework checkout/provider/runtime
+T-1 / V-1 / R-1 runtime
+released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
+```
+
+Implementation checkpoint:
+
+```text
+- structured Flutter lifecycle/outcome/problem models: present
+- legacy response compatibility: present
+- terminal restart UI: present
+- focused Flutter tests: expected 7
+- full Flutter tests: expected 64
+- Backend pytest baseline: 110
+- Backend runtime changed: false
+- Flutter runtime changed: true
+- real Framework/LLM execution: false
+- release records changed: false
+```
+
+C-1c and parent C-1 remain NOT_ACCEPTED until compileall, C-1a/C-1b/C-1c checks, v2.0.x guards, focused/full Backend and Flutter tests, diff review, and operator approval pass. T-1, V-1, and R-1 remain PLANNED.
 
 ---
 

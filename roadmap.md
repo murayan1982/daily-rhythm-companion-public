@@ -445,7 +445,7 @@ C-1b  COMPLETED / ACCEPTED     Add Backend lifecycle outcomes, bounded turns, an
 C-1c  CURRENT / NOT_COMPLETED  Add Flutter lifecycle/recovery states and accept parent C-1
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`. It preserves TTL/capacity/LRU, adds an 8-turn default, structured lifecycle and provider-neutral outcome models, bounded expired/evicted terminal reasons, structured 404 reasons, and a restartable HTTP 409 turn-limit result. Acceptance passed with 17 focused Backend tests, 110 full Backend tests, 57 Flutter tests, diff review, and operator approval. Flutter remained unchanged; C-1c is current.
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`. It preserves TTL/capacity/LRU, adds an 8-turn default, structured lifecycle and provider-neutral outcome models, bounded expired/evicted terminal reasons, structured 404 reasons, and a restartable HTTP 409 turn-limit result. Acceptance passed with 17 focused Backend tests, 110 full Backend tests, 57 Flutter tests, diff review, and operator approval. C-1c implementation is present but not accepted: Flutter consumes structured lifecycle/outcome/problem data, remains compatible with legacy payloads, displays turn progress and user-facing outcome states, disables terminal sending, clears stale sessions, and provides direct restart. Backend runtime remains unchanged in C-1c; parent C-1 is still CURRENT / NOT_COMPLETED.
 
 ### TTS experience target
 
