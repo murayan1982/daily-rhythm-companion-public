@@ -137,6 +137,32 @@ Implementation state: COMPLETED / ACCEPTED
 
 T-1bは2026-07-24にCOMPLETED / ACCEPTEDとなった。T-1cはCURRENT / NOT_COMPLETED、親T-1はCURRENT / NOT_COMPLETEDのままである。
 
+### T-1c — Home UI integration, expired-artifact recovery, and T-1 acceptance
+
+Status: IMPLEMENTED / NOT_ACCEPTED
+
+```text
+- audioplayers ^6.7.1をapp-owned engineの内側へ追加する。
+- Backendのopaque MP3をHTTPで読み込み、404/410をexpiredへ変換する。
+- HomeScreenへplay / stop / replay / regenerate UIを統合する。
+- raw URL、private path、provider exceptionを通常UIへ表示しない。
+- fake driver / fake engineだけでengine/widget回帰を追加する。
+- Windows CMake policyをVisual Studio 2026向けに3.15へ更新する。
+- Backend、Framework/TTS provider、V-1、R-1、release recordsを変更しない。
+```
+
+詳細: `docs/v210_tts_player_home_integration.md`
+
+実装時点:
+
+```text
+- T-1c source-tree check: passed locally
+- Backend runtime changed: false
+- real Framework/TTS execution: false
+- audible PC/smartphone Web acceptance: not performed
+- T-1c / parent T-1: NOT_ACCEPTED
+```
+
 ---
 
 ## C-1 — Post-advice chat lifecycle and UI-state hardening
@@ -828,3 +854,10 @@ Large changes: real STT, microphone capture, streaming/cancel, TTS interruption,
 ```
 
 v2.1.0はW-1からW-5まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleepとPC/スマートフォンWeb表示が確認済みである。現在はC-1がCURRENT / NOT_COMPLETED。TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。
+
+- [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
+- [x] T-1c: restore missing Windows Flutter CMake scaffold locally
+- [x] T-1c: add bounded Visual Studio 18 coroutine compatibility definition
+- [ ] T-1c: rerun Windows build after the compatibility correction
+- [ ] T-1c: commit implementation only after all tests/builds pass
+- [x] Restore and track `app/windows/flutter/CMakeLists.txt`; scope the root SDK ignore to `/flutter/`.

@@ -184,6 +184,8 @@ T-1a is completed and accepted at implementation commit `0b06378`. It records th
 
 T-1b is completed and accepted at implementation commit `161e624`. Acceptance passed after compileall, T-1a/T-1b source-tree checks, ten focused Flutter tests, 110 Backend tests, 74 full Flutter tests, diff review, operator approval, and push. HomeScreen integration, a concrete platform audio engine/plugin, artifact HTTP expiry mapping, audible playback evidence, and parent T-1 acceptance remain T-1c work. See [`docs/v210_tts_player_controller.md`](docs/v210_tts_player_controller.md).
 
+T-1c implementation is present but not accepted. It adds `audioplayers` behind the T-1b engine interface, maps opaque-audio HTTP 404/410 to the expired state, replaces external audio launch with HomeScreen play/stop/replay/regenerate controls, and adds mock-safe engine/widget regressions. Backend runtime and release records remain unchanged. Dependency resolution, focused/full Flutter tests, audible PC/smartphone Web review, diff review, and operator approval remain required. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
+
 The accepted C-1b mock-safe gate is:
 
 ```powershell

@@ -33,9 +33,6 @@ T1A_BASELINE_HASHES = {
     "backend/tests/test_voice_output_artifact_store.py": "c0d103d7b25830f8752aa9a0238bb5495b2895aad6afd9682eec8064168b659f",
     "app/lib/models/voice_output_demo.dart": "e31f376e93d4c0dabdf543279314be234bf2a78bb7383ab2f0d28f161074673f",
     "app/lib/services/backend_api_client.dart": "1d754b931ee7811ce708dd5e0ab3d64bc7b3ecdb63f60f1819d8470976f28774",
-    "app/lib/screens/home_screen.dart": "85a791716bfb2996b964148a74ab3c7ae33fd1d2be51c7d11006968f7dddfc1c",
-    "app/test/widget_test.dart": "175eec29a41f1cd1731137eeb74444c4e11c02ec6e7494385eb7ca322a2fcfb1",
-    "app/pubspec.yaml": "fe4921649f69a5c9a7fe9dc4caad7d41f796cdb1b6adcd8687974a89cec85f86",
 }
 
 
@@ -138,15 +135,16 @@ def main() -> None:
     require(flutter_model, "final String audioPlaybackStatus;", "response playback metadata")
     require(flutter_client, "Future<VoiceOutputDemoRequestResponse> submitVoiceOutputDemoRequest", "voice request client")
     forbid(flutter_client, "fetchVoiceOutputAudio", "audio fetch helper")
-    require(home, "LaunchMode.externalApplication", "external playback launch")
-    require(home, "音声を開いて再生確認する", "external playback button")
-    forbid(home, "AudioPlayer", "in-app AudioPlayer")
-    require(pubspec, "url_launcher:", "url launcher dependency")
-    for package_name in ("audioplayers:", "just_audio:", "assets_audio_player:"):
-        forbid(pubspec, package_name, "dedicated audio dependency")
+    require(inventory, "T-1c implementation follow-up", "T-1c inventory follow-up")
+    require(home, "アプリ内音声プレイヤー", "in-app player UI")
+    require(home, "voice-output-regenerate-button", "expired regeneration action")
+    require(pubspec, "audioplayers: ^6.7.1", "T-1c audio dependency")
     require(widget_tests, "Voice output demo shows playback handoff when audio is ready", "playback visibility test")
+    require(widget_tests, "Playback candidate: playable in-app URL handoff", "updated in-app widget regression")
     require(widget_tests, "Voice output demo keeps legacy audio URL non-playable", "legacy non-playable test")
     require(player_controller, "class VoiceOutputAudioPlayerController extends ChangeNotifier", "T-1b controller follow-up")
+    read("app/lib/services/audioplayers_voice_output_audio_engine.dart")
+    read("app/test/voice_output_audio_player_widget_test.dart")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
     assert_hashes(T1A_BASELINE_HASHES, "T-1a pre-runtime baseline")
@@ -166,12 +164,12 @@ def main() -> None:
     print("v210_tts_player_inventory_parent_phase: T-1-current-not-completed")
     print("v210_tts_player_inventory_backend_artifact_ttl_seconds: 86400")
     print("v210_tts_player_inventory_backend_artifact_max_count: 100")
-    print("v210_tts_player_inventory_current_playback_mode: external-url-launch")
-    print("v210_tts_player_inventory_in_app_player_present: false")
-    print("v210_tts_player_inventory_expired_state_present: false")
+    print("v210_tts_player_inventory_current_playback_mode: in-app-audio-player")
+    print("v210_tts_player_inventory_in_app_player_present: true")
+    print("v210_tts_player_inventory_expired_state_present: true")
     print("v210_tts_player_inventory_t1b_controller_started: true")
-    print("v210_tts_player_inventory_runtime_changed: false")
-    print("v210_tts_player_inventory_existing_tests_changed: false")
+    print("v210_tts_player_inventory_runtime_changed: true")
+    print("v210_tts_player_inventory_existing_tests_changed: true")
     print("v210_tts_player_inventory_real_tts_execution: false")
     print("v210_tts_player_inventory_release_records_changed: false")
     print("[v210-tts-player-current-behavior-inventory-check] OK")

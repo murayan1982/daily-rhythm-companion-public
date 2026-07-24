@@ -30,7 +30,6 @@ W1_UNCHANGED_IMPLEMENTATION_HASHES = {
     "backend/tests/test_fitbit_current_state_contract.py": "fad33f7a99f59f60903d84cccdb14b8d58c715f2666a74c97ff7dbdaae0f67bb",
     "app/lib/models/sleep_summary.dart": "f28173aeb89b996e284771243fe6cbd6e037098a634647b827ac096cef4d11e8",
     "app/test/fitbit_current_state_contract_test.dart": "d753b8163410e78dd33c354a7adfab0153358b598f741743b300b8f254e9acb0",
-    "app/pubspec.yaml": "fe4921649f69a5c9a7fe9dc4caad7d41f796cdb1b6adcd8687974a89cec85f86",
 }
 
 

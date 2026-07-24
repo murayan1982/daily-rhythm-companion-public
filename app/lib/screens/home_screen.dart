@@ -17,7 +17,9 @@ import '../models/report_handoff_context.dart';
 import '../models/voice_input_demo.dart';
 import '../models/voice_output_demo.dart';
 import '../models/motion_demo.dart';
+import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
+import '../services/voice_output_audio_player.dart';
 import '../ui/character_asset_catalog.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -27,9 +29,11 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     this.apiClient = const BackendApiClient(),
+    this.voiceOutputAudioEngine,
   });
 
   final BackendApiClient apiClient;
+  final VoiceOutputAudioEngine? voiceOutputAudioEngine;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -167,9 +171,21 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _healthDataConnectUrl;
   final TextEditingController _postAdviceChatMessageController =
       TextEditingController();
+  late final VoiceOutputAudioPlayerController
+      _voiceOutputAudioPlayerController;
+
+  void _handleVoiceOutputPlaybackStateChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
+    _voiceOutputAudioPlayerController.removeListener(
+      _handleVoiceOutputPlaybackStateChanged,
+    );
+    _voiceOutputAudioPlayerController.dispose();
     _postAdviceChatMessageController.dispose();
     super.dispose();
   }
@@ -475,6 +491,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final textContent = _adviceResponse?.message ??
         'Flutter voice output demo text for guarded real TTS runtime check.';
 
+    await _voiceOutputAudioPlayerController.reset();
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       _isSubmittingVoiceOutputDemo = true;
       _voiceOutputDemoError = null;
@@ -621,6 +642,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _voiceOutputAudioPlayerController = VoiceOutputAudioPlayerController(
+      engine: widget.voiceOutputAudioEngine ??
+          AudioplayersVoiceOutputAudioEngine(),
+    );
+    _voiceOutputAudioPlayerController.addListener(
+      _handleVoiceOutputPlaybackStateChanged,
+    );
     _loadInitialData();
     _refreshDemoStatus();
     _refreshGoogleHealthConnectionUx();
@@ -1366,15 +1394,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildDiagnosticRow('Text', response.displayTextContent),
                 const SizedBox(height: 8),
                 const Text(
-                  'Public UI does not print raw audio URLs or artifact refs. Use the playback button only for generated URL handoffs during a private operator evidence run.',
+                  'Public UI does not print raw audio URLs or artifact refs. Generated URL handoffs are loaded and played inside the app.',
                 ),
                 if (_canOpenVoiceOutputAudioUrl(response)) ...[
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: () => _openVoiceOutputAudioUrl(response),
-                    icon: const Icon(Icons.play_circle_outline),
-                    label: const Text('音声を開いて再生確認する'),
-                  ),
+                  const SizedBox(height: 12),
+                  _buildVoiceOutputPlayer(context, response),
                 ],
                 const SizedBox(height: 8),
                 Text(response.message),
@@ -3847,7 +3871,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_isVoiceOutputPlaybackCandidate(response)) {
       if (handoffKind == 'url') {
-        return 'playable URL handoff (operator confirmation required)';
+        return 'playable in-app URL handoff';
       }
 
       return 'artifact ref handoff (resolver required before browser playback)';
@@ -3887,34 +3911,116 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _openVoiceOutputAudioUrl(
+  Widget _buildVoiceOutputPlayer(
+    BuildContext context,
+    VoiceOutputDemoRequestResponse response,
+  ) {
+    final playback = _voiceOutputAudioPlayerController.state;
+
+    return Container(
+      key: const Key('voice-output-in-app-player'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.surface,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'アプリ内音声プレイヤー',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            playback.userMessage,
+            key: const Key('voice-output-playback-message'),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (playback.phase == VoiceOutputPlaybackPhase.idle)
+                FilledButton.icon(
+                  key: const Key('voice-output-play-button'),
+                  onPressed: () => _playVoiceOutputAudio(response),
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text('音声を再生する'),
+                ),
+              if (playback.canStop)
+                OutlinedButton.icon(
+                  key: const Key('voice-output-stop-button'),
+                  onPressed: _stopVoiceOutputAudio,
+                  icon: const Icon(Icons.stop),
+                  label: const Text('停止する'),
+                ),
+              if (playback.canReplay)
+                FilledButton.icon(
+                  key: const Key('voice-output-replay-button'),
+                  onPressed: _replayVoiceOutputAudio,
+                  icon: const Icon(Icons.replay),
+                  label: const Text('もう一度再生する'),
+                ),
+              if (playback.isExpired)
+                FilledButton.icon(
+                  key: const Key('voice-output-regenerate-button'),
+                  onPressed: _isSubmittingVoiceOutputDemo
+                      ? null
+                      : _submitVoiceOutputDemoRequest,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('音声を作り直す'),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text('再生状態: ${playback.displayPhase}'),
+          if (playback.technicalCode != null) ...[
+            const SizedBox(height: 4),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              title: const Text('開発者向け再生詳細'),
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('code: ${playback.technicalCode}'),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _playVoiceOutputAudio(
     VoiceOutputDemoRequestResponse response,
   ) async {
     final uri = _resolveVoiceOutputAudioUri(response);
-
     if (uri == null) {
       setState(() {
-        _voiceOutputDemoError = '音声URLを開けませんでした。';
+        _voiceOutputDemoError = '音声をアプリ内で再生できませんでした。';
       });
       return;
     }
 
-    try {
-      final launched = await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
+    setState(() {
+      _voiceOutputDemoError = null;
+    });
+    await _voiceOutputAudioPlayerController.play(uri);
+  }
 
-      if (!launched) {
-        setState(() {
-          _voiceOutputDemoError = '音声URLを開けませんでした。';
-        });
-      }
-    } catch (error) {
-      setState(() {
-        _voiceOutputDemoError = error.toString();
-      });
-    }
+  Future<void> _stopVoiceOutputAudio() async {
+    await _voiceOutputAudioPlayerController.stop();
+  }
+
+  Future<void> _replayVoiceOutputAudio() async {
+    await _voiceOutputAudioPlayerController.replay();
   }
 
   String _formatUserFacingError(Object error) {

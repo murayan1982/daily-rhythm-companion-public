@@ -229,3 +229,21 @@ release records changed: false
 ```
 
 T-1b is COMPLETED / ACCEPTED; T-1c is CURRENT / NOT_COMPLETED. Parent T-1 remains CURRENT / NOT_COMPLETED.
+
+
+## T-1c implementation follow-up
+
+Status: IMPLEMENTED / NOT_ACCEPTED
+
+The historical pre-T-1 observations above remain the T-1a baseline. T-1c now adds a concrete `audioplayers` engine, HomeScreen in-app controls, and explicit HTTP 404/410 expiry mapping. The accepted Backend artifact route, 86400-second TTL, 100-artifact cap, opaque URL, no-store, and nosniff behavior remain unchanged.
+
+```text
+current playback mode: in-app audio player
+in-app player present: true
+expired state present: true
+HomeScreen runtime changed by T-1c: true
+Flutter dependency changed by T-1c: true
+existing voice-output widget tests updated: true
+real Framework/TTS execution in automated tests: false
+audible acceptance: pending
+```

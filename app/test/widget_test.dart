@@ -697,7 +697,7 @@ void main() {
       find.text('Playback candidate: non-playable (not generated: not started)'),
       findsOneWidget,
     );
-    expect(find.text('音声を開いて再生確認する'), findsNothing);
+    expect(find.text('音声を再生する'), findsNothing);
     expect(
       find.textContaining('Public UI does not print raw audio URLs or artifact refs'),
       findsOneWidget,
@@ -739,7 +739,7 @@ void main() {
     expect(find.text('Audio URL: available (URL hidden)'), findsOneWidget);
     expect(find.text('Audio artifact ref: not present'), findsOneWidget);
     expect(
-      find.text('Playback candidate: playable URL handoff (operator confirmation required)'),
+      find.text('Playback candidate: playable in-app URL handoff'),
       findsOneWidget,
     );
     expect(
@@ -747,7 +747,8 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Evidence: not evidence'), findsOneWidget);
-    expect(find.text('音声を開いて再生確認する'), findsOneWidget);
+    expect(find.text('アプリ内音声プレイヤー'), findsOneWidget);
+    expect(find.text('音声を再生する'), findsOneWidget);
     expect(find.textContaining('/__test__/voice-output-audio.mp3'), findsNothing);
   });
 
@@ -786,7 +787,7 @@ void main() {
       find.text('Playback candidate: non-playable (not generated: legacy audio ready)'),
       findsOneWidget,
     );
-    expect(find.text('音声を開いて再生確認する'), findsNothing);
+    expect(find.text('音声を再生する'), findsNothing);
     expect(find.textContaining('/__test__/legacy-voice-output.mp3'), findsNothing);
   });
 

@@ -1232,6 +1232,71 @@ T-1b acceptance record:
 
 T-1b was completed and accepted on 2026-07-24. Parent T-1 remains CURRENT / NOT_COMPLETED and T-1c is CURRENT / NOT_COMPLETED.
 
+## T-1c — Home UI integration, expired-artifact recovery, and T-1 acceptance
+
+Status: IMPLEMENTED / NOT_ACCEPTED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+
+Detailed contract: `docs/v210_tts_player_home_integration.md`
+
+Implementation boundary:
+
+```text
+- add audioplayers ^6.7.1 behind the accepted VoiceOutputAudioEngine interface;
+- use HTTP MP3 loading with 404/410 -> expired classification;
+- integrate one controller into HomeScreen lifetime and dispose it safely;
+- replace external URL launch with in-app play, stop, replay, and regenerate controls;
+- keep raw URLs and technical codes outside normal user copy;
+- add fake-driver engine tests and fake-engine widget tests;
+- update Windows CMake policy baseline for the selected plugin and Visual Studio 2026;
+- leave Backend runtime/tests, Framework/TTS providers, V-1, R-1, and release records unchanged.
+```
+
+T-1c change surface:
+
+```text
+app/pubspec.yaml
+app/pubspec.lock
+app/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+app/ios/Runner/GeneratedPluginRegistrant.m
+app/linux/flutter/generated_plugin_registrant.cc
+app/linux/flutter/generated_plugins.cmake
+app/macos/Flutter/GeneratedPluginRegistrant.swift
+app/windows/flutter/generated_plugin_registrant.cc
+app/windows/flutter/generated_plugins.cmake
+app/windows/CMakeLists.txt
+app/lib/services/audioplayers_voice_output_audio_engine.dart
+app/lib/screens/home_screen.dart
+app/test/audioplayers_voice_output_audio_engine_test.dart
+app/test/voice_output_audio_player_widget_test.dart
+app/test/widget_test.dart
+docs/v210_tts_player_home_integration.md
+docs/v210_tts_player_controller.md
+docs/v210_tts_player_current_behavior_inventory.md
+docs/DRC_v210_goal_checklist_small_commit.md
+scripts/check_v210_tts_player_home_integration.py
+scripts/check_v210_tts_player_controller.py
+scripts/check_v210_tts_player_current_behavior_inventory.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+existing v2.1.0 checks that previously pinned app/pubspec.yaml
+```
+
+Implementation verification target:
+
+```text
+- flutter pub get;
+- compileall and all v2.1.0 source-tree checks;
+- focused T-1b controller, T-1c engine, and T-1c widget tests;
+- full backend pytest, full Flutter test, Flutter Web build, and Windows build;
+- no real Framework/TTS execution in normal automated tests;
+- diff review, audible PC/smartphone Web review, and operator approval before acceptance synchronization.
+```
+
+T-1c is implemented but not accepted. Parent T-1 remains CURRENT / NOT_COMPLETED. V-1 and R-1 remain PLANNED.
+
 ---
 
 # V-1 — Character display extraction and deterministic states
@@ -1263,3 +1328,14 @@ Planned boundary:
 ```
 
 R-1 completion requirements must not be imported into W-1 or any earlier phase.
+
+T-1c Visual Studio 18 compatibility correction:
+
+```text
+- Flutter 3.41.7 / audioplayers 6.7.1 dependency resolution: passed
+- windows/flutter/CMakeLists.txt scaffold restoration: operator-local generated file
+- MSVC 14.5x experimental coroutine deprecation bridge: implemented
+- Windows build re-verification: required before commit
+- T-1c remains IMPLEMENTED / NOT_ACCEPTED
+```
+- Windows Flutter scaffold CMakeLists is tracked; only its ephemeral directory stays ignored.

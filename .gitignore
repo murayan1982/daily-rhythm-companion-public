@@ -57,8 +57,9 @@ external/AI-Character-Framework*/
 # =========================
 
 # Flutter SDK should not live inside this repository.
-# Keep this rule as a safety net.
-flutter/
+# Keep this rule scoped to a repository-root SDK checkout so nested app
+# platform directories such as app/windows/flutter remain trackable.
+/flutter/
 
 
 # =========================

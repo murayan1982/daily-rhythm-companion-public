@@ -1,5 +1,5 @@
 # Project-level configuration.
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 project(app LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
@@ -8,7 +8,7 @@ set(BINARY_NAME "app")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
-cmake_policy(VERSION 3.14...3.25)
+cmake_policy(VERSION 3.15...3.25)
 
 # Define build configuration option.
 get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -31,6 +31,14 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
+
+# Visual Studio 18 / MSVC 14.5x treats the legacy experimental coroutine
+# header used by audioplayers_windows 4.3.x as a hard deprecation error.
+# Flutter 3.41.x cannot resolve audioplayers 6.8.x yet, so keep the accepted
+# 6.7.1 compatibility line and suppress only this upstream deprecation guard.
+if(MSVC_VERSION GREATER_EQUAL 1950)
+  add_compile_definitions(_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+endif()
 
 # Compilation settings that should be applied to most targets.
 #

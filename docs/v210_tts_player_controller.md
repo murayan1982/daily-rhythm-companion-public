@@ -177,3 +177,8 @@ release records changed: false
 ```
 
 T-1b was completed and accepted on 2026-07-24. It does not complete parent T-1 and does not provide audible playback acceptance. T-1c is CURRENT / NOT_COMPLETED.
+
+
+## T-1c implementation follow-up
+
+T-1c now consumes the accepted controller from HomeScreen and injects either a fake engine in tests or `AudioplayersVoiceOutputAudioEngine` in the normal app. The controller interface and state semantics remain unchanged. T-1c is IMPLEMENTED / NOT_ACCEPTED; parent T-1 remains CURRENT / NOT_COMPLETED. Detailed integration contract: `docs/v210_tts_player_home_integration.md`.

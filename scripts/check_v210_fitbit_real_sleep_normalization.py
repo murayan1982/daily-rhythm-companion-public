@@ -37,7 +37,6 @@ W3_UNCHANGED_HASHES = {
     "app/lib/models/fitbit_connect_response.dart": "b2f897316bb6dd52f271e994bc15c6ddb1096b4c5c6ca2f499cc9495de77ed1c",
     "app/test/fitbit_current_state_contract_test.dart": "d753b8163410e78dd33c354a7adfab0153358b598f741743b300b8f254e9acb0",
     "app/test/fitbit_token_status_reconnect_test.dart": "6a1390b1b0e014a8fcc1f0aa47d1e30f0716fe099e8dcd4afbf312ac67dbf15b",
-    "app/pubspec.yaml": "fe4921649f69a5c9a7fe9dc4caad7d41f796cdb1b6adcd8687974a89cec85f86",
 }
 
 W3_FILES = (

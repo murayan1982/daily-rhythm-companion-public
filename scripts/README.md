@@ -446,6 +446,28 @@ cd ..
 
 The T-1b check is credential-free, provider-free, network-free, and decoder-free. It verifies the adapter-neutral engine interface, explicit playback state model, play/stop/replay/reset/expiry/disposal behavior, stale-operation guard, safe user-facing errors, fake-engine tests, unchanged HomeScreen/Backend/pubspec boundaries, and unchanged release records. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624`; T-1c and parent T-1 remain current and not completed.
 
+## T-1c Flutter in-app player integration
+
+```powershell
+flutter pub get
+python -m compileall -q backend scripts
+python scripts\check_v210_tts_player_current_behavior_inventory.py
+python scripts\check_v210_tts_player_controller.py
+python scripts\check_v210_tts_player_home_integration.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test test/voice_output_audio_player_test.dart
+flutter test test/audioplayers_voice_output_audio_engine_test.dart
+flutter test test/voice_output_audio_player_widget_test.dart
+flutter test
+flutter build web
+flutter build windows
+cd ..
+```
+
+The T-1c source-tree check validates the concrete audioplayers engine boundary, HTTP 404/410 expiry mapping, HomeScreen play/stop/replay/regenerate controls, CMake 3.15 Windows policy, mock-safe engine/widget tests, unchanged Backend runtime, and unchanged release records. It does not call Framework/TTS or produce audible acceptance. T-1c and parent T-1 remain NOT_ACCEPTED until local dependency/test, audible PC/smartphone Web review, diff review, and operator approval pass.
+
 ## C-1c Flutter lifecycle and recovery UI
 
 ```powershell

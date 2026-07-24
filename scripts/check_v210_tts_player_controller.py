@@ -32,9 +32,6 @@ UNCHANGED_T1B_HASHES = {
     "backend/tests/test_voice_output_artifact_store.py": "c0d103d7b25830f8752aa9a0238bb5495b2895aad6afd9682eec8064168b659f",
     "app/lib/models/voice_output_demo.dart": "e31f376e93d4c0dabdf543279314be234bf2a78bb7383ab2f0d28f161074673f",
     "app/lib/services/backend_api_client.dart": "1d754b931ee7811ce708dd5e0ab3d64bc7b3ecdb63f60f1819d8470976f28774",
-    "app/lib/screens/home_screen.dart": "85a791716bfb2996b964148a74ab3c7ae33fd1d2be51c7d11006968f7dddfc1c",
-    "app/test/widget_test.dart": "175eec29a41f1cd1731137eeb74444c4e11c02ec6e7494385eb7ca322a2fcfb1",
-    "app/pubspec.yaml": "fe4921649f69a5c9a7fe9dc4caad7d41f796cdb1b6adcd8687974a89cec85f86",
 }
 
 
@@ -156,8 +153,11 @@ def main() -> None:
     forbid(controller, "package:audioplayers", "concrete audio dependency")
     forbid(controller, "launchUrl", "external URL launch")
     forbid(controller, "audioUrl", "raw response URL field")
-    for package_name in ("audioplayers:", "just_audio:", "assets_audio_player:"):
-        forbid(pubspec, package_name, "T-1b audio dependency")
+    require(pubspec, "audioplayers: ^6.7.1", "T-1c concrete audio dependency")
+    home = read("app/lib/screens/home_screen.dart")
+    require(home, "AudioplayersVoiceOutputAudioEngine()", "T-1c concrete engine integration")
+    require(home, "voice-output-in-app-player", "T-1c Home integration")
+    read("scripts/check_v210_tts_player_home_integration.py")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
     assert_hashes(UNCHANGED_T1B_HASHES, "T-1b explicit non-change surface")
@@ -183,8 +183,8 @@ def main() -> None:
     print("v210_tts_player_controller_stop_replay: true")
     print("v210_tts_player_controller_expired_state: true")
     print("v210_tts_player_controller_stale_operation_guard: true")
-    print("v210_tts_player_controller_home_integration: false")
-    print("v210_tts_player_controller_dependency_changed: false")
+    print("v210_tts_player_controller_home_integration: true")
+    print("v210_tts_player_controller_dependency_changed: true")
     print("v210_tts_player_controller_backend_runtime_changed: false")
     print("v210_tts_player_controller_real_tts_execution: false")
     print("v210_tts_player_controller_release_records_changed: false")
