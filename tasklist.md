@@ -101,6 +101,38 @@ T-1c  PLANNED                 Home UI integration, expired-artifact recovery, an
 
 T-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。T-1bはCURRENT / NOT_COMPLETED、T-1cはPLANNED、親T-1はCURRENT / NOT_COMPLETEDのままである。
 
+### T-1b — Flutter player abstraction, states, and mock-safe tests
+
+Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+
+```text
+- VoiceOutputAudioEngineのapp-owned interfaceを追加する。
+- idle/loading/playing/stopped/completed/failed/expired stateを追加する。
+- play/stop/replay/reset/markExpired/disposeをcontrollerへ追加する。
+- http/https以外のsourceをengineへ渡さない。
+- user-facing messageへraw URL、private path、provider exceptionを出さない。
+- reset/dispose後の古いasync完了を無視する。
+- fake engineだけでfocused Flutter testを追加する。
+- HomeScreen、Backend、pubspec、実TTS、V-1/R-1を変更しない。
+```
+
+詳細: `docs/v210_tts_player_controller.md`
+
+実装時点:
+
+```text
+- T-1b source-tree check: prepared
+- focused Flutter test target: 10 tests
+- Backend runtime changed: false
+- HomeScreen integration: false
+- dependency changed: false
+- real Framework/TTS execution: false
+- release records changed: false
+```
+
+T-1bは実装済みだが、focused/full test、diff review、operator approval前なのでNOT_ACCEPTEDのままである。
+
 ---
 
 ## C-1 — Post-advice chat lifecycle and UI-state hardening

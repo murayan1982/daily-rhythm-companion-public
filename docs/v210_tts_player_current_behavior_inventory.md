@@ -128,7 +128,7 @@ They do not execute audio, observe play/stop/completion events, simulate an expi
 
 ```text
 T-1a  COMPLETED / ACCEPTED     inventory and implementation contract only
-T-1b  CURRENT / NOT_COMPLETED  player abstraction/state model and mock-safe tests
+T-1b  CURRENT / NOT_COMPLETED  player abstraction/state model and mock-safe tests (implementation added; not accepted)
 T-1c  PLANNED                 Home UI integration, expired recovery, aggregate T-1 acceptance
 ```
 
@@ -153,6 +153,23 @@ T-1c  PLANNED                 Home UI integration, expired recovery, aggregate T
 - run focused/full Flutter and Backend regressions;
 - synchronize T-1 acceptance only after diff review and operator approval.
 ```
+
+## Subsequent T-1b implementation state
+
+T-1b implementation added the adapter-neutral `VoiceOutputAudioEngine`, explicit playback state model, `VoiceOutputAudioPlayerController`, and fake-engine lifecycle tests. It did not change the accepted Backend artifact boundary, HomeScreen, BackendApiClient, response model, widget tests, pubspec, or external URL launch behavior.
+
+Current distinction:
+
+```text
+controller/state abstraction present: true
+HomeScreen in-app controls present: false
+concrete platform audio engine present: false
+dedicated audio dependency present: false
+expired Backend HTTP mapping present: false
+real/audible TTS execution: false
+```
+
+Detailed contract: `docs/v210_tts_player_controller.md`
 
 ## T-1a non-change boundary
 

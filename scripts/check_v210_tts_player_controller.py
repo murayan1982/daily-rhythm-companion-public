@@ -1,8 +1,7 @@
-"""Validate the T-1a TTS player current behavior inventory.
+"""Validate the T-1b Flutter audio-player abstraction and state contract.
 
-This check is source-tree only. It freezes the accepted pre-T-1 Backend artifact
-and Flutter voice-output baseline without reading private audio, calling providers,
-launching URLs, changing dependencies, or modifying release records.
+This check is source-tree only. It does not load private audio, launch a browser,
+call Framework/TTS providers, or execute a platform audio decoder.
 """
 
 from __future__ import annotations
@@ -25,7 +24,7 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-T1A_BASELINE_HASHES = {
+UNCHANGED_T1B_HASHES = {
     "backend/app/config.py": "ebe022db586ffbaaa6a37db2f43cddca218c4e1e91cee782ffd7b6c8e607d4a5",
     "backend/app/services/voice_output_artifact_store.py": "69804d2e9926b76d6f297a1e7919402b084f4e654749b3789d7d23cfc0951613",
     "backend/app/api/voice_output_demo.py": "ecb030e97b95f0825485108660c916530146cbcc5d5742f04916f686df14b0f7",
@@ -84,72 +83,84 @@ def assert_no_sensitive_values(relative: str, text: str) -> None:
 
 def main() -> None:
     checklist = read("docs/DRC_v210_goal_checklist_small_commit.md")
+    contract = read("docs/v210_tts_player_controller.md")
     inventory = read("docs/v210_tts_player_current_behavior_inventory.md")
+    controller = read("app/lib/services/voice_output_audio_player.dart")
+    tests = read("app/test/voice_output_audio_player_test.dart")
     readme = read("README.md")
     roadmap = read("roadmap.md")
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
+    pubspec = read("app/pubspec.yaml")
+
+    for text, label in (
+        (checklist, "checklist"),
+        (readme, "README"),
+        (roadmap, "roadmap"),
+        (tasklist, "tasklist"),
+        (scripts_readme, "scripts README"),
+    ):
+        require(text, "T-1b", f"{label} T-1b marker")
+        require(text, "T-1c", f"{label} T-1c marker")
 
     require(checklist, "Current small commit: T-1b", "checklist current small commit")
-    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "parent T-1 state")
-    require(checklist, "T-1a  COMPLETED / ACCEPTED", "T-1a state")
     require(checklist, "T-1b  CURRENT / NOT_COMPLETED", "T-1b state")
+    require(checklist, "Implementation state: IMPLEMENTED / NOT_ACCEPTED", "T-1b implementation state")
     require(checklist, "T-1c  PLANNED", "T-1c state")
-    require(checklist, "C-1  COMPLETED / ACCEPTED", "C-1 accepted state")
     require(checklist, "V-1  PLANNED", "V-1 state")
     require(checklist, "R-1  PLANNED", "R-1 state")
-    require(readme, "Current small commit: T-1b", "README current small commit")
-    require(roadmap, "Current small commit: T-1b", "roadmap current small commit")
-    require(tasklist, "current small commit: T-1b CURRENT / NOT_COMPLETED", "tasklist current state")
-    require(scripts_readme, "check_v210_tts_player_current_behavior_inventory.py", "scripts command")
+    require(contract, "Status: IMPLEMENTED / NOT_ACCEPTED", "contract status")
+    require(contract, "VoiceOutputAudioEngine", "engine abstraction")
+    require(contract, "VoiceOutputAudioPlayerController", "controller contract")
+    require(inventory, "T-1b implementation added", "inventory follow-up")
+    require(scripts_readme, "check_v210_tts_player_controller.py", "T-1b command")
 
     for marker in (
-        "Status: T-1a COMPLETED / ACCEPTED",
-        "VOICE_OUTPUT_ARTIFACT_TTL_SECONDS=86400",
-        "VOICE_OUTPUT_ARTIFACT_MAX_COUNT=100",
-        "/demo/voice-output/audio/{artifact_id}",
-        "LaunchMode.externalApplication",
-        "no dedicated audio-player package",
-        "T-1b  CURRENT / NOT_COMPLETED",
-        "T-1c  PLANNED",
-        "T-1b implementation added",
+        "enum VoiceOutputPlaybackPhase",
+        "idle,",
+        "loading,",
+        "playing,",
+        "stopped,",
+        "completed,",
+        "failed,",
+        "expired,",
+        "abstract interface class VoiceOutputAudioEngine",
+        "class VoiceOutputAudioPlayerController extends ChangeNotifier",
+        "Future<void> play(Uri source)",
+        "Future<void> stop()",
+        "Future<void> replay()",
+        "Future<void> markExpired",
+        "Future<void> reset()",
+        "source.scheme == 'http' || source.scheme == 'https'",
+        "unsupported_audio_uri",
+        "audio_artifact_expired",
+        "unawaited(_engine.dispose())",
     ):
-        require(inventory, marker, "T-1a inventory marker")
+        require(controller, marker, "controller marker")
 
-    config = read("backend/app/config.py")
-    store = read("backend/app/services/voice_output_artifact_store.py")
-    api = read("backend/app/api/voice_output_demo.py")
-    flutter_model = read("app/lib/models/voice_output_demo.dart")
-    flutter_client = read("app/lib/services/backend_api_client.dart")
-    home = read("app/lib/screens/home_screen.dart")
-    pubspec = read("app/pubspec.yaml")
-    widget_tests = read("app/test/widget_test.dart")
-    player_controller = read("app/lib/services/voice_output_audio_player.dart")
+    for marker in (
+        "play exposes loading before becoming playing",
+        "stop produces a replayable stopped state",
+        "completion event produces replay-ready state",
+        "replay seeks to the beginning and starts again",
+        "expired engine failure clears the source and blocks replay",
+        "ordinary engine failure stays retryable without exposing URL",
+        "unsupported URI fails before the engine sees it",
+        "reset invalidates a pending load result",
+        "dispose closes the engine",
+        "_FakeVoiceOutputAudioEngine",
+    ):
+        require(tests, marker, "focused test marker")
 
-    require(config, "voice_output_artifact_ttl_seconds: int = 86400", "accepted artifact TTL")
-    require(config, "voice_output_artifact_max_count: int = 100", "accepted artifact cap")
-    require(store, 'audio_url=f"/demo/voice-output/audio/{artifact_id}"', "opaque audio URL")
-    require(store, '"mp3": "audio/mpeg"', "MP3 media type")
-    require(store, "current_time - modified_at >= self._ttl_seconds", "TTL cleanup")
-    require(api, '"Cache-Control": "no-store"', "no-store header")
-    require(api, '"X-Content-Type-Options": "nosniff"', "nosniff header")
-    require(api, 'detail="Voice output audio artifact was not found."', "generic audio 404")
-    require(flutter_model, "final String? audioUrl;", "Flutter audio URL field")
-    require(flutter_model, "final String audioPlaybackStatus;", "response playback metadata")
-    require(flutter_client, "Future<VoiceOutputDemoRequestResponse> submitVoiceOutputDemoRequest", "voice request client")
-    forbid(flutter_client, "fetchVoiceOutputAudio", "audio fetch helper")
-    require(home, "LaunchMode.externalApplication", "external playback launch")
-    require(home, "音声を開いて再生確認する", "external playback button")
-    forbid(home, "AudioPlayer", "in-app AudioPlayer")
-    require(pubspec, "url_launcher:", "url launcher dependency")
+    forbid(controller, "package:just_audio", "concrete audio dependency")
+    forbid(controller, "package:audioplayers", "concrete audio dependency")
+    forbid(controller, "launchUrl", "external URL launch")
+    forbid(controller, "audioUrl", "raw response URL field")
     for package_name in ("audioplayers:", "just_audio:", "assets_audio_player:"):
-        forbid(pubspec, package_name, "dedicated audio dependency")
-    require(widget_tests, "Voice output demo shows playback handoff when audio is ready", "playback visibility test")
-    require(widget_tests, "Voice output demo keeps legacy audio URL non-playable", "legacy non-playable test")
-    require(player_controller, "class VoiceOutputAudioPlayerController extends ChangeNotifier", "T-1b controller follow-up")
+        forbid(pubspec, package_name, "T-1b audio dependency")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
-    assert_hashes(T1A_BASELINE_HASHES, "T-1a pre-runtime baseline")
+    assert_hashes(UNCHANGED_T1B_HASHES, "T-1b explicit non-change surface")
 
     for relative in (
         "README.md",
@@ -158,23 +169,26 @@ def main() -> None:
         "scripts/README.md",
         "docs/DRC_v210_goal_checklist_small_commit.md",
         "docs/v210_tts_player_current_behavior_inventory.md",
+        "docs/v210_tts_player_controller.md",
+        "app/lib/services/voice_output_audio_player.dart",
+        "app/test/voice_output_audio_player_test.dart",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_tts_player_inventory_status: completed-accepted")
-    print("v210_tts_player_inventory_current_small_commit: T-1b")
-    print("v210_tts_player_inventory_parent_phase: T-1-current-not-completed")
-    print("v210_tts_player_inventory_backend_artifact_ttl_seconds: 86400")
-    print("v210_tts_player_inventory_backend_artifact_max_count: 100")
-    print("v210_tts_player_inventory_current_playback_mode: external-url-launch")
-    print("v210_tts_player_inventory_in_app_player_present: false")
-    print("v210_tts_player_inventory_expired_state_present: false")
-    print("v210_tts_player_inventory_t1b_controller_started: true")
-    print("v210_tts_player_inventory_runtime_changed: false")
-    print("v210_tts_player_inventory_existing_tests_changed: false")
-    print("v210_tts_player_inventory_real_tts_execution: false")
-    print("v210_tts_player_inventory_release_records_changed: false")
-    print("[v210-tts-player-current-behavior-inventory-check] OK")
+    print("v210_tts_player_controller_status: implemented-not-accepted")
+    print("v210_tts_player_controller_current_small_commit: T-1b")
+    print("v210_tts_player_controller_parent_phase: T-1-current-not-completed")
+    print("v210_tts_player_controller_state_model: true")
+    print("v210_tts_player_controller_engine_abstraction: true")
+    print("v210_tts_player_controller_stop_replay: true")
+    print("v210_tts_player_controller_expired_state: true")
+    print("v210_tts_player_controller_stale_operation_guard: true")
+    print("v210_tts_player_controller_home_integration: false")
+    print("v210_tts_player_controller_dependency_changed: false")
+    print("v210_tts_player_controller_backend_runtime_changed: false")
+    print("v210_tts_player_controller_real_tts_execution: false")
+    print("v210_tts_player_controller_release_records_changed: false")
+    print("[v210-tts-player-controller-check] OK")
 
 
 if __name__ == "__main__":

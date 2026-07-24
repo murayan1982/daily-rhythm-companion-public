@@ -430,6 +430,22 @@ cd ..
 
 The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the current external URL launch flow, generic 404 handling, and the absence of an in-app player state model. It does not fetch or play audio, launch a browser, call Framework/TTS providers, read private artifacts, add an audio dependency, or change runtime/tests. T-1a is COMPLETED / ACCEPTED at implementation commit `0b06378` after 110 Backend tests, 64 Flutter tests, diff review, operator approval, and push passed. T-1b is CURRENT / NOT_COMPLETED; T-1c remains planned.
 
+## T-1b Flutter audio-player controller contract
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_tts_player_current_behavior_inventory.py
+python scripts\check_v210_tts_player_controller.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test test/voice_output_audio_player_test.dart
+flutter test
+cd ..
+```
+
+The T-1b check is credential-free, provider-free, network-free, and decoder-free. It verifies the adapter-neutral engine interface, explicit playback state model, play/stop/replay/reset/expiry/disposal behavior, stale-operation guard, safe user-facing errors, fake-engine tests, unchanged HomeScreen/Backend/pubspec boundaries, and unchanged release records. T-1b is IMPLEMENTED / NOT_ACCEPTED; T-1c and parent T-1 remain not completed.
+
 ## C-1c Flutter lifecycle and recovery UI
 
 ```powershell

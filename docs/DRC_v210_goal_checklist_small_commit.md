@@ -1148,6 +1148,72 @@ T-1a acceptance record:
 
 T-1a was completed and accepted on 2026-07-24. T-1b is CURRENT / NOT_COMPLETED; T-1c remains PLANNED. Parent T-1 remains CURRENT / NOT_COMPLETED.
 
+## T-1b — Flutter player abstraction, states, and mock-safe tests
+
+Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+
+Detailed contract: `docs/v210_tts_player_controller.md`
+
+Implementation boundary:
+
+```text
+- add an app-owned VoiceOutputAudioEngine interface;
+- add VoiceOutputPlaybackPhase and immutable VoiceOutputPlaybackState;
+- add VoiceOutputAudioPlayerController with play, stop, replay, reset, expiry, and disposal;
+- accept only http/https sources and keep raw URIs out of user-facing state;
+- invalidate stale asynchronous load/play completions after reset/replacement/disposal;
+- add fake-engine focused tests for lifecycle, failure, expiry, and disposal;
+- add no concrete audio plugin and do not integrate HomeScreen in T-1b;
+- leave Backend runtime/tests, V-1, R-1, and release records unchanged.
+```
+
+T-1b change surface:
+
+```text
+app/lib/services/voice_output_audio_player.dart
+app/test/voice_output_audio_player_test.dart
+docs/v210_tts_player_controller.md
+docs/v210_tts_player_current_behavior_inventory.md
+docs/DRC_v210_goal_checklist_small_commit.md
+scripts/check_v210_tts_player_controller.py
+scripts/check_v210_tts_player_current_behavior_inventory.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+```
+
+Explicit non-change surface:
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/screens/home_screen.dart
+app/lib/models/voice_output_demo.dart
+app/lib/services/backend_api_client.dart
+app/test/widget_test.dart
+app/pubspec.yaml
+app/pubspec.lock
+AI Character Framework/provider runtime
+private audio and operator evidence
+V-1 / R-1 runtime
+released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
+```
+
+T-1b implementation verification target:
+
+```text
+- python -m compileall -q backend scripts;
+- T-1a and T-1b source-tree checks;
+- focused app/test/voice_output_audio_player_test.dart;
+- full backend pytest and full Flutter test;
+- no real audio download/decode/playback or Framework/TTS execution;
+- diff review and operator approval before acceptance synchronization.
+```
+
+T-1b remains NOT_ACCEPTED until the focused/full gates, diff review, and operator approval pass. Parent T-1 remains CURRENT / NOT_COMPLETED and T-1c remains PLANNED.
+
 ---
 
 # V-1 — Character display extraction and deterministic states

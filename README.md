@@ -182,6 +182,8 @@ T-1c  PLANNED                 Home UI integration, expired-artifact recovery, an
 
 T-1a is completed and accepted at implementation commit `0b06378`. It records the existing DRC-owned opaque MP3 handoff, accepted 24-hour/100-artifact retention, generic audio-route 404 behavior, external URL launch flow, and missing in-app playback/expired-state model without changing runtime or tests. Acceptance passed after compileall, all accepted v2.1.0 checks, v2.0.x guards, 110 Backend tests, 64 Flutter tests, diff review, operator approval, and push. T-1b is CURRENT / NOT_COMPLETED; T-1c remains PLANNED. Detailed inventory: [`docs/v210_tts_player_current_behavior_inventory.md`](docs/v210_tts_player_current_behavior_inventory.md).
 
+T-1b implementation is present but not accepted. It adds an app-owned `VoiceOutputAudioEngine` abstraction, a `VoiceOutputAudioPlayerController`, explicit idle/loading/playing/stopped/completed/failed/expired states, stale-operation invalidation, safe stop/replay/reset/dispose behavior, and fake-engine Flutter tests. HomeScreen integration, a concrete platform audio plugin, artifact HTTP expiry mapping, audible playback evidence, and parent T-1 acceptance remain T-1c work. See [`docs/v210_tts_player_controller.md`](docs/v210_tts_player_controller.md).
+
 The accepted C-1b mock-safe gate is:
 
 ```powershell
