@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/character_display_presentation.dart';
 import '../models/character_preset.dart';
+import '../ui/character_asset_catalog.dart';
 
 class CharacterDisplayCard extends StatelessWidget {
   const CharacterDisplayCard({
@@ -9,12 +10,14 @@ class CharacterDisplayCard extends StatelessWidget {
     required this.character,
     required this.presentation,
     required this.imageAssetPath,
+    this.fallbackImageAssetPath = CharacterAssetCatalog.fallbackCharacter,
     this.imageKey = const ValueKey<String>('selected-character-image'),
   });
 
   final CharacterPreset? character;
   final CharacterDisplayPresentation presentation;
   final String imageAssetPath;
+  final String fallbackImageAssetPath;
   final Key imageKey;
 
   @override
@@ -47,16 +50,27 @@ class CharacterDisplayCard extends StatelessWidget {
                 height: 180,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    key: const Key('character-display-missing-image'),
+                  return Image.asset(
+                    fallbackImageAssetPath,
+                    key: const ValueKey<String>(
+                      'selected-character-fallback-image',
+                    ),
                     width: 180,
                     height: 180,
-                    alignment: Alignment.center,
-                    color: colorScheme.surface,
-                    child: const Icon(
-                      Icons.image_not_supported_outlined,
-                      size: 48,
-                    ),
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        key: const Key('character-display-missing-image'),
+                        width: 180,
+                        height: 180,
+                        alignment: Alignment.center,
+                        color: colorScheme.surface,
+                        child: const Icon(
+                          Icons.image_not_supported_outlined,
+                          size: 48,
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -105,6 +119,7 @@ class CharacterDisplayCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _DetailRow(
+            key: const Key('character-display-name'),
             label: 'Name',
             value: character?.displayName.trim().isNotEmpty == true
                 ? character!.displayName
@@ -112,16 +127,24 @@ class CharacterDisplayCard extends StatelessWidget {
           ),
           if (character != null) ...[
             _DetailRow(
+              key: const Key('character-display-personality'),
               label: 'Personality',
               value: character!.personalityType,
             ),
             _DetailRow(
+              key: const Key('character-display-speaking'),
               label: 'Speaking',
               value: character!.speakingStyle,
             ),
             _DetailRow(
+              key: const Key('character-display-advice-style'),
               label: 'Advice style',
               value: character!.adviceStyle,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'このキャラクターの話し方で、今日の気分と睡眠コンテキストをもとにアドバイスします。',
+              key: Key('character-display-profile-note'),
             ),
           ],
           if (presentation.isFallback) ...[
@@ -164,6 +187,7 @@ class CharacterDisplayCard extends StatelessWidget {
 
 class _DetailRow extends StatelessWidget {
   const _DetailRow({
+    super.key,
     required this.label,
     required this.value,
   });

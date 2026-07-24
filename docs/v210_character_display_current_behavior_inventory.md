@@ -255,7 +255,7 @@ release records changed: false
 ```
 
 V-1a was completed and accepted on 2026-07-24. Parent V-1 remains CURRENT / NOT_COMPLETED.
-V-1b is COMPLETED / ACCEPTED at implementation commit `e1f8d6f`; V-1c is CURRENT / NOT_COMPLETED and NOT_STARTED; R-1 remains PLANNED.
+V-1b is COMPLETED / ACCEPTED at implementation commit `e1f8d6f`; V-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED; R-1 remains PLANNED.
 
 ## V-1 implementation split
 
@@ -294,6 +294,8 @@ Exact precedence and user-facing copy are frozen in `docs/v210_character_display
 
 ### V-1c — HomeScreen extraction and integration
 
+Status: IMPLEMENTED / NOT_ACCEPTED
+
 ```text
 Status: CURRENT / NOT_COMPLETED
 Implementation state: NOT_STARTED
@@ -306,7 +308,7 @@ Implementation state: NOT_STARTED
 - Do not change Backend runtime, Motion Demo execution, dependencies/assets, or release records.
 ```
 
-V-1 and V-1c are not completed from V-1a acceptance. A separate acceptance sync is required
+V-1c is implemented but not accepted. V-1 and V-1c are not completed from source presence. A separate acceptance sync is required
 after focused tests, aggregate tests, builds required by the accepted contract, diff review, and
 operator approval pass.
 
@@ -345,3 +347,8 @@ git diff --check
 
 Normal verification remains credential-free, provider-free, network-free, decoder-free, and
 motion-adapter-free.
+
+
+## V-1c implementation handoff
+
+V-1c connects `CharacterDisplayPresentation` and `CharacterDisplayCard` from HomeScreen, maps existing mood/advice/loading/TTS playback state deterministically, adds repository fallback-image retry, and adds focused mock-safe integration coverage. Backend, Motion Demo, dependencies, static assets, real provider execution, and release records remain unchanged. Detailed contract: `docs/v210_character_display_home_integration.md`. Status remains `IMPLEMENTED / NOT_ACCEPTED`; parent V-1 remains `CURRENT / NOT_COMPLETED`; R-1 remains `PLANNED`.

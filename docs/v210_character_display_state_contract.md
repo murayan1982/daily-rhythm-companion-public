@@ -5,7 +5,7 @@ Status: COMPLETED / ACCEPTED
 Parent phase: V-1 CURRENT / NOT_COMPLETED
 Completed small commit: V-1b — Deterministic presentation model and standalone widget
 Current small commit: V-1c — HomeScreen extraction and integration
-Current small commit: V-1c — HomeScreen extraction and integration (CURRENT / NOT_COMPLETED; NOT_STARTED)
+Current small commit: V-1c — HomeScreen extraction and integration (CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED)
 
 ## Purpose
 
@@ -118,7 +118,7 @@ payload is accepted as display input.
 
 HomeScreen still owns all data loading, character selection, mood copy, advice creation, and
 TTS control. V-1b does not import or instantiate the standalone widget from HomeScreen.
-The repository fallback-image retry before the generic placeholder remains V-1c integration work.
+V-1c implements repository fallback-image retry before the generic placeholder and connects this accepted model/card from HomeScreen.
 
 ## Focused test contract
 
@@ -175,4 +175,9 @@ real provider or motion execution: false
 release records changed: false
 ```
 
-V-1b is `COMPLETED / ACCEPTED`. V-1c is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; parent V-1 remains current/not completed and R-1 remains planned.
+V-1b is `COMPLETED / ACCEPTED`. V-1c is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; parent V-1 remains current/not completed and R-1 remains planned. Detailed integration contract: `docs/v210_character_display_home_integration.md`.
+
+
+## V-1c integration status
+
+V-1c now imports this accepted model and card into HomeScreen, connects existing mood/advice/loading/speaking inputs, retries the repository fallback image, and adds focused HomeScreen coverage. It does not change this model's precedence or claim Live2D/VTube Studio execution. Status: `IMPLEMENTED / NOT_ACCEPTED`. Parent V-1 remains `CURRENT / NOT_COMPLETED`; R-1 remains `PLANNED`.

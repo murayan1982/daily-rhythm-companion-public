@@ -90,6 +90,32 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
+  testWidgets('retries the repository fallback image before generic placeholder', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        presentation: _resolve(),
+        imageAssetPath: 'assets/images/characters/not_registered.png',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final fallbackImage = tester.widget<Image>(
+      find.byKey(
+        const ValueKey<String>('selected-character-fallback-image'),
+      ),
+    );
+    expect(
+      (fallbackImage.image as AssetImage).assetName,
+      CharacterAssetCatalog.fallbackCharacter,
+    );
+    expect(
+      find.byKey(const Key('character-display-missing-image')),
+      findsNothing,
+    );
+  });
+
   testWidgets('fallback presentation uses safe static-runtime wording', (
     tester,
   ) async {

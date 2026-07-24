@@ -14,7 +14,7 @@ completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
 current small commit: V-1 CURRENT / NOT_COMPLETED
 current implementation step: V-1c CURRENT / NOT_COMPLETED
-current implementation state: NOT_STARTED
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -72,6 +72,7 @@ Status: CURRENT / NOT_COMPLETED
 V-1a  COMPLETED / ACCEPTED         current behavior inventory and implementation contract
 V-1b  COMPLETED / ACCEPTED         deterministic presentation model and standalone widget
 V-1c  CURRENT / NOT_COMPLETED       HomeScreen extraction and integration
+      IMPLEMENTED / NOT_ACCEPTED
        NOT_STARTED
 ```
 
@@ -90,7 +91,7 @@ V-1c  CURRENT / NOT_COMPLETED       HomeScreen extraction and integration
 
 詳細: `docs/v210_character_display_current_behavior_inventory.md`
 
-V-1aは実装コミット`1602b2f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、Flutter test 84件、diff確認、明示的なオペレーター承認が通過した。Flutter runtime、Backend runtime、既存テスト、dependencies/assets、real provider/motion execution、release recordsは変更していない。V-1bはCOMPLETED / ACCEPTED、V-1cはCURRENT / NOT_COMPLETEDかつNOT_STARTED、R-1はPLANNED。
+V-1aは実装コミット`1602b2f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、Flutter test 84件、diff確認、明示的なオペレーター承認が通過した。Flutter runtime、Backend runtime、既存テスト、dependencies/assets、real provider/motion execution、release recordsは変更していない。V-1bはCOMPLETED / ACCEPTED、V-1cはCURRENT / NOT_COMPLETEDかつIMPLEMENTED / NOT_ACCEPTED、R-1はPLANNED。
 
 ### V-1b — Deterministic presentation model and standalone widget
 
@@ -108,7 +109,7 @@ Status: COMPLETED / ACCEPTED
 
 詳細: `docs/v210_character_display_state_contract.md`
 
-V-1bは実装コミット`e1f8d6f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、focused model 9件、focused widget 4件、Flutter test 97件、diff確認、明示的なオペレーター承認が通過した。HomeScreen、Backend、Motion Demo、dependency、asset、real provider/motion execution、release recordsは変更していない。V-1cはCURRENT / NOT_COMPLETEDかつNOT_STARTED。
+V-1bは実装コミット`e1f8d6f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、focused model 9件、focused widget 4件、Flutter test 97件、diff確認、明示的なオペレーター承認が通過した。HomeScreen、Backend、Motion Demo、dependency、asset、real provider/motion execution、release recordsは変更していない。V-1cはCURRENT / NOT_COMPLETEDかつIMPLEMENTED / NOT_ACCEPTED。
 
 ### V-1c — HomeScreen extraction and integration
 
@@ -123,7 +124,7 @@ Implementation state: NOT_STARTED
 - Live2D/VTS実接続、Backend変更、asset追加、R-1を含めない。
 ```
 
-Parent V-1はV-1c実装だけでは完了せず、focused/aggregate checks、必要build、diff確認、オペレーター承認、別acceptance syncが必要である。
+V-1cは実装済みだが未受け入れ。Parent V-1はV-1c実装だけでは完了せず、focused/aggregate checks、Web/Windows build、diff確認、オペレーター承認、別acceptance syncが必要である。詳細: `docs/v210_character_display_home_integration.md`。
 
 ---
 
@@ -910,7 +911,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1は受け入れ済みで、Google Health API経由のreal provider executionとPC/スマートフォンWeb、アプリ内TTS再生まで確認済みである。現在はV-1bがCOMPLETED / ACCEPTEDで、V-1cがCURRENT / NOT_COMPLETEDかつNOT_STARTEDである。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1は受け入れ済みで、Google Health API経由のreal provider executionとPC/スマートフォンWeb、アプリ内TTS再生まで確認済みである。現在はV-1bがCOMPLETED / ACCEPTEDで、V-1cがCURRENT / NOT_COMPLETEDかつIMPLEMENTED / NOT_ACCEPTEDである。
 
 ---
 
@@ -931,7 +932,7 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-5、C-1、T-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生が確認済みである。現在はV-1がCURRENT / NOT_COMPLETEDで、V-1aとV-1bはCOMPLETED / ACCEPTED。V-1cはCURRENT / NOT_COMPLETEDかつNOT_STARTED、R-1はPLANNED、v3.0.0は計画段階である。
+v2.1.0はW-1からW-5、C-1、T-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生が確認済みである。現在はV-1がCURRENT / NOT_COMPLETEDで、V-1aとV-1bはCOMPLETED / ACCEPTED。V-1cはCURRENT / NOT_COMPLETEDかつIMPLEMENTED / NOT_ACCEPTED、R-1はPLANNED、v3.0.0は計画段階である。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally

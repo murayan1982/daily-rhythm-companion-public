@@ -23,6 +23,10 @@ class CharacterAssetCatalog {
     fallbackCharacter,
   ];
 
+  static bool hasCharacterAsset(String characterId) {
+    return characterImages.containsKey(characterId);
+  }
+
   static String imageForCharacter(String characterId) {
     return characterImages[characterId] ?? fallbackCharacter;
   }

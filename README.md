@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1 through W-5, C-1, and T-1 COMPLETED / ACCEPTED; V-1 CURRENT / NOT_COMPLETED**)
-Current small commit: V-1c — HomeScreen extraction and integration (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: V-1c — HomeScreen extraction and integration (**CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -17,7 +17,7 @@ T-1  COMPLETED / ACCEPTED
 V-1  CURRENT / NOT_COMPLETED
   V-1a  COMPLETED / ACCEPTED
   V-1b  COMPLETED / ACCEPTED
-  V-1c  CURRENT / NOT_COMPLETED  (NOT_STARTED)
+  V-1c  CURRENT / NOT_COMPLETED  (IMPLEMENTED / NOT_ACCEPTED)
 R-1  PLANNED
 ```
 
@@ -105,7 +105,12 @@ python scripts\check_v210_fitbit_current_behavior_inventory.py
 python -m pytest -q backend/tests
 
 cd app
+flutter test test/character_display_presentation_test.dart
+flutter test test/character_display_card_test.dart
+flutter test test/character_display_home_integration_test.dart
 flutter test
+flutter build web
+flutter build windows
 cd ..
 ```
 
@@ -198,18 +203,20 @@ T-1b is completed and accepted at implementation commit `161e624`. Acceptance pa
 
 T-1c and parent T-1 are completed and accepted. Implementation commit `4d3d5d5` plus desktop plugin registrant follow-up `9771f76` add the app-owned `audioplayers` engine, HomeScreen play/stop/replay/regenerate controls, HTTP 404/410 expiry mapping, Windows/Web build compatibility, and mock-safe engine/widget regressions. Acceptance passed with 20 focused Flutter tests, 110 Backend tests, 84 Flutter tests, Web and Windows builds, PC/smartphone audible playback, stop/replay/completion, expiry mapping, regenerate recovery, raw URL/private-path hiding, diff review, and operator approval. Backend runtime and release records remain unchanged. V-1 is current. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
 
-V-1 is split into three implementation steps. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b is completed and accepted at implementation commit `e1f8d6f`; V-1c is current/not completed and not started; parent V-1 remains current/not completed.
+V-1 is split into three implementation steps. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b is completed and accepted at implementation commit `e1f8d6f`; V-1c is implemented/not accepted; parent V-1 remains current/not completed.
 
 ```text
 V-1a  COMPLETED / ACCEPTED         Current behavior inventory and implementation contract
 V-1b  COMPLETED / ACCEPTED         Deterministic presentation model and standalone widget
 V-1c  CURRENT / NOT_COMPLETED       HomeScreen extraction and integration
-       NOT_STARTED
+       IMPLEMENTED / NOT_ACCEPTED
 ```
 
 V-1a records the 4,195-line HomeScreen ownership, the 2,669-line existing widget-test baseline, three static character assets, one fallback asset, separate mood/advice/loading/TTS state, and the guarded Motion Demo boundary. It changed no Flutter runtime, Backend runtime, existing tests, dependencies, assets, provider execution, or release records. Acceptance passed after compileall, all `check_v210_*.py`, v2.0.x compatibility and maintenance guards, 110 Backend tests, 84 Flutter tests, diff review, and explicit operator approval. Detailed inventory: [`docs/v210_character_display_current_behavior_inventory.md`](docs/v210_character_display_current_behavior_inventory.md).
 
 V-1b is completed and accepted at implementation commit `e1f8d6f`. It adds the app-owned `CharacterDisplayPresentation` content/activity model, the standalone static `CharacterDisplayCard`, nine model tests, and four widget tests. Content precedence is character unavailable → asset unavailable → framework fallback → advice → mood; activity precedence is speaking → loading → idle. Acceptance passed after compileall, all v2.1.0 checks, v2.0.x guards, 110 Backend tests, 9 focused model tests, 4 focused widget tests, 97 full Flutter tests, diff review, and explicit operator approval. HomeScreen, Backend, Motion Demo, dependencies, and static assets remained unchanged. V-1c is current and owns HomeScreen integration. Detailed contract: [`docs/v210_character_display_state_contract.md`](docs/v210_character_display_state_contract.md).
+
+V-1c is implemented and not yet accepted. It connects the accepted presentation model/card to HomeScreen mood, advice, initial/advice/TTS loading, and in-app playback speaking state; adds repository fallback-image retry and unknown-ID fallback; updates the existing character-choice regression; and adds five focused HomeScreen integration tests plus one fallback-image widget test. Backend, Motion Demo, dependencies, and static assets remain unchanged. Expected Flutter total is 103 tests. Parent V-1 remains current/not completed and R-1 remains planned. Detailed contract: [`docs/v210_character_display_home_integration.md`](docs/v210_character_display_home_integration.md).
 
 Run the V-1a source-tree check with:
 
@@ -217,6 +224,7 @@ Run the V-1a source-tree check with:
 python -m compileall -q backend scripts
 python scripts\check_v210_character_display_current_behavior_inventory.py
 python scripts\check_v210_character_display_state.py
+python scripts\check_v210_character_display_home_integration.py
 python -m pytest -q backend/tests
 
 cd app

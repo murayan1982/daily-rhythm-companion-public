@@ -4,7 +4,7 @@ Updated: 2026-07-24
 Status: IN_PROGRESS
 Current small commit: V-1c — HomeScreen extraction and integration
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Parent V-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -88,6 +88,7 @@ V-1  CURRENT / NOT_COMPLETED                  Character display extraction and d
   V-1a  COMPLETED / ACCEPTED                     Current behavior inventory and implementation contract
   V-1b  COMPLETED / ACCEPTED                       Deterministic presentation model and standalone widget
   V-1c  CURRENT / NOT_COMPLETED                     HomeScreen extraction and integration
+         IMPLEMENTED / NOT_ACCEPTED
          NOT_STARTED
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
@@ -1408,7 +1409,7 @@ V-1a acceptance record:
 - release records changed: false
 ```
 
-V-1a and V-1b were completed and accepted on 2026-07-24. V-1c is now CURRENT / NOT_COMPLETED and NOT_STARTED. R-1 remains PLANNED.
+V-1a and V-1b were completed and accepted on 2026-07-24. V-1c is now CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. R-1 remains PLANNED.
 
 ## V-1b — Deterministic presentation model and standalone widget
 
@@ -1449,25 +1450,28 @@ V-1b acceptance record:
 - release records changed: false
 ```
 
-V-1b was completed and accepted on 2026-07-24. V-1c is now CURRENT / NOT_COMPLETED and NOT_STARTED.
+V-1b was completed and accepted on 2026-07-24. V-1c is now CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED.
 
 ## V-1c — HomeScreen extraction and integration
 
 Status: CURRENT / NOT_COMPLETED
-Implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 
-Planned boundary:
+Implemented boundary:
 
 ```text
 - Connect the accepted standalone widget from HomeScreen.
 - Keep HomeScreen data loading, selection callback, advice creation, and TTS control ownership.
 - Connect mood/advice/loading/speaking/fallback inputs deterministically.
 - Retry the repository-safe fallback asset before a generic missing-image placeholder.
-- Add focused integration tests and preserve existing behavior.
+- Add five focused HomeScreen integration tests and one additional fallback-image card test.
+- Preserve existing character selection, profile, asset, advice, and TTS regressions.
 - Do not claim Live2D/VTS execution or advance R-1.
 ```
 
-Parent V-1 remains NOT_COMPLETED until V-1c checks, required builds, diff review, operator approval, and a separate acceptance sync pass.
+Detailed contract: `docs/v210_character_display_home_integration.md`.
+
+V-1c remains IMPLEMENTED / NOT_ACCEPTED. Parent V-1 remains NOT_COMPLETED until V-1c focused/full checks, Web/Windows builds, diff review, operator approval, and a separate acceptance sync pass.
 
 ---
 

@@ -1,8 +1,6 @@
 """Validate the V-1b deterministic character display state boundary.
 
-This check is source-tree only. It verifies the app-owned presentation model,
-standalone static widget, focused fake/model-only tests, unchanged HomeScreen and
-static assets, and immutable release records without executing providers.
+This check is source-tree only. It preserves the accepted V-1b presentation model and focused tests while allowing separately checked V-1c HomeScreen/card/catalog integration. Static assets, unchanged Backend/Motion boundaries, and immutable release records remain guarded without executing providers.
 """
 
 from __future__ import annotations
@@ -26,14 +24,11 @@ PROTECTED_RELEASE_HASHES = {
 }
 
 UNCHANGED_V1B_HASHES = {
-    "app/lib/screens/home_screen.dart": "1fdd4e82338904a175112e5eb74386ea5797308aea71cde64161970fb42e44c1",
     "app/lib/models/character_preset.dart": "66896fa5ff7ffc2cf5e1497bfc3ce18ba555809ca73ebc60c655cd867075cf08",
     "app/lib/models/advice_response.dart": "99d26ce001213bafe44d917a459ae1491913af85cb33b897e0b81172f89046f7",
     "app/lib/models/advice_source.dart": "99ba85cb63901fe2ef3f2d2d7d7bd0ef38977eccad7277f53d937e11d17425fe",
     "app/lib/models/motion_demo.dart": "5e3fafa3fba66d92fe589d7b913bf350842b28d02218c3a54903d45c5f5fab89",
     "app/lib/services/voice_output_audio_player.dart": "3089e8423c5ec758c54684e55d100b300753b4e71e7553e6a72daff1865e388a",
-    "app/lib/ui/character_asset_catalog.dart": "6e3ab31eb3ac2c1c97899c7fa64eb5d04c808932322feb240e2bf6ea5762df54",
-    "app/test/widget_test.dart": "dd869daa9123dbdd98e11a43d00c4ec56f2238f54e12d3c02cbd5313d479db04",
     "app/pubspec.yaml": "78ea66a2c1c4f96deced1063bf9f00369e7507c415e87d769a556b392dec4756",
 }
 
@@ -103,6 +98,8 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
     home = read("app/lib/screens/home_screen.dart")
+    integration_tests = read("app/test/character_display_home_integration_test.dart")
+    home_contract = read("docs/v210_character_display_home_integration.md")
 
     for source, label in (
         (contract, "contract"),
@@ -121,7 +118,7 @@ def main() -> None:
     require(checklist, "V-1  CURRENT / NOT_COMPLETED", "parent V-1 state")
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
     require(checklist, "V-1c  CURRENT / NOT_COMPLETED", "current V-1c state")
-    require(checklist, "Current implementation state: NOT_STARTED", "V-1c implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "V-1c implementation state")
     require(checklist, "R-1  PLANNED", "R-1 planned state")
 
     for marker in (
@@ -184,19 +181,22 @@ def main() -> None:
         "renders advice content without changing profile ownership",
         "shows deterministic loading and speaking activity",
         "fallback presentation uses safe static-runtime wording",
+        "retries the repository fallback image before generic placeholder",
     ):
         require(widget_tests, marker, "widget-test marker")
 
     require(contract, "1. character unavailable", "content precedence")
     require(contract, "1. speaking", "activity precedence")
     require(contract, "HomeScreen still owns all data loading", "HomeScreen ownership")
-    require(contract, "repository fallback-image retry", "V-1c handoff")
+    require(contract, "V-1c implements repository fallback-image retry", "V-1c handoff")
     require(contract, "implementation commit: e1f8d6f", "accepted implementation commit")
     require(contract, "Backend pytest: 110 passed", "accepted Backend count")
     require(contract, "full Flutter test: 97 passed", "accepted Flutter count")
 
-    forbid(home, "CharacterDisplayCard", "premature HomeScreen integration")
-    forbid(home, "CharacterDisplayPresentation", "premature HomeScreen model integration")
+    require(home, "CharacterDisplayCard(", "V-1c HomeScreen widget integration")
+    require(home, "CharacterDisplayPresentation.resolve(", "V-1c HomeScreen model integration")
+    require(integration_tests, "in-app audio playback drives speaking presentation", "V-1c speaking test")
+    require(home_contract, "IMPLEMENTED / NOT_ACCEPTED", "V-1c contract state")
     forbid(model + widget, "dart:math", "random state selection")
     forbid(model + widget, "Timer(", "timer-driven animation")
     forbid(model + widget, "WebSocket", "motion runtime connection")
@@ -219,6 +219,11 @@ def main() -> None:
         "docs/v210_character_display_current_behavior_inventory.md",
         "scripts/check_v210_character_display_current_behavior_inventory.py",
         "scripts/check_v210_character_display_state.py",
+        "app/lib/screens/home_screen.dart",
+        "app/lib/ui/character_asset_catalog.dart",
+        "app/test/widget_test.dart",
+        "app/test/character_display_home_integration_test.dart",
+        "docs/v210_character_display_home_integration.md",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
@@ -230,7 +235,9 @@ def main() -> None:
     print("v210_character_display_state_activity_states: idle,loading,speaking")
     print("v210_character_display_state_focused_model_tests: 9")
     print("v210_character_display_state_focused_widget_tests: 4")
-    print("v210_character_display_state_home_integration: false")
+    print("v210_character_display_state_home_integration: true")
+    print("v210_character_display_state_v1c_runtime_started: true")
+    print("v210_character_display_state_current_card_tests: 5")
     print("v210_character_display_state_backend_runtime_changed: false")
     print("v210_character_display_state_assets_changed: false")
     print("v210_character_display_state_real_motion_execution: false")

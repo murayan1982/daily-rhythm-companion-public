@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/advice_response.dart';
 import '../models/advice_source.dart';
+import '../models/character_display_presentation.dart';
 import '../models/character_preset.dart';
 import '../models/chat.dart';
 import '../models/demo_status.dart';
@@ -21,6 +22,7 @@ import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
 import '../services/voice_output_audio_player.dart';
 import '../ui/character_asset_catalog.dart';
+import '../widgets/character_display_card.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'history_screen.dart';
@@ -2826,7 +2828,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCharacterSection(BuildContext context) {
     final selectedCharacter = _selectedCharacter;
-    final colorScheme = Theme.of(context).colorScheme;
+    final selectedCharacterId = selectedCharacter?.characterId ?? '';
+    final hasRepositoryCharacterAsset = selectedCharacter != null &&
+        CharacterAssetCatalog.hasCharacterAsset(selectedCharacterId);
+    final presentation = CharacterDisplayPresentation.resolve(
+      character: selectedCharacter,
+      moodLabel: _formatMoodLabel(_selectedMood),
+      moodSupportMessage: _formatMoodSupportMessage(_selectedMood),
+      advice: _adviceResponse,
+      isLoading: _isLoading ||
+          _isCreatingAdvice ||
+          _isSubmittingVoiceOutputDemo,
+      playbackPhase: _voiceOutputAudioPlayerController.state.phase,
+      hasRepositoryCharacterAsset: hasRepositoryCharacterAsset,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2840,78 +2855,29 @@ class _HomeScreenState extends State<HomeScreen> {
           "キャラクターを選ぶと、Today's Loop と作成前確認に反映されます。話し方やアドバイスの雰囲気もここで確認します。",
         ),
         const SizedBox(height: 12),
-        if (_isLoading)
-          const Center(child: CircularProgressIndicator())
-        else if (_characters.isEmpty)
-          const Text('キャラクター候補を読み込めませんでした。')
-        else ...[
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: colorScheme.surfaceContainerHighest,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '選択中のキャラクター',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      CharacterAssetCatalog.imageForCharacter(
-                        selectedCharacter?.characterId ?? '',
-                      ),
-                      key: const ValueKey<String>(
-                        'selected-character-image',
-                      ),
-                      width: 180,
-                      height: 180,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildMissingAssetPlaceholder(
-                          key: const ValueKey<String>(
-                            'selected-character-fallback-image',
-                          ),
-                          width: 180,
-                          height: 180,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _buildDiagnosticRow(
-                  'Name',
-                  selectedCharacter?.displayName ?? '未選択',
-                ),
-                if (selectedCharacter != null) ...[
-                  _buildDiagnosticRow(
-                    'Personality',
-                    selectedCharacter.personalityType,
-                  ),
-                  _buildDiagnosticRow(
-                    'Speaking',
-                    selectedCharacter.speakingStyle,
-                  ),
-                  _buildDiagnosticRow(
-                    'Advice style',
-                    selectedCharacter.adviceStyle,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'このキャラクターの話し方で、今日の気分と睡眠コンテキストをもとにアドバイスします。',
-                  ),
-                ],
-              ],
-            ),
+        CharacterDisplayCard(
+          character: selectedCharacter,
+          presentation: presentation,
+          imageAssetPath: CharacterAssetCatalog.imageForCharacter(
+            selectedCharacterId,
           ),
-          const SizedBox(height: 12),
+        ),
+        const SizedBox(height: 12),
+        if (_isLoading) ...[
+          const Row(
+            key: Key('character-options-loading'),
+            children: [
+              SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              SizedBox(width: 8),
+              Expanded(child: Text('キャラクター候補を読み込んでいます。')),
+            ],
+          ),
+        ] else if (_characters.isEmpty) ...[
+          const Text('キャラクター候補を読み込めませんでした。'),
+        ] else ...[
           RadioGroup<CharacterPreset>(
             groupValue: selectedCharacter,
             onChanged: (value) {

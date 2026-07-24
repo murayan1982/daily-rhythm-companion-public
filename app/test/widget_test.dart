@@ -223,10 +223,34 @@ void main() {
 
     expect(find.text('Character Choice'), findsOneWidget);
     expect(find.text('選択中のキャラクター'), findsOneWidget);
-    expect(find.text('Name: ミナ'), findsOneWidget);
-    expect(find.text('Personality: gentle'), findsOneWidget);
-    expect(find.text('Speaking: calm'), findsOneWidget);
-    expect(find.text('Advice style: supportive'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-name')),
+        matching: find.text('ミナ'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-personality')),
+        matching: find.text('gentle'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-speaking')),
+        matching: find.text('calm'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-advice-style')),
+        matching: find.text('supportive'),
+      ),
+      findsOneWidget,
+    );
     expect(find.byKey(const ValueKey<String>('selected-character-image')), findsOneWidget);
     final selectedImage = tester.widget<Image>(
       find.byKey(const ValueKey<String>('selected-character-image')),
@@ -252,10 +276,34 @@ void main() {
     await tester.tap(soraOption);
     await tester.pumpAndSettle();
 
-    expect(find.text('Name: ソラ'), findsOneWidget);
-    expect(find.text('Personality: cheerful'), findsOneWidget);
-    expect(find.text('Speaking: bright'), findsOneWidget);
-    expect(find.text('Advice style: upbeat'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-name')),
+        matching: find.text('ソラ'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-personality')),
+        matching: find.text('cheerful'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-speaking')),
+        matching: find.text('bright'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-advice-style')),
+        matching: find.text('upbeat'),
+      ),
+      findsOneWidget,
+    );
     final soraSelectedImage = tester.widget<Image>(
       find.byKey(const ValueKey<String>('selected-character-image')),
     );
@@ -277,7 +325,13 @@ void main() {
     await tester.tap(adviceButton);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('ソラです。'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-card')),
+        matching: find.textContaining('ソラです。'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Character: ソラ'), findsWidgets);
   });
 
@@ -429,7 +483,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Name: ミナ'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-name')),
+        matching: find.text('ミナ'),
+      ),
+      findsOneWidget,
+    );
     expect(find.widgetWithText(ChoiceChip, '☀️ いい感じ'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '🌿 いつも通り'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '😪 ちょっと休みたい'), findsOneWidget);
@@ -445,7 +505,13 @@ void main() {
     await tester.tap(soraOption);
     await tester.pumpAndSettle();
 
-    expect(find.text('Name: ソラ'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-name')),
+        matching: find.text('ソラ'),
+      ),
+      findsOneWidget,
+    );
     expect(find.widgetWithText(ChoiceChip, '☀️ いけそう！'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '🌿 ぼちぼち'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '😪 省エネで'), findsOneWidget);
@@ -460,7 +526,13 @@ void main() {
     await tester.tap(reiOption);
     await tester.pumpAndSettle();
 
-    expect(find.text('Name: レイ'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-name')),
+        matching: find.text('レイ'),
+      ),
+      findsOneWidget,
+    );
     expect(find.widgetWithText(ChoiceChip, '☀️ 高め'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '🌿 標準'), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, '😪 低め'), findsOneWidget);
@@ -490,8 +562,20 @@ void main() {
 
     expect(apiClient.lastMood, 'tired');
     expect(apiClient.lastCharacterId, 'cool_rei');
-    expect(find.textContaining('mood=tired'), findsOneWidget);
-    expect(find.textContaining('character=cool_rei'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-card')),
+        matching: find.textContaining('mood=tired'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('character-display-card')),
+        matching: find.textContaining('character=cool_rei'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Character: レイ'), findsWidgets);
   });
 
