@@ -1,7 +1,7 @@
 # v2.1.0 post-advice chat current behavior inventory
 
 Updated: 2026-07-24
-Status: C-1a IMPLEMENTED / NOT_ACCEPTED
+Status: C-1a COMPLETED / ACCEPTED
 Purpose: record the accepted chat/session and Flutter UI behavior before C-1 runtime changes
 
 ## Interpretation rule
@@ -191,8 +191,8 @@ Missing focused regression areas include:
 ## C-1 small-commit split
 
 ```text
-C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
-C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and mock-safe tests
+C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
+C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and mock-safe tests
 C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 ```
 
@@ -228,4 +228,23 @@ C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggrega
 - add focused model/widget tests and complete parent C-1 only after full review.
 ```
 
+## C-1a accepted completion record
+
+```text
+implementation commit: a4263ca
+compileall: passed
+C-1a source-tree check: passed
+W-1 through W-5 checks: passed
+v2.0.x guards: passed
+backend pytest: 100 passed
+Flutter test: 57 passed
+diff review / operator approval: passed
+Backend runtime changed: false
+Flutter runtime changed: false
+existing tests changed: false
+real Framework/LLM execution: false
+release records changed: false
+```
+
+C-1a was completed and accepted on 2026-07-24. C-1b is CURRENT / NOT_COMPLETED.
 C-1a does not satisfy C-1b, C-1c, T-1, V-1, R-1, or release readiness.

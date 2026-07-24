@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: C-1a — Post-advice chat current behavior inventory and contract
+Current small commit: C-1b — Backend lifecycle outcomes, bounded turns, and tests
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -75,8 +75,8 @@ W-5  COMPLETED / ACCEPTED   Wearable migration correction and configured Google 
   W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
   W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 C-1  CURRENT / NOT_COMPLETED  Post-advice chat lifecycle and UI-state hardening
-  C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
-  C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and tests
+  C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
+  C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and tests
   C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
@@ -84,7 +84,7 @@ R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidenc
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-5 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1a is current and not completed; C-1b/C-1c and T-1 through R-1 remain planned.
+W-1 through W-5 and C-1a are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1b is current and not completed; C-1c and T-1 through R-1 remain planned.
 
 ---
 
@@ -801,8 +801,8 @@ Status: CURRENT / NOT_COMPLETED
 Small-commit split:
 
 ```text
-C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
-C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and mock-safe tests
+C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
+C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and mock-safe tests
 C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 ```
 
@@ -820,7 +820,7 @@ Parent boundary:
 
 ## C-1a — Current behavior inventory and implementation contract
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Detailed inventory: `docs/v210_post_advice_chat_current_behavior_inventory.md`
 
@@ -884,7 +884,24 @@ flutter test
 cd ..
 ```
 
-C-1a performs no real Framework/LLM execution and does not complete parent C-1.
+C-1a acceptance record:
+
+```text
+- implementation commit: a4263ca
+- compileall / C-1a source-tree check: passed
+- W-1 through W-5 checks / v2.0.x guards: passed
+- backend pytest: 100 passed
+- Flutter test: 57 passed
+- diff review / operator approval: passed
+- Backend runtime changed: false
+- Flutter runtime changed: false
+- existing tests changed: false
+- real Framework/LLM execution: false
+- release records changed: false
+```
+
+C-1a was completed and accepted on 2026-07-24. C-1b is CURRENT / NOT_COMPLETED.
+C-1a performed no real Framework/LLM execution and does not complete parent C-1.
 
 ---
 

@@ -7,8 +7,8 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1 through W-5 COMPLETED / ACCEPTED; C-1a CURRENT / NOT_COMPLETED**)
-Current small commit: C-1a — Post-advice chat current behavior inventory and contract (**CURRENT / NOT_COMPLETED**)
+Current development line: v2.1.0 (**W-1 through W-5 and C-1a COMPLETED / ACCEPTED; C-1b CURRENT / NOT_COMPLETED**)
+Current small commit: C-1b — Backend lifecycle outcomes, bounded turns, and tests (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -165,14 +165,14 @@ W-5 is completed and accepted. W-5a remains an accepted historical public-safe c
 C-1 is split into three small commits:
 
 ```text
-C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
-C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and tests
+C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
+C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and tests
 C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
 ```
 
-C-1a records the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior without changing runtime. It also records the current gaps: no turn bound, one shared missing-session 404, indirect Framework outcome metadata, and stale Flutter session recovery after terminal errors. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md).
+C-1a is completed and accepted at implementation commit `a4263ca`. It records the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior without changing runtime, and fixes the current gaps as the C-1b/C-1c contract: no turn bound, one shared missing-session 404, indirect Framework outcome metadata, and stale Flutter recovery after terminal errors. C-1b is now current. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md).
 
-Run the C-1a source-tree gate with:
+Run the accepted C-1a source-tree gate with:
 
 ```powershell
 python -m compileall -q backend scripts

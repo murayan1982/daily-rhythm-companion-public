@@ -85,18 +85,20 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
-    require(checklist, "Current small commit: C-1a", "C-1a current small commit")
+    require(checklist, "Current small commit: C-1b", "C-1b current small commit")
     require(checklist, "W-5 state: COMPLETED / ACCEPTED", "W-5 accepted state")
     require(checklist, "C-1  CURRENT / NOT_COMPLETED", "C-1 parent state")
-    require(checklist, "C-1a  CURRENT / NOT_COMPLETED", "C-1a queue state")
-    require(checklist, "C-1b  PLANNED", "C-1b planned state")
+    require(checklist, "C-1a  COMPLETED / ACCEPTED", "C-1a accepted state")
+    require(checklist, "C-1b  CURRENT / NOT_COMPLETED", "C-1b current state")
     require(checklist, "C-1c  PLANNED", "C-1c planned state")
     for phase in ("T-1", "V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
-    require(roadmap, "Current small commit: C-1a", "roadmap current state")
-    require(tasklist, "current small commit: C-1a CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(roadmap, "Current small commit: C-1b", "roadmap current state")
+    require(tasklist, "current small commit: C-1b CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_post_advice_chat_current_behavior_inventory.py", "scripts command")
+    require(inventory, "Status: C-1a COMPLETED / ACCEPTED", "inventory accepted status")
+    require(checklist, "implementation commit: a4263ca", "implementation commit record")
 
     for marker in (
         "POST_ADVICE_CHAT_TTL_SECONDS=1800",
@@ -104,8 +106,10 @@ def main() -> None:
         "expired, capacity-evicted, and unknown IDs all become the same HTTP 404 detail",
         "has no maximum-turn or maximum-message limit",
         "a message HTTP 404 leaves the stale session object in memory",
-        "C-1b  PLANNED",
+        "C-1a  COMPLETED / ACCEPTED",
+        "C-1b  CURRENT / NOT_COMPLETED",
         "C-1c  PLANNED",
+        "implementation commit: a4263ca",
     ):
         require(inventory, marker, "inventory marker")
 
@@ -144,8 +148,9 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_post_advice_chat_inventory_status: implemented-not-accepted")
-    print("v210_post_advice_chat_inventory_current_small_commit: C-1a")
+    print("v210_post_advice_chat_inventory_status: completed-accepted")
+    print("v210_post_advice_chat_inventory_completed_small_commit: C-1a")
+    print("v210_post_advice_chat_inventory_current_small_commit: C-1b")
     print("v210_post_advice_chat_inventory_parent_phase: C-1-current-not-completed")
     print("v210_post_advice_chat_inventory_accepted_ttl_seconds: 1800")
     print("v210_post_advice_chat_inventory_accepted_max_sessions: 100")

@@ -15,13 +15,13 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: C-1a CURRENT / NOT_COMPLETED
+current small commit: C-1b CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 is completed and accepted. W-5b2 and parent W-5 are completed and accepted; C-1a is current, while C-1b/C-1c and T-1 through R-1 remain planned.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 is completed and accepted. W-5b2 and parent W-5 are completed and accepted; C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is current, while C-1c and T-1 through R-1 remain planned.
 
 Run the W-1 checks from the repository root:
 
@@ -397,7 +397,7 @@ flutter test
 cd ..
 ```
 
-The C-1a check is credential-free and provider-free. It pins the current Backend chat API/model/service, Framework adapter, Flutter chat model/client/HomeScreen, and existing lifecycle/widget tests. It confirms the accepted 1800-second idle TTL and 100-session capacity while recording that bounded turns, explicit expired/evicted classification, structured Flutter lifecycle state, and direct stale-session restart are not implemented yet. C-1b/C-1c remain planned and parent C-1 remains not completed.
+The accepted C-1a check is credential-free and provider-free. It pins the current Backend chat API/model/service, Framework adapter, Flutter chat model/client/HomeScreen, and existing lifecycle/widget tests. It confirms the accepted 1800-second idle TTL and 100-session capacity while recording that bounded turns, explicit expired/evicted classification, structured Flutter lifecycle state, and direct stale-session restart are not implemented yet. C-1a acceptance recorded implementation commit `a4263ca`, backend 100 passed, Flutter 57 passed, no runtime/test change, and no real Framework execution. C-1b is current; C-1c remains planned and parent C-1 remains not completed.
 
 
 ## Script categories
