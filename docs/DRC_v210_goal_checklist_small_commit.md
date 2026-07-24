@@ -2,8 +2,10 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: V-1 — Character display extraction and deterministic state presentation
+Current small commit: V-1a — Character display current behavior inventory and implementation contract
 Current small-commit state: CURRENT / NOT_COMPLETED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Parent V-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
@@ -83,6 +85,9 @@ T-1  COMPLETED / ACCEPTED  Flutter in-app TTS player and artifact-expiry handlin
   T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
   T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 V-1  CURRENT / NOT_COMPLETED                  Character display extraction and deterministic state presentation
+  V-1a  IMPLEMENTED / NOT_ACCEPTED                 Current behavior inventory and implementation contract
+  V-1b  PLANNED                                    Deterministic presentation model and standalone widget
+  V-1c  PLANNED                                    HomeScreen extraction and integration
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
 ```
@@ -1328,13 +1333,115 @@ V-1 is CURRENT / NOT_COMPLETED and R-1 remains PLANNED.
 
 Status: CURRENT / NOT_COMPLETED
 
+Implementation split:
+
+```text
+V-1a  IMPLEMENTED / NOT_ACCEPTED   Current behavior inventory and implementation contract
+V-1b  PLANNED                      Deterministic presentation model and standalone widget
+V-1c  PLANNED                      HomeScreen extraction and integration
+```
+
+## V-1a — Current behavior inventory and implementation contract
+
+Status: IMPLEMENTED / NOT_ACCEPTED
+
+Commit title:
+
+```text
+docs/test: establish V-1 character display inventory
+```
+
+Purpose:
+
+```text
+- Read the current HomeScreen, character models/assets, Motion Demo boundary, and widget tests.
+- Record the current mood/advice/loading/speaking/fallback presentation gaps.
+- Freeze the static repository-safe asset and pre-V-1 Flutter/test baseline with normalized hashes.
+- Separate normal character presentation from Motion Demo simulation/discovery.
+- Assign V-1b and V-1c without changing runtime or advancing R-1.
+```
+
+Changed files:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_character_display_current_behavior_inventory.md
+scripts/check_v210_character_display_current_behavior_inventory.py
+```
+
+Unchanged boundaries:
+
+```text
+app/lib/**
+app/test/**
+app/pubspec.yaml
+app/assets/**
+backend/**
+release notes / release records / fixed-ZIP builders / tags / GitHub Releases
+```
+
+Detailed inventory: `docs/v210_character_display_current_behavior_inventory.md`.
+
+V-1a acceptance requirements:
+
+```text
+- python -m compileall -q backend scripts passes;
+- V-1a source-tree check passes;
+- all accepted check_v210_*.py and v2.0.x compatibility guards pass;
+- Backend pytest passes;
+- Flutter test passes;
+- git diff --check has no real error;
+- diff review confirms docs/test-only scope;
+- operator approval is explicit;
+- a separate acceptance sync marks V-1a COMPLETED / ACCEPTED and advances V-1b.
+```
+
+Current implementation record:
+
+```text
+- Flutter runtime changed: false
+- Backend runtime changed: false
+- existing tests changed: false
+- dependencies/assets changed: false
+- real LLM/TTS/health/motion execution: false
+- release records changed: false
+- acceptance: pending
+```
+
+## V-1b — Deterministic presentation model and standalone widget
+
+Status: PLANNED
+
 Planned boundary:
 
 ```text
-- Extract character display from the large home screen.
-- Add deterministic advice, mood, loading, speaking, and fallback presentation.
-- Keep static repository-safe assets and do not claim Live2D/VTS execution.
+- Add app-owned content states mood / advice / fallback.
+- Add app-owned activity states idle / loading / speaking.
+- Freeze deterministic precedence and safe normal-user copy before implementation.
+- Add standalone widget and focused fake/model-only tests.
+- Do not connect HomeScreen, change Backend/Motion Demo, or replace static assets.
 ```
+
+## V-1c — HomeScreen extraction and integration
+
+Status: PLANNED
+
+Planned boundary:
+
+```text
+- Connect the accepted standalone widget from HomeScreen.
+- Keep HomeScreen data loading, selection callback, advice creation, and TTS control ownership.
+- Connect mood/advice/loading/speaking/fallback inputs deterministically.
+- Retry the repository-safe fallback asset before a generic missing-image placeholder.
+- Add focused integration tests and preserve existing behavior.
+- Do not claim Live2D/VTS execution or advance R-1.
+```
+
+Parent V-1 remains NOT_COMPLETED until V-1c checks, required builds, diff review, operator approval, and a separate acceptance sync pass.
 
 ---
 
@@ -1361,6 +1468,6 @@ T-1c Visual Studio 18 compatibility correction:
 - windows/flutter/CMakeLists.txt scaffold restoration: operator-local generated file
 - MSVC 14.5x experimental coroutine deprecation bridge: implemented
 - Windows build re-verification: required before commit
-- T-1c remains IMPLEMENTED / NOT_ACCEPTED
+- T-1c final accepted state: COMPLETED / ACCEPTED
 ```
 - Windows Flutter scaffold CMakeLists is tracked; only its ephemeral directory stays ignored.

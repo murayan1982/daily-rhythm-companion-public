@@ -13,6 +13,7 @@ v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
 current small commit: V-1 CURRENT / NOT_COMPLETED
+current implementation step: V-1a IMPLEMENTED / NOT_ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -31,6 +32,7 @@ docs/DRC_v210_goal_checklist_small_commit.md
 
 ```text
 docs/v210_fitbit_current_behavior_inventory.md
+docs/v210_character_display_current_behavior_inventory.md
 ```
 
 ロードマップ:
@@ -63,13 +65,55 @@ v2.0.0とv2.0.1の公開記録は履歴として保持し、v2.1.0の進捗管�
 
 Status: CURRENT / NOT_COMPLETED
 
+実装分割:
+
 ```text
-- Extract character display from the large HomeScreen implementation.
-- Add deterministic advice, mood, loading, speaking, and fallback presentation.
-- Keep static repository-safe assets as the v2.1.0 baseline.
-- Do not claim Live2D or VTube Studio real execution.
-- Keep R-1 PLANNED until V-1 is separately implemented and accepted.
+V-1a  IMPLEMENTED / NOT_ACCEPTED   current behavior inventory and implementation contract
+V-1b  PLANNED                      deterministic presentation model and standalone widget
+V-1c  PLANNED                      HomeScreen extraction and integration
 ```
+
+### V-1a — Current behavior inventory and implementation contract
+
+```text
+- 4,195行のHomeScreenがcharacter選択、静的画像、mood、advice、TTS再生状態、
+  Advanced Motion Demoを同時に所有している現状を固定する。
+- CharacterPresetの6項目と、3 character画像・2背景・1 fallback assetを固定する。
+- mood / advice / loading / speaking / fallbackが通常character表示へ未統合であることを記録する。
+- Motion Demo simulatorと通常日次ループのcharacter表示を分離する。
+- 既存widget_test.dart 2,669行と関連テスト範囲をnormalized hashで固定する。
+- V-1b / V-1cの責任範囲を固定し、R-1を前倒ししない。
+- Flutter runtime、Backend、既存テスト、dependency、asset、release recordsを変更しない。
+```
+
+詳細: `docs/v210_character_display_current_behavior_inventory.md`
+
+V-1aは実装済みだが未受け入れ。source-tree check、既存check、Backend pytest、Flutter test、diff確認、オペレーター承認後に、別のacceptance syncコミットでCOMPLETED / ACCEPTEDへ進める。
+
+### V-1b — Deterministic presentation model and standalone widget
+
+Status: PLANNED
+
+```text
+- content stateをmood / advice / fallbackとして決定論的に解決する。
+- activity stateをidle / loading / speakingとして決定論的に解決する。
+- app-owned presentation modelとstandalone widgetを追加する。
+- fake/model-only focused testsを追加し、HomeScreen接続はV-1cへ残す。
+```
+
+### V-1c — HomeScreen extraction and integration
+
+Status: PLANNED
+
+```text
+- HomeScreenからcharacter display renderingを抽出済みwidgetへ接続する。
+- HomeScreenはデータ取得、選択callback、advice/TTS controlを保持する。
+- static repository-safe fallback assetを先に使い、generic placeholderを最終fallbackにする。
+- focused HomeScreen integration testsを追加する。
+- Live2D/VTS実接続、Backend変更、asset追加、R-1を含めない。
+```
+
+Parent V-1はV-1c実装だけでは完了せず、focused/aggregate checks、必要build、diff確認、オペレーター承認、別acceptance syncが必要である。
 
 ---
 
@@ -856,7 +900,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5は受け入れ済みで、Google Health API経由のreal provider executionとPC/スマートフォンWeb確認まで完了した。現在はC-1を進める。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1は受け入れ済みで、Google Health API経由のreal provider executionとPC/スマートフォンWeb、アプリ内TTS再生まで確認済みである。現在はV-1aを進める。
 
 ---
 
@@ -877,7 +921,7 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-5まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleepとPC/スマートフォンWeb表示が確認済みである。現在はC-1がCURRENT / NOT_COMPLETED。TTS、character、release readinessは未実装・未受け入れで、v3.0.0は計画段階である。
+v2.1.0はW-1からW-5、C-1、T-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生が確認済みである。現在はV-1がCURRENT / NOT_COMPLETEDで、V-1aがIMPLEMENTED / NOT_ACCEPTED。R-1はPLANNED、v3.0.0は計画段階である。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally

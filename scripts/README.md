@@ -15,13 +15,36 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: V-1 CURRENT / NOT_COMPLETED
-completed phase: W-5 COMPLETED / ACCEPTED
+current small commit: V-1a IMPLEMENTED / NOT_ACCEPTED
+parent phase: V-1 CURRENT / NOT_COMPLETED
+completed phase: T-1 COMPLETED / ACCEPTED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 is completed and accepted; V-1 is current and R-1 remains planned.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 is completed and accepted; V-1 is current and R-1 remains planned. V-1a is implemented but not accepted; it adds only the character-display inventory and source-tree guard. V-1b/V-1c remain planned.
+
+## v2.1.0 V-1a character display current behavior inventory check
+
+Detailed inventory: `docs/v210_character_display_current_behavior_inventory.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_character_display_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+The V-1a check is credential-free, provider-free, network-free, decoder-free, and motion-adapter-free. It verifies the 4,195-line HomeScreen inventory, stable CharacterPreset fields, advice-source fallback boundary, accepted TTS playback phases, separate Motion Demo state, 2,669-line existing widget-test baseline, pubspec asset registration, three character images, two backgrounds, one repository fallback image, unchanged Flutter runtime/tests/assets, and immutable v2.0.0/v2.0.1 release records.
+
+V-1a is `IMPLEMENTED / NOT_ACCEPTED`. V-1b and V-1c remain `PLANNED`; parent V-1 remains `CURRENT / NOT_COMPLETED`, and R-1 remains `PLANNED`. Acceptance requires a separate documentation sync after checks, diff review, and operator approval pass.
 
 Run the W-1 checks from the repository root:
 
@@ -44,8 +67,10 @@ The W-1 source-tree check verifies:
 - W-4 is COMPLETED / ACCEPTED
 - W-5 is COMPLETED / ACCEPTED
 - C-1 is COMPLETED / ACCEPTED
-- T-1 is CURRENT / NOT_COMPLETED
-- V-1 and R-1 remain PLANNED
+- T-1 is COMPLETED / ACCEPTED
+- V-1 is CURRENT / NOT_COMPLETED
+- V-1a is IMPLEMENTED / NOT_ACCEPTED
+- V-1b, V-1c, and R-1 remain PLANNED
 - the accepted W-1 inventory and W-1 acceptance state remain recorded
 - files outside the accepted W-2 change surface still match the inspected W-1 baseline
 - approved W-2 runtime and Flutter files carry the separately checked W-2 contract
@@ -111,7 +136,7 @@ collect smartphone Web evidence, or build a release artifact.
 
 W-3 is `COMPLETED / ACCEPTED`. Acceptance recorded 84 backend tests and 50
 Flutter tests, with real Fitbit execution remaining false. W-4 is also
-`COMPLETED / ACCEPTED`; W-5a, W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1 is completed and accepted; T-1 is current, while V-1 and R-1 remain planned.
+`COMPLETED / ACCEPTED`; W-5a, W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1 and T-1 are completed and accepted; V-1 is current, V-1a is implemented/not accepted, and R-1 remains planned.
 
 
 ## v2.1.0 W-4a sleep-provider selection status check
@@ -4404,4 +4429,4 @@ W-5b2 is `COMPLETED / ACCEPTED`. Acceptance records execution commit `ed50d9e`,
 HTTP 200, normalized real Google Health sleep, PC/smartphone Web display, 100
 backend tests, 57 Flutter tests, and operator-confirmed Fitbit Versa 2 origin.
 Screenshots and private sleep values remain outside Git. Parent W-5 is completed;
-C-1 is completed and accepted; T-1 is current, while V-1 and R-1 remain planned.
+C-1 and T-1 are completed and accepted; V-1 is current, V-1a is implemented/not accepted, and R-1 remains planned.
