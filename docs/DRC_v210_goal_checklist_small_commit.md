@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: T-1b — Flutter in-app player abstraction, states, and mock-safe tests
+Current small commit: T-1c — Home UI integration, expired-artifact recovery, and T-1 acceptance
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -80,8 +80,8 @@ C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
   T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
-  T-1b  CURRENT / NOT_COMPLETED  Flutter in-app player abstraction, states, and mock-safe tests
-  T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+  T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
+  T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
@@ -1063,8 +1063,8 @@ Small-commit split:
 
 ```text
 T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
-T-1b  CURRENT / NOT_COMPLETED  Flutter in-app player abstraction, states, and mock-safe tests
-T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
+T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 ```
 
 Parent boundary:
@@ -1146,12 +1146,12 @@ T-1a acceptance record:
 - release records changed: false
 ```
 
-T-1a was completed and accepted on 2026-07-24. T-1b is CURRENT / NOT_COMPLETED; T-1c remains PLANNED. Parent T-1 remains CURRENT / NOT_COMPLETED.
+T-1a was completed and accepted on 2026-07-24. T-1b was subsequently completed and accepted at implementation commit `161e624`. T-1c is CURRENT / NOT_COMPLETED and parent T-1 remains CURRENT / NOT_COMPLETED.
 
 ## T-1b — Flutter player abstraction, states, and mock-safe tests
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 
 Detailed contract: `docs/v210_tts_player_controller.md`
 
@@ -1212,7 +1212,25 @@ T-1b implementation verification target:
 - diff review and operator approval before acceptance synchronization.
 ```
 
-T-1b remains NOT_ACCEPTED until the focused/full gates, diff review, and operator approval pass. Parent T-1 remains CURRENT / NOT_COMPLETED and T-1c remains PLANNED.
+T-1b acceptance record:
+
+```text
+- implementation commit: 161e624
+- python -m compileall -q backend scripts: passed
+- T-1a / T-1b source-tree checks: passed
+- all accepted v2.1.0 checks and v2.0.x guards: passed
+- focused Flutter player-controller tests: 10 passed
+- backend pytest: 110 passed
+- Flutter test: 74 passed
+- diff review / operator approval / push: passed
+- Backend runtime changed: false
+- HomeScreen integration changed: false
+- dependencies changed: false
+- real Framework/TTS execution: false
+- release records changed: false
+```
+
+T-1b was completed and accepted on 2026-07-24. Parent T-1 remains CURRENT / NOT_COMPLETED and T-1c is CURRENT / NOT_COMPLETED.
 
 ---
 

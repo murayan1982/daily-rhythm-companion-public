@@ -15,7 +15,7 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: T-1b CURRENT / NOT_COMPLETED
+current small commit: T-1c CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 ```
 
@@ -428,7 +428,7 @@ flutter test
 cd ..
 ```
 
-The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the current external URL launch flow, generic 404 handling, and the absence of an in-app player state model. It does not fetch or play audio, launch a browser, call Framework/TTS providers, read private artifacts, add an audio dependency, or change runtime/tests. T-1a is COMPLETED / ACCEPTED at implementation commit `0b06378` after 110 Backend tests, 64 Flutter tests, diff review, operator approval, and push passed. T-1b is CURRENT / NOT_COMPLETED; T-1c remains planned.
+The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the external URL launch baseline, generic 404 handling, and the pre-T-1 in-app player gap. T-1a is COMPLETED / ACCEPTED at implementation commit `0b06378`. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624` after ten focused Flutter tests, 110 Backend tests, 74 Flutter tests, diff review, operator approval, and push passed. T-1c is CURRENT / NOT_COMPLETED.
 
 ## T-1b Flutter audio-player controller contract
 
@@ -444,7 +444,7 @@ flutter test
 cd ..
 ```
 
-The T-1b check is credential-free, provider-free, network-free, and decoder-free. It verifies the adapter-neutral engine interface, explicit playback state model, play/stop/replay/reset/expiry/disposal behavior, stale-operation guard, safe user-facing errors, fake-engine tests, unchanged HomeScreen/Backend/pubspec boundaries, and unchanged release records. T-1b is IMPLEMENTED / NOT_ACCEPTED; T-1c and parent T-1 remain not completed.
+The T-1b check is credential-free, provider-free, network-free, and decoder-free. It verifies the adapter-neutral engine interface, explicit playback state model, play/stop/replay/reset/expiry/disposal behavior, stale-operation guard, safe user-facing errors, fake-engine tests, unchanged HomeScreen/Backend/pubspec boundaries, and unchanged release records. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624`; T-1c and parent T-1 remain current and not completed.
 
 ## C-1c Flutter lifecycle and recovery UI
 

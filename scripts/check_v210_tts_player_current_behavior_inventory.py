@@ -90,17 +90,17 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
-    require(checklist, "Current small commit: T-1b", "checklist current small commit")
+    require(checklist, "Current small commit: T-1c", "checklist current small commit")
     require(checklist, "T-1  CURRENT / NOT_COMPLETED", "parent T-1 state")
     require(checklist, "T-1a  COMPLETED / ACCEPTED", "T-1a state")
-    require(checklist, "T-1b  CURRENT / NOT_COMPLETED", "T-1b state")
-    require(checklist, "T-1c  PLANNED", "T-1c state")
+    require(checklist, "T-1b  COMPLETED / ACCEPTED", "T-1b state")
+    require(checklist, "T-1c  CURRENT / NOT_COMPLETED", "T-1c state")
     require(checklist, "C-1  COMPLETED / ACCEPTED", "C-1 accepted state")
     require(checklist, "V-1  PLANNED", "V-1 state")
     require(checklist, "R-1  PLANNED", "R-1 state")
-    require(readme, "Current small commit: T-1b", "README current small commit")
-    require(roadmap, "Current small commit: T-1b", "roadmap current small commit")
-    require(tasklist, "current small commit: T-1b CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(readme, "Current small commit: T-1c", "README current small commit")
+    require(roadmap, "Current small commit: T-1c", "roadmap current small commit")
+    require(tasklist, "current small commit: T-1c CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_tts_player_current_behavior_inventory.py", "scripts command")
 
     for marker in (
@@ -110,9 +110,9 @@ def main() -> None:
         "/demo/voice-output/audio/{artifact_id}",
         "LaunchMode.externalApplication",
         "no dedicated audio-player package",
-        "T-1b  CURRENT / NOT_COMPLETED",
-        "T-1c  PLANNED",
-        "T-1b implementation added",
+        "T-1b  COMPLETED / ACCEPTED",
+        "T-1c  CURRENT / NOT_COMPLETED",
+        "T-1b added and accepted",
     ):
         require(inventory, marker, "T-1a inventory marker")
 
@@ -162,7 +162,7 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_tts_player_inventory_status: completed-accepted")
-    print("v210_tts_player_inventory_current_small_commit: T-1b")
+    print("v210_tts_player_inventory_current_small_commit: T-1c")
     print("v210_tts_player_inventory_parent_phase: T-1-current-not-completed")
     print("v210_tts_player_inventory_backend_artifact_ttl_seconds: 86400")
     print("v210_tts_player_inventory_backend_artifact_max_count: 100")

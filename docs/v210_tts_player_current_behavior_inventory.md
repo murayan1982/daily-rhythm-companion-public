@@ -128,8 +128,8 @@ They do not execute audio, observe play/stop/completion events, simulate an expi
 
 ```text
 T-1a  COMPLETED / ACCEPTED     inventory and implementation contract only
-T-1b  CURRENT / NOT_COMPLETED  player abstraction/state model and mock-safe tests (implementation added; not accepted)
-T-1c  PLANNED                 Home UI integration, expired recovery, aggregate T-1 acceptance
+T-1b  COMPLETED / ACCEPTED  player abstraction/state model and mock-safe tests (implementation added; not accepted)
+T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired recovery, aggregate T-1 acceptance
 ```
 
 ### T-1b responsibility
@@ -156,7 +156,7 @@ T-1c  PLANNED                 Home UI integration, expired recovery, aggregate T
 
 ## Subsequent T-1b implementation state
 
-T-1b implementation added the adapter-neutral `VoiceOutputAudioEngine`, explicit playback state model, `VoiceOutputAudioPlayerController`, and fake-engine lifecycle tests. It did not change the accepted Backend artifact boundary, HomeScreen, BackendApiClient, response model, widget tests, pubspec, or external URL launch behavior.
+T-1b added and accepted the adapter-neutral `VoiceOutputAudioEngine`, explicit playback state model, `VoiceOutputAudioPlayerController`, and fake-engine lifecycle tests at implementation commit `161e624`. It did not change the accepted Backend artifact boundary, HomeScreen, BackendApiClient, response model, widget tests, pubspec, or external URL launch behavior.
 
 Current distinction:
 
@@ -228,4 +228,4 @@ real Framework/TTS execution: false
 release records changed: false
 ```
 
-T-1b is CURRENT / NOT_COMPLETED; T-1c remains PLANNED. Parent T-1 remains CURRENT / NOT_COMPLETED.
+T-1b is COMPLETED / ACCEPTED; T-1c is CURRENT / NOT_COMPLETED. Parent T-1 remains CURRENT / NOT_COMPLETED.

@@ -12,7 +12,7 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: T-1b CURRENT / NOT_COMPLETED
+current small commit: T-1c CURRENT / NOT_COMPLETED
 completed phase: C-1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -67,8 +67,8 @@ Status: CURRENT / NOT_COMPLETED
 
 ```text
 T-1a  COMPLETED / ACCEPTED     current TTS/audio handoff inventory and implementation contract
-T-1b  CURRENT / NOT_COMPLETED  Flutter in-app player abstraction, states, and mock-safe tests
-T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
+T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 ```
 
 ### T-1a — Current TTS/audio handoff inventory and implementation contract
@@ -99,12 +99,12 @@ T-1c  PLANNED                 Home UI integration, expired-artifact recovery, an
 - release records changed: false
 ```
 
-T-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。T-1bはCURRENT / NOT_COMPLETED、T-1cはPLANNED、親T-1はCURRENT / NOT_COMPLETEDのままである。
+T-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。T-1bも実装コミット`161e624`でCOMPLETED / ACCEPTEDとなり、T-1cはCURRENT / NOT_COMPLETED、親T-1はCURRENT / NOT_COMPLETEDのままである。
 
 ### T-1b — Flutter player abstraction, states, and mock-safe tests
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 
 ```text
 - VoiceOutputAudioEngineのapp-owned interfaceを追加する。
@@ -119,19 +119,23 @@ Implementation state: IMPLEMENTED / NOT_ACCEPTED
 
 詳細: `docs/v210_tts_player_controller.md`
 
-実装時点:
+受け入れ結果:
 
 ```text
-- T-1b source-tree check: prepared
-- focused Flutter test target: 10 tests
-- Backend runtime changed: false
-- HomeScreen integration: false
+- implementation commit: 161e624
+- compileall / T-1a / T-1b source-tree checks: passed
+- W-1〜W-5 / C-1 checks / v2.0.x guards: passed
+- focused Flutter test: 10 passed
+- backend pytest: 110 passed
+- Flutter test: 74 passed
+- diff review / operator approval / push: passed
+- Backend runtime / HomeScreen changed: false
 - dependency changed: false
 - real Framework/TTS execution: false
 - release records changed: false
 ```
 
-T-1bは実装済みだが、focused/full test、diff review、operator approval前なのでNOT_ACCEPTEDのままである。
+T-1bは2026-07-24にCOMPLETED / ACCEPTEDとなった。T-1cはCURRENT / NOT_COMPLETED、親T-1はCURRENT / NOT_COMPLETEDのままである。
 
 ---
 

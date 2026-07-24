@@ -77,12 +77,12 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
-    require(checklist, "Current small commit: T-1b", "C-1c current small commit")
+    require(checklist, "Current small commit: T-1c", "C-1c current small commit")
     require(checklist, "C-1a  COMPLETED / ACCEPTED", "C-1a accepted state")
     require(checklist, "C-1b  COMPLETED / ACCEPTED", "C-1b accepted state")
     require(checklist, "C-1c  COMPLETED / ACCEPTED", "C-1c accepted state")
-    require(roadmap, "Current small commit: T-1b", "roadmap current state")
-    require(tasklist, "current small commit: T-1b CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(roadmap, "Current small commit: T-1c", "roadmap current state")
+    require(tasklist, "current small commit: T-1c CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_post_advice_chat_backend_lifecycle.py", "C-1b command")
 
     require(inventory, "Status: C-1a COMPLETED / ACCEPTED", "inventory accepted status")
@@ -131,7 +131,7 @@ def main() -> None:
 
     print("v210_post_advice_chat_inventory_status: completed-accepted")
     print("v210_post_advice_chat_inventory_completed_small_commit: C-1a")
-    print("v210_post_advice_chat_inventory_current_small_commit: T-1b")
+    print("v210_post_advice_chat_inventory_current_small_commit: T-1c")
     print("v210_post_advice_chat_inventory_parent_phase: C-1-completed-accepted")
     print("v210_post_advice_chat_inventory_accepted_ttl_seconds: 1800")
     print("v210_post_advice_chat_inventory_accepted_max_sessions: 100")

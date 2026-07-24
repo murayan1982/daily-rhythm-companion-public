@@ -1,8 +1,9 @@
 # v2.1.0 T-1b Flutter TTS player abstraction and state contract
 
 Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: T-1b
+Status: COMPLETED / ACCEPTED
+Completed small commit: T-1b
+Current small commit: T-1c
 Parent phase: T-1 CURRENT / NOT_COMPLETED
 
 ## Purpose
@@ -158,4 +159,21 @@ T-1c owns:
 - separately reviewed audible PC/smartphone Web evidence when required.
 ```
 
-T-1b does not complete parent T-1 and does not provide audible playback acceptance.
+## Accepted verification
+
+```text
+implementation commit: 161e624
+compileall: passed
+T-1a / T-1b source-tree checks: passed
+focused Flutter tests: 10 passed
+backend pytest: 110 passed
+Flutter test: 74 passed
+diff review / operator approval / push: passed
+Backend runtime changed: false
+HomeScreen integration changed: false
+dependency changed: false
+real Framework/TTS execution: false
+release records changed: false
+```
+
+T-1b was completed and accepted on 2026-07-24. It does not complete parent T-1 and does not provide audible playback acceptance. T-1c is CURRENT / NOT_COMPLETED.
