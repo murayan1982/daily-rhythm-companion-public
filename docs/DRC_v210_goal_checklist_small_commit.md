@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: T-1a — TTS player current behavior inventory and implementation contract
+Current small commit: T-1b — Flutter in-app player abstraction, states, and mock-safe tests
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -79,8 +79,8 @@ C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
   C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
-  T-1a  CURRENT / NOT_COMPLETED  Current TTS/audio handoff inventory and implementation contract
-  T-1b  PLANNED                 Flutter in-app player abstraction, states, and mock-safe tests
+  T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
+  T-1b  CURRENT / NOT_COMPLETED  Flutter in-app player abstraction, states, and mock-safe tests
   T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
@@ -1062,8 +1062,8 @@ Status: CURRENT / NOT_COMPLETED
 Small-commit split:
 
 ```text
-T-1a  CURRENT / NOT_COMPLETED  Current TTS/audio handoff inventory and implementation contract
-T-1b  PLANNED                 Flutter in-app player abstraction, states, and mock-safe tests
+T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
+T-1b  CURRENT / NOT_COMPLETED  Flutter in-app player abstraction, states, and mock-safe tests
 T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 ```
 
@@ -1078,7 +1078,7 @@ Parent boundary:
 
 ## T-1a — Current TTS/audio handoff inventory and implementation contract
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Detailed inventory: `docs/v210_tts_player_current_behavior_inventory.md`
 
@@ -1127,6 +1127,26 @@ T-1a completion conditions:
 - no real TTS request, audio download/playback, browser launch, private artifact read, or release work occurs;
 - diff review and operator approval pass.
 ```
+
+T-1a acceptance record:
+
+```text
+- implementation commit: 0b06378
+- python -m compileall -q backend scripts: passed
+- W-1 through W-5, C-1, and T-1a source-tree checks: passed
+- v2.0.x compatibility and maintenance guards: passed
+- backend pytest: 110 passed
+- Flutter test: 64 passed
+- diff review / operator approval: passed
+- Backend runtime changed: false
+- Flutter runtime changed: false
+- dependencies changed: false
+- existing tests changed: false
+- real Framework/TTS execution: false
+- release records changed: false
+```
+
+T-1a was completed and accepted on 2026-07-24. T-1b is CURRENT / NOT_COMPLETED; T-1c remains PLANNED. Parent T-1 remains CURRENT / NOT_COMPLETED.
 
 ---
 

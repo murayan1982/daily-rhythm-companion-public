@@ -15,7 +15,7 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: T-1a CURRENT / NOT_COMPLETED
+current small commit: T-1b CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 ```
 
@@ -428,7 +428,7 @@ flutter test
 cd ..
 ```
 
-The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the current external URL launch flow, generic 404 handling, and the absence of an in-app player state model. It does not fetch or play audio, launch a browser, call Framework/TTS providers, read private artifacts, add an audio dependency, or change runtime/tests. T-1a is CURRENT / NOT_COMPLETED; T-1b/T-1c remain planned.
+The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the current external URL launch flow, generic 404 handling, and the absence of an in-app player state model. It does not fetch or play audio, launch a browser, call Framework/TTS providers, read private artifacts, add an audio dependency, or change runtime/tests. T-1a is COMPLETED / ACCEPTED at implementation commit `0b06378` after 110 Backend tests, 64 Flutter tests, diff review, operator approval, and push passed. T-1b is CURRENT / NOT_COMPLETED; T-1c remains planned.
 
 ## C-1c Flutter lifecycle and recovery UI
 

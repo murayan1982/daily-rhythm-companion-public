@@ -1,7 +1,7 @@
 # v2.1.0 TTS player current behavior inventory
 
 Updated: 2026-07-24
-Status: T-1a CURRENT / NOT_COMPLETED
+Status: T-1a COMPLETED / ACCEPTED
 Purpose: record the accepted audio handoff, retention, Flutter playback, and test behavior before T-1 runtime changes
 
 ## Interpretation rule
@@ -127,8 +127,8 @@ They do not execute audio, observe play/stop/completion events, simulate an expi
 ## T-1 implementation split
 
 ```text
-T-1a  CURRENT / NOT_COMPLETED  inventory and implementation contract only
-T-1b  PLANNED                 player abstraction/state model and mock-safe tests
+T-1a  COMPLETED / ACCEPTED     inventory and implementation contract only
+T-1b  CURRENT / NOT_COMPLETED  player abstraction/state model and mock-safe tests
 T-1c  PLANNED                 Home UI integration, expired recovery, aggregate T-1 acceptance
 ```
 
@@ -192,4 +192,23 @@ change runtime or existing tests
 build or publish a release
 ```
 
-T-1a remains NOT_COMPLETED until source-tree checks, full tests, diff review, and operator approval pass. Parent T-1 remains CURRENT / NOT_COMPLETED.
+T-1a was completed and accepted on 2026-07-24 at implementation commit `0b06378`.
+
+Accepted verification:
+
+```text
+compileall: passed
+all accepted v2.1.0 checks: passed
+v2.0.x compatibility and maintenance guards: passed
+backend pytest: 110 passed
+Flutter test: 64 passed
+diff review / operator approval: passed
+Backend runtime changed: false
+Flutter runtime changed: false
+dependencies changed: false
+existing tests changed: false
+real Framework/TTS execution: false
+release records changed: false
+```
+
+T-1b is CURRENT / NOT_COMPLETED; T-1c remains PLANNED. Parent T-1 remains CURRENT / NOT_COMPLETED.
