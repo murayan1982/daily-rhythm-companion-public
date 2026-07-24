@@ -7,8 +7,8 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1 through W-5 COMPLETED / ACCEPTED; C-1 CURRENT / NOT_COMPLETED**)
-Current small commit: C-1 — Post-advice chat lifecycle and UI-state hardening (**CURRENT / NOT_COMPLETED**)
+Current development line: v2.1.0 (**W-1 through W-5 COMPLETED / ACCEPTED; C-1a CURRENT / NOT_COMPLETED**)
+Current small commit: C-1a — Post-advice chat current behavior inventory and contract (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -161,6 +161,29 @@ W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 ```
 
 W-5 is completed and accepted. W-5a remains an accepted historical public-safe contract and performed no OAuth or provider request. W-5b1 was accepted at implementation commit `081cfdd`: Google Health API is the configured-real path, legacy Fitbit Web API execution is retired, the Google Health v4 contract is mock-safe guarded, and the Flutter `provider_options` mismatch is corrected. W-5b2 was accepted from execution-record commit `ed50d9e`: the ignored operator profile passed, stored-token refresh succeeded, the real Google Health request returned HTTP 200, normalized real data reached `/sleep/summary`, and PC/smartphone Web showed Google Health / 実データ / 取得済み. The operator confirmed that the displayed sleep was measured by a Fitbit Versa 2 and delivered through Google Health. Raw screenshots, device identifiers, and private sleep values remain outside Git. C-1 is now current. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md) and [`docs/v210_google_health_real_operator_verification.md`](docs/v210_google_health_real_operator_verification.md).
+
+C-1 is split into three small commits:
+
+```text
+C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
+C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and tests
+C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
+```
+
+C-1a records the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior without changing runtime. It also records the current gaps: no turn bound, one shared missing-session 404, indirect Framework outcome metadata, and stale Flutter session recovery after terminal errors. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md).
+
+Run the C-1a source-tree gate with:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_post_advice_chat_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
 
 Run the W-4b mock-safe gate with:
 

@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: C-1 — Post-advice chat lifecycle and UI-state hardening
+Current small commit: C-1a — Post-advice chat current behavior inventory and contract
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -75,13 +75,16 @@ W-5  COMPLETED / ACCEPTED   Wearable migration correction and configured Google 
   W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
   W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 C-1  CURRENT / NOT_COMPLETED  Post-advice chat lifecycle and UI-state hardening
+  C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
+  C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and tests
+  C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-5 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1 is current and not completed; T-1 through R-1 remain planned.
+W-1 through W-5 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1a is current and not completed; C-1b/C-1c and T-1 through R-1 remain planned.
 
 ---
 
@@ -795,14 +798,93 @@ W-5b2 and parent W-5 were completed and accepted on 2026-07-24. C-1 is now CURRE
 
 Status: CURRENT / NOT_COMPLETED
 
-Planned boundary:
+Small-commit split:
+
+```text
+C-1a  CURRENT / NOT_COMPLETED  Current behavior inventory and implementation contract
+C-1b  PLANNED                  Backend lifecycle outcomes, bounded turns, and mock-safe tests
+C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
+```
+
+Parent boundary:
 
 ```text
 - Preserve the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior
   unless a later accepted contract intentionally changes them.
-- Add bounded turn limits and clearer expired/unavailable/fallback UI states.
+- Add bounded chat turns and clearer expired, unavailable, blocked, fallback,
+  active, sending, skipped, and restart states.
+- Separate normal-user copy from optional developer/operator diagnostics.
 - Reuse released AI Character Framework public text-session APIs only.
+- Keep T-1, V-1, and R-1 planned until separately implemented and accepted.
 ```
+
+## C-1a — Current behavior inventory and implementation contract
+
+Status: CURRENT / NOT_COMPLETED
+
+Detailed inventory: `docs/v210_post_advice_chat_current_behavior_inventory.md`
+
+Purpose:
+
+```text
+- inspect the accepted Backend chat API/model/service and Framework adapter boundary;
+- inspect Flutter chat models, BackendApiClient, HomeScreen state, and widget tests;
+- record the lifecycle and recovery gaps before runtime changes;
+- pin inspected runtime/test files using normalized source hashes;
+- define the C-1b/C-1c small-commit responsibilities.
+```
+
+C-1a change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_post_advice_chat_current_behavior_inventory.md
+scripts/check_v210_post_advice_chat_current_behavior_inventory.py
+existing v2.1.0 check scripts current-state synchronization
+```
+
+Explicit non-change surface:
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/**
+app/test/**
+app/pubspec.yaml
+backend/.env.example
+released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
+```
+
+C-1a fixed findings:
+
+```text
+- accepted defaults are 1800-second idle TTL and 100 sessions;
+- successful get/message refreshes recency and capacity eviction is LRU;
+- sessions have no bounded-turn limit;
+- expired, evicted, and unknown sessions share one HTTP 404 detail;
+- Framework outcome status is represented indirectly through source.mode/reply copy;
+- Flutter uses booleans plus a generic error string rather than a structured lifecycle state;
+- message failure leaves a stale local session, so direct restart is not available;
+- normal-user copy and operator diagnostics are mixed in the chat card.
+```
+
+Mock-safe gate:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_post_advice_chat_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+C-1a performs no real Framework/LLM execution and does not complete parent C-1.
 
 ---
 
