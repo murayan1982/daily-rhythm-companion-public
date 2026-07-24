@@ -397,7 +397,23 @@ flutter test
 cd ..
 ```
 
-The accepted C-1a check is credential-free and provider-free. It pins the current Backend chat API/model/service, Framework adapter, Flutter chat model/client/HomeScreen, and existing lifecycle/widget tests. It confirms the accepted 1800-second idle TTL and 100-session capacity while recording that bounded turns, explicit expired/evicted classification, structured Flutter lifecycle state, and direct stale-session restart are not implemented yet. C-1a acceptance recorded implementation commit `a4263ca`, backend 100 passed, Flutter 57 passed, no runtime/test change, and no real Framework execution. C-1b is current; C-1c remains planned and parent C-1 remains not completed.
+The accepted C-1a check is credential-free and provider-free. It preserves the historical pre-change inventory and verifies that the Framework adapter and Flutter C-1c surface remain unchanged while C-1b modifies only its assigned Backend files.
+
+## C-1b Backend lifecycle and outcome contract
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_post_advice_chat_current_behavior_inventory.py
+python scripts\check_v210_post_advice_chat_backend_lifecycle.py
+python -m pytest -q backend/tests/test_post_advice_chat_lifecycle.py backend/tests/test_post_advice_chat_outcomes.py backend/tests/test_temporary_lifecycle_config.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b remains IMPLEMENTED / NOT_ACCEPTED until operator approval.
 
 
 ## Script categories

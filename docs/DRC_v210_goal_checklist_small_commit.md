@@ -903,6 +903,75 @@ C-1a acceptance record:
 C-1a was completed and accepted on 2026-07-24. C-1b is CURRENT / NOT_COMPLETED.
 C-1a performed no real Framework/LLM execution and does not complete parent C-1.
 
+## C-1b — Backend lifecycle outcomes, bounded turns, and mock-safe tests
+
+Status: IMPLEMENTED / NOT_ACCEPTED
+
+Detailed contract: `docs/v210_post_advice_chat_backend_lifecycle.md`
+
+Implementation boundary:
+
+```text
+- preserve POST_ADVICE_CHAT_TTL_SECONDS=1800;
+- preserve POST_ADVICE_CHAT_MAX_SESSIONS=100 and LRU eviction;
+- add POST_ADVICE_CHAT_MAX_TURNS=8;
+- add ChatLifecycle, ChatOutcome, and ChatSessionProblem;
+- distinguish session_expired, session_evicted, and session_not_found;
+- return structured HTTP 409 turn_limit_reached after the final allowed response;
+- keep terminal-reason metadata bounded without retaining removed message bodies;
+- map mock/configured/fallback/unavailable/blocked/skipped outcomes;
+- use deterministic clocks and fake adapters only in normal tests;
+- leave all Flutter runtime/tests unchanged for C-1c.
+```
+
+C-1b change surface:
+
+```text
+backend/app/config.py
+backend/app/models/chat.py
+backend/app/services/post_advice_chat_service.py
+backend/app/api/chat.py
+backend/.env.example
+backend/env_profiles/mock_safe.env
+backend/tests/test_temporary_lifecycle_config.py
+backend/tests/test_post_advice_chat_lifecycle.py
+backend/tests/test_post_advice_chat_outcomes.py
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_post_advice_chat_current_behavior_inventory.md
+docs/v210_post_advice_chat_backend_lifecycle.md
+scripts/check_v210_post_advice_chat_current_behavior_inventory.py
+scripts/check_v210_post_advice_chat_backend_lifecycle.py
+```
+
+Explicit non-change surface:
+
+```text
+backend/app/services/framework_text_chat_adapter.py
+backend/app/services/framework_text_chat_drc_live_reply.py
+app/lib/**
+app/test/**
+T-1 / V-1 / R-1 runtime
+released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
+```
+
+Implementation verification completed before review:
+
+```text
+- python -m compileall -q backend scripts: passed
+- focused C-1b Backend tests: 17 passed
+- backend pytest: 110 passed
+- C-1b source-tree checks: passed locally
+- real Framework/LLM execution: false
+- Flutter runtime changed: false
+- release records changed: false
+```
+
+C-1b remains NOT_ACCEPTED until all prior v2.1.0 checks, v2.0.x guards, Flutter 57 tests, diff review, and operator approval pass. Parent C-1 remains CURRENT / NOT_COMPLETED and C-1c remains PLANNED.
+
 ---
 
 # T-1 — Flutter in-app TTS player and artifact-expiry handling

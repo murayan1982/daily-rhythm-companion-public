@@ -21,7 +21,6 @@ PROTECTED_RELEASE_HASHES = {
 }
 
 W3_UNCHANGED_HASHES = {
-    "backend/app/config.py": "063b9fdd7c1b5c3132a5885eddb56fc2b2202d45b202dda25b745393b35ccc06",
     "backend/app/api/fitbit.py": "44463bb3ce7c0e325c7a2a31602a68b0bc436cff615ef03ea70a3d4be6641b66",
     "backend/app/api/sleep.py": "80ea9be0988dee24492821990a039608be3ee7dc5a3179d758151461809e5c3a",
     "backend/app/models/fitbit.py": "5474e1f121b43f7d25a6959954bd1d7caed8f37478453fa3a7e7c672c4948b52",

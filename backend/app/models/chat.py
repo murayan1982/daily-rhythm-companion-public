@@ -36,6 +36,35 @@ class ChatSource(BaseModel):
     framework_character_source: str | None = None
 
 
+class ChatLifecycle(BaseModel):
+    """Provider-neutral lifecycle state for one post-advice chat session."""
+
+    state: str
+    turn_count: int
+    turn_limit: int
+    can_send_message: bool
+    can_restart: bool
+
+
+class ChatOutcome(BaseModel):
+    """Provider-neutral result state for the most recent chat operation."""
+
+    kind: str
+    can_continue: bool
+    can_restart: bool
+    user_message: str
+    technical_code: str | None = None
+
+
+class ChatSessionProblem(BaseModel):
+    """Structured app-facing reason why a chat operation cannot continue."""
+
+    code: str
+    message: str
+    user_message: str
+    can_restart: bool = True
+
+
 class ChatSessionCreateRequest(BaseModel):
     """Request to start an optional chat after an advice result."""
 
@@ -51,6 +80,8 @@ class ChatSessionResponse(BaseModel):
     source: ChatSource
     context: PostAdviceChatContext
     messages: list[ChatMessage]
+    lifecycle: ChatLifecycle
+    outcome: ChatOutcome
 
 
 class ChatMessageRequest(BaseModel):
@@ -66,3 +97,5 @@ class ChatMessageResponse(BaseModel):
     reply: ChatMessage
     source: ChatSource
     messages: list[ChatMessage]
+    lifecycle: ChatLifecycle
+    outcome: ChatOutcome

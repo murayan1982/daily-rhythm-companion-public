@@ -36,6 +36,7 @@ class AppConfig:
     framework_text_chat_live_message_enabled: bool = False
     post_advice_chat_ttl_seconds: int = 1800
     post_advice_chat_max_sessions: int = 100
+    post_advice_chat_max_turns: int = 8
     voice_input_demo_enabled: bool = False
     voice_input_adapter_mode: str = "disabled"
     voice_output_demo_enabled: bool = False
@@ -207,6 +208,10 @@ def load_config() -> AppConfig:
         post_advice_chat_max_sessions=_env_positive_int(
             "POST_ADVICE_CHAT_MAX_SESSIONS",
             100,
+        ),
+        post_advice_chat_max_turns=_env_positive_int(
+            "POST_ADVICE_CHAT_MAX_TURNS",
+            8,
         ),
         voice_input_demo_enabled=_env_flag("VOICE_INPUT_DEMO_ENABLED"),
         voice_input_adapter_mode=os.getenv(

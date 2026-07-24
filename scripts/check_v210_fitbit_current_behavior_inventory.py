@@ -22,7 +22,6 @@ PROTECTED_RELEASE_HASHES = {
 
 # Backend and stable model files outside later accepted change surfaces remain pinned to the W-1 baseline.
 W1_UNCHANGED_IMPLEMENTATION_HASHES = {
-    "backend/app/config.py": "063b9fdd7c1b5c3132a5885eddb56fc2b2202d45b202dda25b745393b35ccc06",
     "backend/app/api/fitbit.py": "44463bb3ce7c0e325c7a2a31602a68b0bc436cff615ef03ea70a3d4be6641b66",
     "backend/app/api/sleep.py": "80ea9be0988dee24492821990a039608be3ee7dc5a3179d758151461809e5c3a",
     "backend/app/models/sleep.py": "4fd063af3ff7cfb4f0ed1c26fe252ab60907622720081ce7cafdcb8296a72961",

@@ -4,9 +4,13 @@ from app.models.chat import (
     ChatMessageRequest,
     ChatMessageResponse,
     ChatSessionCreateRequest,
+    ChatSessionProblem,
     ChatSessionResponse,
 )
-from app.services.post_advice_chat_service import PostAdviceChatService
+from app.services.post_advice_chat_service import (
+    CHAT_PROBLEM_TURN_LIMIT,
+    PostAdviceChatService,
+)
 
 
 router = APIRouter(prefix="/chat", tags=["post-advice-chat"])
@@ -25,11 +29,10 @@ def create_chat_session(request: ChatSessionCreateRequest) -> ChatSessionRespons
 def get_chat_session(session_id: str) -> ChatSessionResponse:
     """Return the current state of a post-advice chat session."""
 
-    session = _chat_service.get_session(session_id)
-    if session is None:
-        raise HTTPException(status_code=404, detail="Chat session not found")
-
-    return session
+    result = _chat_service.get_session_result(session_id)
+    if result.session is None:
+        _raise_chat_problem(result.problem)
+    return result.session
 
 
 @router.post(
@@ -42,8 +45,17 @@ def add_chat_message(
 ) -> ChatMessageResponse:
     """Add a user message and return a mock-safe character response."""
 
-    response = _chat_service.add_message(session_id=session_id, request=request)
-    if response is None:
-        raise HTTPException(status_code=404, detail="Chat session not found")
+    result = _chat_service.add_message_result(session_id=session_id, request=request)
+    if result.response is None:
+        _raise_chat_problem(result.problem)
+    return result.response
 
-    return response
+
+def _raise_chat_problem(problem: ChatSessionProblem | None) -> None:
+    problem = problem or ChatSessionProblem(
+        code="session_not_found",
+        message="Chat session not found",
+        user_message="この会話を見つけられませんでした。新しい会話を始めてください。",
+    )
+    status_code = 409 if problem.code == CHAT_PROBLEM_TURN_LIMIT else 404
+    raise HTTPException(status_code=status_code, detail=problem.model_dump())

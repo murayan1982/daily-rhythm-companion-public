@@ -103,6 +103,36 @@ C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acc
 
 C-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。C-1bはCURRENT / NOT_COMPLETED、親C-1はCURRENT / NOT_COMPLETEDのままである。
 
+### C-1b — Backend lifecycle outcomes, bounded turns, and tests
+
+Status: IMPLEMENTED / NOT_ACCEPTED
+
+```text
+- accepted 1800秒TTL、100 session、LRUを維持する。
+- POST_ADVICE_CHAT_MAX_TURNS=8を追加する。
+- ChatLifecycle / ChatOutcome / ChatSessionProblemを追加する。
+- expired / evicted / unknownをstructured HTTP 404で区別する。
+- turn limit後の送信をrestartable HTTP 409にする。
+- removed session本文を保持せず、terminal reason cacheを100件以内に制限する。
+- deterministic clock / fake adapterだけでmock-safe回帰を追加する。
+- Flutter runtimeとC-1c、T-1、V-1、R-1を前倒ししない。
+```
+
+詳細: `docs/v210_post_advice_chat_backend_lifecycle.md`
+
+実装時点:
+
+```text
+- C-1b source-tree check: passed locally
+- focused Backend tests: 17 passed
+- backend pytest: 110 passed
+- Flutter runtime changed: false
+- real Framework execution: false
+- release records changed: false
+```
+
+C-1bは実装済みだが、diff reviewとoperator approval前なのでNOT_ACCEPTEDのままである。
+
 ---
 
 ## W-5 — Wearable migration correction and configured Google Health verification

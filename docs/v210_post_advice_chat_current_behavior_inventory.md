@@ -248,3 +248,21 @@ release records changed: false
 
 C-1a was completed and accepted on 2026-07-24. C-1b is CURRENT / NOT_COMPLETED.
 C-1a does not satisfy C-1b, C-1c, T-1, V-1, R-1, or release readiness.
+
+## C-1b implementation handoff
+
+```text
+C-1b implementation status: IMPLEMENTED / NOT_ACCEPTED
+Backend lifecycle/outcome fields: added
+POST_ADVICE_CHAT_MAX_TURNS default: 8
+expired/evicted/unknown classification: added
+turn-limit conflict: HTTP 409
+Flutter structured lifecycle consumption: deferred to C-1c
+real Framework execution: false
+release records changed: false
+```
+
+C-1b intentionally changes the Backend files assigned by the accepted C-1a
+contract. The C-1a inventory remains the historical pre-change baseline; its
+Framework adapter and Flutter hashes remain unchanged. Detailed C-1b contract:
+`docs/v210_post_advice_chat_backend_lifecycle.md`.

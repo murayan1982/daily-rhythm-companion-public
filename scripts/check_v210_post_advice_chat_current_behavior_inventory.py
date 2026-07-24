@@ -1,7 +1,8 @@
-"""Validate the C-1a post-advice chat current-behavior inventory.
+"""Validate the accepted C-1a post-advice chat behavior inventory.
 
-The check is source-tree only. It pins the inspected Backend/Flutter implementation
-so C-1a cannot silently change runtime behavior or existing tests.
+C-1a is historical after acceptance. This check preserves the accepted inventory,
+release records, Framework boundary, and unchanged Flutter baseline while allowing
+C-1b to modify the explicitly assigned Backend lifecycle files and tests.
 """
 
 from __future__ import annotations
@@ -24,15 +25,9 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-C1A_INSPECTED_HASHES = {
-    "backend/app/config.py": "063b9fdd7c1b5c3132a5885eddb56fc2b2202d45b202dda25b745393b35ccc06",
-    "backend/app/api/chat.py": "18107e3ddfce490f99f0750338a80d7ac0ee48aa3e7c4bc9206767af54a38f99",
-    "backend/app/models/chat.py": "43391ee802d236b3625a26eca129853d1dca9044aa6dc7ec638a263d4ef2ebb2",
-    "backend/app/services/post_advice_chat_service.py": "98ee953c7f5bfa5e8edf1adcc70d5bbb311d89e2c49c32672fa5cf49d2a49e7c",
+C1A_UNCHANGED_AFTER_BACKEND_WORK_HASHES = {
     "backend/app/services/framework_text_chat_adapter.py": "706691dfbba83989cbe9ebffbb7e986f95d15e97d3be22ae8ae7ab6644ab6225",
     "backend/app/services/framework_text_chat_drc_live_reply.py": "fada52eed7c6322a87ff6b731904143ba0cd9899f235eb83875ca0a113cdc46f",
-    "backend/tests/test_post_advice_chat_lifecycle.py": "ecbf06034c78e52bc3c2a74b129a791e4f3147deff8e1a9764cae05dbac4c2b8",
-    "backend/tests/test_temporary_lifecycle_config.py": "fa82d5d7cd083fcf9fa9ad54b8221e88ec0221710a8d0dde13c253257ab5d9c3",
     "app/lib/models/chat.dart": "b145e7c335a734ef8609ff579e3533fb0e11f701982ba9a8f7ab48bdb817f1e9",
     "app/lib/services/backend_api_client.dart": "8f790252327c65e7908bd37e13233e4ec5bee6a68b1f2e11b5f536750a82a362",
     "app/lib/screens/home_screen.dart": "3933240c97ec55308342da4b84c8b5087b3eb78f674c7be03f93a0540195d950",
@@ -81,24 +76,23 @@ def assert_no_sensitive_values(relative: str, text: str) -> None:
 def main() -> None:
     checklist = read("docs/DRC_v210_goal_checklist_small_commit.md")
     inventory = read("docs/v210_post_advice_chat_current_behavior_inventory.md")
+    backend_contract = read("docs/v210_post_advice_chat_backend_lifecycle.md")
     roadmap = read("roadmap.md")
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
     require(checklist, "Current small commit: C-1b", "C-1b current small commit")
-    require(checklist, "W-5 state: COMPLETED / ACCEPTED", "W-5 accepted state")
-    require(checklist, "C-1  CURRENT / NOT_COMPLETED", "C-1 parent state")
     require(checklist, "C-1a  COMPLETED / ACCEPTED", "C-1a accepted state")
     require(checklist, "C-1b  CURRENT / NOT_COMPLETED", "C-1b current state")
     require(checklist, "C-1c  PLANNED", "C-1c planned state")
-    for phase in ("T-1", "V-1", "R-1"):
-        require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
-
     require(roadmap, "Current small commit: C-1b", "roadmap current state")
     require(tasklist, "current small commit: C-1b CURRENT / NOT_COMPLETED", "tasklist current state")
-    require(scripts_readme, "check_v210_post_advice_chat_current_behavior_inventory.py", "scripts command")
+    require(scripts_readme, "check_v210_post_advice_chat_backend_lifecycle.py", "C-1b command")
+
     require(inventory, "Status: C-1a COMPLETED / ACCEPTED", "inventory accepted status")
-    require(checklist, "implementation commit: a4263ca", "implementation commit record")
+    require(inventory, "implementation commit: a4263ca", "C-1a implementation record")
+    require(inventory, "C-1b implementation status: IMPLEMENTED / NOT_ACCEPTED", "C-1b handoff marker")
+    require(backend_contract, "Status: C-1b IMPLEMENTED / NOT_ACCEPTED", "C-1b contract state")
 
     for marker in (
         "POST_ADVICE_CHAT_TTL_SECONDS=1800",
@@ -107,36 +101,25 @@ def main() -> None:
         "has no maximum-turn or maximum-message limit",
         "a message HTTP 404 leaves the stale session object in memory",
         "C-1a  COMPLETED / ACCEPTED",
-        "C-1b  CURRENT / NOT_COMPLETED",
-        "C-1c  PLANNED",
         "implementation commit: a4263ca",
     ):
-        require(inventory, marker, "inventory marker")
+        require(inventory, marker, "accepted C-1a inventory marker")
 
     config = read("backend/app/config.py")
-    service = read("backend/app/services/post_advice_chat_service.py")
-    api = read("backend/app/api/chat.py")
-    models = read("backend/app/models/chat.py")
     adapter = read("backend/app/services/framework_text_chat_adapter.py")
     flutter_client = read("app/lib/services/backend_api_client.dart")
     home = read("app/lib/screens/home_screen.dart")
 
     require(config, "post_advice_chat_ttl_seconds: int = 1800", "accepted TTL")
     require(config, "post_advice_chat_max_sessions: int = 100", "accepted capacity")
-    require(service, "_cleanup_expired_locked", "expiry cleanup")
-    require(service, "_evict_for_new_session_locked", "LRU eviction")
-    require(api, 'detail="Chat session not found"', "existing 404 contract")
-    require(models, "status: str", "existing session status field")
-    if "turn_count" in models or "max_turn" in models:
-        raise AssertionError("C-1a advanced bounded-turn runtime fields early")
+    require(config, "post_advice_chat_max_turns: int = 8", "C-1b turn bound")
     for status in ("skipped", "unavailable", "blocked-live-message-gate", "responded"):
         require(adapter, f'status="{status}"', f"adapter status {status}")
-    require(flutter_client, "Post-advice chat message API failed: HTTP", "generic Flutter chat error")
-    require(home, "_postAdviceChatSession = null", "local session clearing path")
-    require(home, "_postAdviceChatError = _formatUserFacingError(error)", "generic Flutter error presentation")
+    require(flutter_client, "Post-advice chat message API failed: HTTP", "unchanged generic Flutter error")
+    require(home, "_postAdviceChatError = _formatUserFacingError(error)", "unchanged Flutter presentation")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
-    assert_hashes(C1A_INSPECTED_HASHES, "C-1a inspected implementation")
+    assert_hashes(C1A_UNCHANGED_AFTER_BACKEND_WORK_HASHES, "C-1a unchanged Framework/Flutter baseline")
 
     for relative in (
         "README.md",
@@ -145,6 +128,7 @@ def main() -> None:
         "scripts/README.md",
         "docs/DRC_v210_goal_checklist_small_commit.md",
         "docs/v210_post_advice_chat_current_behavior_inventory.md",
+        "docs/v210_post_advice_chat_backend_lifecycle.md",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
@@ -154,11 +138,8 @@ def main() -> None:
     print("v210_post_advice_chat_inventory_parent_phase: C-1-current-not-completed")
     print("v210_post_advice_chat_inventory_accepted_ttl_seconds: 1800")
     print("v210_post_advice_chat_inventory_accepted_max_sessions: 100")
-    print("v210_post_advice_chat_inventory_existing_turn_limit: false")
-    print("v210_post_advice_chat_inventory_expired_distinguished_from_unknown: false")
-    print("v210_post_advice_chat_inventory_flutter_structured_lifecycle_state: false")
-    print("v210_post_advice_chat_inventory_runtime_changed: false")
-    print("v210_post_advice_chat_inventory_existing_tests_changed: false")
+    print("v210_post_advice_chat_inventory_c1b_backend_runtime_started: true")
+    print("v210_post_advice_chat_inventory_flutter_runtime_changed: false")
     print("v210_post_advice_chat_inventory_real_framework_execution: false")
     print("v210_post_advice_chat_inventory_release_records_changed: false")
     print("[v210-post-advice-chat-current-behavior-inventory-check] OK")

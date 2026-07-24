@@ -170,13 +170,15 @@ C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and te
 C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. It records the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior without changing runtime, and fixes the current gaps as the C-1b/C-1c contract: no turn bound, one shared missing-session 404, indirect Framework outcome metadata, and stale Flutter recovery after terminal errors. C-1b is now current. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md).
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is implemented but not accepted: the Backend now keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. Flutter runtime remains unchanged until C-1c. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md) and [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md).
 
-Run the accepted C-1a source-tree gate with:
+Run the C-1b mock-safe gate with:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v210_post_advice_chat_current_behavior_inventory.py
+python scripts\check_v210_post_advice_chat_backend_lifecycle.py
+python -m pytest -q backend/tests/test_post_advice_chat_lifecycle.py backend/tests/test_post_advice_chat_outcomes.py backend/tests/test_temporary_lifecycle_config.py
 python -m pytest -q backend/tests
 
 cd app

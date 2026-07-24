@@ -442,10 +442,11 @@ C-1 small-commit split:
 ```text
 C-1a  COMPLETED / ACCEPTED     Inventory current Backend/Flutter behavior and freeze the contract
 C-1b  CURRENT / NOT_COMPLETED  Add Backend lifecycle outcomes, bounded turns, and mock-safe tests
+                                   (IMPLEMENTED / NOT_ACCEPTED)
 C-1c  PLANNED                  Add Flutter lifecycle/recovery states and accept parent C-1
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. It is docs/check only and records that the accepted service has TTL/capacity/LRU bounds but no turn bound; missing sessions share one 404 detail; and Flutter retains stale session state after a terminal message error. It changed no runtime or existing tests. C-1b is current.
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is implemented but not accepted. It preserves TTL/capacity/LRU, adds an 8-turn default, structured lifecycle and provider-neutral outcome models, bounded expired/evicted tombstones, structured 404 reasons, and a restartable HTTP 409 turn-limit result. Backend tests rise from 100 to 110 in the implementation tree. Flutter remains unchanged until C-1c.
 
 ### TTS experience target
 
