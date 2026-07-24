@@ -1,7 +1,7 @@
 # v2.1.0 post-advice chat Backend lifecycle and outcome contract
 
 Updated: 2026-07-24
-Status: C-1b IMPLEMENTED / NOT_ACCEPTED
+Status: C-1b COMPLETED / ACCEPTED
 Parent phase: C-1 CURRENT / NOT_COMPLETED
 
 ## Purpose
@@ -183,9 +183,18 @@ Focused Backend tests cover:
 Tests use deterministic clocks and fake adapters. They do not read credentials,
 private env files, `backend/local_data`, or network resources.
 
-## C-1b implementation state
+## C-1b accepted completion record
 
 ```text
+implementation commit: 3055995
+compileall: passed
+C-1a / C-1b source-tree checks: passed
+W-1 through W-5 checks: passed
+v2.0.x guards: passed
+focused Backend tests: 17 passed
+backend pytest: 110 passed
+Flutter test: 57 passed
+diff review / operator approval: passed
 Backend runtime changed: true
 Backend tests changed: true
 Flutter runtime changed: false
@@ -193,9 +202,8 @@ Flutter tests changed: false
 real Framework/LLM execution: false
 release records changed: false
 parent C-1 completed: false
-C-1c advanced: false
 ```
 
-C-1b remains IMPLEMENTED / NOT_ACCEPTED until compileall, focused checks, all prior
-v2.1.0 checks, v2.0.x guards, full Backend pytest, Flutter test, diff review, and
-operator approval pass. C-1c remains PLANNED.
+C-1b was completed and accepted on 2026-07-24. C-1c is CURRENT / NOT_COMPLETED
+and will consume the structured Backend fields in Flutter. Parent C-1 remains
+CURRENT / NOT_COMPLETED.

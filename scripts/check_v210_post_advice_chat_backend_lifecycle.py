@@ -79,10 +79,11 @@ def main() -> None:
 
     for source in (checklist, roadmap, tasklist):
         require(source, "C-1b", "C-1b state")
-    require(checklist, "C-1b  CURRENT / NOT_COMPLETED", "C-1b current state")
-    require(checklist, "C-1c  PLANNED", "C-1c planned state")
+    require(checklist, "C-1b  COMPLETED / ACCEPTED", "C-1b accepted state")
+    require(checklist, "C-1c  CURRENT / NOT_COMPLETED", "C-1c current state")
     require(checklist, "T-1  PLANNED", "T-1 planned state")
-    require(contract, "Status: C-1b IMPLEMENTED / NOT_ACCEPTED", "implementation state")
+    require(contract, "Status: C-1b COMPLETED / ACCEPTED", "accepted state")
+    require(contract, "implementation commit: 3055995", "implementation commit")
     require(scripts_readme, "check_v210_post_advice_chat_backend_lifecycle.py", "check command")
 
     for needle in (
@@ -153,8 +154,9 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_post_advice_chat_backend_lifecycle_status: implemented-not-accepted")
-    print("v210_post_advice_chat_backend_lifecycle_current_small_commit: C-1b")
+    print("v210_post_advice_chat_backend_lifecycle_status: completed-accepted")
+    print("v210_post_advice_chat_backend_lifecycle_completed_small_commit: C-1b")
+    print("v210_post_advice_chat_backend_lifecycle_current_small_commit: C-1c")
     print("v210_post_advice_chat_backend_lifecycle_parent_phase: C-1-current-not-completed")
     print("v210_post_advice_chat_backend_lifecycle_ttl_seconds: 1800")
     print("v210_post_advice_chat_backend_lifecycle_max_sessions: 100")

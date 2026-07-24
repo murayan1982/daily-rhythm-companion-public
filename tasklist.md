@@ -12,7 +12,7 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: C-1b CURRENT / NOT_COMPLETED
+current small commit: C-1c CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -67,8 +67,8 @@ Status: CURRENT / NOT_COMPLETED
 
 ```text
 C-1a  COMPLETED / ACCEPTED     current behavior inventory and implementation contract
-C-1b  CURRENT / NOT_COMPLETED  backend lifecycle outcomes, bounded turns, and tests
-C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
+C-1b  COMPLETED / ACCEPTED     backend lifecycle outcomes, bounded turns, and tests
+C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acceptance
 ```
 
 ### C-1a — Current behavior inventory and implementation contract
@@ -105,7 +105,7 @@ C-1aは2026-07-24にCOMPLETED / ACCEPTEDとなった。C-1bはCURRENT / NOT_COMP
 
 ### C-1b — Backend lifecycle outcomes, bounded turns, and tests
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 ```text
 - accepted 1800秒TTL、100 session、LRUを維持する。

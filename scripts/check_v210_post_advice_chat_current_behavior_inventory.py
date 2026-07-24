@@ -81,18 +81,18 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
-    require(checklist, "Current small commit: C-1b", "C-1b current small commit")
+    require(checklist, "Current small commit: C-1c", "C-1c current small commit")
     require(checklist, "C-1a  COMPLETED / ACCEPTED", "C-1a accepted state")
-    require(checklist, "C-1b  CURRENT / NOT_COMPLETED", "C-1b current state")
-    require(checklist, "C-1c  PLANNED", "C-1c planned state")
-    require(roadmap, "Current small commit: C-1b", "roadmap current state")
-    require(tasklist, "current small commit: C-1b CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(checklist, "C-1b  COMPLETED / ACCEPTED", "C-1b accepted state")
+    require(checklist, "C-1c  CURRENT / NOT_COMPLETED", "C-1c current state")
+    require(roadmap, "Current small commit: C-1c", "roadmap current state")
+    require(tasklist, "current small commit: C-1c CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_post_advice_chat_backend_lifecycle.py", "C-1b command")
 
     require(inventory, "Status: C-1a COMPLETED / ACCEPTED", "inventory accepted status")
     require(inventory, "implementation commit: a4263ca", "C-1a implementation record")
-    require(inventory, "C-1b implementation status: IMPLEMENTED / NOT_ACCEPTED", "C-1b handoff marker")
-    require(backend_contract, "Status: C-1b IMPLEMENTED / NOT_ACCEPTED", "C-1b contract state")
+    require(inventory, "C-1b status: COMPLETED / ACCEPTED", "C-1b accepted handoff marker")
+    require(backend_contract, "Status: C-1b COMPLETED / ACCEPTED", "C-1b contract state")
 
     for marker in (
         "POST_ADVICE_CHAT_TTL_SECONDS=1800",
@@ -134,7 +134,7 @@ def main() -> None:
 
     print("v210_post_advice_chat_inventory_status: completed-accepted")
     print("v210_post_advice_chat_inventory_completed_small_commit: C-1a")
-    print("v210_post_advice_chat_inventory_current_small_commit: C-1b")
+    print("v210_post_advice_chat_inventory_current_small_commit: C-1c")
     print("v210_post_advice_chat_inventory_parent_phase: C-1-current-not-completed")
     print("v210_post_advice_chat_inventory_accepted_ttl_seconds: 1800")
     print("v210_post_advice_chat_inventory_accepted_max_sessions: 100")

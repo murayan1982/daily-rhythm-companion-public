@@ -7,8 +7,8 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1 through W-5 and C-1a COMPLETED / ACCEPTED; C-1b CURRENT / NOT_COMPLETED**)
-Current small commit: C-1b — Backend lifecycle outcomes, bounded turns, and tests (**CURRENT / NOT_COMPLETED**)
+Current development line: v2.1.0 (**W-1 through W-5, C-1a, and C-1b COMPLETED / ACCEPTED; C-1c CURRENT / NOT_COMPLETED**)
+Current small commit: C-1c — Flutter lifecycle state, recovery UI, and C-1 acceptance (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -166,13 +166,13 @@ C-1 is split into three small commits:
 
 ```text
 C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
-C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and tests
-C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
+C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
+C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acceptance
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is implemented but not accepted: the Backend now keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. Flutter runtime remains unchanged until C-1c. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md) and [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md).
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`: the Backend keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. Flutter runtime remained unchanged. C-1c is current and will consume these fields in the app UI. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md) and [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md).
 
-Run the C-1b mock-safe gate with:
+The accepted C-1b mock-safe gate is:
 
 ```powershell
 python -m compileall -q backend scripts

@@ -15,7 +15,7 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: C-1b CURRENT / NOT_COMPLETED
+current small commit: C-1c CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 ```
 
@@ -413,7 +413,7 @@ flutter test
 cd ..
 ```
 
-The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b remains IMPLEMENTED / NOT_ACCEPTED until operator approval.
+The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b is COMPLETED / ACCEPTED at implementation commit `3055995`; C-1c is CURRENT / NOT_COMPLETED.
 
 
 ## Script categories

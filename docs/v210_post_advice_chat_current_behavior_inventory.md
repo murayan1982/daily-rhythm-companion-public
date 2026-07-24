@@ -192,8 +192,8 @@ Missing focused regression areas include:
 
 ```text
 C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
-C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and mock-safe tests
-C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
+C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and mock-safe tests
+C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 ```
 
 ### C-1a boundary
@@ -208,7 +208,7 @@ C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggrega
 - keep T-1, V-1, and R-1 PLANNED.
 ```
 
-### C-1b planned responsibility
+### C-1b accepted responsibility
 
 ```text
 - define provider-neutral app-facing lifecycle/outcome semantics;
@@ -218,7 +218,7 @@ C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggrega
 - keep compatibility behavior explicit where HTTP status or fields change.
 ```
 
-### C-1c planned responsibility
+### C-1c current responsibility
 
 ```text
 - introduce an explicit Flutter chat UI state rather than relying only on booleans;
@@ -246,23 +246,28 @@ real Framework/LLM execution: false
 release records changed: false
 ```
 
-C-1a was completed and accepted on 2026-07-24. C-1b is CURRENT / NOT_COMPLETED.
-C-1a does not satisfy C-1b, C-1c, T-1, V-1, R-1, or release readiness.
+C-1a was completed and accepted on 2026-07-24. C-1b was subsequently completed and accepted; C-1c is CURRENT / NOT_COMPLETED.
+C-1a alone does not satisfy C-1b, C-1c, T-1, V-1, R-1, or release readiness.
 
-## C-1b implementation handoff
+## C-1b accepted completion handoff
 
 ```text
-C-1b implementation status: IMPLEMENTED / NOT_ACCEPTED
+C-1b status: COMPLETED / ACCEPTED
+implementation commit: 3055995
 Backend lifecycle/outcome fields: added
 POST_ADVICE_CHAT_MAX_TURNS default: 8
 expired/evicted/unknown classification: added
 turn-limit conflict: HTTP 409
-Flutter structured lifecycle consumption: deferred to C-1c
+focused Backend tests: 17 passed
+backend pytest: 110 passed
+Flutter test: 57 passed
+Flutter structured lifecycle consumption: current C-1c responsibility
 real Framework execution: false
 release records changed: false
 ```
 
-C-1b intentionally changes the Backend files assigned by the accepted C-1a
+C-1b intentionally changed the Backend files assigned by the accepted C-1a
 contract. The C-1a inventory remains the historical pre-change baseline; its
-Framework adapter and Flutter hashes remain unchanged. Detailed C-1b contract:
-`docs/v210_post_advice_chat_backend_lifecycle.md`.
+Framework adapter and Flutter hashes remained unchanged through C-1b acceptance.
+Detailed C-1b contract: `docs/v210_post_advice_chat_backend_lifecycle.md`.
+C-1c is CURRENT / NOT_COMPLETED and parent C-1 remains CURRENT / NOT_COMPLETED.

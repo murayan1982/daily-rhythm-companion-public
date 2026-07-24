@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: C-1b — Backend lifecycle outcomes, bounded turns, and tests
+Current small commit: C-1c — Flutter lifecycle state, recovery UI, and C-1 acceptance
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -76,15 +76,15 @@ W-5  COMPLETED / ACCEPTED   Wearable migration correction and configured Google 
   W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 C-1  CURRENT / NOT_COMPLETED  Post-advice chat lifecycle and UI-state hardening
   C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
-  C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and tests
-  C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and C-1 acceptance
+  C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
+  C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-5 and C-1a are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1b is current and not completed; C-1c and T-1 through R-1 remain planned.
+W-1 through W-5, C-1a, and C-1b are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1c is current and not completed; T-1 through R-1 remain planned.
 
 ---
 
@@ -802,8 +802,8 @@ Small-commit split:
 
 ```text
 C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
-C-1b  CURRENT / NOT_COMPLETED  Backend lifecycle outcomes, bounded turns, and mock-safe tests
-C-1c  PLANNED                  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
+C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and mock-safe tests
+C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 ```
 
 Parent boundary:
@@ -900,12 +900,12 @@ C-1a acceptance record:
 - release records changed: false
 ```
 
-C-1a was completed and accepted on 2026-07-24. C-1b is CURRENT / NOT_COMPLETED.
-C-1a performed no real Framework/LLM execution and does not complete parent C-1.
+C-1a was completed and accepted on 2026-07-24. C-1b was subsequently completed and accepted; C-1c is CURRENT / NOT_COMPLETED.
+C-1a performed no real Framework/LLM execution and did not complete parent C-1.
 
 ## C-1b — Backend lifecycle outcomes, bounded turns, and mock-safe tests
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 Detailed contract: `docs/v210_post_advice_chat_backend_lifecycle.md`
 
@@ -958,19 +958,49 @@ T-1 / V-1 / R-1 runtime
 released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
 ```
 
-Implementation verification completed before review:
+C-1b acceptance record:
 
 ```text
+- implementation commit: 3055995
 - python -m compileall -q backend scripts: passed
+- C-1a / C-1b source-tree checks: passed
+- W-1 through W-5 checks / v2.0.x guards: passed
 - focused C-1b Backend tests: 17 passed
 - backend pytest: 110 passed
-- C-1b source-tree checks: passed locally
-- real Framework/LLM execution: false
+- Flutter test: 57 passed
+- diff review / operator approval: passed
+- Backend runtime changed: true
+- Backend tests changed: true
 - Flutter runtime changed: false
+- Flutter tests changed: false
+- real Framework/LLM execution: false
 - release records changed: false
 ```
 
-C-1b remains NOT_ACCEPTED until all prior v2.1.0 checks, v2.0.x guards, Flutter 57 tests, diff review, and operator approval pass. Parent C-1 remains CURRENT / NOT_COMPLETED and C-1c remains PLANNED.
+C-1b was completed and accepted on 2026-07-24. Parent C-1 remains CURRENT / NOT_COMPLETED and C-1c is CURRENT / NOT_COMPLETED.
+
+---
+
+## C-1c — Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
+
+Status: CURRENT / NOT_COMPLETED
+
+Implementation boundary:
+
+```text
+- consume ChatLifecycle, ChatOutcome, and ChatSessionProblem in Flutter;
+- represent active, sending, turn_limit_reached, expired, evicted, unavailable,
+  blocked, fallback, skipped, and restart states deterministically;
+- clear stale local sessions after restartable terminal failures;
+- support direct new-session restart without requiring skip first;
+- separate normal-user copy from optional operator diagnostics;
+- add focused model/client/widget tests;
+- preserve the accepted Backend TTL/capacity/LRU/turn bounds;
+- keep T-1, V-1, and R-1 planned until separately accepted.
+```
+
+C-1c and parent C-1 remain NOT_COMPLETED until implementation, focused checks,
+full Backend/Flutter tests, diff review, and operator approval pass.
 
 ---
 
