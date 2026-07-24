@@ -1,9 +1,9 @@
-"""Run the R-1b v2.1.0 release-candidate aggregate readiness gate.
+"""Run the accepted R-1b v2.1.0 release-candidate aggregate readiness gate.
 
 The portable default is credential-free and artifact-free. It runs all accepted
 v2.1.0 source-tree checks plus Backend pytest. ``--with-flutter`` adds the full
 Flutter test suite. ``--with-builds`` additionally requires Web and Windows
-builds and is the local R-1b acceptance gate used on the Windows release host.
+builds and reproduces the accepted R-1b gate on the Windows release host.
 No mode builds a release ZIP or creates a tag/GitHub Release.
 """
 
@@ -176,15 +176,16 @@ def verify_contract() -> None:
         require(source, "R-1a", f"{label} R-1a marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1a accepted marker")
         require(source, "R-1b", f"{label} R-1b marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1b implementation marker")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1b accepted marker")
         require(source, "R-1c", f"{label} R-1c marker")
-        require(source, "PLANNED", f"{label} later-phase marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1c current marker")
 
-    require(checklist, "Current small commit: R-1b", "current small commit")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1b implementation state")
+    require(checklist, "Current small commit: R-1c", "current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1c implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted state")
-    require(checklist, "R-1b  CURRENT / NOT_COMPLETED", "R-1b current state")
+    require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted state")
+    require(checklist, "R-1c  CURRENT / NOT_COMPLETED", "R-1c current state")
     require(checklist, "R-1e  PLANNED", "R-1e planned state")
 
     backend_version = read("backend/app/version.py")
@@ -319,8 +320,9 @@ def main() -> None:
     if snapshot_tree("release") != release_before:
         raise AssertionError("R-1b gate must not create or modify release artifacts")
 
-    print("v210_release_readiness_status: implemented-not-accepted")
-    print("v210_release_readiness_current_small_commit: R-1b")
+    print("v210_release_readiness_status: completed-accepted")
+    print("v210_release_readiness_completed_small_commit: R-1b")
+    print("v210_release_readiness_current_small_commit: R-1c")
     print("v210_release_readiness_parent_phase: R-1-current-not-completed")
     print(f"v210_release_readiness_backend_version: {EXPECTED_BACKEND_VERSION}")
     print(f"v210_release_readiness_flutter_version: {EXPECTED_FLUTTER_VERSION}")

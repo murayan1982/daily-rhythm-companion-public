@@ -2,7 +2,7 @@
 
 Updated: 2026-07-25
 Status: PREPARED / NOT_RELEASED
-Current phase: R-1b IMPLEMENTED / NOT_ACCEPTED
+Current phase: R-1c CURRENT / NOT_COMPLETED (NOT_STARTED)
 
 ## Candidate identity
 
@@ -34,8 +34,8 @@ No value in this prepared record claims that a v2.1.0 artifact or publication ex
 
 ```text
 R-1a release/readiness inventory: COMPLETED / ACCEPTED
-R-1b aggregate gate and candidate metadata: IMPLEMENTED / NOT_ACCEPTED
-R-1c final smartphone Web aggregate: PLANNED
+R-1b aggregate gate and candidate metadata: COMPLETED / ACCEPTED (implementation commit 72dd42c)
+R-1c final smartphone Web aggregate: CURRENT / NOT_COMPLETED (NOT_STARTED)
 R-1d fixed ZIP build and same-artifact verification: PLANNED
 R-1e publication and post-publication verification: PLANNED
 parent R-1: CURRENT / NOT_COMPLETED

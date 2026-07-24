@@ -2,9 +2,9 @@
 
 Updated: 2026-07-25
 Status: IN_PROGRESS
-Current small commit: R-1b — aggregate source-tree/test gate and v2.1.0 candidate metadata
+Current small commit: R-1c — final smartphone Web evidence aggregate
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current implementation state: NOT_STARTED
 Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -92,14 +92,14 @@ V-1  COMPLETED / ACCEPTED                  Character display extraction and dete
 R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
-  R-1b  CURRENT / NOT_COMPLETED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
-         IMPLEMENTED / NOT_ACCEPTED
-  R-1c  PLANNED                                    Final smartphone Web evidence aggregate
+  R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
+  R-1c  CURRENT / NOT_COMPLETED                     Final smartphone Web evidence aggregate
+         NOT_STARTED
   R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is current/not completed and implemented/not accepted; R-1c through R-1e remain planned.
+W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is completed/accepted; R-1c is current/not completed and not started; R-1d and R-1e remain planned.
 
 ---
 
@@ -1511,9 +1511,9 @@ Small-commit split:
 
 ```text
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
-R-1b  CURRENT / NOT_COMPLETED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
-      IMPLEMENTED / NOT_ACCEPTED
-R-1c  PLANNED                  Final smartphone Web evidence aggregate
+R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1c  CURRENT / NOT_COMPLETED  Final smartphone Web evidence aggregate
+      NOT_STARTED
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
@@ -1590,18 +1590,20 @@ R-1a acceptance record:
 - explicit operator approval: received
 ```
 
-R-1a is COMPLETED / ACCEPTED. R-1b is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
+R-1a and R-1b are COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and NOT_STARTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
 
 
 ## R-1b — Aggregate source-tree/test gate and v2.1.0 candidate metadata
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
+Completed small commit: R-1b
+Current small commit: R-1c
 
-Commit title candidate:
+Implementation commit:
 
 ```text
-test/release: add v2.1.0 candidate readiness gate
+72dd42c  build/test: add R-1b candidate readiness gate
 ```
 
 Purpose:
@@ -1643,19 +1645,22 @@ python scripts\check_v210_release_readiness.py --with-flutter --with-builds
 git diff --check
 ```
 
-Required acceptance evidence:
+Acceptance record:
 
 ```text
-- all 18 accepted v2.1.0 child checks pass;
-- the v2.0.x maintenance/compatibility aggregate passes;
-- Backend pytest reports 110 passed;
-- Flutter test reports 103 passed;
-- Flutter Web build passes;
-- Flutter Windows build passes;
-- backend/local_data and release are unchanged;
-- candidate notes and release record contain no private values;
-- fixed ZIP / DRC_v2.1.0 tag / GitHub Release remain absent;
-- diff review and explicit operator approval pass.
+- accepted on: 2026-07-25
+- implementation commit: 72dd42c
+- all accepted v2.1.0 child checks: 18 / 18 passed
+- v2.0.x maintenance/compatibility aggregate: passed
+- Backend pytest: 110 passed
+- Flutter test: 103 passed
+- Flutter Web build: passed
+- Flutter Windows build: passed
+- backend/local_data and release unchanged: confirmed
+- candidate notes/release record private-value review: passed
+- fixed ZIP / DRC_v2.1.0 tag / GitHub Release: absent
+- git diff --check and diff review: passed
+- explicit operator approval: received
 ```
 
 Deferred boundaries:
@@ -1666,7 +1671,7 @@ R-1d one-time committed-source fixed ZIP and same-artifact verification
 R-1e explicit approval, annotated tag, GitHub Release, and published SHA-256 verification
 ```
 
-R-1b remains IMPLEMENTED / NOT_ACCEPTED until the full Windows-host gate, diff review, and explicit operator approval pass.
+R-1b is COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and NOT_STARTED. The accepted R-1b gate remains artifact-free and publication-free; R-1c owns the final integrated smartphone Web evidence aggregate.
 
 T-1c Visual Studio 18 compatibility correction:
 

@@ -1,15 +1,17 @@
 # Daily Rhythm Companion v2.1.0 R-1b release-candidate readiness gate
 
 Updated: 2026-07-25
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: R-1b
+Status: COMPLETED / ACCEPTED
+Completed small commit: R-1b
+Current small commit: R-1c
 Parent phase: R-1 CURRENT / NOT_COMPLETED
 Release state: CANDIDATE / NOT_RELEASED
 
 ```text
 R-1a: COMPLETED / ACCEPTED
-R-1b: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
-R-1c through R-1e: PLANNED
+R-1b: COMPLETED / ACCEPTED
+R-1c: CURRENT / NOT_COMPLETED (NOT_STARTED)
+R-1d and R-1e: PLANNED
 ```
 
 ## Purpose
@@ -130,4 +132,24 @@ no GitHub Release
 no modification of v2.0.0/v2.0.1 historical release records
 ```
 
-R-1b remains `IMPLEMENTED / NOT_ACCEPTED` until the full gate, diff review, and explicit operator approval pass.
+## R-1b acceptance record
+
+```text
+accepted on: 2026-07-25
+implementation commit: 72dd42c
+all accepted v2.1.0 child checks: 18 / 18 passed
+v2.0.x maintenance/compatibility aggregate: passed
+Backend pytest: 110 passed
+Flutter test: 103 passed
+Flutter Web build: passed
+Flutter Windows build: passed
+backend/local_data unchanged: true
+release unchanged: true
+fixed ZIP built: false
+tag created: false
+GitHub Release created: false
+git diff --check and diff review: passed
+explicit operator approval: received
+```
+
+R-1b is `COMPLETED / ACCEPTED`. R-1c is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
