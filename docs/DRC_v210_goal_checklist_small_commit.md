@@ -4,7 +4,7 @@ Updated: 2026-07-25
 Status: IN_PROGRESS
 Current small commit: R-1b — aggregate source-tree/test gate and v2.1.0 candidate metadata
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -12,6 +12,7 @@ W-3 state: COMPLETED / ACCEPTED
 W-4 state: COMPLETED / ACCEPTED
 W-5 state: COMPLETED / ACCEPTED
 Current released version: v2.0.1
+Current source candidate metadata: Backend 2.1.0 / Flutter 2.1.0+3 (NOT_RELEASED)
 
 ## Source-of-truth rule
 
@@ -92,13 +93,13 @@ R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartp
                               fixed-ZIP verification, approval, and release preparation
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
   R-1b  CURRENT / NOT_COMPLETED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
-         NOT_STARTED
+         IMPLEMENTED / NOT_ACCEPTED
   R-1c  PLANNED                                    Final smartphone Web evidence aggregate
   R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is current/not completed and not started; R-1c through R-1e remain planned.
+W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is current/not completed and implemented/not accepted; R-1c through R-1e remain planned.
 
 ---
 
@@ -1511,7 +1512,7 @@ Small-commit split:
 ```text
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  CURRENT / NOT_COMPLETED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
-      NOT_STARTED
+      IMPLEMENTED / NOT_ACCEPTED
 R-1c  PLANNED                  Final smartphone Web evidence aggregate
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
@@ -1589,7 +1590,83 @@ R-1a acceptance record:
 - explicit operator approval: received
 ```
 
-R-1a is COMPLETED / ACCEPTED. R-1b is CURRENT / NOT_COMPLETED and NOT_STARTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
+R-1a is COMPLETED / ACCEPTED. R-1b is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
+
+
+## R-1b — Aggregate source-tree/test gate and v2.1.0 candidate metadata
+
+Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+
+Commit title candidate:
+
+```text
+test/release: add v2.1.0 candidate readiness gate
+```
+
+Purpose:
+
+```text
+- Advance active Backend/Flutter source metadata to 2.1.0 / 2.1.0+3 without claiming publication.
+- Add one credential-free aggregate gate over all 18 accepted v2.1.0 child checks and Backend pytest.
+- Require the full 103-test Flutter suite plus Web and Windows builds for R-1b acceptance.
+- Prepare public-safe v2.1.0 candidate release notes and an intentionally unfilled release record.
+- Preserve release/, backend/local_data, generic packaging, and immutable v2.0.0/v2.0.1 records.
+```
+
+Changed files:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_release_readiness_current_behavior_inventory.md
+docs/v210_release_readiness.md
+docs/v210_release_record.md
+release_notes/v2.1.0.md
+scripts/check_v210_release_readiness_current_behavior_inventory.py
+scripts/check_v210_release_readiness.py
+scripts/check_v20x_application_version_metadata.py
+scripts/check_v210_character_display_current_behavior_inventory.py
+scripts/check_v210_character_display_state.py
+scripts/check_v210_character_display_home_integration.py
+backend/app/version.py
+app/pubspec.yaml
+```
+
+Required implementation gate:
+
+```powershell
+python scripts\check_v210_release_readiness.py --with-flutter --with-builds
+git diff --check
+```
+
+Required acceptance evidence:
+
+```text
+- all 18 accepted v2.1.0 child checks pass;
+- the v2.0.x maintenance/compatibility aggregate passes;
+- Backend pytest reports 110 passed;
+- Flutter test reports 103 passed;
+- Flutter Web build passes;
+- Flutter Windows build passes;
+- backend/local_data and release are unchanged;
+- candidate notes and release record contain no private values;
+- fixed ZIP / DRC_v2.1.0 tag / GitHub Release remain absent;
+- diff review and explicit operator approval pass.
+```
+
+Deferred boundaries:
+
+```text
+R-1c final integrated smartphone Web evidence aggregate
+R-1d one-time committed-source fixed ZIP and same-artifact verification
+R-1e explicit approval, annotated tag, GitHub Release, and published SHA-256 verification
+```
+
+R-1b remains IMPLEMENTED / NOT_ACCEPTED until the full Windows-host gate, diff review, and explicit operator approval pass.
 
 T-1c Visual Studio 18 compatibility correction:
 

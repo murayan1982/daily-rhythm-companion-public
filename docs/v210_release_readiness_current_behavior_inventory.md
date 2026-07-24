@@ -108,7 +108,7 @@ No v2.1.0 fixed ZIP, `DRC_v2.1.0` annotated tag, or v2.1.0 GitHub Release is cre
 ```text
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  CURRENT / NOT_COMPLETED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
-      NOT_STARTED
+      IMPLEMENTED / NOT_ACCEPTED
 R-1c  PLANNED                  Final smartphone Web evidence aggregate
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
@@ -165,4 +165,16 @@ GitHub Release created: false
 historical release records changed: false
 ```
 
-R-1a is `COMPLETED / ACCEPTED`. R-1b is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+R-1a is `COMPLETED / ACCEPTED`. R-1b is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
+
+
+## Later R-1b candidate transition
+
+R-1a's accepted inventory snapshot remains Backend `2.0.1` / Flutter `2.0.1+2`. The separately checked R-1b implementation now advances the active source candidate to Backend `2.1.0` / Flutter `2.1.0+3`, adds `scripts/check_v210_release_readiness.py`, `docs/v210_release_readiness.md`, `docs/v210_release_record.md`, and `release_notes/v2.1.0.md`, and keeps the following later implementation absent:
+
+```text
+build_v210_fixed_release_zip_from_head.ps1
+scripts/check_v210_fixed_release_zip.py
+```
+
+This later transition does not retroactively alter the R-1a acceptance record or claim a fixed ZIP, tag, GitHub Release, provider execution, or final smartphone Web aggregate.

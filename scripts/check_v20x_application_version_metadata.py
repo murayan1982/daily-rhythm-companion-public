@@ -14,8 +14,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BACKEND_ROOT = ROOT / "backend"
-EXPECTED_VERSION = "2.0.1"
-EXPECTED_FLUTTER_VERSION = "2.0.1+2"
+M2_VERSION = "2.0.1"
+M2_FLUTTER_VERSION = "2.0.1+2"
+ALLOWED_ACTIVE_VERSIONS = {
+    "2.0.1": "2",
+    "2.1.0": "3",
+}
 
 
 def read(relative: str) -> str:
@@ -44,22 +48,23 @@ def run_baseline_check() -> None:
 
 
 def main() -> None:
-    if not re.fullmatch(r"\d+\.\d+\.\d+", EXPECTED_VERSION):
-        raise AssertionError(f"Invalid expected semantic version: {EXPECTED_VERSION}")
+    for expected_version in ALLOWED_ACTIVE_VERSIONS:
+        if not re.fullmatch(r"\d+\.\d+\.\d+", expected_version):
+            raise AssertionError(f"Invalid allowed semantic version: {expected_version}")
 
     sys.path.insert(0, str(BACKEND_ROOT))
     from app.api.health import health  # noqa: PLC0415
     from app.version import APP_VERSION  # noqa: PLC0415
 
-    if APP_VERSION != EXPECTED_VERSION:
-        raise AssertionError(f"APP_VERSION mismatch: {APP_VERSION}")
+    if APP_VERSION not in ALLOWED_ACTIVE_VERSIONS:
+        raise AssertionError(f"Unsupported active APP_VERSION: {APP_VERSION}")
 
     health_payload = health()
     if health_payload != {"status": "ok", "version": APP_VERSION}:
         raise AssertionError(f"Unexpected /health payload: {health_payload!r}")
 
     version_source = read("backend/app/version.py")
-    require(version_source, 'APP_VERSION = "2.0.1"', "backend version constant")
+    require(version_source, f'APP_VERSION = "{APP_VERSION}"', "backend version constant")
     if len(re.findall(r"^APP_VERSION\s*=", version_source, flags=re.MULTILINE)) != 1:
         raise AssertionError("backend/app/version.py must define APP_VERSION exactly once")
 
@@ -76,15 +81,21 @@ def main() -> None:
     if not match:
         raise AssertionError("Missing Flutter pubspec version")
     flutter_version = match.group(1)
-    if flutter_version != EXPECTED_FLUTTER_VERSION:
-        raise AssertionError(f"Flutter version mismatch: {flutter_version}")
+    expected_flutter_version = f"{APP_VERSION}+{ALLOWED_ACTIVE_VERSIONS[APP_VERSION]}"
+    if flutter_version != expected_flutter_version:
+        raise AssertionError(
+            f"Flutter version mismatch: {flutter_version} != {expected_flutter_version}"
+        )
     flutter_semantic_version, build_number = flutter_version.split("+", 1)
     if flutter_semantic_version != APP_VERSION:
         raise AssertionError(
             f"Flutter/backend semantic version mismatch: {flutter_semantic_version} != {APP_VERSION}"
         )
-    if build_number != "2":
-        raise AssertionError(f"Unexpected Flutter build number: {build_number}")
+    expected_build_number = ALLOWED_ACTIVE_VERSIONS[APP_VERSION]
+    if build_number != expected_build_number:
+        raise AssertionError(
+            f"Unexpected Flutter build number: {build_number} != {expected_build_number}"
+        )
 
     client = read("app/lib/services/backend_api_client.dart")
     for needle in (
@@ -106,7 +117,7 @@ def main() -> None:
     for relative in ("app/web/index.html", "app/web/manifest.json"):
         web_source = read(relative)
         require(web_source, "Daily Rhythm Companion", f"{relative} product identity")
-        for forbidden in ("2.0.1", "2.0.0+1", "0.15.0"):
+        for forbidden in ("2.1.0", "2.0.1", "2.0.0+1", "0.15.0"):
             reject(web_source, forbidden, f"{relative} duplicate version")
 
     inventory = read("docs/v20x_application_version_metadata.md")
@@ -144,6 +155,8 @@ def main() -> None:
     run_baseline_check()
 
     print("v20x_application_version_metadata_status: m2-completed")
+    print(f"v20x_application_version_metadata_m2_version: {M2_VERSION}")
+    print(f"v20x_application_version_metadata_m2_flutter_version: {M2_FLUTTER_VERSION}")
     print(f"v20x_application_version_metadata_backend_version: {APP_VERSION}")
     print(f"v20x_application_version_metadata_flutter_version: {flutter_version}")
     print("v20x_application_version_metadata_health_runtime_surface: True")

@@ -29,7 +29,7 @@ V1A_FLUTTER_BASELINE_HASHES = {
     "app/lib/models/advice_source.dart": "99ba85cb63901fe2ef3f2d2d7d7bd0ef38977eccad7277f53d937e11d17425fe",
     "app/lib/models/motion_demo.dart": "5e3fafa3fba66d92fe589d7b913bf350842b28d02218c3a54903d45c5f5fab89",
     "app/lib/services/voice_output_audio_player.dart": "3089e8423c5ec758c54684e55d100b300753b4e71e7553e6a72daff1865e388a",
-    "app/pubspec.yaml": "78ea66a2c1c4f96deced1063bf9f00369e7507c415e87d769a556b392dec4756",
+    "app/pubspec.yaml": "baa60adac069f8543cf122e3e1c34179c6712ae5ca3c021e0369bb35f7d83bbd",
 }
 
 V1A_STATIC_ASSET_HASHES = {
@@ -127,7 +127,7 @@ def main() -> None:
     require(inventory, "implementation commit: 1602b2f", "accepted implementation commit")
     require(inventory, "Backend pytest: 110 passed", "accepted Backend test count")
     require(inventory, "Flutter test: 84 passed", "accepted Flutter test count")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1b implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1b implementation state")
     require(checklist, "Current small commit: R-1b", "R-1b current small commit")
     require(inventory, "implementation commit `e1f8d6f`", "accepted V-1b implementation commit")
     require(inventory, "Runtime changed: false", "docs-only runtime marker")

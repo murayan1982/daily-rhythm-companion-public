@@ -32,7 +32,7 @@ UNCHANGED_RUNTIME_HASHES = {
     "app/lib/models/advice_source.dart": "99ba85cb63901fe2ef3f2d2d7d7bd0ef38977eccad7277f53d937e11d17425fe",
     "app/lib/models/motion_demo.dart": "5e3fafa3fba66d92fe589d7b913bf350842b28d02218c3a54903d45c5f5fab89",
     "app/lib/services/voice_output_audio_player.dart": "3089e8423c5ec758c54684e55d100b300753b4e71e7553e6a72daff1865e388a",
-    "app/pubspec.yaml": "78ea66a2c1c4f96deced1063bf9f00369e7507c415e87d769a556b392dec4756",
+    "app/pubspec.yaml": "baa60adac069f8543cf122e3e1c34179c6712ae5ca3c021e0369bb35f7d83bbd",
     "backend/app/main.py": "6ead9b1570b1453d7029496db3b554156b0e6752b1cb2369053e9341a81d3c27",
     "backend/app/api/advice.py": "ecf21509449e67f0c6c0209b762fad9e6c2dc2c10e2ffea7d18e36b446ae83c1",
     "backend/app/api/voice_output_demo.py": "ecb030e97b95f0825485108660c916530146cbcc5d5742f04916f686df14b0f7",
@@ -128,7 +128,7 @@ def main() -> None:
 
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
     require(checklist, "V-1c  COMPLETED / ACCEPTED", "accepted V-1c state")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1b implementation marker")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1b implementation marker")
     require(checklist, "Current small commit: R-1b", "R-1b current small commit")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
 

@@ -1,8 +1,8 @@
 """Validate the accepted R-1a release/readiness inventory.
 
-This source-tree-only check preserves the accepted pre-release implementation
-surface without reading credentials, accessing providers, inspecting Git tags,
-calling GitHub, building a ZIP, or modifying release artifacts.
+This source-tree-only check preserves the accepted R-1a snapshot while allowing
+the separately checked R-1b candidate metadata and aggregate-gate files. It
+never reads credentials, executes providers, builds a ZIP, or inspects tags.
 """
 
 from __future__ import annotations
@@ -23,25 +23,26 @@ PROTECTED_HISTORICAL_HASHES = {
     "build_v200_final_fixed_release_zip_from_head.ps1": "4a4439341b0ad00d56b50038993631fcb48fb417cd0f0648dc3abc5e72d3b360",
 }
 
-R1A_RELEASE_SURFACE_HASHES = {
+R1A_FROZEN_RELEASE_SURFACE_HASHES = {
     "build_release.bat": "1e939e31187b58efe7c5987fd763dba733ff706ad864a14cf945e641a9f23c1a",
     "build_v201_fixed_release_zip_from_head.ps1": "89d3fe3e39484b36272d9c8ec8499276ffe305ec844a87cca5d90fef8931ab1b",
     "scripts/check_release_package.py": "56b5550b2d7145c3bfc4d9ff4370499df261c9f629ba551820588d859fbcff50",
     "scripts/check_v20x_maintenance_readiness.py": "ea27a4ee8b415317d7d1cedef3182d7365cbecaf86d68b5dd21d393c23e92160",
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
     "docs/v20x_maintenance_readiness.md": "980b7a5b84aaa1faca801ed79d7cc66cbea7d79b1dd913dced4e5f58d99dabd3",
-    "backend/app/version.py": "ecc2c3e5218f0592bc95e03a59e7183f39fa84253331a492eb5d47eaddd2c2e3",
-    "app/pubspec.yaml": "78ea66a2c1c4f96deced1063bf9f00369e7507c415e87d769a556b392dec4756",
     ".gitignore": "740b4903072fef306fba8880bc9f8d57ac2055ed38168314b6834ce0eec0c8a3",
 }
 
-MISSING_V210_RELEASE_FILES = (
-    "build_v210_fixed_release_zip_from_head.ps1",
+REQUIRED_R1B_FILES = (
     "scripts/check_v210_release_readiness.py",
-    "scripts/check_v210_fixed_release_zip.py",
     "docs/v210_release_readiness.md",
     "docs/v210_release_record.md",
     "release_notes/v2.1.0.md",
+)
+
+R1D_FILES_MUST_NOT_EXIST = (
+    "build_v210_fixed_release_zip_from_head.ps1",
+    "scripts/check_v210_fixed_release_zip.py",
 )
 
 
@@ -60,11 +61,6 @@ def normalized_hash(relative: str) -> str:
 def require(text: str, needle: str, label: str) -> None:
     if needle not in text:
         raise AssertionError(f"Missing {label}: {needle!r}")
-
-
-def forbid(text: str, needle: str, label: str) -> None:
-    if needle in text:
-        raise AssertionError(f"Unexpected {label}: {needle!r}")
 
 
 def assert_hashes(expected: dict[str, str], label: str) -> None:
@@ -108,30 +104,32 @@ def main() -> None:
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1a accepted state")
         require(source, "R-1b", f"{label} R-1b marker")
         require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1b current state")
-        require(source, "NOT_STARTED", f"{label} R-1b implementation state")
+        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1b implementation state")
 
     require(checklist, "Current small commit: R-1b", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1b implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1b implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted queue state")
     require(checklist, "R-1b  CURRENT / NOT_COMPLETED", "R-1b current queue state")
     require(checklist, "R-1e  PLANNED", "R-1e queue state")
-    require(checklist, "V-1  COMPLETED / ACCEPTED", "accepted V-1 state")
-    require(inventory, "Backend pytest: 110 passed", "Backend baseline")
-    require(inventory, "Flutter test: 103 passed", "Flutter baseline")
-    require(inventory, "W-5b2", "wearable smartphone evidence")
-    require(inventory, "T-1c", "TTS smartphone evidence")
-    require(inventory, "no final integrated smartphone Web evidence aggregate", "missing R-1 evidence")
+    require(inventory, "Backend pytest: 110 passed", "R-1a Backend snapshot")
+    require(inventory, "Flutter test: 103 passed", "R-1a Flutter snapshot")
+    require(inventory, "backend APP_VERSION: 2.0.1", "R-1a Backend metadata snapshot")
+    require(inventory, "Flutter package version: 2.0.1+2", "R-1a Flutter metadata snapshot")
     require(inventory, "implementation commit: dbc84db", "accepted R-1a implementation commit")
-    require(inventory, "all check_v210_*.py: 18 / 18 passed", "accepted v2.1.0 check count")
-    require(inventory, "explicit operator approval: received", "operator acceptance")
+    require(inventory, "all check_v210_*.py: 18 / 18 passed", "accepted R-1a check count")
+    require(inventory, "explicit operator approval: received", "R-1a operator acceptance")
+    require(inventory, "Later R-1b candidate transition", "later-phase transition marker")
 
-    backend_version = read("backend/app/version.py")
-    flutter_pubspec = read("app/pubspec.yaml")
-    require(backend_version, 'APP_VERSION = "2.0.1"', "current backend version")
-    require(flutter_pubspec, "version: 2.0.1+2", "current Flutter version")
-    forbid(backend_version, 'APP_VERSION = "2.1.0"', "early backend release version")
-    forbid(flutter_pubspec, "version: 2.1.0", "early Flutter release version")
+    require(read("backend/app/version.py"), 'APP_VERSION = "2.1.0"', "active R-1b Backend candidate")
+    require(read("app/pubspec.yaml"), "version: 2.1.0+3", "active R-1b Flutter candidate")
+
+    for relative in REQUIRED_R1B_FILES:
+        if not (ROOT / relative).is_file():
+            raise AssertionError(f"Missing separately checked R-1b file: {relative}")
+    for relative in R1D_FILES_MUST_NOT_EXIST:
+        if (ROOT / relative).exists():
+            raise AssertionError(f"R-1a/R-1b must not create R-1d implementation: {relative}")
 
     builder = read("build_release.bat")
     for marker in (
@@ -158,39 +156,8 @@ def main() -> None:
     ):
         require(package_check, marker, "generic package checker marker")
 
-    v201_builder = read("build_v201_fixed_release_zip_from_head.ps1")
-    for marker in (
-        "official v2.0.1 fixed ZIP",
-        'git status --porcelain --untracked-files=all',
-        'refs/remotes/origin/main',
-        'git worktree add --detach',
-        'build_release.bat release',
-        '$buildInvocationCount -ne 1',
-        'Get-FileHash -LiteralPath $destinationPath -Algorithm SHA256',
-        'verify-this-same-zip-without-rebuilding',
-    ):
-        require(v201_builder, marker, "historical v2.0.1 builder marker")
-
-    v20x_release_check = read("scripts/check_v20x_patch_release.py")
-    for marker in (
-        'EXPECTED_BACKEND_VERSION = "2.0.1"',
-        'EXPECTED_FLUTTER_VERSION = "2.0.1+2"',
-        'DRC_v2.0.1',
-        'RELEASE_SOURCE_HEAD',
-        'RELEASE_ZIP_SHA256',
-    ):
-        require(v20x_release_check, marker, "historical v2.0.1 verifier marker")
-
-    gitignore = read(".gitignore")
-    for marker in ("operator_evidence/", "backend/local_data/", "release/"):
-        require(gitignore, marker, "Git exclusion marker")
-
-    for relative in MISSING_V210_RELEASE_FILES:
-        if (ROOT / relative).exists():
-            raise AssertionError(f"R-1a must not create v2.1.0 release implementation: {relative}")
-
     assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record")
-    assert_hashes(R1A_RELEASE_SURFACE_HASHES, "R-1a release surface")
+    assert_hashes(R1A_FROZEN_RELEASE_SURFACE_HASHES, "R-1a frozen release surface")
 
     for relative in (
         "README.md",
@@ -199,6 +166,9 @@ def main() -> None:
         "scripts/README.md",
         "docs/DRC_v210_goal_checklist_small_commit.md",
         "docs/v210_release_readiness_current_behavior_inventory.md",
+        "docs/v210_release_readiness.md",
+        "docs/v210_release_record.md",
+        "release_notes/v2.1.0.md",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
@@ -206,19 +176,19 @@ def main() -> None:
     print("v210_release_readiness_inventory_completed_small_commit: R-1a")
     print("v210_release_readiness_inventory_current_small_commit: R-1b")
     print("v210_release_readiness_inventory_parent_phase: R-1-current-not-completed")
-    print("v210_release_readiness_inventory_backend_version: 2.0.1")
-    print("v210_release_readiness_inventory_flutter_version: 2.0.1+2")
+    print("v210_release_readiness_inventory_snapshot_backend_version: 2.0.1")
+    print("v210_release_readiness_inventory_snapshot_flutter_version: 2.0.1+2")
+    print("v210_release_readiness_inventory_active_backend_version: 2.1.0")
+    print("v210_release_readiness_inventory_active_flutter_version: 2.1.0+3")
     print("v210_release_readiness_inventory_backend_tests: 110")
     print("v210_release_readiness_inventory_flutter_tests: 103")
     print("v210_release_readiness_inventory_generic_package_builder: true")
     print("v210_release_readiness_inventory_generic_package_checker: true")
-    print("v210_release_readiness_inventory_v210_aggregate_gate: false")
+    print("v210_release_readiness_inventory_v210_aggregate_gate: true")
     print("v210_release_readiness_inventory_final_smartphone_web_aggregate: false")
     print("v210_release_readiness_inventory_fixed_zip_built: false")
     print("v210_release_readiness_inventory_tag_created: false")
     print("v210_release_readiness_inventory_github_release_created: false")
-    print("v210_release_readiness_inventory_runtime_changed: false")
-    print("v210_release_readiness_inventory_release_records_changed: false")
     print("[v210-release-readiness-current-behavior-inventory-check] OK")
 
 
