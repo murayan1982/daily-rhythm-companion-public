@@ -1,10 +1,10 @@
 # v2.1.0 V-1c HomeScreen character display integration
 
 Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: V-1c — HomeScreen extraction and integration
-Parent phase: V-1 — CURRENT / NOT_COMPLETED
-Next phase: R-1 — PLANNED
+Status: COMPLETED / ACCEPTED
+Completed small commit: V-1c — HomeScreen extraction and integration
+Parent phase: V-1 — COMPLETED / ACCEPTED
+Current small commit: R-1 — CURRENT / NOT_COMPLETED (NOT_STARTED)
 
 ## Purpose
 
@@ -150,7 +150,7 @@ V-1c does not:
 - change Backend routes, models, services, or tests;
 - execute real LLM, TTS, health, or motion providers;
 - change v2.0.0/v2.0.1 release records, tags, GitHub Releases, or fixed ZIPs;
-- complete parent V-1 or start R-1.
+- complete R-1 or perform release publication work.
 ```
 
 ## Verification
@@ -174,6 +174,23 @@ cd ..
 git diff --check
 ```
 
-V-1c remains `IMPLEMENTED / NOT_ACCEPTED` until the focused and full checks, Web/Windows builds,
-diff review, and explicit operator approval pass. Parent V-1 remains `CURRENT / NOT_COMPLETED`, and
-R-1 remains `PLANNED`. A separate acceptance sync is required.
+V-1c acceptance passed on 2026-07-24:
+
+```text
+implementation commit: 995145d
+all check_v210_*.py / v2.0.x guards: passed
+Backend pytest: 110 passed
+focused presentation-model tests: 9 passed
+focused character-card tests: 5 passed
+focused HomeScreen integration tests: 5 passed
+full Flutter test: 103 passed
+Flutter Web / Windows builds: passed
+existing character-choice regressions: passed
+repository fallback-image retry: passed
+diff review / explicit operator approval: passed
+Backend / Motion Demo / dependencies / static assets changed: false
+real provider or motion execution: false
+release records changed: false
+```
+
+V-1c and parent V-1 are `COMPLETED / ACCEPTED`. R-1 is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.

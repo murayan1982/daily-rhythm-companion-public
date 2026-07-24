@@ -7,18 +7,18 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1 through W-5, C-1, and T-1 COMPLETED / ACCEPTED; V-1 CURRENT / NOT_COMPLETED**)
-Current small commit: V-1c — HomeScreen extraction and integration (**CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED**)
+Current development line: v2.1.0 (**W-1 through W-5, C-1, T-1, and V-1 COMPLETED / ACCEPTED; R-1 CURRENT / NOT_COMPLETED**)
+Current small commit: R-1 — v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 
 Current phase state:
 
 ```text
 T-1  COMPLETED / ACCEPTED
-V-1  CURRENT / NOT_COMPLETED
+V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
   V-1b  COMPLETED / ACCEPTED
-  V-1c  CURRENT / NOT_COMPLETED  (IMPLEMENTED / NOT_ACCEPTED)
-R-1  PLANNED
+  V-1c  COMPLETED / ACCEPTED
+R-1  CURRENT / NOT_COMPLETED  (NOT_STARTED)
 ```
 
 Strategic target: v3.0.0
@@ -147,7 +147,7 @@ release records changed: false
 
 W-3 is COMPLETED / ACCEPTED. The backend classifies allow-listed Fitbit sleep API failures, requires usable normalized sleep duration, maps real-provider fields into `SleepSummary`, and includes deterministic fake-HTTP/API regression tests. Acceptance passed after compileall, W-1/W-2/W-3 checks, v2.0.x guards, 84 backend tests, 50 Flutter tests, diff review, and operator approval. The detailed contract is [`docs/v210_fitbit_real_sleep_normalization.md`](docs/v210_fitbit_real_sleep_normalization.md). Real OAuth, live token exchange/refresh, configured permission/scope evidence, real Fitbit sleep retrieval, and smartphone Web acceptance remain W-5 work. W-4 later completed and was accepted without changing the accepted W-3 backend contract.
 
-W-4 is COMPLETED / ACCEPTED. W-4a implementation commit `1619b0b` added a read-only `GET /sleep/providers` contract without provider execution. W-4b implementation commit `1fbea58` connected that metadata to Flutter, separated the configured provider from the actual `SleepSummary` source/data kind, kept mock providers credential-free, limited normal Google Health copy to concise guidance, and retained detailed diagnostics below Advanced Demo Tools. W-4b acceptance passed after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused Flutter model tests, 35 widget tests, 92 backend tests, 57 full Flutter tests, diff review, and operator approval. W-5, C-1, and T-1 are now COMPLETED / ACCEPTED; V-1 is current. See [`docs/v210_sleep_provider_selection_source_labels.md`](docs/v210_sleep_provider_selection_source_labels.md) and [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md).
+W-4 is COMPLETED / ACCEPTED. W-4a implementation commit `1619b0b` added a read-only `GET /sleep/providers` contract without provider execution. W-4b implementation commit `1fbea58` connected that metadata to Flutter, separated the configured provider from the actual `SleepSummary` source/data kind, kept mock providers credential-free, limited normal Google Health copy to concise guidance, and retained detailed diagnostics below Advanced Demo Tools. W-4b acceptance passed after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused Flutter model tests, 35 widget tests, 92 backend tests, 57 full Flutter tests, diff review, and operator approval. W-5, C-1, T-1, and V-1 are now COMPLETED / ACCEPTED; R-1 is current/not completed and not started. See [`docs/v210_sleep_provider_selection_source_labels.md`](docs/v210_sleep_provider_selection_source_labels.md) and [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md).
 
 Run the accepted W-4a mock-safe gate with:
 
@@ -167,7 +167,7 @@ flutter test
 cd ..
 ```
 
-W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5 and C-1 are completed and accepted; T-1 is completed and accepted; V-1 is current and not completed.
+W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5, C-1, T-1, and V-1 are completed and accepted; R-1 is current/not completed and not started.
 
 W-5 is split into a public-safe preparation commit and the later private execution checkpoint:
 
@@ -177,7 +177,7 @@ W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbi
 W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
 ```
 
-W-5 is completed and accepted. W-5a remains an accepted historical public-safe contract and performed no OAuth or provider request. W-5b1 was accepted at implementation commit `081cfdd`: Google Health API is the configured-real path, legacy Fitbit Web API execution is retired, the Google Health v4 contract is mock-safe guarded, and the Flutter `provider_options` mismatch is corrected. W-5b2 was accepted from execution-record commit `ed50d9e`: the ignored operator profile passed, stored-token refresh succeeded, the real Google Health request returned HTTP 200, normalized real data reached `/sleep/summary`, and PC/smartphone Web showed Google Health / 実データ / 取得済み. The operator confirmed that the displayed sleep was measured by a Fitbit Versa 2 and delivered through Google Health. Raw screenshots, device identifiers, and private sleep values remain outside Git. C-1 and T-1 are completed and accepted; V-1 is current. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md) and [`docs/v210_google_health_real_operator_verification.md`](docs/v210_google_health_real_operator_verification.md).
+W-5 is completed and accepted. W-5a remains an accepted historical public-safe contract and performed no OAuth or provider request. W-5b1 was accepted at implementation commit `081cfdd`: Google Health API is the configured-real path, legacy Fitbit Web API execution is retired, the Google Health v4 contract is mock-safe guarded, and the Flutter `provider_options` mismatch is corrected. W-5b2 was accepted from execution-record commit `ed50d9e`: the ignored operator profile passed, stored-token refresh succeeded, the real Google Health request returned HTTP 200, normalized real data reached `/sleep/summary`, and PC/smartphone Web showed Google Health / 実データ / 取得済み. The operator confirmed that the displayed sleep was measured by a Fitbit Versa 2 and delivered through Google Health. Raw screenshots, device identifiers, and private sleep values remain outside Git. C-1, T-1, and V-1 are completed and accepted; R-1 is current/not completed and not started. See [`docs/v210_google_health_migration_audit.md`](docs/v210_google_health_migration_audit.md) and [`docs/v210_google_health_real_operator_verification.md`](docs/v210_google_health_real_operator_verification.md).
 
 C-1 is split into three small commits:
 
@@ -187,7 +187,7 @@ C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and te
 C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`: the Backend keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. C-1c is completed and accepted at implementation commit `c856374`: Flutter parses structured lifecycle/outcome/problem fields, keeps legacy payload compatibility, shows turn progress and user-facing outcome copy, disables terminal sending, clears stale terminal sessions, and offers direct restart. Parent C-1 and T-1 are completed and accepted; V-1 is current. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md), [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md), and [`docs/v210_post_advice_chat_flutter_lifecycle.md`](docs/v210_post_advice_chat_flutter_lifecycle.md).
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`: the Backend keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. C-1c is completed and accepted at implementation commit `c856374`: Flutter parses structured lifecycle/outcome/problem fields, keeps legacy payload compatibility, shows turn progress and user-facing outcome copy, disables terminal sending, clears stale terminal sessions, and offers direct restart. Parent C-1, T-1, and V-1 are completed and accepted; R-1 is current/not completed and not started. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md), [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md), and [`docs/v210_post_advice_chat_flutter_lifecycle.md`](docs/v210_post_advice_chat_flutter_lifecycle.md).
 
 T-1 is split into three small commits:
 
@@ -201,22 +201,21 @@ T-1a is completed and accepted at implementation commit `0b06378`. It records th
 
 T-1b is completed and accepted at implementation commit `161e624`. Acceptance passed after compileall, T-1a/T-1b source-tree checks, ten focused Flutter tests, 110 Backend tests, 74 full Flutter tests, diff review, operator approval, and push. T-1c subsequently completed the HomeScreen integration, concrete audio engine/plugin, HTTP expiry mapping, audible playback review, regenerate recovery, and parent T-1 acceptance. See [`docs/v210_tts_player_controller.md`](docs/v210_tts_player_controller.md).
 
-T-1c and parent T-1 are completed and accepted. Implementation commit `4d3d5d5` plus desktop plugin registrant follow-up `9771f76` add the app-owned `audioplayers` engine, HomeScreen play/stop/replay/regenerate controls, HTTP 404/410 expiry mapping, Windows/Web build compatibility, and mock-safe engine/widget regressions. Acceptance passed with 20 focused Flutter tests, 110 Backend tests, 84 Flutter tests, Web and Windows builds, PC/smartphone audible playback, stop/replay/completion, expiry mapping, regenerate recovery, raw URL/private-path hiding, diff review, and operator approval. Backend runtime and release records remain unchanged. V-1 is current. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
+T-1c and parent T-1 are completed and accepted. Implementation commit `4d3d5d5` plus desktop plugin registrant follow-up `9771f76` add the app-owned `audioplayers` engine, HomeScreen play/stop/replay/regenerate controls, HTTP 404/410 expiry mapping, Windows/Web build compatibility, and mock-safe engine/widget regressions. Acceptance passed with 20 focused Flutter tests, 110 Backend tests, 84 Flutter tests, Web and Windows builds, PC/smartphone audible playback, stop/replay/completion, expiry mapping, regenerate recovery, raw URL/private-path hiding, diff review, and operator approval. Backend runtime and release records remain unchanged. V-1 is completed/accepted; R-1 is current/not completed and not started. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
 
-V-1 is split into three implementation steps. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b is completed and accepted at implementation commit `e1f8d6f`; V-1c is implemented/not accepted; parent V-1 remains current/not completed.
+V-1 is completed and accepted. V-1a was accepted at implementation commit `1602b2f`, V-1b at `e1f8d6f`, and V-1c at `995145d`. R-1 is now current/not completed and has not started release work.
 
 ```text
 V-1a  COMPLETED / ACCEPTED         Current behavior inventory and implementation contract
 V-1b  COMPLETED / ACCEPTED         Deterministic presentation model and standalone widget
-V-1c  CURRENT / NOT_COMPLETED       HomeScreen extraction and integration
-       IMPLEMENTED / NOT_ACCEPTED
+V-1c  COMPLETED / ACCEPTED       HomeScreen extraction and integration
 ```
 
 V-1a records the 4,195-line HomeScreen ownership, the 2,669-line existing widget-test baseline, three static character assets, one fallback asset, separate mood/advice/loading/TTS state, and the guarded Motion Demo boundary. It changed no Flutter runtime, Backend runtime, existing tests, dependencies, assets, provider execution, or release records. Acceptance passed after compileall, all `check_v210_*.py`, v2.0.x compatibility and maintenance guards, 110 Backend tests, 84 Flutter tests, diff review, and explicit operator approval. Detailed inventory: [`docs/v210_character_display_current_behavior_inventory.md`](docs/v210_character_display_current_behavior_inventory.md).
 
-V-1b is completed and accepted at implementation commit `e1f8d6f`. It adds the app-owned `CharacterDisplayPresentation` content/activity model, the standalone static `CharacterDisplayCard`, nine model tests, and four widget tests. Content precedence is character unavailable → asset unavailable → framework fallback → advice → mood; activity precedence is speaking → loading → idle. Acceptance passed after compileall, all v2.1.0 checks, v2.0.x guards, 110 Backend tests, 9 focused model tests, 4 focused widget tests, 97 full Flutter tests, diff review, and explicit operator approval. HomeScreen, Backend, Motion Demo, dependencies, and static assets remained unchanged. V-1c is current and owns HomeScreen integration. Detailed contract: [`docs/v210_character_display_state_contract.md`](docs/v210_character_display_state_contract.md).
+V-1b is completed and accepted at implementation commit `e1f8d6f`. It adds the app-owned `CharacterDisplayPresentation` content/activity model, the standalone static `CharacterDisplayCard`, nine model tests, and four widget tests. Content precedence is character unavailable → asset unavailable → framework fallback → advice → mood; activity precedence is speaking → loading → idle. Acceptance passed after compileall, all v2.1.0 checks, v2.0.x guards, 110 Backend tests, 9 focused model tests, 4 focused widget tests, 97 full Flutter tests, diff review, and explicit operator approval. HomeScreen, Backend, Motion Demo, dependencies, and static assets remained unchanged. V-1c and parent V-1 are completed/accepted; R-1 is current/not completed and not started. Detailed contract: [`docs/v210_character_display_state_contract.md`](docs/v210_character_display_state_contract.md).
 
-V-1c is implemented and not yet accepted. It connects the accepted presentation model/card to HomeScreen mood, advice, initial/advice/TTS loading, and in-app playback speaking state; adds repository fallback-image retry and unknown-ID fallback; updates the existing character-choice regression; and adds five focused HomeScreen integration tests plus one fallback-image widget test. Backend, Motion Demo, dependencies, and static assets remain unchanged. Expected Flutter total is 103 tests. Parent V-1 remains current/not completed and R-1 remains planned. Detailed contract: [`docs/v210_character_display_home_integration.md`](docs/v210_character_display_home_integration.md).
+V-1c and parent V-1 are completed and accepted at implementation commit `995145d`. The accepted scope connects the presentation model/card to HomeScreen mood, advice, initial/advice/TTS loading, and in-app playback speaking state; adds repository fallback-image retry and unknown-ID fallback; updates the existing character-choice regression; and adds five focused HomeScreen integration tests plus one fallback-image widget test. Acceptance passed with all v2.1.0 checks, v2.0.x guards, 110 Backend tests, 9 model tests, 5 card tests, 5 HomeScreen integration tests, 103 full Flutter tests, Web/Windows builds, diff review, and operator approval. Backend, Motion Demo, dependencies, static assets, real motion execution, and release records remained unchanged. R-1 is current/not completed and release work has not started. Detailed contract: [`docs/v210_character_display_home_integration.md`](docs/v210_character_display_home_integration.md).
 
 Run the V-1a source-tree check with:
 

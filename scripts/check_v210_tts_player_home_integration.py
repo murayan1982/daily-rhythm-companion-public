@@ -105,12 +105,12 @@ def main() -> None:
     ):
         require(source, "T-1c", f"{label} T-1c marker")
 
-    require(checklist, "Current small commit: V-1", "current small commit")
+    require(checklist, "Current small commit: R-1", "current small commit")
     require(checklist, "T-1b  COMPLETED / ACCEPTED", "T-1b accepted state")
     require(checklist, "T-1c  COMPLETED / ACCEPTED", "T-1c queue state")
     require(checklist, "Status: COMPLETED / ACCEPTED", "T-1c acceptance status")
-    require(checklist, "V-1  CURRENT / NOT_COMPLETED", "V-1 current state")
-    require(checklist, "R-1  PLANNED", "R-1 state")
+    require(checklist, "V-1  COMPLETED / ACCEPTED", "V-1 accepted state")
+    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
     require(contract, "Status: COMPLETED / ACCEPTED", "detailed contract status")
     require(contract, "Parent phase: T-1 COMPLETED / ACCEPTED", "parent state")
     require(inventory, "T-1c acceptance follow-up", "inventory follow-up")
@@ -217,7 +217,7 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_tts_player_home_integration_status: completed-accepted")
-    print("v210_tts_player_home_integration_current_small_commit: V-1")
+    print("v210_tts_player_home_integration_current_small_commit: R-1")
     print("v210_tts_player_home_integration_parent_phase: T-1-completed-accepted")
     print("v210_tts_player_home_integration_audio_dependency: audioplayers-6.7.1")
     print("v210_tts_player_home_integration_in_app_controls: true")

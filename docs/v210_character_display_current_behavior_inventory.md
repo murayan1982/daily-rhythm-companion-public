@@ -2,9 +2,9 @@
 
 Updated: 2026-07-24
 Status: COMPLETED / ACCEPTED
-Parent phase: V-1 CURRENT / NOT_COMPLETED
+Parent phase: V-1 COMPLETED / ACCEPTED
 Completed small commit: V-1a — Character display current behavior inventory and implementation contract
-Current small commit: V-1c — HomeScreen extraction and integration
+Current small commit: R-1 — v2.1.0 readiness and release preparation
 Current implementation state: NOT_STARTED
 
 ## Purpose
@@ -254,8 +254,7 @@ real provider or motion execution: false
 release records changed: false
 ```
 
-V-1a was completed and accepted on 2026-07-24. Parent V-1 remains CURRENT / NOT_COMPLETED.
-V-1b is COMPLETED / ACCEPTED at implementation commit `e1f8d6f`; V-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED; R-1 remains PLANNED.
+V-1a was completed and accepted on 2026-07-24. V-1b is COMPLETED / ACCEPTED at implementation commit `e1f8d6f`; V-1c and parent V-1 are COMPLETED / ACCEPTED at implementation commit `995145d`. R-1 is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 ## V-1 implementation split
 
@@ -294,11 +293,11 @@ Exact precedence and user-facing copy are frozen in `docs/v210_character_display
 
 ### V-1c — HomeScreen extraction and integration
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 ```text
-Status: CURRENT / NOT_COMPLETED
-Implementation state: NOT_STARTED
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 - Replace the private HomeScreen character-card rendering with the accepted standalone widget.
 - Keep HomeScreen ownership of data loading, selection callbacks, advice creation, and TTS control.
 - Connect accepted mood/advice/loading/speaking/fallback inputs deterministically.
@@ -308,9 +307,7 @@ Implementation state: NOT_STARTED
 - Do not change Backend runtime, Motion Demo execution, dependencies/assets, or release records.
 ```
 
-V-1c is implemented but not accepted. V-1 and V-1c are not completed from source presence. A separate acceptance sync is required
-after focused tests, aggregate tests, builds required by the accepted contract, diff review, and
-operator approval pass.
+V-1c and parent V-1 are completed and accepted at implementation commit `995145d` after focused tests, aggregate tests, Web/Windows builds, diff review, and operator approval passed.
 
 ## Explicit exclusions
 
@@ -351,4 +348,4 @@ motion-adapter-free.
 
 ## V-1c implementation handoff
 
-V-1c connects `CharacterDisplayPresentation` and `CharacterDisplayCard` from HomeScreen, maps existing mood/advice/loading/TTS playback state deterministically, adds repository fallback-image retry, and adds focused mock-safe integration coverage. Backend, Motion Demo, dependencies, static assets, real provider execution, and release records remain unchanged. Detailed contract: `docs/v210_character_display_home_integration.md`. Status remains `IMPLEMENTED / NOT_ACCEPTED`; parent V-1 remains `CURRENT / NOT_COMPLETED`; R-1 remains `PLANNED`.
+V-1c connects `CharacterDisplayPresentation` and `CharacterDisplayCard` from HomeScreen, maps existing mood/advice/loading/TTS playback state deterministically, adds repository fallback-image retry, and adds focused mock-safe integration coverage. Acceptance passed at implementation commit `995145d` with 110 Backend tests, 9 model tests, 5 card tests, 5 HomeScreen tests, 103 full Flutter tests, Web/Windows builds, diff review, and operator approval. Backend, Motion Demo, dependencies, static assets, real provider execution, and release records remain unchanged. Parent V-1 is `COMPLETED / ACCEPTED`; R-1 is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`. Detailed contract: `docs/v210_character_display_home_integration.md`.

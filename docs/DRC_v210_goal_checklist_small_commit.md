@@ -2,10 +2,10 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: V-1c — HomeScreen extraction and integration
+Current small commit: R-1 — v2.1.0 readiness and release preparation
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
-Parent V-1 state: CURRENT / NOT_COMPLETED
+Current implementation state: NOT_STARTED
+Parent V-1 state: COMPLETED / ACCEPTED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
@@ -84,17 +84,16 @@ T-1  COMPLETED / ACCEPTED  Flutter in-app TTS player and artifact-expiry handlin
   T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
   T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
   T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
-V-1  CURRENT / NOT_COMPLETED                  Character display extraction and deterministic state presentation
+V-1  COMPLETED / ACCEPTED                  Character display extraction and deterministic state presentation
   V-1a  COMPLETED / ACCEPTED                     Current behavior inventory and implementation contract
   V-1b  COMPLETED / ACCEPTED                       Deterministic presentation model and standalone widget
-  V-1c  CURRENT / NOT_COMPLETED                     HomeScreen extraction and integration
-         IMPLEMENTED / NOT_ACCEPTED
-         NOT_STARTED
-R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
+  V-1c  COMPLETED / ACCEPTED                     HomeScreen extraction and integration
+R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
+     NOT_STARTED
 ```
 
-W-1 through W-5, C-1, and T-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. V-1 is current and not completed; R-1 remains planned.
+W-1 through W-5, C-1, and T-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. V-1 is completed and accepted; R-1 is current/not completed and not started.
 
 ---
 
@@ -1327,20 +1326,20 @@ T-1c acceptance record:
 ```
 
 T-1c and parent T-1 were completed and accepted on 2026-07-24.
-V-1 is CURRENT / NOT_COMPLETED and R-1 remains PLANNED.
+V-1 is COMPLETED / ACCEPTED and R-1 is CURRENT / NOT_COMPLETED (NOT_STARTED).
 
 ---
 
 # V-1 — Character display extraction and deterministic states
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Implementation split:
 
 ```text
 V-1a  COMPLETED / ACCEPTED         Current behavior inventory and implementation contract
 V-1b  COMPLETED / ACCEPTED         Deterministic presentation model and standalone widget
-V-1c  CURRENT / NOT_COMPLETED       HomeScreen extraction and integration
+V-1c  COMPLETED / ACCEPTED       HomeScreen extraction and integration
 ```
 
 ## V-1a — Current behavior inventory and implementation contract
@@ -1409,7 +1408,7 @@ V-1a acceptance record:
 - release records changed: false
 ```
 
-V-1a and V-1b were completed and accepted on 2026-07-24. V-1c is now CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. R-1 remains PLANNED.
+V-1a, V-1b, V-1c, and parent V-1 were completed and accepted on 2026-07-24. R-1 is now CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 ## V-1b — Deterministic presentation model and standalone widget
 
@@ -1450,12 +1449,12 @@ V-1b acceptance record:
 - release records changed: false
 ```
 
-V-1b was completed and accepted on 2026-07-24. V-1c is now CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED.
+V-1b and V-1c were completed and accepted on 2026-07-24. Parent V-1 is also COMPLETED / ACCEPTED; R-1 is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 ## V-1c — HomeScreen extraction and integration
 
-Status: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+Current implementation state: COMPLETED / ACCEPTED
 
 Implemented boundary:
 
@@ -1471,13 +1470,37 @@ Implemented boundary:
 
 Detailed contract: `docs/v210_character_display_home_integration.md`.
 
-V-1c remains IMPLEMENTED / NOT_ACCEPTED. Parent V-1 remains NOT_COMPLETED until V-1c focused/full checks, Web/Windows builds, diff review, operator approval, and a separate acceptance sync pass.
+V-1c acceptance record:
+
+```text
+- implementation commit: 995145d
+- python -m compileall -q backend scripts: passed
+- all check_v210_*.py: passed
+- v2.0.x compatibility / maintenance guards: passed
+- backend pytest: 110 passed
+- focused presentation-model Flutter tests: 9 passed
+- focused character-card Flutter tests: 5 passed
+- focused HomeScreen integration Flutter tests: 5 passed
+- full Flutter test: 103 passed
+- Flutter Web build: passed
+- Flutter Windows build: passed
+- existing character-choice regressions: passed
+- repository fallback-image retry: passed
+- Backend runtime changed: false
+- Motion Demo / dependencies / static assets changed: false
+- real provider or motion execution: false
+- release records changed: false
+- diff review / explicit operator approval: passed
+```
+
+V-1c and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 ---
 
 # R-1 — v2.1.0 readiness and release preparation
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
+Implementation state: NOT_STARTED
 
 Planned boundary:
 
@@ -1489,7 +1512,7 @@ Planned boundary:
 - Require explicit final approval before tag and GitHub Release publication.
 ```
 
-R-1 completion requirements must not be imported into W-1 or any earlier phase.
+R-1 completion requirements must not be imported into any accepted prior phase. R-1 has not yet created an aggregate readiness implementation, fixed ZIP, tag, or GitHub Release.
 
 T-1c Visual Studio 18 compatibility correction:
 

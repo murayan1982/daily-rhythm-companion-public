@@ -120,16 +120,16 @@ def main() -> None:
         (scripts_readme, "scripts README"),
     ):
         require(source, "V-1c", f"{label} V-1c marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} implementation state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} accepted state")
         require(source, "V-1", f"{label} parent marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} parent/current state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} parent accepted state")
         require(source, "R-1", f"{label} R-1 marker")
-        require(source, "PLANNED", f"{label} R-1 state")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1 current state")
 
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
-    require(checklist, "V-1c  CURRENT / NOT_COMPLETED", "current V-1c state")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "V-1c implementation marker")
-    require(checklist, "R-1  PLANNED", "R-1 planned state")
+    require(checklist, "V-1c  COMPLETED / ACCEPTED", "accepted V-1c state")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1 implementation marker")
+    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
 
     for marker in (
         "import '../models/character_display_presentation.dart';",
@@ -217,16 +217,23 @@ def main() -> None:
         "full Flutter tests: 103",
         "Backend data loading and error handling",
         "Advanced Motion Demo",
-        "separate acceptance sync",
     ):
         require(contract, marker, "V-1c contract marker")
+
+    for marker in (
+        "implementation commit: 995145d",
+        "Backend pytest: 110 passed",
+        "full Flutter test: 103 passed",
+        "Flutter Web / Windows builds: passed",
+        "diff review / explicit operator approval: passed",
+    ):
+        require(contract, marker, "V-1c acceptance marker")
 
     for forbidden in (
         "Live2D execution: accepted",
         "VTube Studio execution: accepted",
         "real motion execution: true",
         "R-1  COMPLETED",
-        "V-1  COMPLETED / ACCEPTED",
     ):
         forbid(contract + checklist + inventory, forbidden, "premature completion/execution claim")
 
@@ -258,9 +265,10 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_character_display_home_integration_status: implemented-not-accepted")
-    print("v210_character_display_home_integration_current_small_commit: V-1c")
-    print("v210_character_display_home_integration_parent_phase: V-1-current-not-completed")
+    print("v210_character_display_home_integration_status: completed-accepted")
+    print("v210_character_display_home_integration_completed_small_commit: V-1c")
+    print("v210_character_display_home_integration_current_small_commit: R-1")
+    print("v210_character_display_home_integration_parent_phase: V-1-completed-accepted")
     print("v210_character_display_home_integration_content_states: mood,advice,fallback")
     print("v210_character_display_home_integration_activity_states: idle,loading,speaking")
     print("v210_character_display_home_integration_focused_model_tests: 9")

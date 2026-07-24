@@ -115,11 +115,11 @@ def main() -> None:
         require(source, "V-1c", f"{label} V-1c marker")
         require(source, "R-1", f"{label} R-1 marker")
 
-    require(checklist, "V-1  CURRENT / NOT_COMPLETED", "parent V-1 state")
+    require(checklist, "V-1  COMPLETED / ACCEPTED", "parent V-1 state")
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
-    require(checklist, "V-1c  CURRENT / NOT_COMPLETED", "current V-1c state")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "V-1c implementation state")
-    require(checklist, "R-1  PLANNED", "R-1 planned state")
+    require(checklist, "V-1c  COMPLETED / ACCEPTED", "accepted V-1c state")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1 implementation state")
+    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
 
     for marker in (
         "enum CharacterDisplayContentState",
@@ -196,7 +196,7 @@ def main() -> None:
     require(home, "CharacterDisplayCard(", "V-1c HomeScreen widget integration")
     require(home, "CharacterDisplayPresentation.resolve(", "V-1c HomeScreen model integration")
     require(integration_tests, "in-app audio playback drives speaking presentation", "V-1c speaking test")
-    require(home_contract, "IMPLEMENTED / NOT_ACCEPTED", "V-1c contract state")
+    require(home_contract, "COMPLETED / ACCEPTED", "V-1c contract state")
     forbid(model + widget, "dart:math", "random state selection")
     forbid(model + widget, "Timer(", "timer-driven animation")
     forbid(model + widget, "WebSocket", "motion runtime connection")
@@ -229,8 +229,8 @@ def main() -> None:
 
     print("v210_character_display_state_status: completed-accepted")
     print("v210_character_display_state_completed_small_commit: V-1b")
-    print("v210_character_display_state_current_small_commit: V-1c")
-    print("v210_character_display_state_parent_phase: V-1-current-not-completed")
+    print("v210_character_display_state_current_small_commit: R-1")
+    print("v210_character_display_state_parent_phase: V-1-completed-accepted")
     print("v210_character_display_state_content_states: mood,advice,fallback")
     print("v210_character_display_state_activity_states: idle,loading,speaking")
     print("v210_character_display_state_focused_model_tests: 9")
