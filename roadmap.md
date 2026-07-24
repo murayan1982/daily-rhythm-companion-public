@@ -5,7 +5,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: C-1c — Flutter lifecycle state, recovery UI, and C-1 acceptance (**CURRENT / NOT_COMPLETED**)
+Current small commit: T-1 — Flutter in-app TTS player and artifact-expiry handling (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ---
@@ -373,7 +373,7 @@ Historical v2.0.0 checklist files are not part of the normal edit scope.
 
 ## v2.1.0 - Real wearable daily loop
 
-Status: In progress — W-1/W-2/W-3/W-4 COMPLETED / ACCEPTED; W-5 COMPLETED / ACCEPTED
+Status: In progress — W-1 through W-5 and C-1 COMPLETED / ACCEPTED; T-1 CURRENT / NOT_COMPLETED
 Source of truth: `docs/DRC_v210_goal_checklist_small_commit.md`
 Authority status: accepted by W-1 verification, diff review, and operator approval
 
@@ -442,10 +442,10 @@ C-1 small-commit split:
 ```text
 C-1a  COMPLETED / ACCEPTED     Inventory current Backend/Flutter behavior and freeze the contract
 C-1b  COMPLETED / ACCEPTED     Add Backend lifecycle outcomes, bounded turns, and mock-safe tests
-C-1c  CURRENT / NOT_COMPLETED  Add Flutter lifecycle/recovery states and accept parent C-1
+C-1c  COMPLETED / ACCEPTED     Add Flutter lifecycle/recovery states and accept parent C-1
 ```
 
-C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`. It preserves TTL/capacity/LRU, adds an 8-turn default, structured lifecycle and provider-neutral outcome models, bounded expired/evicted terminal reasons, structured 404 reasons, and a restartable HTTP 409 turn-limit result. Acceptance passed with 17 focused Backend tests, 110 full Backend tests, 57 Flutter tests, diff review, and operator approval. C-1c implementation is present but not accepted: Flutter consumes structured lifecycle/outcome/problem data, remains compatible with legacy payloads, displays turn progress and user-facing outcome states, disables terminal sending, clears stale sessions, and provides direct restart. Backend runtime remains unchanged in C-1c; parent C-1 is still CURRENT / NOT_COMPLETED.
+C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`. It preserves TTL/capacity/LRU, adds an 8-turn default, structured lifecycle and provider-neutral outcome models, bounded expired/evicted terminal reasons, structured 404 reasons, and a restartable HTTP 409 turn-limit result. Acceptance passed with 17 focused Backend tests, 110 full Backend tests, 57 Flutter tests, diff review, and operator approval. C-1c is completed and accepted at implementation commit `c856374`: Flutter consumes structured lifecycle/outcome/problem data, remains compatible with legacy payloads, displays turn progress and user-facing outcome states, disables terminal sending, clears stale sessions, and provides direct restart. Acceptance passed with 7 focused Flutter tests, 110 Backend tests, 64 full Flutter tests, diff review, and operator approval. Parent C-1 is completed and accepted; T-1 is current.
 
 ### TTS experience target
 
@@ -487,16 +487,16 @@ W-5  COMPLETED / ACCEPTED   Wearable migration correction and configured Google 
   W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
   W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
   W-5b2  COMPLETED / ACCEPTED  Configured Google Health API operator verification
-C-1  CURRENT / NOT_COMPLETED  Post-advice chat lifecycle and UI-state hardening
+C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
   C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
-  C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acceptance
-T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
+  C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
+T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```
 
-W-1 through W-5 are completed and accepted. W-2 added provider-neutral token/status/reconnect states and one-time OAuth state consumption. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-4a implementation commit `1619b0b` added the read-only provider-selection metadata contract. W-4b implementation commit `1fbea58` added Flutter configured-provider/data-source presentation, simplified Google Health normal-user UX, retained Advanced diagnostics, and mock-safe model/widget regressions. W-4b acceptance passed on 2026-07-23 after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5 is COMPLETED / ACCEPTED. W-5a implementation commit `7f84980` added the public-safe dedicated env, network-free preflight, guarded launcher, explicit real-execution smoke, and operator runbook without executing Fitbit. W-5a was accepted on 2026-07-24 after compileall, default/example preflight, W-1 through W-5a checks, v2.0.x guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 was completed and accepted on 2026-07-24 at implementation commit `081cfdd` after compileall, W-1 through W-5b1 checks, v2.0.x guards, 8 focused Google Health v4 tests, 16 combined provider/migration tests, 100 backend tests, 57 Flutter tests, diff review, and operator approval passed. It corrected the platform direction, retired legacy Fitbit execution, locked the Google Health API v4 contract, and fixed the Flutter `provider_options` parsing mismatch. W-5b2 and parent W-5 are completed and accepted. The ignored operator profile and launcher gate passed, stored-token refresh succeeded, the explicit real Google Health API request returned HTTP 200, the backend produced a normalized real `SleepSummary`, and PC plus smartphone Web showed Google Health / 実データ / 取得済み. Screenshots and private sleep values remain outside Git. The operator confirmed Fitbit Versa 2 device-model provenance without publishing a device identifier. Parent W-5 is COMPLETED / ACCEPTED. C-1a and C-1b are COMPLETED / ACCEPTED; C-1c is CURRENT / NOT_COMPLETED. T-1 through R-1 remain planned and must not be marked complete from source presence or prior-phase acceptance.
+W-1 through W-5 are completed and accepted. W-2 added provider-neutral token/status/reconnect states and one-time OAuth state consumption. W-3 added allow-listed Fitbit sleep API error classification, positive-duration normalization, complete `SleepSummary` real-data mapping, and deterministic fake-HTTP/API regression coverage. W-4a implementation commit `1619b0b` added the read-only provider-selection metadata contract. W-4b implementation commit `1fbea58` added Flutter configured-provider/data-source presentation, simplified Google Health normal-user UX, retained Advanced diagnostics, and mock-safe model/widget regressions. W-4b acceptance passed on 2026-07-23 after compileall, W-1/W-2/W-3/W-4a/W-4b checks, v2.0.x guards, 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5 is COMPLETED / ACCEPTED. W-5a implementation commit `7f84980` added the public-safe dedicated env, network-free preflight, guarded launcher, explicit real-execution smoke, and operator runbook without executing Fitbit. W-5a was accepted on 2026-07-24 after compileall, default/example preflight, W-1 through W-5a checks, v2.0.x guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1 was completed and accepted on 2026-07-24 at implementation commit `081cfdd` after compileall, W-1 through W-5b1 checks, v2.0.x guards, 8 focused Google Health v4 tests, 16 combined provider/migration tests, 100 backend tests, 57 Flutter tests, diff review, and operator approval passed. It corrected the platform direction, retired legacy Fitbit execution, locked the Google Health API v4 contract, and fixed the Flutter `provider_options` parsing mismatch. W-5b2 and parent W-5 are completed and accepted. The ignored operator profile and launcher gate passed, stored-token refresh succeeded, the explicit real Google Health API request returned HTTP 200, the backend produced a normalized real `SleepSummary`, and PC plus smartphone Web showed Google Health / 実データ / 取得済み. Screenshots and private sleep values remain outside Git. The operator confirmed Fitbit Versa 2 device-model provenance without publishing a device identifier. Parent W-5 is COMPLETED / ACCEPTED. C-1a, C-1b, C-1c, and parent C-1 are COMPLETED / ACCEPTED. T-1 is CURRENT / NOT_COMPLETED; V-1 and R-1 remain planned and must not be marked complete from source presence or prior-phase acceptance.
 
 Current W-4 split:
 

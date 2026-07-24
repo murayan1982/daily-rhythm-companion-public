@@ -204,6 +204,6 @@ release records changed: false
 parent C-1 completed: false
 ```
 
-C-1b was completed and accepted on 2026-07-24. C-1c is CURRENT / NOT_COMPLETED
+C-1b was completed and accepted on 2026-07-24. C-1c and parent C-1 were subsequently completed and accepted; T-1 is CURRENT / NOT_COMPLETED
 and will consume the structured Backend fields in Flutter. Parent C-1 remains
 CURRENT / NOT_COMPLETED.

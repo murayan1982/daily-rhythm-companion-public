@@ -1,4 +1,4 @@
-"""Validate C-1c Flutter chat lifecycle/recovery implementation markers."""
+"""Validate accepted C-1c Flutter chat lifecycle/recovery markers."""
 
 from __future__ import annotations
 
@@ -79,11 +79,11 @@ def main() -> None:
 
     for source in (checklist, roadmap, tasklist, scripts_readme):
         require(source, "C-1c", "C-1c state")
-    require(checklist, "C-1c  CURRENT / NOT_COMPLETED", "C-1c current state")
-    require(checklist, "Status: IMPLEMENTED / NOT_ACCEPTED", "C-1c implementation status")
-    require(checklist, "T-1  PLANNED", "T-1 planned state")
-    require(contract, "Status: IMPLEMENTED / NOT_ACCEPTED", "detailed contract state")
-    require(contract, "Parent phase: C-1 CURRENT / NOT_COMPLETED", "parent phase state")
+    require(checklist, "C-1c  COMPLETED / ACCEPTED", "C-1c current state")
+    require(checklist, "Status: COMPLETED / ACCEPTED", "C-1c accepted status")
+    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "T-1 planned state")
+    require(contract, "Status: COMPLETED / ACCEPTED", "detailed contract state")
+    require(contract, "Parent phase: C-1 COMPLETED / ACCEPTED", "parent phase state")
     require(scripts_readme, "check_v210_post_advice_chat_flutter_lifecycle.py", "C-1c check command")
 
     for needle in (
@@ -159,9 +159,9 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_post_advice_chat_flutter_lifecycle_status: implemented-not-accepted")
-    print("v210_post_advice_chat_flutter_lifecycle_current_small_commit: C-1c")
-    print("v210_post_advice_chat_flutter_lifecycle_parent_phase: C-1-current-not-completed")
+    print("v210_post_advice_chat_flutter_lifecycle_status: completed-accepted")
+    print("v210_post_advice_chat_flutter_lifecycle_current_small_commit: T-1")
+    print("v210_post_advice_chat_flutter_lifecycle_parent_phase: C-1-completed-accepted")
     print("v210_post_advice_chat_flutter_lifecycle_structured_models: true")
     print("v210_post_advice_chat_flutter_lifecycle_structured_problem: true")
     print("v210_post_advice_chat_flutter_lifecycle_terminal_restart: true")

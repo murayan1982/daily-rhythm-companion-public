@@ -193,7 +193,7 @@ Missing focused regression areas include:
 ```text
 C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
 C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and mock-safe tests
-C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
+C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 ```
 
 ### C-1a boundary
@@ -246,7 +246,7 @@ real Framework/LLM execution: false
 release records changed: false
 ```
 
-C-1a was completed and accepted on 2026-07-24. C-1b was subsequently completed and accepted; C-1c is CURRENT / NOT_COMPLETED.
+C-1a was completed and accepted on 2026-07-24. C-1b was subsequently completed and accepted; C-1c and parent C-1 are COMPLETED / ACCEPTED; T-1 is CURRENT / NOT_COMPLETED.
 C-1a alone does not satisfy C-1b, C-1c, T-1, V-1, R-1, or release readiness.
 
 ## C-1b accepted completion handoff
@@ -270,4 +270,4 @@ C-1b intentionally changed the Backend files assigned by the accepted C-1a
 contract. The C-1a inventory remains the historical pre-change baseline; its
 Framework adapter and Flutter hashes remained unchanged through C-1b acceptance.
 Detailed C-1b contract: `docs/v210_post_advice_chat_backend_lifecycle.md`.
-C-1c is CURRENT / NOT_COMPLETED and parent C-1 remains CURRENT / NOT_COMPLETED.
+C-1c and parent C-1 are COMPLETED / ACCEPTED; T-1 is CURRENT / NOT_COMPLETED.

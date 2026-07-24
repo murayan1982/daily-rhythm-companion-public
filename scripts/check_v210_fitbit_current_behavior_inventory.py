@@ -81,14 +81,15 @@ def main() -> None:
     require(checklist, "W-1 state: COMPLETED / ACCEPTED", "W-1 accepted state")
     require(checklist, "W-2 state: COMPLETED / ACCEPTED", "W-2 accepted state")
     require(checklist, "W-3 state: COMPLETED / ACCEPTED", "W-3 accepted state")
-    require(checklist, "Current small commit: C-1c", "W-5 current state")
+    require(checklist, "Current small commit: T-1", "W-5 current state")
     require(checklist, "W-5b1  COMPLETED / ACCEPTED", "W-5b1 accepted state")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
     require(checklist, "W-3  COMPLETED / ACCEPTED", "W-3 queue state")
     require(checklist, "W-4  COMPLETED / ACCEPTED", "W-4 queue state")
     require(checklist, "W-5  COMPLETED / ACCEPTED", "W-5 queue state")
-    require(checklist, "C-1  CURRENT / NOT_COMPLETED", "C-1 current state")
-    for phase in ("T-1", "V-1", "R-1"):
+    require(checklist, "C-1  COMPLETED / ACCEPTED", "C-1 current state")
+    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "T-1 current state")
+    for phase in ("V-1", "R-1"):
         require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
 
     require(inventory, "GET /fitbit/status", "W-1 status inventory")
@@ -119,7 +120,7 @@ def main() -> None:
     print("v210_fitbit_inventory_completed_small_commit: W-1")
     print("v210_fitbit_inventory_completed_small_commit_w2: W-2")
     print("v210_fitbit_inventory_completed_small_commit_w3: W-3")
-    print("v210_fitbit_inventory_current_small_commit: C-1c")
+    print("v210_fitbit_inventory_current_small_commit: T-1")
     print("v210_fitbit_inventory_w2_runtime_changed: True")
     print("v210_fitbit_inventory_w2_flutter_changed: True")
     print("v210_fitbit_inventory_w4b_flutter_changed: True")

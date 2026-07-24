@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: C-1c — Flutter lifecycle state, recovery UI, and C-1 acceptance
+Current small commit: T-1 — Flutter in-app TTS player and artifact-expiry handling
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -74,17 +74,17 @@ W-5  COMPLETED / ACCEPTED   Wearable migration correction and configured Google 
   W-5a  COMPLETED / ACCEPTED   Fitbit real operator contract and preflight
   W-5b1  COMPLETED / ACCEPTED   Google Health API migration audit and legacy Fitbit execution retirement
   W-5b2  COMPLETED / ACCEPTED   Configured Google Health API operator verification
-C-1  CURRENT / NOT_COMPLETED  Post-advice chat lifecycle and UI-state hardening
+C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
   C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
-  C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and C-1 acceptance
-T-1  PLANNED                  Flutter in-app TTS player and artifact-expiry handling
+  C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
+T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-5, C-1a, and C-1b are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. C-1c is current and not completed; T-1 through R-1 remain planned.
+W-1 through W-5 and C-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 is current and not completed; V-1 and R-1 remain planned.
 
 ---
 
@@ -796,14 +796,14 @@ W-5b2 and parent W-5 were completed and accepted on 2026-07-24. C-1 is now CURRE
 
 # C-1 — Post-advice chat lifecycle and UI-state hardening
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Small-commit split:
 
 ```text
 C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
 C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and mock-safe tests
-C-1c  CURRENT / NOT_COMPLETED  Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
+C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 ```
 
 Parent boundary:
@@ -900,8 +900,8 @@ C-1a acceptance record:
 - release records changed: false
 ```
 
-C-1a was completed and accepted on 2026-07-24. C-1b was subsequently completed and accepted; C-1c is CURRENT / NOT_COMPLETED.
-C-1a performed no real Framework/LLM execution and did not complete parent C-1.
+C-1a was completed and accepted on 2026-07-24. C-1b, C-1c, and parent C-1 were subsequently completed and accepted. T-1 is CURRENT / NOT_COMPLETED.
+C-1a performed no real Framework/LLM execution by itself.
 
 ## C-1b — Backend lifecycle outcomes, bounded turns, and mock-safe tests
 
@@ -977,12 +977,12 @@ C-1b acceptance record:
 - release records changed: false
 ```
 
-C-1b was completed and accepted on 2026-07-24. Parent C-1 remains CURRENT / NOT_COMPLETED and C-1c is CURRENT / NOT_COMPLETED.
+C-1b was completed and accepted on 2026-07-24. C-1c and parent C-1 were subsequently completed and accepted; T-1 is CURRENT / NOT_COMPLETED.
 
 
 ## C-1c — Flutter lifecycle state, recovery UI, and aggregate C-1 acceptance
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 Detailed contract: `docs/v210_post_advice_chat_flutter_lifecycle.md`
 
@@ -1031,28 +1031,30 @@ T-1 / V-1 / R-1 runtime
 released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
 ```
 
-Implementation checkpoint:
+Acceptance record:
 
 ```text
-- structured Flutter lifecycle/outcome/problem models: present
-- legacy response compatibility: present
-- terminal restart UI: present
-- focused Flutter tests: expected 7
-- full Flutter tests: expected 64
-- Backend pytest baseline: 110
-- Backend runtime changed: false
-- Flutter runtime changed: true
+- implementation commit: c856374
+- python -m compileall -q backend scripts: passed
+- C-1a / C-1b / C-1c source-tree checks: passed
+- W-1 through W-5 checks / v2.0.x guards: passed
+- focused C-1c Flutter tests: 7 passed
+- backend pytest: 110 passed
+- Flutter test: 64 passed
+- diff review / operator approval: passed
+- Backend runtime changed by C-1c: false
+- Flutter runtime changed by C-1c: true
 - real Framework/LLM execution: false
 - release records changed: false
 ```
 
-C-1c and parent C-1 remain NOT_ACCEPTED until compileall, C-1a/C-1b/C-1c checks, v2.0.x guards, focused/full Backend and Flutter tests, diff review, and operator approval pass. T-1, V-1, and R-1 remain PLANNED.
+C-1c and parent C-1 were completed and accepted on 2026-07-24. T-1 is CURRENT / NOT_COMPLETED; V-1 and R-1 remain PLANNED.
 
 ---
 
 # T-1 — Flutter in-app TTS player and artifact-expiry handling
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 Planned boundary:
 

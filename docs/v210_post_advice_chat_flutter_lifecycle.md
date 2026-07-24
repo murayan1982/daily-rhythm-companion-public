@@ -1,9 +1,10 @@
 # DRC v2.1.0 C-1c — Flutter post-advice chat lifecycle and recovery UI
 
 Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: C-1c
-Parent phase: C-1 CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
+Completed small commit: C-1c
+Current small commit: T-1
+Parent phase: C-1 COMPLETED / ACCEPTED
 
 ## Purpose
 
@@ -89,18 +90,21 @@ flutter test
 cd ..
 ```
 
-Expected implementation checkpoint:
+Accepted verification:
 
 ```text
+implementation commit: c856374
 focused Flutter tests: 7 passed
 full Backend pytest: 110 passed
 full Flutter test: 64 passed
+diff review: passed
+operator approval: passed
 real Framework execution: false
 release records changed: false
 ```
 
-These counts must be confirmed on the operator machine. Source presence or focused-test success alone does not accept C-1c or parent C-1.
+These counts were confirmed on the operator machine. C-1c and parent C-1 are accepted; this does not complete T-1, V-1, R-1, or v2.1.0 release readiness.
 
 ## Non-release boundary
 
-C-1c does not build a fixed ZIP, create a tag, publish a GitHub Release, complete T-1/V-1/R-1, or alter v2.0.0/v2.0.1 publication records.
+C-1c did not build a fixed ZIP, create a tag, publish a GitHub Release, complete T-1/V-1/R-1, or alter v2.0.0/v2.0.1 publication records.
