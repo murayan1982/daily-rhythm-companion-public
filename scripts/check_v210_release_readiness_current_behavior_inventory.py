@@ -1,6 +1,6 @@
-"""Validate the R-1a release/readiness current behavior inventory.
+"""Validate the accepted R-1a release/readiness inventory.
 
-This source-tree-only check freezes the accepted pre-release implementation
+This source-tree-only check preserves the accepted pre-release implementation
 surface without reading credentials, accessing providers, inspecting Git tags,
 calling GitHub, building a ZIP, or modifying release artifacts.
 """
@@ -105,13 +105,16 @@ def main() -> None:
         (scripts_readme, "scripts README"),
     ):
         require(source, "R-1a", f"{label} R-1a marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1a state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1a accepted state")
         require(source, "R-1b", f"{label} R-1b marker")
-        require(source, "PLANNED", f"{label} later-state marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1b current state")
+        require(source, "NOT_STARTED", f"{label} R-1b implementation state")
 
-    require(checklist, "Current small commit: R-1a", "current small commit")
+    require(checklist, "Current small commit: R-1b", "current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1b implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
-    require(checklist, "R-1a  CURRENT / NOT_COMPLETED", "R-1a queue state")
+    require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted queue state")
+    require(checklist, "R-1b  CURRENT / NOT_COMPLETED", "R-1b current queue state")
     require(checklist, "R-1e  PLANNED", "R-1e queue state")
     require(checklist, "V-1  COMPLETED / ACCEPTED", "accepted V-1 state")
     require(inventory, "Backend pytest: 110 passed", "Backend baseline")
@@ -119,6 +122,9 @@ def main() -> None:
     require(inventory, "W-5b2", "wearable smartphone evidence")
     require(inventory, "T-1c", "TTS smartphone evidence")
     require(inventory, "no final integrated smartphone Web evidence aggregate", "missing R-1 evidence")
+    require(inventory, "implementation commit: dbc84db", "accepted R-1a implementation commit")
+    require(inventory, "all check_v210_*.py: 18 / 18 passed", "accepted v2.1.0 check count")
+    require(inventory, "explicit operator approval: received", "operator acceptance")
 
     backend_version = read("backend/app/version.py")
     flutter_pubspec = read("app/pubspec.yaml")
@@ -196,8 +202,9 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_release_readiness_inventory_status: implemented-not-accepted")
-    print("v210_release_readiness_inventory_current_small_commit: R-1a")
+    print("v210_release_readiness_inventory_status: completed-accepted")
+    print("v210_release_readiness_inventory_completed_small_commit: R-1a")
+    print("v210_release_readiness_inventory_current_small_commit: R-1b")
     print("v210_release_readiness_inventory_parent_phase: R-1-current-not-completed")
     print("v210_release_readiness_inventory_backend_version: 2.0.1")
     print("v210_release_readiness_inventory_flutter_version: 2.0.1+2")

@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-24
+更新日: 2026-07-25
 
 ## 1. 現在地
 
@@ -12,9 +12,9 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: R-1a CURRENT / NOT_COMPLETED
-current implementation step: R-1a CURRENT / NOT_COMPLETED
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
+current small commit: R-1b CURRENT / NOT_COMPLETED
+current implementation step: R-1b CURRENT / NOT_COMPLETED
+current implementation state: NOT_STARTED
 completed phase: V-1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -70,15 +70,15 @@ Status: CURRENT / NOT_COMPLETED
 Small-commit split:
 
 ```text
-R-1a  CURRENT / NOT_COMPLETED  Release/readiness current behavior inventory
-      IMPLEMENTED / NOT_ACCEPTED
-R-1b  PLANNED                  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
+R-1b  CURRENT / NOT_COMPLETED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+      NOT_STARTED
 R-1c  PLANNED                  Final smartphone Web evidence aggregate
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
-R-1a records the reusable generic packaging boundary, the hard-coded historical v2.0.1 release gate, current 2.0.1 metadata, accepted 110 Backend / 103 Flutter test baseline, prior smartphone Web evidence, and missing v2.1.0 release files. It changes no runtime, version metadata, release builder, fixed ZIP, tag, or GitHub Release.
+R-1a was completed and accepted on 2026-07-25 at implementation commit `dbc84db`. It records the reusable generic packaging boundary, the hard-coded historical v2.0.1 release gate, current 2.0.1 metadata, accepted 110 Backend / 103 Flutter test baseline, prior smartphone Web evidence, and missing v2.1.0 release files. Acceptance passed after compileall, all 18 v2.1.0 checks, v2.0.x guards, 110 Backend tests, 103 Flutter tests, diff review, and operator approval. It changed no runtime, version metadata, release builder, fixed ZIP, tag, or GitHub Release. R-1b is current/not completed and not started.
 
 Detailed inventory:
 
@@ -938,7 +938,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1、V-1は受け入れ済みで、Google Health API経由のreal provider execution、PC/スマートフォンWeb、アプリ内TTS再生、決定論的character表示まで確認済みである。現在はR-1がCURRENT / NOT_COMPLETEDかつNOT_STARTEDである。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1、V-1は受け入れ済みで、Google Health API経由のreal provider execution、PC/スマートフォンWeb、アプリ内TTS再生、決定論的character表示まで確認済みである。R-1aはCOMPLETED / ACCEPTEDで、現在はR-1bがCURRENT / NOT_COMPLETEDかつNOT_STARTEDである。
 
 ---
 
@@ -959,7 +959,7 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-5、C-1、T-1、V-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生、決定論的character表示が確認済みである。現在はR-1がCURRENT / NOT_COMPLETEDかつNOT_STARTEDで、v3.0.0は計画段階である。
+v2.1.0はW-1からW-5、C-1、T-1、V-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生、決定論的character表示が確認済みである。R-1aはCOMPLETED / ACCEPTEDで、現在はR-1bがCURRENT / NOT_COMPLETEDかつNOT_STARTED、v3.0.0は計画段階である。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally

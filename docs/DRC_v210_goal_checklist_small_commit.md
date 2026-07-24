@@ -1,11 +1,11 @@
 # Daily Rhythm Companion v2.1.0 goal checklist — small commits
 
-Updated: 2026-07-24
+Updated: 2026-07-25
 Status: IN_PROGRESS
-Current small commit: R-1a — release/readiness current behavior inventory
+Current small commit: R-1b — aggregate source-tree/test gate and v2.1.0 candidate metadata
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
-Parent V-1 state: COMPLETED / ACCEPTED
+Current implementation state: NOT_STARTED
+Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
@@ -90,15 +90,15 @@ V-1  COMPLETED / ACCEPTED                  Character display extraction and dete
   V-1c  COMPLETED / ACCEPTED                     HomeScreen extraction and integration
 R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
-  R-1a  CURRENT / NOT_COMPLETED                    Release/readiness current behavior inventory
-         IMPLEMENTED / NOT_ACCEPTED
-  R-1b  PLANNED                                    Aggregate source-tree/test gate and v2.1.0 candidate metadata
+  R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
+  R-1b  CURRENT / NOT_COMPLETED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
+         NOT_STARTED
   R-1c  PLANNED                                    Final smartphone Web evidence aggregate
   R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is implemented/not accepted; R-1b through R-1e remain planned.
+W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is current/not completed and not started; R-1c through R-1e remain planned.
 
 ---
 
@@ -1509,9 +1509,9 @@ Status: CURRENT / NOT_COMPLETED
 Small-commit split:
 
 ```text
-R-1a  CURRENT / NOT_COMPLETED  Release/readiness current behavior inventory
-      IMPLEMENTED / NOT_ACCEPTED
-R-1b  PLANNED                  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
+R-1b  CURRENT / NOT_COMPLETED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+      NOT_STARTED
 R-1c  PLANNED                  Final smartphone Web evidence aggregate
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
@@ -1519,8 +1519,8 @@ R-1e  PLANNED                  Explicit approval, publication, and post-publicat
 
 ## R-1a — Release/readiness current behavior inventory
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 
 Commit title:
 
@@ -1572,21 +1572,24 @@ annotated tags / GitHub Releases
 
 Detailed inventory: `docs/v210_release_readiness_current_behavior_inventory.md`.
 
-R-1a acceptance requirements:
+R-1a acceptance record:
 
 ```text
-- python -m compileall -q backend scripts passes.
-- scripts/check_v210_release_readiness_current_behavior_inventory.py passes.
-- all accepted check_v210_*.py checks pass.
-- v2.0.x compatibility and maintenance guards pass.
-- Backend pytest remains 110 passed.
-- Flutter test remains 103 passed.
-- git diff --check reports no real error.
-- Diff review confirms docs/test-only scope and no release artifact/tag/publication action.
-- Explicit operator approval is received.
+- accepted on: 2026-07-25
+- implementation commit: dbc84db
+- python -m compileall -q backend scripts: passed
+- scripts/check_v210_release_readiness_current_behavior_inventory.py: passed
+- all check_v210_*.py: 18 / 18 passed
+- v2.0.x compatibility and maintenance guards: passed
+- Backend pytest: 110 passed
+- Flutter test: 103 passed
+- git diff --check: passed
+- diff review: docs/test-only scope confirmed
+- release artifact / tag / GitHub Release action: none
+- explicit operator approval: received
 ```
 
-R-1 completion requirements must not be imported into R-1a. R-1a does not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
+R-1a is COMPLETED / ACCEPTED. R-1b is CURRENT / NOT_COMPLETED and NOT_STARTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
 
 T-1c Visual Studio 18 compatibility correction:
 

@@ -1,8 +1,9 @@
 # Daily Rhythm Companion v2.1.0 R-1a release/readiness current behavior inventory
 
-Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: R-1a
+Updated: 2026-07-25
+Status: COMPLETED / ACCEPTED
+Completed small commit: R-1a
+Current small commit: R-1b
 Parent phase: R-1 CURRENT / NOT_COMPLETED
 
 ## Purpose
@@ -105,9 +106,9 @@ No v2.1.0 fixed ZIP, `DRC_v2.1.0` annotated tag, or v2.1.0 GitHub Release is cre
 ## R-1 small-commit split
 
 ```text
-R-1a  CURRENT / NOT_COMPLETED  Release/readiness current behavior inventory
-      IMPLEMENTED / NOT_ACCEPTED
-R-1b  PLANNED                  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
+R-1b  CURRENT / NOT_COMPLETED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+      NOT_STARTED
 R-1c  PLANNED                  Final smartphone Web evidence aggregate
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
@@ -144,27 +145,24 @@ no GitHub Release publication
 no modification of v2.0.0/v2.0.1 historical records
 ```
 
-## R-1a acceptance gate
+## R-1a acceptance record
 
-```powershell
-python -m compileall -q backend scripts
-
-Get-ChildItem scripts\check_v210_*.py |
-  Sort-Object Name |
-  ForEach-Object {
-    python $_.FullName
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-  }
-
-python scripts\check_v20x_fitbit_current_state_contract.py
-python scripts\check_v20x_maintenance_readiness.py
-python -m pytest -q backend/tests
-
-cd app
-flutter test
-cd ..
-
-git diff --check
+```text
+accepted on: 2026-07-25
+implementation commit: dbc84db
+compileall: passed
+all check_v210_*.py: 18 / 18 passed
+v2.0.x compatibility / maintenance guards: passed
+Backend pytest: 110 passed
+Flutter test: 103 passed
+git diff --check: passed
+diff review: docs/test-only scope confirmed
+explicit operator approval: received
+version metadata changed: false
+fixed ZIP built: false
+tag created: false
+GitHub Release created: false
+historical release records changed: false
 ```
 
-R-1a remains `IMPLEMENTED / NOT_ACCEPTED` until the checks, diff review, and explicit operator approval pass.
+R-1a is `COMPLETED / ACCEPTED`. R-1b is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
