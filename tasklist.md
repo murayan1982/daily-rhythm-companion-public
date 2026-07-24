@@ -13,7 +13,7 @@ v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
 current small commit: V-1 CURRENT / NOT_COMPLETED
-current implementation step: V-1a IMPLEMENTED / NOT_ACCEPTED
+current implementation step: V-1b CURRENT / NOT_COMPLETED
 completed phase: T-1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -68,8 +68,8 @@ Status: CURRENT / NOT_COMPLETED
 実装分割:
 
 ```text
-V-1a  IMPLEMENTED / NOT_ACCEPTED   current behavior inventory and implementation contract
-V-1b  PLANNED                      deterministic presentation model and standalone widget
+V-1a  COMPLETED / ACCEPTED         current behavior inventory and implementation contract
+V-1b  CURRENT / NOT_COMPLETED      deterministic presentation model and standalone widget
 V-1c  PLANNED                      HomeScreen extraction and integration
 ```
 
@@ -88,11 +88,11 @@ V-1c  PLANNED                      HomeScreen extraction and integration
 
 詳細: `docs/v210_character_display_current_behavior_inventory.md`
 
-V-1aは実装済みだが未受け入れ。source-tree check、既存check、Backend pytest、Flutter test、diff確認、オペレーター承認後に、別のacceptance syncコミットでCOMPLETED / ACCEPTEDへ進める。
+V-1aは実装コミット`1602b2f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、Flutter test 84件、diff確認、明示的なオペレーター承認が通過した。Flutter runtime、Backend runtime、既存テスト、dependencies/assets、real provider/motion execution、release recordsは変更していない。V-1bはCURRENT / NOT_COMPLETED、V-1cとR-1はPLANNED。
 
 ### V-1b — Deterministic presentation model and standalone widget
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 ```text
 - content stateをmood / advice / fallbackとして決定論的に解決する。
@@ -900,7 +900,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1は受け入れ済みで、Google Health API経由のreal provider executionとPC/スマートフォンWeb、アプリ内TTS再生まで確認済みである。現在はV-1aを進める。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1は受け入れ済みで、Google Health API経由のreal provider executionとPC/スマートフォンWeb、アプリ内TTS再生まで確認済みである。現在はV-1bを進める。
 
 ---
 
@@ -921,7 +921,7 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-5、C-1、T-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生が確認済みである。現在はV-1がCURRENT / NOT_COMPLETEDで、V-1aがIMPLEMENTED / NOT_ACCEPTED。R-1はPLANNED、v3.0.0は計画段階である。
+v2.1.0はW-1からW-5、C-1、T-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生が確認済みである。現在はV-1がCURRENT / NOT_COMPLETEDで、V-1aはCOMPLETED / ACCEPTED、V-1bはCURRENT / NOT_COMPLETED。V-1cとR-1はPLANNED、v3.0.0は計画段階である。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally

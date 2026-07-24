@@ -2,9 +2,9 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: V-1a — Character display current behavior inventory and implementation contract
+Current small commit: V-1b — Deterministic presentation model and standalone widget
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current implementation state: NOT_STARTED
 Parent V-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -85,8 +85,8 @@ T-1  COMPLETED / ACCEPTED  Flutter in-app TTS player and artifact-expiry handlin
   T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
   T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 V-1  CURRENT / NOT_COMPLETED                  Character display extraction and deterministic state presentation
-  V-1a  IMPLEMENTED / NOT_ACCEPTED                 Current behavior inventory and implementation contract
-  V-1b  PLANNED                                    Deterministic presentation model and standalone widget
+  V-1a  COMPLETED / ACCEPTED                     Current behavior inventory and implementation contract
+  V-1b  CURRENT / NOT_COMPLETED                    Deterministic presentation model and standalone widget
   V-1c  PLANNED                                    HomeScreen extraction and integration
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
@@ -1336,14 +1336,14 @@ Status: CURRENT / NOT_COMPLETED
 Implementation split:
 
 ```text
-V-1a  IMPLEMENTED / NOT_ACCEPTED   Current behavior inventory and implementation contract
-V-1b  PLANNED                      Deterministic presentation model and standalone widget
+V-1a  COMPLETED / ACCEPTED         Current behavior inventory and implementation contract
+V-1b  CURRENT / NOT_COMPLETED      Deterministic presentation model and standalone widget
 V-1c  PLANNED                      HomeScreen extraction and integration
 ```
 
 ## V-1a — Current behavior inventory and implementation contract
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 Commit title:
 
@@ -1386,35 +1386,32 @@ release notes / release records / fixed-ZIP builders / tags / GitHub Releases
 
 Detailed inventory: `docs/v210_character_display_current_behavior_inventory.md`.
 
-V-1a acceptance requirements:
+V-1a acceptance record:
 
 ```text
-- python -m compileall -q backend scripts passes;
-- V-1a source-tree check passes;
-- all accepted check_v210_*.py and v2.0.x compatibility guards pass;
-- Backend pytest passes;
-- Flutter test passes;
-- git diff --check has no real error;
-- diff review confirms docs/test-only scope;
-- operator approval is explicit;
-- a separate acceptance sync marks V-1a COMPLETED / ACCEPTED and advances V-1b.
-```
-
-Current implementation record:
-
-```text
+- implementation commit: 1602b2f
+- python -m compileall -q backend scripts: passed
+- V-1a source-tree check: passed
+- all check_v210_*.py: passed
+- v2.0.x compatibility and maintenance guards: passed
+- Backend pytest: 110 passed
+- Flutter test: 84 passed
+- git diff --check: no real error
+- diff review confirmed docs/test-only scope
+- operator approval: explicit
 - Flutter runtime changed: false
 - Backend runtime changed: false
 - existing tests changed: false
 - dependencies/assets changed: false
 - real LLM/TTS/health/motion execution: false
 - release records changed: false
-- acceptance: pending
 ```
+
+V-1a was completed and accepted on 2026-07-24. V-1b is now CURRENT / NOT_COMPLETED. V-1c and R-1 remain PLANNED.
 
 ## V-1b — Deterministic presentation model and standalone widget
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 Planned boundary:
 

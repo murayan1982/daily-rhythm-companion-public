@@ -115,14 +115,20 @@ def main() -> None:
         (scripts_readme, "scripts README"),
     ):
         require(source, "V-1a", f"{label} V-1a marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} V-1a state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} V-1a state")
         require(source, "V-1b", f"{label} V-1b marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} current state marker")
         require(source, "V-1c", f"{label} V-1c marker")
         require(source, "R-1", f"{label} R-1 marker")
 
     require(checklist, "V-1  CURRENT / NOT_COMPLETED", "parent V-1 state")
+    require(checklist, "V-1b  CURRENT / NOT_COMPLETED", "current V-1b state")
     require(checklist, "R-1  PLANNED", "R-1 planned state")
-    require(inventory, "Status: IMPLEMENTED / NOT_ACCEPTED", "inventory state")
+    require(inventory, "Status: COMPLETED / ACCEPTED", "inventory state")
+    require(inventory, "implementation commit: 1602b2f", "accepted implementation commit")
+    require(inventory, "Backend pytest: 110 passed", "accepted Backend test count")
+    require(inventory, "Flutter test: 84 passed", "accepted Flutter test count")
+    require(checklist, "Current implementation state: NOT_STARTED", "V-1b implementation state")
     require(inventory, "Runtime changed: false", "docs-only runtime marker")
     require(inventory, "Existing tests changed: false", "unchanged test marker")
     require(inventory, "content state: mood | advice | fallback", "planned content axis")
@@ -202,8 +208,9 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_character_display_inventory_status: implemented-not-accepted")
-    print("v210_character_display_inventory_current_small_commit: V-1a")
+    print("v210_character_display_inventory_status: completed-accepted")
+    print("v210_character_display_inventory_completed_small_commit: V-1a")
+    print("v210_character_display_inventory_current_small_commit: V-1b")
     print("v210_character_display_inventory_parent_phase: V-1-current-not-completed")
     print("v210_character_display_inventory_home_screen_lines: 4195")
     print("v210_character_display_inventory_widget_test_lines: 2669")

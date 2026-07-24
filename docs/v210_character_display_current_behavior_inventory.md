@@ -1,9 +1,10 @@
 # v2.1.0 V-1a character display current behavior inventory
 
 Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 Parent phase: V-1 CURRENT / NOT_COMPLETED
-Current small commit: V-1a — Character display current behavior inventory and implementation contract
+Completed small commit: V-1a — Character display current behavior inventory and implementation contract
+Current small commit: V-1b — Deterministic presentation model and standalone widget
 
 ## Purpose
 
@@ -232,25 +233,48 @@ These hashes prove that V-1a itself is docs/test-only. Later accepted V-1b/V-1c 
 allowed to update only their explicitly assigned Flutter files and tests; the V-1a historical check
 must then be synchronized without weakening the static-asset, release-record, or Motion Demo guards.
 
+## V-1a acceptance record
+
+```text
+implementation commit: 1602b2f
+compileall: passed
+all check_v210_*.py: passed
+v2.0.x compatibility / maintenance guards: passed
+Backend pytest: 110 passed
+Flutter test: 84 passed
+git diff --check: no real error
+diff review: docs/test-only scope confirmed
+operator approval: explicit
+Flutter runtime changed: false
+Backend runtime changed: false
+existing tests changed: false
+dependencies/assets changed: false
+real provider or motion execution: false
+release records changed: false
+```
+
+V-1a was completed and accepted on 2026-07-24. Parent V-1 remains CURRENT / NOT_COMPLETED.
+V-1b is CURRENT / NOT_COMPLETED; V-1c and R-1 remain PLANNED.
+
 ## V-1 implementation split
 
 ### V-1a — Current behavior inventory and implementation contract
 
 ```text
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 Runtime changed: false
 Existing tests changed: false
 Dependencies/assets changed: false
 Real provider or motion execution: false
 ```
 
-Acceptance requires the source-tree check, accepted v2.1.0 checks, v2.0.x guards, Backend pytest,
-Flutter test, diff review, and operator approval. Acceptance is recorded in a separate sync commit.
+Acceptance passed after the source-tree check, all accepted v2.1.0 checks, v2.0.x guards,
+110 Backend tests, 84 Flutter tests, diff review, and explicit operator approval.
 
 ### V-1b — Deterministic presentation model and standalone widget
 
 ```text
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 - Add an app-owned deterministic presentation model.
 - Keep content state and activity state independently representable.
 - Cover mood, advice, fallback, idle, loading, and speaking with fake/model-only tests.
@@ -280,7 +304,7 @@ Status: PLANNED
 - Do not change Backend runtime, Motion Demo execution, dependencies/assets, or release records.
 ```
 
-V-1 and V-1c are not completed from V-1a source presence. A separate acceptance sync is required
+V-1 and V-1c are not completed from V-1a acceptance. A separate acceptance sync is required
 after focused tests, aggregate tests, builds required by the accepted contract, diff review, and
 operator approval pass.
 
