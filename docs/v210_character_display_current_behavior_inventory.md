@@ -4,8 +4,8 @@ Updated: 2026-07-24
 Status: COMPLETED / ACCEPTED
 Parent phase: V-1 CURRENT / NOT_COMPLETED
 Completed small commit: V-1a — Character display current behavior inventory and implementation contract
-Current small commit: V-1b — Deterministic presentation model and standalone widget
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current small commit: V-1c — HomeScreen extraction and integration
+Current implementation state: NOT_STARTED
 
 ## Purpose
 
@@ -255,7 +255,7 @@ release records changed: false
 ```
 
 V-1a was completed and accepted on 2026-07-24. Parent V-1 remains CURRENT / NOT_COMPLETED.
-V-1b is CURRENT / NOT_COMPLETED; V-1c and R-1 remain PLANNED.
+V-1b is COMPLETED / ACCEPTED at implementation commit `e1f8d6f`; V-1c is CURRENT / NOT_COMPLETED and NOT_STARTED; R-1 remains PLANNED.
 
 ## V-1 implementation split
 
@@ -275,8 +275,7 @@ Acceptance passed after the source-tree check, all accepted v2.1.0 checks, v2.0.
 ### V-1b — Deterministic presentation model and standalone widget
 
 ```text
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 - Add an app-owned deterministic presentation model.
 - Keep content state and activity state independently representable.
 - Cover mood, advice, fallback, idle, loading, and speaking with fake/model-only tests.
@@ -291,12 +290,13 @@ content state: mood | advice | fallback
 activity state: idle | loading | speaking
 ```
 
-Exact precedence and user-facing copy are frozen in `docs/v210_character_display_state_contract.md`. The implementation adds `CharacterDisplayPresentation`, `CharacterDisplayCard`, nine model tests, and four widget tests without connecting HomeScreen.
+Exact precedence and user-facing copy are frozen in `docs/v210_character_display_state_contract.md`. The implementation adds `CharacterDisplayPresentation`, `CharacterDisplayCard`, nine model tests, and four widget tests without connecting HomeScreen. V-1b was completed and accepted at implementation commit `e1f8d6f` after compileall, all v2.1.0 checks, v2.0.x guards, 110 Backend tests, 9 focused model tests, 4 focused widget tests, 97 full Flutter tests, diff review, and explicit operator approval.
 
 ### V-1c — HomeScreen extraction and integration
 
 ```text
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
+Implementation state: NOT_STARTED
 - Replace the private HomeScreen character-card rendering with the accepted standalone widget.
 - Keep HomeScreen ownership of data loading, selection callbacks, advice creation, and TTS control.
 - Connect accepted mood/advice/loading/speaking/fallback inputs deterministically.

@@ -1,10 +1,11 @@
 # v2.1.0 V-1b deterministic character display state contract
 
 Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 Parent phase: V-1 CURRENT / NOT_COMPLETED
-Current small commit: V-1b — Deterministic presentation model and standalone widget
-Next small commit: V-1c — HomeScreen extraction and integration (PLANNED)
+Completed small commit: V-1b — Deterministic presentation model and standalone widget
+Current small commit: V-1c — HomeScreen extraction and integration
+Current small commit: V-1c — HomeScreen extraction and integration (CURRENT / NOT_COMPLETED; NOT_STARTED)
 
 ## Purpose
 
@@ -158,7 +159,20 @@ v2.0.0 / v2.0.1 tags, releases, fixed ZIPs, and historical release records
 
 ## Acceptance boundary
 
-V-1b remains `IMPLEMENTED / NOT_ACCEPTED` until all focused tests, full Flutter tests,
-Backend regression tests, accepted source-tree checks, diff review, and explicit operator approval
-pass. Acceptance is recorded in a separate docs/test sync commit. V-1c, parent V-1, and R-1 must
-not be advanced by V-1b implementation alone.
+V-1b acceptance passed on 2026-07-24:
+
+```text
+implementation commit: e1f8d6f
+compileall / all check_v210_*.py / v2.0.x guards: passed
+Backend pytest: 110 passed
+focused presentation-model Flutter tests: 9 passed
+focused character-card Flutter tests: 4 passed
+full Flutter test: 97 passed
+diff review / explicit operator approval: passed
+HomeScreen integration: false
+Backend runtime / Motion Demo / dependencies / assets changed: false
+real provider or motion execution: false
+release records changed: false
+```
+
+V-1b is `COMPLETED / ACCEPTED`. V-1c is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; parent V-1 remains current/not completed and R-1 remains planned.

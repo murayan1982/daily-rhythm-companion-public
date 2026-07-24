@@ -114,14 +114,14 @@ def main() -> None:
         (scripts_readme, "scripts README"),
     ):
         require(source, "V-1b", f"{label} V-1b marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} implementation state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} accepted state")
         require(source, "V-1c", f"{label} V-1c marker")
-        require(source, "PLANNED", f"{label} planned marker")
         require(source, "R-1", f"{label} R-1 marker")
 
     require(checklist, "V-1  CURRENT / NOT_COMPLETED", "parent V-1 state")
-    require(checklist, "V-1b  CURRENT / NOT_COMPLETED", "current V-1b state")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "implementation state")
+    require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
+    require(checklist, "V-1c  CURRENT / NOT_COMPLETED", "current V-1c state")
+    require(checklist, "Current implementation state: NOT_STARTED", "V-1c implementation state")
     require(checklist, "R-1  PLANNED", "R-1 planned state")
 
     for marker in (
@@ -191,6 +191,9 @@ def main() -> None:
     require(contract, "1. speaking", "activity precedence")
     require(contract, "HomeScreen still owns all data loading", "HomeScreen ownership")
     require(contract, "repository fallback-image retry", "V-1c handoff")
+    require(contract, "implementation commit: e1f8d6f", "accepted implementation commit")
+    require(contract, "Backend pytest: 110 passed", "accepted Backend count")
+    require(contract, "full Flutter test: 97 passed", "accepted Flutter count")
 
     forbid(home, "CharacterDisplayCard", "premature HomeScreen integration")
     forbid(home, "CharacterDisplayPresentation", "premature HomeScreen model integration")
@@ -219,8 +222,9 @@ def main() -> None:
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_character_display_state_status: implemented-not-accepted")
-    print("v210_character_display_state_current_small_commit: V-1b")
+    print("v210_character_display_state_status: completed-accepted")
+    print("v210_character_display_state_completed_small_commit: V-1b")
+    print("v210_character_display_state_current_small_commit: V-1c")
     print("v210_character_display_state_parent_phase: V-1-current-not-completed")
     print("v210_character_display_state_content_states: mood,advice,fallback")
     print("v210_character_display_state_activity_states: idle,loading,speaking")
