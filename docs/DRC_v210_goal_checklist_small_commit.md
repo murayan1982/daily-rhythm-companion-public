@@ -2,9 +2,9 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: R-1 — v2.1.0 readiness and release preparation
+Current small commit: R-1a — release/readiness current behavior inventory
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Parent V-1 state: COMPLETED / ACCEPTED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -90,10 +90,15 @@ V-1  COMPLETED / ACCEPTED                  Character display extraction and dete
   V-1c  COMPLETED / ACCEPTED                     HomeScreen extraction and integration
 R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
-     NOT_STARTED
+  R-1a  CURRENT / NOT_COMPLETED                    Release/readiness current behavior inventory
+         IMPLEMENTED / NOT_ACCEPTED
+  R-1b  PLANNED                                    Aggregate source-tree/test gate and v2.1.0 candidate metadata
+  R-1c  PLANNED                                    Final smartphone Web evidence aggregate
+  R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
+  R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, and T-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. V-1 is completed and accepted; R-1 is current/not completed and not started.
+W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is implemented/not accepted; R-1b through R-1e remain planned.
 
 ---
 
@@ -1500,19 +1505,88 @@ V-1c and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / 
 # R-1 — v2.1.0 readiness and release preparation
 
 Status: CURRENT / NOT_COMPLETED
-Implementation state: NOT_STARTED
 
-Planned boundary:
+Small-commit split:
 
 ```text
-- Add the aggregate source-tree and test gate only after prior phases are accepted.
-- Require separately accepted smartphone Web evidence where specified.
-- Freeze one committed source state before building a fixed ZIP.
-- Build the fixed ZIP once and verify the same artifact without rebuilding.
-- Require explicit final approval before tag and GitHub Release publication.
+R-1a  CURRENT / NOT_COMPLETED  Release/readiness current behavior inventory
+      IMPLEMENTED / NOT_ACCEPTED
+R-1b  PLANNED                  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1c  PLANNED                  Final smartphone Web evidence aggregate
+R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
+R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
-R-1 completion requirements must not be imported into any accepted prior phase. R-1 has not yet created an aggregate readiness implementation, fixed ZIP, tag, or GitHub Release.
+## R-1a — Release/readiness current behavior inventory
+
+Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+
+Commit title:
+
+```text
+docs/test: establish R-1 release readiness inventory
+```
+
+Purpose:
+
+```text
+- Inventory the current generic package builder, ZIP hygiene checker, historical v2.0.1 one-time builder/verifier, version metadata, release records, and Git exclusion boundary.
+- Record the accepted 110 Backend / 103 Flutter test baseline and prior PC/smartphone Web evidence without importing raw screenshots or private values.
+- Identify the missing v2.1.0 aggregate gate, candidate metadata, final smartphone evidence aggregate, fixed-ZIP builder/verifier, release record, and release notes.
+- Split later R-1 work into R-1b through R-1e before any version bump, fixed ZIP, tag, or GitHub Release work.
+```
+
+Changed files:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_release_readiness_current_behavior_inventory.md
+scripts/check_v210_release_readiness_current_behavior_inventory.py
+```
+
+Unchanged boundaries:
+
+```text
+backend/**
+app/**
+build_release.bat
+build_v200_final_fixed_release_zip_from_head.ps1
+build_v201_fixed_release_zip_from_head.ps1
+scripts/check_release_package.py
+scripts/check_v20x_maintenance_readiness.py
+scripts/check_v20x_patch_release.py
+docs/DRC_v200_goal_checklist_small_commit.md
+docs/DRC_v20x_maintenance_checklist.md
+docs/v20x_patch_release.md
+docs/v201_patch_release_record.md
+release_notes/v2.0.0.md
+release_notes/v2.0.1.md
+release/**
+annotated tags / GitHub Releases
+```
+
+Detailed inventory: `docs/v210_release_readiness_current_behavior_inventory.md`.
+
+R-1a acceptance requirements:
+
+```text
+- python -m compileall -q backend scripts passes.
+- scripts/check_v210_release_readiness_current_behavior_inventory.py passes.
+- all accepted check_v210_*.py checks pass.
+- v2.0.x compatibility and maintenance guards pass.
+- Backend pytest remains 110 passed.
+- Flutter test remains 103 passed.
+- git diff --check reports no real error.
+- Diff review confirms docs/test-only scope and no release artifact/tag/publication action.
+- Explicit operator approval is received.
+```
+
+R-1 completion requirements must not be imported into R-1a. R-1a does not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
 
 T-1c Visual Studio 18 compatibility correction:
 

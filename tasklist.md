@@ -12,9 +12,9 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: R-1 CURRENT / NOT_COMPLETED
-current implementation step: R-1 CURRENT / NOT_COMPLETED
-current implementation state: NOT_STARTED
+current small commit: R-1a CURRENT / NOT_COMPLETED
+current implementation step: R-1a CURRENT / NOT_COMPLETED
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -34,6 +34,7 @@ docs/DRC_v210_goal_checklist_small_commit.md
 ```text
 docs/v210_fitbit_current_behavior_inventory.md
 docs/v210_character_display_current_behavior_inventory.md
+docs/v210_release_readiness_current_behavior_inventory.md
 ```
 
 ロードマップ:
@@ -65,17 +66,26 @@ v2.0.0とv2.0.1の公開記録は履歴として保持し、v2.1.0の進捗管�
 ## R-1 — v2.1.0 aggregate readiness and release preparation
 
 Status: CURRENT / NOT_COMPLETED
-Implementation state: NOT_STARTED
+
+Small-commit split:
 
 ```text
-- Add the aggregate source-tree and test gate after all prior phases are accepted.
-- Reconfirm required PC/smartphone Web evidence without committing screenshots or private values.
-- Freeze one committed Public source state before any fixed-ZIP build.
-- Build the fixed ZIP once, verify the same artifact, and require explicit final approval before tag/Release publication.
-- Do not change the released v2.0.0/v2.0.1 tags, assets, ZIPs, or historical records.
+R-1a  CURRENT / NOT_COMPLETED  Release/readiness current behavior inventory
+      IMPLEMENTED / NOT_ACCEPTED
+R-1b  PLANNED                  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1c  PLANNED                  Final smartphone Web evidence aggregate
+R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
+R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
-R-1 has not started implementation, fixed-ZIP creation, tag creation, or GitHub Release work.
+R-1a records the reusable generic packaging boundary, the hard-coded historical v2.0.1 release gate, current 2.0.1 metadata, accepted 110 Backend / 103 Flutter test baseline, prior smartphone Web evidence, and missing v2.1.0 release files. It changes no runtime, version metadata, release builder, fixed ZIP, tag, or GitHub Release.
+
+Detailed inventory:
+
+```text
+docs/v210_release_readiness_current_behavior_inventory.md
+scripts/check_v210_release_readiness_current_behavior_inventory.py
+```
 
 ---
 

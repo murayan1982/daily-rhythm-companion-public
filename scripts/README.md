@@ -15,15 +15,36 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: R-1 CURRENT / NOT_COMPLETED
-current implementation state: NOT_STARTED
+current small commit: R-1a CURRENT / NOT_COMPLETED
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 is completed and accepted; V-1 is completed and accepted; R-1 is current/not completed and not started. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b at `e1f8d6f`; V-1c at `995145d`.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 and V-1 are completed and accepted. R-1a is current and implemented/not accepted; R-1b through R-1e remain planned. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b at `e1f8d6f`; V-1c at `995145d`.
+
+
+## v2.1.0 R-1a release/readiness current behavior inventory check
+
+Detailed inventory: `docs/v210_release_readiness_current_behavior_inventory.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_release_readiness_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+The R-1a check is credential-free, provider-free, network-free, and artifact-free. It freezes the accepted release surface before v2.1.0 release implementation: backend `2.0.1`, Flutter `2.0.1+2`, generic denylist packaging, generic ZIP hygiene validation, historical v2.0.1 one-time builder/verifier, `release/` Git exclusion, 110 Backend tests, 103 Flutter tests, and immutable v2.0.0/v2.0.1 records. It also confirms that no v2.1.0 release builder, aggregate gate, release record, release notes, fixed ZIP, tag, or GitHub Release has been created by R-1a.
 
 ## v2.1.0 V-1a character display current behavior inventory check
 

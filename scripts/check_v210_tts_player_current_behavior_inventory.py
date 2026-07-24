@@ -97,7 +97,7 @@ def main() -> None:
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
     require(readme, "Current small commit: R-1", "README current small commit")
     require(roadmap, "Current small commit: R-1", "roadmap current small commit")
-    require(tasklist, "current small commit: R-1 CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(tasklist, "current small commit: R-1a CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_tts_player_current_behavior_inventory.py", "scripts command")
 
     for marker in (

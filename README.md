@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1 through W-5, C-1, T-1, and V-1 COMPLETED / ACCEPTED; R-1 CURRENT / NOT_COMPLETED**)
-Current small commit: R-1 — v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: R-1a — release/readiness current behavior inventory (**CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -18,7 +18,12 @@ V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
   V-1b  COMPLETED / ACCEPTED
   V-1c  COMPLETED / ACCEPTED
-R-1  CURRENT / NOT_COMPLETED  (NOT_STARTED)
+R-1  CURRENT / NOT_COMPLETED
+  R-1a  CURRENT / NOT_COMPLETED  (IMPLEMENTED / NOT_ACCEPTED)
+  R-1b  PLANNED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
+  R-1c  PLANNED  Final smartphone Web evidence aggregate
+  R-1d  PLANNED  One-time fixed ZIP build and same-artifact verification
+  R-1e  PLANNED  Explicit approval, publication, and post-publication verification
 ```
 
 Strategic target: v3.0.0
@@ -75,6 +80,7 @@ The authoritative v2.1.0 source of truth is:
 - [`docs/DRC_v210_goal_checklist_small_commit.md`](docs/DRC_v210_goal_checklist_small_commit.md)
 - [`roadmap.md`](roadmap.md)
 - [`tasklist.md`](tasklist.md)
+- [`docs/v210_release_readiness_current_behavior_inventory.md`](docs/v210_release_readiness_current_behavior_inventory.md)
 
 W-1 established and accepted this source of truth after source-tree verification, diff review, and operator approval passed.
 
