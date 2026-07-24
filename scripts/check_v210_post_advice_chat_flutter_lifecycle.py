@@ -160,7 +160,7 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_post_advice_chat_flutter_lifecycle_status: completed-accepted")
-    print("v210_post_advice_chat_flutter_lifecycle_current_small_commit: T-1")
+    print("v210_post_advice_chat_flutter_lifecycle_current_small_commit: T-1a")
     print("v210_post_advice_chat_flutter_lifecycle_parent_phase: C-1-completed-accepted")
     print("v210_post_advice_chat_flutter_lifecycle_structured_models: true")
     print("v210_post_advice_chat_flutter_lifecycle_structured_problem: true")

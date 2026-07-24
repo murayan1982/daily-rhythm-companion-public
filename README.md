@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1 through W-5 and C-1 COMPLETED / ACCEPTED; T-1 CURRENT / NOT_COMPLETED**)
-Current small commit: T-1 — Flutter in-app TTS player and artifact-expiry handling (**CURRENT / NOT_COMPLETED**)
+Current small commit: T-1a — TTS player current behavior inventory and implementation contract (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -171,6 +171,16 @@ C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acc
 ```
 
 C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`: the Backend keeps the accepted 30-minute idle TTL, 100-session capacity, and LRU behavior while adding an 8-turn default bound, structured lifecycle/outcome fields, restartable expired/evicted/unknown reasons, and HTTP 409 after the final allowed turn. C-1c is completed and accepted at implementation commit `c856374`: Flutter parses structured lifecycle/outcome/problem fields, keeps legacy payload compatibility, shows turn progress and user-facing outcome copy, disables terminal sending, clears stale terminal sessions, and offers direct restart. Parent C-1 is completed and accepted; T-1 is current. See [`docs/v210_post_advice_chat_current_behavior_inventory.md`](docs/v210_post_advice_chat_current_behavior_inventory.md), [`docs/v210_post_advice_chat_backend_lifecycle.md`](docs/v210_post_advice_chat_backend_lifecycle.md), and [`docs/v210_post_advice_chat_flutter_lifecycle.md`](docs/v210_post_advice_chat_flutter_lifecycle.md).
+
+T-1 is split into three small commits:
+
+```text
+T-1a  CURRENT / NOT_COMPLETED  Current TTS/audio handoff inventory and implementation contract
+T-1b  PLANNED                 Flutter in-app player abstraction, states, and mock-safe tests
+T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+```
+
+T-1a is source-tree only. It records the existing DRC-owned opaque MP3 handoff, accepted 24-hour/100-artifact retention, generic audio-route 404 behavior, external URL launch flow, and missing in-app playback/expired-state model without changing runtime or tests. Detailed inventory: [`docs/v210_tts_player_current_behavior_inventory.md`](docs/v210_tts_player_current_behavior_inventory.md).
 
 The accepted C-1b mock-safe gate is:
 

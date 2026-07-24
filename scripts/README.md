@@ -15,7 +15,7 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: T-1 CURRENT / NOT_COMPLETED
+current small commit: T-1a CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 ```
 
@@ -415,6 +415,20 @@ cd ..
 ```
 
 The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b is COMPLETED / ACCEPTED at implementation commit `3055995`; C-1c and parent C-1 are COMPLETED / ACCEPTED at implementation commit `c856374`; T-1 is CURRENT / NOT_COMPLETED.
+
+## T-1a TTS player current behavior inventory
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_tts_player_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+```
+
+The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the current external URL launch flow, generic 404 handling, and the absence of an in-app player state model. It does not fetch or play audio, launch a browser, call Framework/TTS providers, read private artifacts, add an audio dependency, or change runtime/tests. T-1a is CURRENT / NOT_COMPLETED; T-1b/T-1c remain planned.
 
 ## C-1c Flutter lifecycle and recovery UI
 

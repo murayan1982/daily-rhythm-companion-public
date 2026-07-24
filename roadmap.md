@@ -5,7 +5,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: T-1 — Flutter in-app TTS player and artifact-expiry handling (**CURRENT / NOT_COMPLETED**)
+Current small commit: T-1a — TTS player current behavior inventory and implementation contract (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 
 ---
@@ -446,6 +446,7 @@ C-1c  COMPLETED / ACCEPTED     Add Flutter lifecycle/recovery states and accept 
 ```
 
 C-1a is completed and accepted at implementation commit `a4263ca`. C-1b is completed and accepted at implementation commit `3055995`. It preserves TTL/capacity/LRU, adds an 8-turn default, structured lifecycle and provider-neutral outcome models, bounded expired/evicted terminal reasons, structured 404 reasons, and a restartable HTTP 409 turn-limit result. Acceptance passed with 17 focused Backend tests, 110 full Backend tests, 57 Flutter tests, diff review, and operator approval. C-1c is completed and accepted at implementation commit `c856374`: Flutter consumes structured lifecycle/outcome/problem data, remains compatible with legacy payloads, displays turn progress and user-facing outcome states, disables terminal sending, clears stale sessions, and provides direct restart. Acceptance passed with 7 focused Flutter tests, 110 Backend tests, 64 full Flutter tests, diff review, and operator approval. Parent C-1 is completed and accepted; T-1 is current.
+T-1a is current and source-tree only: it inventories the accepted opaque MP3 handoff, 24-hour/100-artifact retention, generic audio-route 404, external URL launch flow, and the missing in-app playback/expired-state model. T-1b and T-1c remain planned.
 
 ### TTS experience target
 
@@ -492,6 +493,9 @@ C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
   C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
+  T-1a  CURRENT / NOT_COMPLETED  Current TTS/audio handoff inventory and implementation contract
+  T-1b  PLANNED                 Flutter in-app player abstraction, states, and mock-safe tests
+  T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
 ```

@@ -156,7 +156,7 @@ def main() -> None:
 
     print("v210_post_advice_chat_backend_lifecycle_status: completed-accepted")
     print("v210_post_advice_chat_backend_lifecycle_completed_small_commit: C-1b")
-    print("v210_post_advice_chat_backend_lifecycle_current_small_commit: T-1")
+    print("v210_post_advice_chat_backend_lifecycle_current_small_commit: T-1a")
     print("v210_post_advice_chat_backend_lifecycle_parent_phase: C-1-completed-accepted")
     print("v210_post_advice_chat_backend_lifecycle_ttl_seconds: 1800")
     print("v210_post_advice_chat_backend_lifecycle_max_sessions: 100")

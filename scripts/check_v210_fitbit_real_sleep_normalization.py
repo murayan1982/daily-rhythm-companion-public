@@ -99,7 +99,7 @@ def main() -> None:
     files = {relative: read(relative) for relative in W3_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: T-1", "W-5 current commit")
+    require(checklist, "Current small commit: T-1a", "W-5 current commit")
     require(checklist, "W-5b1  COMPLETED / ACCEPTED", "W-5b1 accepted state")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
     require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5 incomplete state")
@@ -184,7 +184,7 @@ def main() -> None:
 
     print("v210_fitbit_real_sleep_normalization_status: completed-accepted")
     print("v210_fitbit_real_sleep_normalization_completed_small_commit: W-3")
-    print("v210_fitbit_real_sleep_normalization_current_small_commit: T-1")
+    print("v210_fitbit_real_sleep_normalization_current_small_commit: T-1a")
     print("v210_fitbit_real_sleep_normalization_api_error_classification: True")
     print("v210_fitbit_real_sleep_normalization_sleep_summary_mapping: True")
     print("v210_fitbit_real_sleep_normalization_mock_safe: True")

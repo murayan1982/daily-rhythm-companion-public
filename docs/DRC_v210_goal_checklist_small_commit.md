@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: T-1 — Flutter in-app TTS player and artifact-expiry handling
+Current small commit: T-1a — TTS player current behavior inventory and implementation contract
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -79,6 +79,9 @@ C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
   C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
 T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
+  T-1a  CURRENT / NOT_COMPLETED  Current TTS/audio handoff inventory and implementation contract
+  T-1b  PLANNED                 Flutter in-app player abstraction, states, and mock-safe tests
+  T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 V-1  PLANNED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
@@ -1056,12 +1059,73 @@ C-1c and parent C-1 were completed and accepted on 2026-07-24. T-1 is CURRENT / 
 
 Status: CURRENT / NOT_COMPLETED
 
-Planned boundary:
+Small-commit split:
+
+```text
+T-1a  CURRENT / NOT_COMPLETED  Current TTS/audio handoff inventory and implementation contract
+T-1b  PLANNED                 Flutter in-app player abstraction, states, and mock-safe tests
+T-1c  PLANNED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+```
+
+Parent boundary:
 
 ```text
 - Add in-app play, stop, replay, loading, completion, failure, and expired states.
 - Preserve DRC-owned opaque MP3 URLs and accepted artifact retention/cleanup rules.
 - Do not expose Framework-managed paths or provider payloads.
+- Keep V-1 and R-1 planned until separately implemented and accepted.
+```
+
+## T-1a — Current TTS/audio handoff inventory and implementation contract
+
+Status: CURRENT / NOT_COMPLETED
+
+Detailed inventory: `docs/v210_tts_player_current_behavior_inventory.md`
+
+Purpose:
+
+```text
+- inspect the accepted Backend artifact store/audio route and Flutter voice-output flow;
+- record the current external URL launch behavior and missing in-app player state;
+- preserve the accepted 86400-second TTL, 100-artifact cap, opaque MP3 URL, no-store, and nosniff boundaries;
+- pin the pre-T-1 runtime/test files using normalized hashes;
+- assign T-1b/T-1c responsibilities without changing runtime, dependencies, or tests.
+```
+
+T-1a change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v210_goal_checklist_small_commit.md
+docs/v210_tts_player_current_behavior_inventory.md
+scripts/check_v210_tts_player_current_behavior_inventory.py
+existing v2.1.0 check scripts current-state synchronization
+```
+
+Explicit non-change surface:
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/**
+app/test/**
+app/pubspec.yaml
+AI Character Framework checkout/provider/runtime
+V-1 / R-1 runtime
+released v2.0.0/v2.0.1 records, ZIPs, tags, and GitHub Releases
+```
+
+T-1a completion conditions:
+
+```text
+- inventory/check agree with the accepted source tree;
+- pre-T-1 runtime/test hashes remain unchanged;
+- compileall, all accepted v2.1.0 checks, v2.0.x guards, backend pytest, and Flutter test pass;
+- no real TTS request, audio download/playback, browser launch, private artifact read, or release work occurs;
+- diff review and operator approval pass.
 ```
 
 ---
