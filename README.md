@@ -7,8 +7,17 @@ AI Character Framework repository: [https://github.com/murayan1982/ai-character-
 Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
-Current development line: v2.1.0 (**W-1 through W-5 and C-1 COMPLETED / ACCEPTED; T-1 CURRENT / NOT_COMPLETED**)
-Current small commit: T-1c — Home UI integration, expired-artifact recovery, and T-1 acceptance (**CURRENT / NOT_COMPLETED**)
+Current development line: v2.1.0 (**W-1 through W-5, C-1, and T-1 COMPLETED / ACCEPTED; V-1 CURRENT / NOT_COMPLETED**)
+Current small commit: V-1 — Character display extraction and deterministic state presentation (**CURRENT / NOT_COMPLETED**)
+
+Current phase state:
+
+```text
+T-1  COMPLETED / ACCEPTED
+V-1  CURRENT / NOT_COMPLETED
+R-1  PLANNED
+```
+
 Strategic target: v3.0.0
 
 ## Current release and development status
@@ -150,7 +159,7 @@ flutter test
 cd ..
 ```
 
-W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5 and C-1 are completed and accepted; T-1 is current but not completed.
+W-4b and W-4 are completed and accepted. The detailed Flutter contract is [`docs/v210_flutter_sleep_provider_source_ui.md`](docs/v210_flutter_sleep_provider_source_ui.md). W-5 and C-1 are completed and accepted; T-1 is completed and accepted; V-1 is current and not completed.
 
 W-5 is split into a public-safe preparation commit and the later private execution checkpoint:
 
@@ -177,14 +186,14 @@ T-1 is split into three small commits:
 ```text
 T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
 T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
-T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 ```
 
 T-1a is completed and accepted at implementation commit `0b06378`. It records the existing DRC-owned opaque MP3 handoff, accepted 24-hour/100-artifact retention, generic audio-route 404 behavior, external URL launch flow, and missing in-app playback/expired-state model without changing runtime or tests. Acceptance passed after compileall, all accepted v2.1.0 checks, v2.0.x guards, 110 Backend tests, 64 Flutter tests, diff review, operator approval, and push. T-1b is completed and accepted at implementation commit `161e624`: it adds the app-owned audio-engine abstraction, explicit playback states, stale-operation guards, safe stop/replay/reset/dispose behavior, and ten fake-engine Flutter tests without changing HomeScreen, Backend, dependencies, or real TTS execution. T-1c is CURRENT / NOT_COMPLETED. Detailed contracts: [`docs/v210_tts_player_current_behavior_inventory.md`](docs/v210_tts_player_current_behavior_inventory.md) and [`docs/v210_tts_player_controller.md`](docs/v210_tts_player_controller.md).
 
-T-1b is completed and accepted at implementation commit `161e624`. Acceptance passed after compileall, T-1a/T-1b source-tree checks, ten focused Flutter tests, 110 Backend tests, 74 full Flutter tests, diff review, operator approval, and push. HomeScreen integration, a concrete platform audio engine/plugin, artifact HTTP expiry mapping, audible playback evidence, and parent T-1 acceptance remain T-1c work. See [`docs/v210_tts_player_controller.md`](docs/v210_tts_player_controller.md).
+T-1b is completed and accepted at implementation commit `161e624`. Acceptance passed after compileall, T-1a/T-1b source-tree checks, ten focused Flutter tests, 110 Backend tests, 74 full Flutter tests, diff review, operator approval, and push. T-1c subsequently completed the HomeScreen integration, concrete audio engine/plugin, HTTP expiry mapping, audible playback review, regenerate recovery, and parent T-1 acceptance. See [`docs/v210_tts_player_controller.md`](docs/v210_tts_player_controller.md).
 
-T-1c implementation is present but not accepted. It adds `audioplayers` behind the T-1b engine interface, maps opaque-audio HTTP 404/410 to the expired state, replaces external audio launch with HomeScreen play/stop/replay/regenerate controls, and adds mock-safe engine/widget regressions. Backend runtime and release records remain unchanged. Dependency resolution, focused/full Flutter tests, audible PC/smartphone Web review, diff review, and operator approval remain required. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
+T-1c and parent T-1 are completed and accepted. Implementation commit `4d3d5d5` plus desktop plugin registrant follow-up `9771f76` add the app-owned `audioplayers` engine, HomeScreen play/stop/replay/regenerate controls, HTTP 404/410 expiry mapping, Windows/Web build compatibility, and mock-safe engine/widget regressions. Acceptance passed with 20 focused Flutter tests, 110 Backend tests, 84 Flutter tests, Web and Windows builds, PC/smartphone audible playback, stop/replay/completion, expiry mapping, regenerate recovery, raw URL/private-path hiding, diff review, and operator approval. Backend runtime and release records remain unchanged. V-1 is current. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
 
 The accepted C-1b mock-safe gate is:
 

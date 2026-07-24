@@ -3,8 +3,8 @@
 Updated: 2026-07-24
 Status: COMPLETED / ACCEPTED
 Completed small commit: T-1b
-Current small commit: T-1c
-Parent phase: T-1 CURRENT / NOT_COMPLETED
+Current small commit: V-1
+Parent phase: T-1 COMPLETED / ACCEPTED
 
 ## Purpose
 
@@ -176,9 +176,9 @@ real Framework/TTS execution: false
 release records changed: false
 ```
 
-T-1b was completed and accepted on 2026-07-24. It does not complete parent T-1 and does not provide audible playback acceptance. T-1c is CURRENT / NOT_COMPLETED.
+T-1b was completed and accepted on 2026-07-24. T-1c subsequently completed the in-app integration and audible playback acceptance; parent T-1 is COMPLETED / ACCEPTED.
 
 
-## T-1c implementation follow-up
+## T-1c acceptance follow-up
 
-T-1c now consumes the accepted controller from HomeScreen and injects either a fake engine in tests or `AudioplayersVoiceOutputAudioEngine` in the normal app. The controller interface and state semantics remain unchanged. T-1c is IMPLEMENTED / NOT_ACCEPTED; parent T-1 remains CURRENT / NOT_COMPLETED. Detailed integration contract: `docs/v210_tts_player_home_integration.md`.
+T-1c consumes the accepted controller from HomeScreen and injects either a fake engine in tests or `AudioplayersVoiceOutputAudioEngine` in the normal app. The controller interface and state semantics remain unchanged. T-1c and parent T-1 are COMPLETED / ACCEPTED after PC/smartphone audible playback, stop/replay/completion, expiry mapping, and regenerate recovery passed. V-1 is CURRENT / NOT_COMPLETED. Detailed integration contract: `docs/v210_tts_player_home_integration.md`.

@@ -81,7 +81,7 @@ def main() -> None:
         require(source, "C-1c", "C-1c state")
     require(checklist, "C-1c  COMPLETED / ACCEPTED", "C-1c current state")
     require(checklist, "Status: COMPLETED / ACCEPTED", "C-1c accepted status")
-    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "T-1 planned state")
+    require(checklist, "T-1  COMPLETED / ACCEPTED", "T-1 planned state")
     require(contract, "Status: COMPLETED / ACCEPTED", "detailed contract state")
     require(contract, "Parent phase: C-1 COMPLETED / ACCEPTED", "parent phase state")
     require(scripts_readme, "check_v210_post_advice_chat_flutter_lifecycle.py", "C-1c check command")
@@ -160,7 +160,7 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_post_advice_chat_flutter_lifecycle_status: completed-accepted")
-    print("v210_post_advice_chat_flutter_lifecycle_current_small_commit: T-1c")
+    print("v210_post_advice_chat_flutter_lifecycle_current_small_commit: V-1")
     print("v210_post_advice_chat_flutter_lifecycle_parent_phase: C-1-completed-accepted")
     print("v210_post_advice_chat_flutter_lifecycle_structured_models: true")
     print("v210_post_advice_chat_flutter_lifecycle_structured_problem: true")

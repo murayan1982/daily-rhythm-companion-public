@@ -87,17 +87,17 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
-    require(checklist, "Current small commit: T-1c", "checklist current small commit")
-    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "parent T-1 state")
+    require(checklist, "Current small commit: V-1", "checklist current small commit")
+    require(checklist, "T-1  COMPLETED / ACCEPTED", "parent T-1 state")
     require(checklist, "T-1a  COMPLETED / ACCEPTED", "T-1a state")
     require(checklist, "T-1b  COMPLETED / ACCEPTED", "T-1b state")
-    require(checklist, "T-1c  CURRENT / NOT_COMPLETED", "T-1c state")
+    require(checklist, "T-1c  COMPLETED / ACCEPTED", "T-1c state")
     require(checklist, "C-1  COMPLETED / ACCEPTED", "C-1 accepted state")
-    require(checklist, "V-1  PLANNED", "V-1 state")
+    require(checklist, "V-1  CURRENT / NOT_COMPLETED", "V-1 state")
     require(checklist, "R-1  PLANNED", "R-1 state")
-    require(readme, "Current small commit: T-1c", "README current small commit")
-    require(roadmap, "Current small commit: T-1c", "roadmap current small commit")
-    require(tasklist, "current small commit: T-1c CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(readme, "Current small commit: V-1", "README current small commit")
+    require(roadmap, "Current small commit: V-1", "roadmap current small commit")
+    require(tasklist, "current small commit: V-1 CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_tts_player_current_behavior_inventory.py", "scripts command")
 
     for marker in (
@@ -108,7 +108,7 @@ def main() -> None:
         "LaunchMode.externalApplication",
         "no dedicated audio-player package",
         "T-1b  COMPLETED / ACCEPTED",
-        "T-1c  CURRENT / NOT_COMPLETED",
+        "T-1c  COMPLETED / ACCEPTED",
         "T-1b added and accepted",
     ):
         require(inventory, marker, "T-1a inventory marker")
@@ -135,7 +135,7 @@ def main() -> None:
     require(flutter_model, "final String audioPlaybackStatus;", "response playback metadata")
     require(flutter_client, "Future<VoiceOutputDemoRequestResponse> submitVoiceOutputDemoRequest", "voice request client")
     forbid(flutter_client, "fetchVoiceOutputAudio", "audio fetch helper")
-    require(inventory, "T-1c implementation follow-up", "T-1c inventory follow-up")
+    require(inventory, "T-1c acceptance follow-up", "T-1c inventory follow-up")
     require(home, "アプリ内音声プレイヤー", "in-app player UI")
     require(home, "voice-output-regenerate-button", "expired regeneration action")
     require(pubspec, "audioplayers: ^6.7.1", "T-1c audio dependency")
@@ -160,8 +160,8 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_tts_player_inventory_status: completed-accepted")
-    print("v210_tts_player_inventory_current_small_commit: T-1c")
-    print("v210_tts_player_inventory_parent_phase: T-1-current-not-completed")
+    print("v210_tts_player_inventory_current_small_commit: V-1")
+    print("v210_tts_player_inventory_parent_phase: T-1-completed-accepted")
     print("v210_tts_player_inventory_backend_artifact_ttl_seconds: 86400")
     print("v210_tts_player_inventory_backend_artifact_max_count: 100")
     print("v210_tts_player_inventory_current_playback_mode: in-app-audio-player")

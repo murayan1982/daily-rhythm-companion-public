@@ -74,7 +74,7 @@ def main() -> None:
         require(source, "C-1b", "C-1b state")
     require(checklist, "C-1b  COMPLETED / ACCEPTED", "C-1b accepted state")
     require(checklist, "C-1c  COMPLETED / ACCEPTED", "C-1c accepted state")
-    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "T-1 planned state")
+    require(checklist, "T-1  COMPLETED / ACCEPTED", "T-1 planned state")
     require(contract, "Status: C-1b COMPLETED / ACCEPTED", "accepted state")
     require(contract, "implementation commit: 3055995", "implementation commit")
     require(scripts_readme, "check_v210_post_advice_chat_backend_lifecycle.py", "check command")
@@ -156,7 +156,7 @@ def main() -> None:
 
     print("v210_post_advice_chat_backend_lifecycle_status: completed-accepted")
     print("v210_post_advice_chat_backend_lifecycle_completed_small_commit: C-1b")
-    print("v210_post_advice_chat_backend_lifecycle_current_small_commit: T-1c")
+    print("v210_post_advice_chat_backend_lifecycle_current_small_commit: V-1")
     print("v210_post_advice_chat_backend_lifecycle_parent_phase: C-1-completed-accepted")
     print("v210_post_advice_chat_backend_lifecycle_ttl_seconds: 1800")
     print("v210_post_advice_chat_backend_lifecycle_max_sessions: 100")

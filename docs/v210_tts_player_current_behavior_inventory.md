@@ -129,7 +129,7 @@ They do not execute audio, observe play/stop/completion events, simulate an expi
 ```text
 T-1a  COMPLETED / ACCEPTED     inventory and implementation contract only
 T-1b  COMPLETED / ACCEPTED  player abstraction/state model and mock-safe tests (implementation added; not accepted)
-T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired recovery, aggregate T-1 acceptance
+T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired recovery, aggregate T-1 acceptance
 ```
 
 ### T-1b responsibility
@@ -228,12 +228,12 @@ real Framework/TTS execution: false
 release records changed: false
 ```
 
-T-1b is COMPLETED / ACCEPTED; T-1c is CURRENT / NOT_COMPLETED. Parent T-1 remains CURRENT / NOT_COMPLETED.
+T-1b, T-1c, and parent T-1 are COMPLETED / ACCEPTED. V-1 is CURRENT / NOT_COMPLETED.
 
 
-## T-1c implementation follow-up
+## T-1c acceptance follow-up
 
-Status: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
 
 The historical pre-T-1 observations above remain the T-1a baseline. T-1c now adds a concrete `audioplayers` engine, HomeScreen in-app controls, and explicit HTTP 404/410 expiry mapping. The accepted Backend artifact route, 86400-second TTL, 100-artifact cap, opaque URL, no-store, and nosniff behavior remain unchanged.
 
@@ -245,5 +245,20 @@ HomeScreen runtime changed by T-1c: true
 Flutter dependency changed by T-1c: true
 existing voice-output widget tests updated: true
 real Framework/TTS execution in automated tests: false
-audible acceptance: pending
+audible acceptance: passed on PC and smartphone Web
 ```
+
+Accepted T-1c operator outcome:
+
+```text
+implementation commit: 4d3d5d5
+desktop plugin registrant follow-up: 9771f76
+PC and smartphone audible playback: passed
+stop / replay / completion: passed
+expired mapping / regenerate recovery: passed
+raw URL / private path hidden: passed
+real Framework/TTS execution: true
+release records changed: false
+```
+
+T-1c and parent T-1 are COMPLETED / ACCEPTED. V-1 is CURRENT / NOT_COMPLETED.

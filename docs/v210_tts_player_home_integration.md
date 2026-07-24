@@ -1,9 +1,10 @@
 # v2.1.0 T-1c Flutter in-app TTS player integration
 
 Updated: 2026-07-24
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: T-1c
-Parent phase: T-1 CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
+Completed small commit: T-1c
+Current small commit: V-1
+Parent phase: T-1 COMPLETED / ACCEPTED
 
 ## Purpose
 
@@ -180,12 +181,36 @@ flutter build windows
 Normal automated tests remain mock-safe. They do not call a running Backend audio
 route, Framework, or TTS provider and do not produce audible evidence.
 
-## Acceptance boundary
+## Accepted verification and operator evidence
 
-T-1c remains NOT_ACCEPTED until all checks, dependency resolution, focused/full
-Flutter tests, diff review, operator approval, and the separately required audible
-PC/smartphone Web playback review pass. Parent T-1 remains CURRENT / NOT_COMPLETED.
-V-1 and R-1 remain PLANNED.
+```text
+implementation commit: 4d3d5d5
+desktop plugin registrant follow-up: 9771f76
+compileall: passed
+T-1a / T-1b / T-1c source-tree checks: passed
+all accepted v2.1.0 checks and v2.0.x guards: passed
+focused Flutter tests: 20 passed
+backend pytest: 110 passed
+Flutter test: 84 passed
+Flutter Web build: passed
+Flutter Windows build: passed
+PC Web audible playback / stop / replay / completion: passed
+smartphone Web audible playback / stop / replay / completion: passed
+missing-artifact HTTP mapping to expired: passed
+PC and smartphone regenerate recovery: passed
+raw audio URL / private path hidden from normal UI: passed
+real Framework/TTS execution: true
+Backend runtime changed: false
+release records changed: false
+diff review / operator approval: passed
+```
+
+Only public-safe outcome markers are recorded. Provider credentials, provider
+voice/model identifiers, generated audio, artifact filenames, raw URLs,
+screenshots, LAN addresses, and private paths remain outside Git.
+
+T-1c and parent T-1 are COMPLETED / ACCEPTED. V-1 is CURRENT / NOT_COMPLETED
+and R-1 remains PLANNED.
 ## Windows Visual Studio 18 compatibility
 
 ```text

@@ -88,7 +88,7 @@ def main() -> None:
         require(doc, marker, "W-5b2 public-safe marker")
 
     for text, fragment, label in (
-        (checklist, "Current small commit: T-1c", "checklist current commit"),
+        (checklist, "Current small commit: V-1", "checklist current commit"),
         (checklist, "W-5b2  COMPLETED / ACCEPTED", "checklist W-5b2 state"),
         (checklist, "W-5  COMPLETED / ACCEPTED", "checklist parent state"),
         (checklist, "Status: COMPLETED / ACCEPTED", "checklist execution record"),
@@ -101,9 +101,13 @@ def main() -> None:
         require(text, fragment, label)
 
     require(checklist, "C-1  COMPLETED / ACCEPTED", "C-1 current state")
-    require(checklist, "T-1  CURRENT / NOT_COMPLETED", "T-1 current state")
-    for phase in ("V-1", "R-1"):
-        require(checklist, f"{phase}  PLANNED", f"{phase} planned state")
+    require(checklist, "T-1  COMPLETED / ACCEPTED", "T-1 current state")
+    require(
+        checklist,
+        "V-1  CURRENT / NOT_COMPLETED",
+        "V-1 current state",
+    )
+    require(checklist, "R-1  PLANNED", "R-1 planned state")
 
     for relative, text in (
         ("docs/v210_google_health_real_operator_verification.md", doc),
@@ -117,7 +121,7 @@ def main() -> None:
 
     print("v210_google_health_real_operator_verification_status: completed-accepted")
     print("v210_google_health_real_operator_verification_completed_small_commit: W-5b2")
-    print("v210_google_health_real_operator_verification_current_small_commit: T-1c")
+    print("v210_google_health_real_operator_verification_current_small_commit: V-1")
     print("v210_google_health_real_operator_verification_parent_phase: W-5-completed-accepted")
     print("v210_google_health_real_operator_verification_operator_env_validation: accepted")
     print("v210_google_health_real_operator_verification_token_refresh: succeeded")

@@ -15,13 +15,13 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: T-1c CURRENT / NOT_COMPLETED
+current small commit: V-1 CURRENT / NOT_COMPLETED
 completed phase: W-5 COMPLETED / ACCEPTED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 is current; V-1 and R-1 remain planned.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 is completed and accepted; V-1 is current and R-1 remains planned.
 
 Run the W-1 checks from the repository root:
 
@@ -414,7 +414,7 @@ flutter test
 cd ..
 ```
 
-The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b is COMPLETED / ACCEPTED at implementation commit `3055995`; C-1c and parent C-1 are COMPLETED / ACCEPTED at implementation commit `c856374`; T-1 is CURRENT / NOT_COMPLETED.
+The C-1b check is credential-free and provider-free. It verifies the preserved 1800-second TTL, 100-session capacity, LRU behavior, new 8-turn default, structured lifecycle/outcome models, expired/evicted/unknown classification, restartable HTTP 409 turn-limit handling, bounded terminal-reason metadata, deterministic fake-adapter tests, unchanged Flutter runtime, and unchanged release records. C-1b is COMPLETED / ACCEPTED at implementation commit `3055995`; C-1c and parent C-1 are COMPLETED / ACCEPTED at implementation commit `c856374`; T-1 is COMPLETED / ACCEPTED and V-1 is CURRENT / NOT_COMPLETED.
 
 ## T-1a TTS player current behavior inventory
 
@@ -428,7 +428,7 @@ flutter test
 cd ..
 ```
 
-The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the external URL launch baseline, generic 404 handling, and the pre-T-1 in-app player gap. T-1a is COMPLETED / ACCEPTED at implementation commit `0b06378`. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624` after ten focused Flutter tests, 110 Backend tests, 74 Flutter tests, diff review, operator approval, and push passed. T-1c is CURRENT / NOT_COMPLETED.
+The T-1a check is source-tree only and provider-free. It pins the accepted Backend artifact-store/audio-route and Flutter voice-output baseline, including opaque MP3 URLs, 86400-second TTL, 100-artifact cap, no-store/nosniff headers, the external URL launch baseline, generic 404 handling, and the pre-T-1 in-app player gap. T-1a is COMPLETED / ACCEPTED at implementation commit `0b06378`. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624` after ten focused Flutter tests, 110 Backend tests, 74 Flutter tests, diff review, operator approval, and push passed. T-1c and parent T-1 are COMPLETED / ACCEPTED; V-1 is CURRENT / NOT_COMPLETED.
 
 ## T-1b Flutter audio-player controller contract
 
@@ -444,7 +444,7 @@ flutter test
 cd ..
 ```
 
-The T-1b check is credential-free, provider-free, network-free, and decoder-free. It verifies the adapter-neutral engine interface, explicit playback state model, play/stop/replay/reset/expiry/disposal behavior, stale-operation guard, safe user-facing errors, fake-engine tests, unchanged HomeScreen/Backend/pubspec boundaries, and unchanged release records. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624`; T-1c and parent T-1 remain current and not completed.
+The T-1b check is credential-free, provider-free, network-free, and decoder-free. It verifies the adapter-neutral engine interface, explicit playback state model, play/stop/replay/reset/expiry/disposal behavior, stale-operation guard, safe user-facing errors, fake-engine tests, unchanged HomeScreen/Backend/pubspec boundaries, and unchanged release records. T-1b is COMPLETED / ACCEPTED at implementation commit `161e624`; T-1c and parent T-1 are also COMPLETED / ACCEPTED, and V-1 is CURRENT / NOT_COMPLETED.
 
 ## T-1c Flutter in-app player integration
 
@@ -466,7 +466,7 @@ flutter build windows
 cd ..
 ```
 
-The T-1c source-tree check validates the concrete audioplayers engine boundary, HTTP 404/410 expiry mapping, HomeScreen play/stop/replay/regenerate controls, CMake 3.15 Windows policy, mock-safe engine/widget tests, unchanged Backend runtime, and unchanged release records. It does not call Framework/TTS or produce audible acceptance. T-1c and parent T-1 remain NOT_ACCEPTED until local dependency/test, audible PC/smartphone Web review, diff review, and operator approval pass.
+The T-1c source-tree check validates the concrete audioplayers engine boundary, HTTP 404/410 expiry mapping, HomeScreen play/stop/replay/regenerate controls, CMake 3.15 Windows policy, mock-safe engine/widget tests, unchanged Backend runtime, and unchanged release records. Normal automated checks remain provider-free; the separate operator run confirmed real Framework/TTS generation, PC and smartphone audible playback, stop/replay/completion, expiry mapping, regenerate recovery, and raw URL/private-path hiding. T-1c and parent T-1 are COMPLETED / ACCEPTED; V-1 is CURRENT / NOT_COMPLETED.
 
 ## C-1c Flutter lifecycle and recovery UI
 
@@ -483,7 +483,7 @@ flutter test
 cd ..
 ```
 
-The C-1c check is credential-free and provider-free. It verifies structured Flutter lifecycle/outcome/problem parsing, legacy payload compatibility, typed HTTP problem handling, turn-progress presentation, terminal send disabling, direct restart after expired/evicted/not-found/turn-limit outcomes, user-facing unavailable/blocked/skipped/fallback distinctions, developer-detail separation, unchanged Backend runtime, and unchanged release records. C-1c and parent C-1 are COMPLETED / ACCEPTED at implementation commit `c856374`; T-1 is CURRENT / NOT_COMPLETED.
+The C-1c check is credential-free and provider-free. It verifies structured Flutter lifecycle/outcome/problem parsing, legacy payload compatibility, typed HTTP problem handling, turn-progress presentation, terminal send disabling, direct restart after expired/evicted/not-found/turn-limit outcomes, user-facing unavailable/blocked/skipped/fallback distinctions, developer-detail separation, unchanged Backend runtime, and unchanged release records. C-1c and parent C-1 are COMPLETED / ACCEPTED at implementation commit `c856374`; T-1 is COMPLETED / ACCEPTED and V-1 is CURRENT / NOT_COMPLETED.
 
 
 ## Script categories

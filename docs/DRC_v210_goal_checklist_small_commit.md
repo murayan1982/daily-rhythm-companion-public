@@ -2,7 +2,7 @@
 
 Updated: 2026-07-24
 Status: IN_PROGRESS
-Current small commit: T-1c — Home UI integration, expired-artifact recovery, and T-1 acceptance
+Current small commit: V-1 — Character display extraction and deterministic state presentation
 Current small-commit state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -78,16 +78,16 @@ C-1  COMPLETED / ACCEPTED     Post-advice chat lifecycle and UI-state hardening
   C-1a  COMPLETED / ACCEPTED     Current behavior inventory and implementation contract
   C-1b  COMPLETED / ACCEPTED     Backend lifecycle outcomes, bounded turns, and tests
   C-1c  COMPLETED / ACCEPTED     Flutter lifecycle state, recovery UI, and C-1 acceptance
-T-1  CURRENT / NOT_COMPLETED  Flutter in-app TTS player and artifact-expiry handling
+T-1  COMPLETED / ACCEPTED  Flutter in-app TTS player and artifact-expiry handling
   T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
   T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
-  T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
-V-1  PLANNED                  Character display extraction and deterministic state presentation
+  T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+V-1  CURRENT / NOT_COMPLETED                  Character display extraction and deterministic state presentation
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
 ```
 
-W-1 through W-5 and C-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 is current and not completed; V-1 and R-1 remain planned.
+W-1 through W-5, C-1, and T-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. V-1 is current and not completed; R-1 remains planned.
 
 ---
 
@@ -1057,14 +1057,14 @@ C-1c and parent C-1 were completed and accepted on 2026-07-24. T-1 is CURRENT / 
 
 # T-1 — Flutter in-app TTS player and artifact-expiry handling
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Small-commit split:
 
 ```text
 T-1a  COMPLETED / ACCEPTED     Current TTS/audio handoff inventory and implementation contract
 T-1b  COMPLETED / ACCEPTED  Flutter in-app player abstraction, states, and mock-safe tests
-T-1c  CURRENT / NOT_COMPLETED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
+T-1c  COMPLETED / ACCEPTED                 Home UI integration, expired-artifact recovery, and T-1 acceptance
 ```
 
 Parent boundary:
@@ -1146,7 +1146,7 @@ T-1a acceptance record:
 - release records changed: false
 ```
 
-T-1a was completed and accepted on 2026-07-24. T-1b was subsequently completed and accepted at implementation commit `161e624`. T-1c is CURRENT / NOT_COMPLETED and parent T-1 remains CURRENT / NOT_COMPLETED.
+T-1a was completed and accepted on 2026-07-24. T-1b was subsequently completed and accepted at implementation commit `161e624`. T-1c and parent T-1 are now COMPLETED / ACCEPTED; V-1 is CURRENT / NOT_COMPLETED.
 
 ## T-1b — Flutter player abstraction, states, and mock-safe tests
 
@@ -1230,12 +1230,12 @@ T-1b acceptance record:
 - release records changed: false
 ```
 
-T-1b was completed and accepted on 2026-07-24. Parent T-1 remains CURRENT / NOT_COMPLETED and T-1c is CURRENT / NOT_COMPLETED.
+T-1b was completed and accepted on 2026-07-24. T-1c and parent T-1 are now COMPLETED / ACCEPTED; V-1 is CURRENT / NOT_COMPLETED.
 
 ## T-1c — Home UI integration, expired-artifact recovery, and T-1 acceptance
 
-Status: IMPLEMENTED / NOT_ACCEPTED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 
 Detailed contract: `docs/v210_tts_player_home_integration.md`
 
@@ -1295,13 +1295,38 @@ Implementation verification target:
 - diff review, audible PC/smartphone Web review, and operator approval before acceptance synchronization.
 ```
 
-T-1c is implemented but not accepted. Parent T-1 remains CURRENT / NOT_COMPLETED. V-1 and R-1 remain PLANNED.
+T-1c acceptance record:
+
+```text
+- implementation commit: 4d3d5d5
+- desktop plugin registrant follow-up: 9771f76
+- python -m compileall -q backend scripts: passed
+- T-1a / T-1b / T-1c source-tree checks: passed
+- all accepted v2.1.0 checks and v2.0.x guards: passed
+- focused Flutter player tests: 20 passed
+- backend pytest: 110 passed
+- Flutter test: 84 passed
+- Flutter Web build: passed
+- Flutter Windows build: passed
+- PC Web audible playback / stop / replay / completion: passed
+- smartphone Web audible playback / stop / replay / completion: passed
+- missing-artifact HTTP mapping to expired: passed
+- PC and smartphone regenerate recovery: passed
+- raw audio URL / private path hidden from normal UI: passed
+- real Framework/TTS execution: true
+- Backend runtime changed: false
+- release records changed: false
+- diff review / operator approval: passed
+```
+
+T-1c and parent T-1 were completed and accepted on 2026-07-24.
+V-1 is CURRENT / NOT_COMPLETED and R-1 remains PLANNED.
 
 ---
 
 # V-1 — Character display extraction and deterministic states
 
-Status: PLANNED
+Status: CURRENT / NOT_COMPLETED
 
 Planned boundary:
 

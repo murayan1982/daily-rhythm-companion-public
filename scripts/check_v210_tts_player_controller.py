@@ -100,16 +100,17 @@ def main() -> None:
         require(text, "T-1b", f"{label} T-1b marker")
         require(text, "T-1c", f"{label} T-1c marker")
 
-    require(checklist, "Current small commit: T-1c", "checklist current small commit")
+    require(checklist, "Current small commit: V-1", "checklist current small commit")
     require(checklist, "T-1b  COMPLETED / ACCEPTED", "T-1b state")
     require(checklist, "Implementation state: COMPLETED / ACCEPTED", "T-1b implementation state")
-    require(checklist, "T-1c  CURRENT / NOT_COMPLETED", "T-1c state")
-    require(checklist, "V-1  PLANNED", "V-1 state")
+    require(checklist, "T-1c  COMPLETED / ACCEPTED", "T-1c accepted state")
+    require(checklist, "V-1  CURRENT / NOT_COMPLETED", "V-1 current state")
     require(checklist, "R-1  PLANNED", "R-1 state")
     require(contract, "Status: COMPLETED / ACCEPTED", "contract status")
     require(contract, "VoiceOutputAudioEngine", "engine abstraction")
     require(contract, "VoiceOutputAudioPlayerController", "controller contract")
     require(inventory, "T-1b added and accepted", "inventory follow-up")
+    require(contract, "T-1c acceptance follow-up", "T-1c acceptance follow-up")
     require(scripts_readme, "check_v210_tts_player_controller.py", "T-1b command")
 
     for marker in (
@@ -176,8 +177,8 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_tts_player_controller_status: completed-accepted")
-    print("v210_tts_player_controller_current_small_commit: T-1c")
-    print("v210_tts_player_controller_parent_phase: T-1-current-not-completed")
+    print("v210_tts_player_controller_current_small_commit: V-1")
+    print("v210_tts_player_controller_parent_phase: T-1-completed-accepted")
     print("v210_tts_player_controller_state_model: true")
     print("v210_tts_player_controller_engine_abstraction: true")
     print("v210_tts_player_controller_stop_replay: true")
