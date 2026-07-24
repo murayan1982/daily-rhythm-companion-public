@@ -5,6 +5,7 @@ Status: COMPLETED / ACCEPTED
 Parent phase: V-1 CURRENT / NOT_COMPLETED
 Completed small commit: V-1a — Character display current behavior inventory and implementation contract
 Current small commit: V-1b — Deterministic presentation model and standalone widget
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 
 ## Purpose
 
@@ -275,6 +276,7 @@ Acceptance passed after the source-tree check, all accepted v2.1.0 checks, v2.0.
 
 ```text
 Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
 - Add an app-owned deterministic presentation model.
 - Keep content state and activity state independently representable.
 - Cover mood, advice, fallback, idle, loading, and speaking with fake/model-only tests.
@@ -289,7 +291,7 @@ content state: mood | advice | fallback
 activity state: idle | loading | speaking
 ```
 
-Exact precedence and user-facing copy are frozen in the V-1b contract before implementation.
+Exact precedence and user-facing copy are frozen in `docs/v210_character_display_state_contract.md`. The implementation adds `CharacterDisplayPresentation`, `CharacterDisplayCard`, nine model tests, and four widget tests without connecting HomeScreen.
 
 ### V-1c — HomeScreen extraction and integration
 

@@ -4,7 +4,7 @@ Updated: 2026-07-24
 Status: IN_PROGRESS
 Current small commit: V-1b — Deterministic presentation model and standalone widget
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Parent V-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -87,6 +87,7 @@ T-1  COMPLETED / ACCEPTED  Flutter in-app TTS player and artifact-expiry handlin
 V-1  CURRENT / NOT_COMPLETED                  Character display extraction and deterministic state presentation
   V-1a  COMPLETED / ACCEPTED                     Current behavior inventory and implementation contract
   V-1b  CURRENT / NOT_COMPLETED                    Deterministic presentation model and standalone widget
+         IMPLEMENTED / NOT_ACCEPTED
   V-1c  PLANNED                                    HomeScreen extraction and integration
 R-1  PLANNED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
@@ -1412,16 +1413,23 @@ V-1a was completed and accepted on 2026-07-24. V-1b is now CURRENT / NOT_COMPLET
 ## V-1b — Deterministic presentation model and standalone widget
 
 Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
 
-Planned boundary:
+Implemented boundary:
 
 ```text
-- Add app-owned content states mood / advice / fallback.
-- Add app-owned activity states idle / loading / speaking.
-- Freeze deterministic precedence and safe normal-user copy before implementation.
-- Add standalone widget and focused fake/model-only tests.
-- Do not connect HomeScreen, change Backend/Motion Demo, or replace static assets.
+- Add CharacterDisplayPresentation content states mood / advice / fallback.
+- Resolve fallback as character unavailable → asset unavailable → framework fallback.
+- Resolve normal content as non-empty advice → mood.
+- Add activity states idle / loading / speaking with speaking → loading → idle precedence.
+- Add CharacterDisplayCard for static image, state chips, copy, and CharacterPreset profile.
+- Add nine model tests and four widget tests using only const/fake inputs.
+- Keep HomeScreen, Backend, Motion Demo, dependencies, static assets, and release records unchanged.
 ```
+
+Detailed contract: `docs/v210_character_display_state_contract.md`.
+
+V-1b remains NOT_ACCEPTED until focused/full Flutter tests, accepted source-tree checks, Backend regression tests, diff review, and explicit operator approval pass. A separate acceptance sync is required before V-1c becomes CURRENT.
 
 ## V-1c — HomeScreen extraction and integration
 

@@ -1,8 +1,8 @@
-"""Validate the V-1a character display current behavior inventory.
+"""Validate the V-1b deterministic character display state boundary.
 
-This check is source-tree only. It freezes the pre-V-1 Flutter runtime, accepted
-static assets, existing widget-test baseline, Motion Demo separation, and immutable
-release records without loading credentials or executing providers.
+This check is source-tree only. It verifies the app-owned presentation model,
+standalone static widget, focused fake/model-only tests, unchanged HomeScreen and
+static assets, and immutable release records without executing providers.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ PROTECTED_RELEASE_HASHES = {
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
 }
 
-V1A_FLUTTER_BASELINE_HASHES = {
+UNCHANGED_V1B_HASHES = {
     "app/lib/screens/home_screen.dart": "1fdd4e82338904a175112e5eb74386ea5797308aea71cde64161970fb42e44c1",
     "app/lib/models/character_preset.dart": "66896fa5ff7ffc2cf5e1497bfc3ce18ba555809ca73ebc60c655cd867075cf08",
     "app/lib/models/advice_response.dart": "99d26ce001213bafe44d917a459ae1491913af85cb33b897e0b81172f89046f7",
@@ -37,7 +37,7 @@ V1A_FLUTTER_BASELINE_HASHES = {
     "app/pubspec.yaml": "78ea66a2c1c4f96deced1063bf9f00369e7507c415e87d769a556b392dec4756",
 }
 
-V1A_STATIC_ASSET_HASHES = {
+STATIC_ASSET_HASHES = {
     "app/assets/images/characters/gentle_mina_demo.png": "7f6a7b9d071c7a6897a4e66aaf81a92c6ef0b78c63c8d6a0ea7c22b13d59ac72",
     "app/assets/images/characters/cheerful_sora_demo.png": "2f0ad34642252d17851ce437e484d31ab5ee960e539a55d09f0ad87e4474627b",
     "app/assets/images/characters/cool_rei_demo.png": "932fd68c601b21577895a2cbf7569368a03b0561914d78f2cd8ef92fabf00b91",
@@ -91,113 +91,123 @@ def assert_no_sensitive_values(relative: str, text: str) -> None:
 
 
 def main() -> None:
-    inventory = read("docs/v210_character_display_current_behavior_inventory.md")
+    model = read("app/lib/models/character_display_presentation.dart")
+    widget = read("app/lib/widgets/character_display_card.dart")
+    model_tests = read("app/test/character_display_presentation_test.dart")
+    widget_tests = read("app/test/character_display_card_test.dart")
+    contract = read("docs/v210_character_display_state_contract.md")
     checklist = read("docs/DRC_v210_goal_checklist_small_commit.md")
+    inventory = read("docs/v210_character_display_current_behavior_inventory.md")
     readme = read("README.md")
     roadmap = read("roadmap.md")
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
     home = read("app/lib/screens/home_screen.dart")
-    character_model = read("app/lib/models/character_preset.dart")
-    advice_source = read("app/lib/models/advice_source.dart")
-    motion_model = read("app/lib/models/motion_demo.dart")
-    player = read("app/lib/services/voice_output_audio_player.dart")
-    catalog = read("app/lib/ui/character_asset_catalog.dart")
-    widget_tests = read("app/test/widget_test.dart")
-    pubspec = read("app/pubspec.yaml")
 
     for source, label in (
-        (inventory, "inventory"),
+        (contract, "contract"),
         (checklist, "checklist"),
+        (inventory, "inventory"),
         (readme, "README"),
         (roadmap, "roadmap"),
         (tasklist, "tasklist"),
         (scripts_readme, "scripts README"),
     ):
-        require(source, "V-1a", f"{label} V-1a marker")
-        require(source, "COMPLETED / ACCEPTED", f"{label} V-1a state")
         require(source, "V-1b", f"{label} V-1b marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} current state marker")
+        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} implementation state")
         require(source, "V-1c", f"{label} V-1c marker")
+        require(source, "PLANNED", f"{label} planned marker")
         require(source, "R-1", f"{label} R-1 marker")
 
     require(checklist, "V-1  CURRENT / NOT_COMPLETED", "parent V-1 state")
     require(checklist, "V-1b  CURRENT / NOT_COMPLETED", "current V-1b state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "implementation state")
     require(checklist, "R-1  PLANNED", "R-1 planned state")
-    require(inventory, "Status: COMPLETED / ACCEPTED", "inventory state")
-    require(inventory, "implementation commit: 1602b2f", "accepted implementation commit")
-    require(inventory, "Backend pytest: 110 passed", "accepted Backend test count")
-    require(inventory, "Flutter test: 84 passed", "accepted Flutter test count")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "V-1b implementation state")
-    require(inventory, "Runtime changed: false", "docs-only runtime marker")
-    require(inventory, "Existing tests changed: false", "unchanged test marker")
-    require(inventory, "content state: mood | advice | fallback", "planned content axis")
-    require(inventory, "activity state: idle | loading | speaking", "planned activity axis")
-    require(inventory, "No Live2D or VTube Studio connection", "motion exclusion")
 
     for marker in (
-        "Widget _buildCharacterSection(BuildContext context)",
-        "_characterAwareMoodChoiceCopy",
-        "bool _isLoading = false;",
-        "bool _isCreatingAdvice = false;",
-        "AdviceResponse? _adviceResponse;",
-        "VoiceOutputAudioPlayerController",
-        "_buildMotionDemoSection(context)",
+        "enum CharacterDisplayContentState",
+        "mood,",
+        "advice,",
+        "fallback,",
+        "enum CharacterDisplayActivityState",
+        "idle,",
+        "loading,",
+        "speaking,",
+        "enum CharacterDisplayFallbackReason",
+        "factory CharacterDisplayPresentation.resolve",
+        "CharacterDisplayFallbackReason.characterUnavailable",
+        "CharacterDisplayFallbackReason.assetUnavailable",
+        "CharacterDisplayFallbackReason.frameworkFallback",
+        "VoiceOutputPlaybackPhase.playing",
+        "VoiceOutputPlaybackPhase.loading",
+        "AI応答を利用できなかったため",
+    ):
+        require(model, marker, "presentation-model marker")
+
+    speaking_position = model.index("if (playbackPhase == VoiceOutputPlaybackPhase.playing)")
+    loading_position = model.index("if (isLoading || playbackPhase == VoiceOutputPlaybackPhase.loading)")
+    if speaking_position >= loading_position:
+        raise AssertionError("Speaking precedence must appear before loading precedence")
+
+    character_position = model.index("if (character == null)")
+    asset_position = model.index("if (!hasRepositoryCharacterAsset)")
+    framework_position = model.index("if (advice?.source?.engine.trim() == 'framework_fallback')")
+    if not character_position < asset_position < framework_position:
+        raise AssertionError("Fallback precedence must be character, asset, framework")
+
+    for marker in (
+        "class CharacterDisplayCard extends StatelessWidget",
+        "character-display-card",
         "selected-character-image",
-        "selected-character-fallback-image",
-        "CharacterAssetCatalog.imageForCharacter",
+        "character-display-content-state",
+        "character-display-activity-state",
+        "character-display-static-baseline",
+        "character-display-fallback-note",
+        "Live2D / VTube Studio",
         "image_not_supported_outlined",
     ):
-        require(home, marker, "HomeScreen inventory marker")
+        require(widget, marker, "standalone-widget marker")
 
     for marker in (
-        "required this.characterId",
-        "required this.displayName",
-        "required this.description",
-        "required this.personalityType",
-        "required this.speakingStyle",
-        "required this.adviceStyle",
+        "uses mood content before advice exists",
+        "uses non-empty advice ahead of mood content",
+        "framework fallback uses safe app copy instead of provider text",
+        "missing character wins before other content",
+        "missing repository asset produces asset fallback",
+        "speaking wins over simultaneous loading",
+        "terminal playback phases return to idle presentation",
     ):
-        require(character_model, marker, "CharacterPreset field")
-
-    require(advice_source, "case 'framework_fallback':", "framework fallback source")
-    require(motion_model, "final bool motionSent;", "motion sent boundary")
-    require(motion_model, "final bool vtsConnectionUsed;", "VTS connection boundary")
-
-    for phase in ("idle", "loading", "playing", "stopped", "completed", "failed", "expired"):
-        require(player, phase, f"voice playback phase {phase}")
+        require(model_tests, marker, "model-test marker")
 
     for marker in (
-        "gentle_mina_demo.png",
-        "cheerful_sora_demo.png",
-        "cool_rei_demo.png",
-        "character_fallback.png",
-        "morning_room_soft.png",
-        "night_room_calm.png",
+        "renders mood state with static character profile",
+        "renders advice content without changing profile ownership",
+        "shows deterministic loading and speaking activity",
+        "fallback presentation uses safe static-runtime wording",
     ):
-        require(catalog + pubspec, marker, "static asset marker")
+        require(widget_tests, marker, "widget-test marker")
 
-    for marker in (
-        "Character choice updates daily loop and advice context",
-        "Character-aware mood labels stay presentation-only while advice uses stable mood IDs",
-        "Accepted visual assets are exposed in the Web UI",
-        "Motion demo button submits lightweight avatar request",
-        "framework_fallback",
-    ):
-        require(widget_tests, marker, "existing widget-test marker")
+    require(contract, "1. character unavailable", "content precedence")
+    require(contract, "1. speaking", "activity precedence")
+    require(contract, "HomeScreen still owns all data loading", "HomeScreen ownership")
+    require(contract, "repository fallback-image retry", "V-1c handoff")
 
-    for forbidden in (
-        "Live2D execution: accepted",
-        "VTube Studio execution: accepted",
-        "real motion execution: true",
-    ):
-        forbid(inventory, forbidden, "unsupported execution claim")
+    forbid(home, "CharacterDisplayCard", "premature HomeScreen integration")
+    forbid(home, "CharacterDisplayPresentation", "premature HomeScreen model integration")
+    forbid(model + widget, "dart:math", "random state selection")
+    forbid(model + widget, "Timer(", "timer-driven animation")
+    forbid(model + widget, "WebSocket", "motion runtime connection")
 
     assert_hashes(PROTECTED_RELEASE_HASHES, "Protected release record")
-    assert_hashes(V1A_FLUTTER_BASELINE_HASHES, "V-1a Flutter baseline")
-    assert_hashes(V1A_STATIC_ASSET_HASHES, "V-1a static asset baseline")
+    assert_hashes(UNCHANGED_V1B_HASHES, "V-1b unchanged baseline")
+    assert_hashes(STATIC_ASSET_HASHES, "V-1b static asset baseline")
 
     for relative in (
+        "app/lib/models/character_display_presentation.dart",
+        "app/lib/widgets/character_display_card.dart",
+        "app/test/character_display_presentation_test.dart",
+        "app/test/character_display_card_test.dart",
+        "docs/v210_character_display_state_contract.md",
         "README.md",
         "roadmap.md",
         "tasklist.md",
@@ -205,24 +215,23 @@ def main() -> None:
         "docs/DRC_v210_goal_checklist_small_commit.md",
         "docs/v210_character_display_current_behavior_inventory.md",
         "scripts/check_v210_character_display_current_behavior_inventory.py",
+        "scripts/check_v210_character_display_state.py",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
-    print("v210_character_display_inventory_status: completed-accepted")
-    print("v210_character_display_inventory_completed_small_commit: V-1a")
-    print("v210_character_display_inventory_current_small_commit: V-1b")
-    print("v210_character_display_inventory_parent_phase: V-1-current-not-completed")
-    print("v210_character_display_inventory_home_screen_lines: 4195")
-    print("v210_character_display_inventory_widget_test_lines: 2669")
-    print("v210_character_display_inventory_character_assets: 3")
-    print("v210_character_display_inventory_fallback_assets: 1")
-    print("v210_character_display_inventory_v1b_runtime_started: true")
-    print("v210_character_display_inventory_flutter_runtime_changed_by_v1a: false")
-    print("v210_character_display_inventory_existing_tests_changed: false")
-    print("v210_character_display_inventory_assets_changed: false")
-    print("v210_character_display_inventory_real_motion_execution: false")
-    print("v210_character_display_inventory_release_records_changed: false")
-    print("[v210-character-display-current-behavior-inventory-check] OK")
+    print("v210_character_display_state_status: implemented-not-accepted")
+    print("v210_character_display_state_current_small_commit: V-1b")
+    print("v210_character_display_state_parent_phase: V-1-current-not-completed")
+    print("v210_character_display_state_content_states: mood,advice,fallback")
+    print("v210_character_display_state_activity_states: idle,loading,speaking")
+    print("v210_character_display_state_focused_model_tests: 9")
+    print("v210_character_display_state_focused_widget_tests: 4")
+    print("v210_character_display_state_home_integration: false")
+    print("v210_character_display_state_backend_runtime_changed: false")
+    print("v210_character_display_state_assets_changed: false")
+    print("v210_character_display_state_real_motion_execution: false")
+    print("v210_character_display_state_release_records_changed: false")
+    print("[v210-character-display-state-check] OK")
 
 
 if __name__ == "__main__":

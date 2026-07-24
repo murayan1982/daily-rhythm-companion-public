@@ -8,7 +8,7 @@ Current released version: v2.0.1 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1 through W-5, C-1, and T-1 COMPLETED / ACCEPTED; V-1 CURRENT / NOT_COMPLETED**)
-Current small commit: V-1b — Deterministic presentation model and standalone widget (**CURRENT / NOT_COMPLETED**)
+Current small commit: V-1b — Deterministic presentation model and standalone widget (**CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -16,7 +16,7 @@ Current phase state:
 T-1  COMPLETED / ACCEPTED
 V-1  CURRENT / NOT_COMPLETED
   V-1a  COMPLETED / ACCEPTED
-  V-1b  CURRENT / NOT_COMPLETED
+  V-1b  CURRENT / NOT_COMPLETED  (IMPLEMENTED / NOT_ACCEPTED)
   V-1c  PLANNED
 R-1  PLANNED
 ```
@@ -198,21 +198,25 @@ T-1b is completed and accepted at implementation commit `161e624`. Acceptance pa
 
 T-1c and parent T-1 are completed and accepted. Implementation commit `4d3d5d5` plus desktop plugin registrant follow-up `9771f76` add the app-owned `audioplayers` engine, HomeScreen play/stop/replay/regenerate controls, HTTP 404/410 expiry mapping, Windows/Web build compatibility, and mock-safe engine/widget regressions. Acceptance passed with 20 focused Flutter tests, 110 Backend tests, 84 Flutter tests, Web and Windows builds, PC/smartphone audible playback, stop/replay/completion, expiry mapping, regenerate recovery, raw URL/private-path hiding, diff review, and operator approval. Backend runtime and release records remain unchanged. V-1 is current. See [`docs/v210_tts_player_home_integration.md`](docs/v210_tts_player_home_integration.md).
 
-V-1 is split into three implementation steps. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b is current/not completed, V-1c remains planned, and parent V-1 remains current/not completed.
+V-1 is split into three implementation steps. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b is implemented/not accepted, V-1c remains planned, and parent V-1 remains current/not completed.
 
 ```text
 V-1a  COMPLETED / ACCEPTED         Current behavior inventory and implementation contract
 V-1b  CURRENT / NOT_COMPLETED      Deterministic presentation model and standalone widget
+       IMPLEMENTED / NOT_ACCEPTED
 V-1c  PLANNED                      HomeScreen extraction and integration
 ```
 
 V-1a records the 4,195-line HomeScreen ownership, the 2,669-line existing widget-test baseline, three static character assets, one fallback asset, separate mood/advice/loading/TTS state, and the guarded Motion Demo boundary. It changed no Flutter runtime, Backend runtime, existing tests, dependencies, assets, provider execution, or release records. Acceptance passed after compileall, all `check_v210_*.py`, v2.0.x compatibility and maintenance guards, 110 Backend tests, 84 Flutter tests, diff review, and explicit operator approval. Detailed inventory: [`docs/v210_character_display_current_behavior_inventory.md`](docs/v210_character_display_current_behavior_inventory.md).
+
+V-1b implementation adds the app-owned `CharacterDisplayPresentation` content/activity model, the standalone static `CharacterDisplayCard`, nine model tests, and four widget tests. Content precedence is character unavailable → asset unavailable → framework fallback → advice → mood; activity precedence is speaking → loading → idle. HomeScreen, Backend, Motion Demo, dependencies, and static assets remain unchanged. V-1b is not accepted until focused/full tests, diff review, and operator approval pass. Detailed contract: [`docs/v210_character_display_state_contract.md`](docs/v210_character_display_state_contract.md).
 
 Run the V-1a source-tree check with:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v210_character_display_current_behavior_inventory.py
+python scripts\check_v210_character_display_state.py
 python -m pytest -q backend/tests
 
 cd app
