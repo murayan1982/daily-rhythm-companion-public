@@ -3,7 +3,7 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1a
-Current small commit: R-1d
+Current small commit: R-1e
 Parent phase: R-1 CURRENT / NOT_COMPLETED
 
 ## Purpose
@@ -109,9 +109,9 @@ No v2.1.0 fixed ZIP, `DRC_v2.1.0` annotated tag, or v2.1.0 GitHub Release is cre
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
-R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
-      IMPLEMENTED / NOT_ACCEPTED
-R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
+R-1d  COMPLETED / ACCEPTED     One-time fixed ZIP build and same-artifact verification
+R-1e  CURRENT / NOT_COMPLETED  Explicit approval, publication, and post-publication verification
+      NOT_STARTED
 ```
 
 ### R-1b boundary
@@ -165,7 +165,7 @@ GitHub Release created: false
 historical release records changed: false
 ```
 
-R-1a, R-1b, and R-1c are `COMPLETED / ACCEPTED`. R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
+R-1a through R-1d are `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
 
 
 ## Accepted R-1b candidate transition
@@ -198,6 +198,22 @@ R-1d current/not completed: true
 ```
 
 
-## Current R-1d implementation transition
+## Historical R-1d implementation transition
 
 The separately checked R-1d implementation now adds `build_v210_fixed_release_zip_from_head.ps1` and `scripts/check_v210_fixed_release_zip.py`. This transition preserves the accepted R-1a inventory snapshot and R-1b/R-1c records. Source presence proves only `IMPLEMENTED / NOT_ACCEPTED`; the release tuple remains unfilled until a later clean synchronized official-main operator run builds exactly one versioned ZIP and verifies that same file without rebuilding.
+
+## Accepted R-1d artifact transition
+
+```text
+accepted release source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec
+fixed ZIP basename: DailyRhythmCompanion_v2.1.0_20260725_160036.zip
+fixed ZIP size bytes: 1747337
+fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+accepted-candidate builder invocation count: 1
+same-artifact verification: passed
+tag created: false
+GitHub Release created: false
+R-1e current/not completed: true
+```
+
+R-1d is `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.

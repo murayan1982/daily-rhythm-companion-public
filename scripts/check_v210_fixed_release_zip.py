@@ -26,6 +26,10 @@ EXPECTED_FLUTTER_VERSION = "2.1.0+3"
 EXPECTED_BACKEND_TESTS = 110
 EXPECTED_FLUTTER_TESTS = 103
 RELEASE_TAG = "DRC_v2.1.0"
+RELEASE_SOURCE_HEAD = "6e7af31f85eb6ee7887df3e184ac6a58142d6fec"
+RELEASE_ZIP_BASENAME = "DailyRhythmCompanion_v2.1.0_20260725_160036.zip"
+RELEASE_ZIP_SIZE = 1747337
+RELEASE_ZIP_SHA256 = "55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5"
 ZIP_NAME_PATTERN = re.compile(
     r"^DailyRhythmCompanion_v2\.1\.0_\d{8}_\d{6}\.zip$"
 )
@@ -176,7 +180,7 @@ def assert_no_sensitive_values(relative: str, text: str) -> None:
             raise AssertionError(f"Sensitive-looking value in {relative}: {pattern}")
 
 
-def verify_contract(*, root: Path = ROOT) -> None:
+def verify_candidate_contract(*, root: Path = ROOT) -> None:
     for relative in REQUIRED_RELEASE_FILES:
         if not (root / relative).is_file():
             raise AssertionError(f"Missing R-1d release file: {relative}")
@@ -266,6 +270,69 @@ def verify_contract(*, root: Path = ROOT) -> None:
     assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record", root=root)
     assert_hashes(PROTECTED_GENERIC_PACKAGE_HASHES, "Protected generic package boundary", root=root)
 
+    for relative in PUBLIC_SAFE_FILES:
+        assert_no_sensitive_values(relative, read(relative, root=root))
+
+
+def verify_accepted_contract(*, root: Path = ROOT) -> None:
+    for relative in REQUIRED_RELEASE_FILES:
+        if not (root / relative).is_file():
+            raise AssertionError(f"Missing accepted R-1d release file: {relative}")
+
+    checklist = read("docs/DRC_v210_goal_checklist_small_commit.md", root=root)
+    readme = read("README.md", root=root)
+    roadmap = read("roadmap.md", root=root)
+    tasklist = read("tasklist.md", root=root)
+    scripts_readme = read("scripts/README.md", root=root)
+    readiness = read("docs/v210_release_readiness.md", root=root)
+    release_record = read("docs/v210_release_record.md", root=root)
+    release_notes = read("release_notes/v2.1.0.md", root=root)
+
+    for source, label in (
+        (checklist, "checklist"),
+        (readme, "README"),
+        (roadmap, "roadmap"),
+        (tasklist, "tasklist"),
+        (scripts_readme, "scripts README"),
+        (readiness, "release readiness"),
+        (release_record, "release record"),
+        (release_notes, "release notes"),
+    ):
+        require(source, "R-1d", f"{label} R-1d marker")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1d accepted state")
+        require(source, "R-1e", f"{label} R-1e marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1e current state")
+
+    require(checklist, "Current small commit: R-1e", "accepted current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1e implementation state")
+    require(checklist, "R-1d  COMPLETED / ACCEPTED", "R-1d accepted queue state")
+    require(checklist, "R-1e  CURRENT / NOT_COMPLETED", "R-1e current queue state")
+    require(read("backend/app/version.py", root=root), 'APP_VERSION = "2.1.0"', "Backend version")
+    require(read("app/pubspec.yaml", root=root), "version: 2.1.0+3", "Flutter version")
+
+    for marker in (
+        "Status: PREPARED / NOT_RELEASED",
+        "Current phase: R-1e CURRENT / NOT_COMPLETED (NOT_STARTED)",
+        "source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec",
+        "fixed ZIP basename: DailyRhythmCompanion_v2.1.0_20260725_160036.zip",
+        "fixed ZIP size: 1747337 bytes",
+        "fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5",
+        "fixed ZIP builder invocation count for the accepted candidate: 1",
+        "same-artifact verification: COMPLETED / PASSED",
+        "explicit final operator approval: NOT_RECEIVED",
+        "annotated tag publication: NOT_CREATED",
+        "GitHub Release publication: NOT_CREATED",
+    ):
+        require(release_record, marker, "accepted R-1d release record")
+
+    require(release_notes, "Status: RELEASE CANDIDATE / NOT_RELEASED", "candidate notes")
+    require(release_notes, "R-1d state: COMPLETED / ACCEPTED", "accepted R-1d notes")
+    require(release_notes, "Release tag: `DRC_v2.1.0` — NOT_CREATED", "unpublished tag")
+    forbid(release_record, "Status: RELEASED", "early release record")
+    forbid(release_notes, "Status: RELEASED", "early release notes")
+
+    assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record", root=root)
+    assert_hashes(PROTECTED_GENERIC_PACKAGE_HASHES, "Protected generic package boundary", root=root)
     for relative in PUBLIC_SAFE_FILES:
         assert_no_sensitive_values(relative, read(relative, root=root))
 
@@ -486,7 +553,7 @@ def verify_release_zip(
                     shutil.copyfileobj(source, destination)
 
         source_root = extraction_root / "DailyRhythmCompanion"
-        verify_contract(root=source_root)
+        verify_candidate_contract(root=source_root)
         run_extracted_gates(
             source_root,
             with_flutter=with_flutter,
@@ -551,7 +618,7 @@ def main() -> None:
             "--release-zip requires --expected-sha256 and --expected-source-head"
         )
 
-    verify_contract()
+    verify_accepted_contract()
 
     source_head = "not-run"
     origin_main = "not-run"
@@ -566,9 +633,9 @@ def main() -> None:
         run(command)
         source_tree_verified = True
 
-    zip_sha = "not-run"
-    zip_size: int | str = "not-run"
-    same_artifact_verified = False
+    zip_sha = RELEASE_ZIP_SHA256
+    zip_size: int | str = RELEASE_ZIP_SIZE
+    same_artifact_verified = True
     if args.release_zip is not None:
         zip_sha, zip_size = verify_release_zip(
             args.release_zip.resolve(),
@@ -581,11 +648,13 @@ def main() -> None:
         origin_main = args.expected_source_head
         same_artifact_verified = True
 
-    print("v210_fixed_release_zip_status: implemented-not-accepted")
-    print("v210_fixed_release_zip_current_small_commit: R-1d")
+    print("v210_fixed_release_zip_status: completed-accepted")
+    print("v210_fixed_release_zip_current_small_commit: R-1e")
     print("v210_fixed_release_zip_parent_phase: R-1-current-not-completed")
     print(f"v210_fixed_release_zip_source_tree_verified: {str(source_tree_verified).lower()}")
     print(f"v210_fixed_release_zip_source_head: {source_head}")
+    print(f"v210_fixed_release_zip_recorded_source_head: {RELEASE_SOURCE_HEAD}")
+    print(f"v210_fixed_release_zip_basename: {RELEASE_ZIP_BASENAME}")
     print(f"v210_fixed_release_zip_origin_main_head: {origin_main}")
     print(f"v210_fixed_release_zip_same_artifact_verified: {str(same_artifact_verified).lower()}")
     print(f"v210_fixed_release_zip_size_bytes: {zip_size}")

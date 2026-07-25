@@ -2,9 +2,9 @@
 
 Updated: 2026-07-25
 Status: IN_PROGRESS
-Current small commit: R-1d — one-time fixed ZIP build and same-artifact verification
+Current small commit: R-1e — explicit approval, publication, and post-publication verification
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current implementation state: NOT_STARTED
 Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -94,12 +94,12 @@ R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartp
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
   R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
   R-1c  COMPLETED / ACCEPTED                     Final smartphone Web evidence aggregate
-  R-1d  CURRENT / NOT_COMPLETED                    One-time fixed ZIP build and same-artifact verification
-         IMPLEMENTED / NOT_ACCEPTED
-  R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
+  R-1d  COMPLETED / ACCEPTED                     One-time fixed ZIP build and same-artifact verification
+  R-1e  CURRENT / NOT_COMPLETED                    Explicit approval, publication, and post-publication verification
+         NOT_STARTED
 ```
 
-W-1 through W-5, C-1, T-1, V-1, R-1a, R-1b, and R-1c are completed and accepted. The final exact-candidate PC/smartphone Web aggregate accepted Google Health real-data presentation, Framework daily advice and live post-advice chat, real in-app TTS playback/recovery, deterministic character display, and the integrated daily loop. R-1d is current/not completed and not started; R-1e remains planned.
+W-1 through W-5, C-1, T-1, V-1, and R-1a through R-1d are completed and accepted. The final exact-candidate PC/smartphone Web aggregate and the unchanged fixed-ZIP tuple are accepted. R-1e is current/not completed and not started.
 
 ---
 
@@ -1513,9 +1513,9 @@ Small-commit split:
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
-R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
-      IMPLEMENTED / NOT_ACCEPTED
-R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
+R-1d  COMPLETED / ACCEPTED     One-time fixed ZIP build and same-artifact verification
+R-1e  CURRENT / NOT_COMPLETED  Explicit approval, publication, and post-publication verification
+      NOT_STARTED
 ```
 
 ## R-1a — Release/readiness current behavior inventory
@@ -1598,7 +1598,7 @@ R-1a and R-1b are COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPL
 Status: COMPLETED / ACCEPTED
 Implementation state: COMPLETED / ACCEPTED
 Completed small commit: R-1b
-Current small commit: R-1d
+Current small commit: R-1e
 
 Implementation commit:
 
@@ -1678,7 +1678,7 @@ R-1b is COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / 
 Status: COMPLETED / ACCEPTED
 Implementation state: COMPLETED / ACCEPTED
 Completed small commit: R-1c
-Current small commit: R-1d
+Current small commit: R-1e
 Parent R-1: CURRENT / NOT_COMPLETED
 
 Purpose:
@@ -1739,11 +1739,11 @@ R-1c is `COMPLETED / ACCEPTED`.
 R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1e remains `PLANNED`.
 
 
-## R-1d — One-time fixed ZIP build and same-artifact verification
+## Historical R-1d implementation state — One-time fixed ZIP build and same-artifact verification
 
 Status: CURRENT / NOT_COMPLETED
 Implementation state: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: R-1d
+Current small commit: R-1e
 Parent R-1: CURRENT / NOT_COMPLETED
 
 Implementation files:
@@ -1805,3 +1805,33 @@ T-1c Visual Studio 18 compatibility correction:
 - T-1c final accepted state: COMPLETED / ACCEPTED
 ```
 - Windows Flutter scaffold CMakeLists is tracked; only its ephemeral directory stays ignored.
+
+## R-1d acceptance record
+
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
+Completed small commit: R-1d
+Current small commit: R-1e
+Parent R-1: CURRENT / NOT_COMPLETED
+
+```text
+implementation commits: 42e93f1, 377d98d, 6e7af31
+accepted release source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec
+fixed ZIP basename: DailyRhythmCompanion_v2.1.0_20260725_160036.zip
+fixed ZIP size bytes: 1747337
+fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+preflight-only gate: passed with build invocation count 0
+accepted-candidate builder invocation count: 1
+release-package hygiene: passed
+ZIP CRC and single-package-root verification: passed
+Backend pytest from extracted ZIP: 110 passed
+Flutter test from extracted ZIP: 103 passed
+Flutter Web build from extracted ZIP: passed
+Flutter Windows build from extracted ZIP: passed
+same-artifact verification without rebuilding: passed
+verifier builder invocation: false
+DRC_v2.1.0 tag created: false
+GitHub Release created: false
+```
+
+A superseded pre-fix candidate was rejected before publication and is not part of the accepted tuple. R-1d is `COMPLETED / ACCEPTED`; R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.

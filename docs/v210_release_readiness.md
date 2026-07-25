@@ -3,7 +3,7 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1b
-Current small commit: R-1d
+Current small commit: R-1e
 Parent phase: R-1 CURRENT / NOT_COMPLETED
 Release state: CANDIDATE / NOT_RELEASED
 
@@ -11,8 +11,8 @@ Release state: CANDIDATE / NOT_RELEASED
 R-1a: COMPLETED / ACCEPTED
 R-1b: COMPLETED / ACCEPTED
 R-1c: COMPLETED / ACCEPTED
-R-1d: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
-R-1e: PLANNED
+R-1d: COMPLETED / ACCEPTED
+R-1e: CURRENT / NOT_COMPLETED (NOT_STARTED)
 ```
 
 ## Purpose
@@ -162,10 +162,10 @@ R-1c adds `scripts/check_v210_final_smartphone_web_evidence.py`, the public-safe
 
 The ignored private manifest validated against exact clean synchronized candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19`. The actual DRC Backend, PC Web, and smartphone Web completed all six required evidence items; screenshot references remained opaque and raw screenshots/audio/health values/private paths remained outside Git.
 
-R-1c is `COMPLETED / ACCEPTED`; R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1e remains `PLANNED`.
+R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
 
 
-## R-1d implementation boundary
+## Historical R-1d implementation boundary
 
 R-1d adds:
 
@@ -179,3 +179,23 @@ The builder requires clean synchronized official Public `main`, preserves the an
 The verifier default is artifact-free and is included as the twentieth aggregate child check. Its explicit ZIP mode accepts only one caller-supplied `DailyRhythmCompanion_v2.1.0_*.zip`, requires the builder-recorded source HEAD and SHA-256, runs package hygiene and CRC checks, safely extracts the ZIP, runs Backend/Flutter tests and requested Web/Windows builds, and verifies that the same ZIP's size, timestamp, and SHA-256 did not change. It never rebuilds the artifact.
 
 R-1d remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`. The fixed ZIP, exact release tuple, same-artifact acceptance, tag, and GitHub Release do not exist yet.
+
+## Accepted R-1d fixed-ZIP transition
+
+```text
+source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec
+fixed ZIP basename: DailyRhythmCompanion_v2.1.0_20260725_160036.zip
+fixed ZIP size bytes: 1747337
+fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+accepted-candidate builder invocation count: 1
+same-artifact verification without rebuilding: passed
+release-package hygiene: passed
+ZIP CRC and single-package-root verification: passed
+Backend pytest: 110 passed
+Flutter test: 103 passed
+Flutter Web build: passed
+Flutter Windows build: passed
+tag / GitHub Release: not created
+```
+
+R-1d is `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.

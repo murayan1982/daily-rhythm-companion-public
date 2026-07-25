@@ -3,7 +3,7 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1c
-Current small commit: R-1d — CURRENT / NOT_COMPLETED
+Current small commit: R-1e — CURRENT / NOT_COMPLETED
 Parent phase: R-1 — CURRENT / NOT_COMPLETED
 Release state: CANDIDATE / NOT_RELEASED
 Accepted prerequisite: R-1a — COMPLETED / ACCEPTED at implementation commit `dbc84db`
@@ -190,4 +190,4 @@ DRC_v2.1.0 tag: not created
 GitHub Release: not created
 ```
 
-R-1c is `COMPLETED / ACCEPTED`. R-1d is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; R-1e remains `PLANNED`.
+R-1c and R-1d are `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
