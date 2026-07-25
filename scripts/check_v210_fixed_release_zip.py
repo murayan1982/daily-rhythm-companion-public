@@ -237,6 +237,8 @@ def verify_contract(*, root: Path = ROOT) -> None:
     builder = read("build_v210_fixed_release_zip_from_head.ps1", root=root)
     for marker in (
         "$buildInvocationCount = 0",
+        "[switch]$PreflightOnly",
+        "function Get-RelativePathCompat",
         "git status --porcelain --untracked-files=all",
         "refs/remotes/origin/main",
         'foreach ($tagName in @("DRC_v2.0.0", "DRC_v2.0.1"))',
@@ -251,8 +253,15 @@ def verify_contract(*, root: Path = ROOT) -> None:
         "Get-FileHash -LiteralPath $destinationPath -Algorithm SHA256",
         "verification_status: not-run",
         "next_action: verify-this-same-zip-without-rebuilding",
+        "v210_fixed_release_zip_preflight_status: passed-no-build",
     ):
         require(builder, marker, "one-time R-1d builder contract")
+
+    forbid(
+        builder,
+        "[IO.Path]::GetRelativePath",
+        "PowerShell 7-only relative-path API",
+    )
 
     assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record", root=root)
     assert_hashes(PROTECTED_GENERIC_PACKAGE_HASHES, "Protected generic package boundary", root=root)

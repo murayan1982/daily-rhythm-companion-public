@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$OutputDirectory = "release",
-    [string]$PythonCommand = "python"
+    [string]$PythonCommand = "python",
+    [switch]$PreflightOnly
 )
 
 Set-StrictMode -Version Latest
@@ -26,6 +27,32 @@ function Invoke-NativeChecked {
     if ($LASTEXITCODE -ne 0) {
         throw "Command failed with exit code ${LASTEXITCODE}: $FilePath $($ArgumentList -join ' ')"
     }
+}
+
+function Get-RelativePathCompat {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$BasePath,
+        [Parameter(Mandatory = $true)]
+        [string]$TargetPath
+    )
+
+    $baseFullPath = [IO.Path]::GetFullPath($BasePath)
+    $targetFullPath = [IO.Path]::GetFullPath($TargetPath)
+    $separator = [IO.Path]::DirectorySeparatorChar.ToString()
+
+    if (-not $baseFullPath.EndsWith($separator)) {
+        $baseFullPath += $separator
+    }
+
+    $baseUri = New-Object System.Uri($baseFullPath)
+    $targetUri = New-Object System.Uri($targetFullPath)
+    if ($baseUri.Scheme -ne $targetUri.Scheme) {
+        return $targetFullPath
+    }
+
+    $relativeUri = $baseUri.MakeRelativeUri($targetUri)
+    return [Uri]::UnescapeDataString($relativeUri.ToString()).Replace("/", $separator)
 }
 
 try {
@@ -133,6 +160,21 @@ try {
         "--with-flutter" `
         "--with-builds"
 
+    if ($PreflightOnly) {
+        Write-Host ""
+        Write-Host "========================================"
+        Write-Host "v210_fixed_release_zip_preflight_status: passed-no-build"
+        Write-Host "v210_fixed_release_zip_preflight_source_branch: $branchName"
+        Write-Host "v210_fixed_release_zip_preflight_source_head: $headCommit"
+        Write-Host "v210_fixed_release_zip_preflight_origin_main_head: $originMain"
+        Write-Host "v210_fixed_release_zip_preflight_build_invocation_count: $buildInvocationCount"
+        Write-Host "v210_fixed_release_zip_preflight_fixed_zip_built: False"
+        Write-Host "v210_fixed_release_zip_preflight_tag_created: False"
+        Write-Host "v210_fixed_release_zip_preflight_github_release_created: False"
+        Write-Host "========================================"
+        return
+    }
+
     $tempRoot = Join-Path (
         [IO.Path]::GetTempPath()
     ) ("DailyRhythmCompanion_v210_fixed_" + [Guid]::NewGuid().ToString("N"))
@@ -198,13 +240,9 @@ try {
     $sha256 = (
         Get-FileHash -LiteralPath $destinationPath -Algorithm SHA256
     ).Hash.ToLowerInvariant()
-    $relativeZipPath = [IO.Path]::GetRelativePath(
-        $repoRoot,
-        $destinationPath
-    ).Replace(
-        [IO.Path]::AltDirectorySeparatorChar,
-        [IO.Path]::DirectorySeparatorChar
-    )
+    $relativeZipPath = Get-RelativePathCompat `
+        -BasePath $repoRoot `
+        -TargetPath $destinationPath
 
     Write-Host ""
     Write-Host "========================================"

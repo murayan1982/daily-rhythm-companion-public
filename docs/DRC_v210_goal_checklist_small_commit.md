@@ -1765,6 +1765,8 @@ Implementation contract:
 - build_release.bat release invoked exactly once
 - one versioned fixed ZIP moved into ignored release/
 - source HEAD / basename / size / SHA-256 printed outside the ZIP
+- builder supports Windows PowerShell 5.1 without requiring pwsh
+- -PreflightOnly runs the strict source/test/build gate with build invocation count 0
 - builder stops before verification, tag, or GitHub Release
 - verifier accepts only an explicitly supplied exact ZIP
 - verifier never rebuilds and confirms the same file remains unchanged

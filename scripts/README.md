@@ -4568,3 +4568,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\build_v210_fixed_release_z
 The builder requires clean synchronized official Public `main`, preserves the annotated v2.0.0/v2.0.1 tags, requires `DRC_v2.1.0` to be absent, rejects an existing `DailyRhythmCompanion_v2.1.0_*.zip`, creates a detached committed-HEAD worktree, and invokes `build_release.bat release` exactly once. It prints the exact source HEAD, basename, size, and SHA-256 and stops before verification or publication.
 
 The generated ZIP must then be passed explicitly to `check_v210_fixed_release_zip.py` with the builder-recorded source HEAD and SHA-256. The verifier never invokes a builder and confirms that the same file remains unchanged before and after package inspection, safe extraction, tests, and requested builds.
+
+### Windows PowerShell 5.1 preflight
+
+The Windows release host may use Windows PowerShell 5.1 without `pwsh`. Before the one-time build, run:
+
+```powershell
+powershell.exe `
+  -NoProfile `
+  -ExecutionPolicy Bypass `
+  -File .\build_v210_fixed_release_zip_from_head.ps1 `
+  -PreflightOnly
+```
+
+This runs the strict source/test/build gate but stops with build invocation count `0` and creates no ZIP. The builder uses a URI-based relative-path helper instead of the PowerShell 7-only `[IO.Path]::GetRelativePath()` API.

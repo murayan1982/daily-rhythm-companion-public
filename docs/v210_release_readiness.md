@@ -174,7 +174,7 @@ build_v210_fixed_release_zip_from_head.ps1
 scripts/check_v210_fixed_release_zip.py
 ```
 
-The builder requires clean synchronized official Public `main`, preserves the annotated v2.0.0/v2.0.1 tags, requires `DRC_v2.1.0` to be absent, rejects an existing versioned v2.1.0 ZIP, creates one detached committed-HEAD worktree, invokes `build_release.bat release` exactly once, renames only that output to a versioned basename, and records the source HEAD / basename / size / SHA-256 outside the ZIP. It does not verify, tag, or publish.
+The builder requires clean synchronized official Public `main`, preserves the annotated v2.0.0/v2.0.1 tags, requires `DRC_v2.1.0` to be absent, rejects an existing versioned v2.1.0 ZIP, creates one detached committed-HEAD worktree, invokes `build_release.bat release` exactly once, renames only that output to a versioned basename, and records the source HEAD / basename / size / SHA-256 outside the ZIP. It supports Windows PowerShell 5.1 through an app-owned relative-path helper and provides `-PreflightOnly`, which runs the strict source/test/build gate but stops with build invocation count 0 and creates no ZIP. It does not verify, tag, or publish.
 
 The verifier default is artifact-free and is included as the twentieth aggregate child check. Its explicit ZIP mode accepts only one caller-supplied `DailyRhythmCompanion_v2.1.0_*.zip`, requires the builder-recorded source HEAD and SHA-256, runs package hygiene and CRC checks, safely extracts the ZIP, runs Backend/Flutter tests and requested Web/Windows builds, and verifies that the same ZIP's size, timestamp, and SHA-256 did not change. It never rebuilds the artifact.
 
