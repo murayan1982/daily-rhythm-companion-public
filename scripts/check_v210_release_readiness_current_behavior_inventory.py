@@ -1,7 +1,7 @@
 """Validate the accepted R-1a release/readiness inventory.
 
 This source-tree-only check preserves the accepted R-1a snapshot while allowing
-the accepted R-1b candidate metadata and aggregate-gate files while R-1c is current. It
+the accepted R-1b candidate metadata and the implemented R-1c evidence validator while R-1c is current. It
 never reads credentials, executes providers, builds a ZIP, or inspects tags.
 """
 
@@ -38,6 +38,12 @@ REQUIRED_R1B_FILES = (
     "docs/v210_release_readiness.md",
     "docs/v210_release_record.md",
     "release_notes/v2.1.0.md",
+)
+
+REQUIRED_R1C_FILES = (
+    "scripts/check_v210_final_smartphone_web_evidence.py",
+    "docs/v210_final_smartphone_web_evidence.md",
+    "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
 )
 
 R1D_FILES_MUST_NOT_EXIST = (
@@ -106,9 +112,10 @@ def main() -> None:
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1b accepted state")
         require(source, "R-1c", f"{label} R-1c marker")
         require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1c current state")
+        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1c implementation state")
 
     require(checklist, "Current small commit: R-1c", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1c implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1c implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted queue state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted queue state")
@@ -129,6 +136,9 @@ def main() -> None:
     for relative in REQUIRED_R1B_FILES:
         if not (ROOT / relative).is_file():
             raise AssertionError(f"Missing separately checked R-1b file: {relative}")
+    for relative in REQUIRED_R1C_FILES:
+        if not (ROOT / relative).is_file():
+            raise AssertionError(f"Missing separately checked R-1c file: {relative}")
     for relative in R1D_FILES_MUST_NOT_EXIST:
         if (ROOT / relative).exists():
             raise AssertionError(f"R-1a/R-1b must not create R-1d implementation: {relative}")
@@ -171,6 +181,8 @@ def main() -> None:
         "docs/v210_release_readiness.md",
         "docs/v210_release_record.md",
         "release_notes/v2.1.0.md",
+        "docs/v210_final_smartphone_web_evidence.md",
+        "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
@@ -187,6 +199,7 @@ def main() -> None:
     print("v210_release_readiness_inventory_generic_package_builder: true")
     print("v210_release_readiness_inventory_generic_package_checker: true")
     print("v210_release_readiness_inventory_v210_aggregate_gate: true")
+    print("v210_release_readiness_inventory_r1c_validator: true")
     print("v210_release_readiness_inventory_final_smartphone_web_aggregate: false")
     print("v210_release_readiness_inventory_fixed_zip_built: false")
     print("v210_release_readiness_inventory_tag_created: false")

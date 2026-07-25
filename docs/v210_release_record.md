@@ -2,7 +2,7 @@
 
 Updated: 2026-07-25
 Status: PREPARED / NOT_RELEASED
-Current phase: R-1c CURRENT / NOT_COMPLETED (NOT_STARTED)
+Current phase: R-1c CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
 
 ## Candidate identity
 
@@ -35,11 +35,25 @@ No value in this prepared record claims that a v2.1.0 artifact or publication ex
 ```text
 R-1a release/readiness inventory: COMPLETED / ACCEPTED
 R-1b aggregate gate and candidate metadata: COMPLETED / ACCEPTED (implementation commit 72dd42c)
-R-1c final smartphone Web aggregate: CURRENT / NOT_COMPLETED (NOT_STARTED)
+R-1c final smartphone Web aggregate: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
 R-1d fixed ZIP build and same-artifact verification: PLANNED
 R-1e publication and post-publication verification: PLANNED
 parent R-1: CURRENT / NOT_COMPLETED
 ```
+
+## R-1c evidence placeholder
+
+```text
+R-1c implementation commit: NOT_RECORDED
+accepted candidate source HEAD: NOT_RECORDED
+private manifest validation: NOT_COMPLETED
+PC Web final aggregate: NOT_COMPLETED
+smartphone Web final aggregate: NOT_COMPLETED
+public-safe screenshot references: NOT_RECORDED
+raw/private evidence committed: false
+```
+
+These placeholders may be filled only by the later public-safe R-1c acceptance synchronization after the ignored private manifest validates against clean synchronized `main`.
 
 ## Immutable historical releases
 

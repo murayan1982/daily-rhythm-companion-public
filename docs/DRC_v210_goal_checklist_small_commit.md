@@ -4,7 +4,7 @@ Updated: 2026-07-25
 Status: IN_PROGRESS
 Current small commit: R-1c — final smartphone Web evidence aggregate
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -94,12 +94,12 @@ R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartp
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
   R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
   R-1c  CURRENT / NOT_COMPLETED                     Final smartphone Web evidence aggregate
-         NOT_STARTED
+         IMPLEMENTED / NOT_ACCEPTED
   R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is completed/accepted; R-1c is current/not completed and not started; R-1d and R-1e remain planned.
+W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is completed/accepted; R-1c is current/not completed and implemented/not accepted; R-1d and R-1e remain planned.
 
 ---
 
@@ -1414,7 +1414,7 @@ V-1a acceptance record:
 - release records changed: false
 ```
 
-V-1a, V-1b, V-1c, and parent V-1 were completed and accepted on 2026-07-24. R-1 is now CURRENT / NOT_COMPLETED and NOT_STARTED.
+V-1a, V-1b, V-1c, and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / NOT_COMPLETED; R-1c is IMPLEMENTED / NOT_ACCEPTED.
 
 ## V-1b — Deterministic presentation model and standalone widget
 
@@ -1455,7 +1455,7 @@ V-1b acceptance record:
 - release records changed: false
 ```
 
-V-1b and V-1c were completed and accepted on 2026-07-24. Parent V-1 is also COMPLETED / ACCEPTED; R-1 is CURRENT / NOT_COMPLETED and NOT_STARTED.
+V-1b and V-1c were completed and accepted on 2026-07-24. Parent V-1 is also COMPLETED / ACCEPTED; R-1 is CURRENT / NOT_COMPLETED; R-1c is IMPLEMENTED / NOT_ACCEPTED.
 
 ## V-1c — HomeScreen extraction and integration
 
@@ -1499,7 +1499,7 @@ V-1c acceptance record:
 - diff review / explicit operator approval: passed
 ```
 
-V-1c and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / NOT_COMPLETED and NOT_STARTED.
+V-1c and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / NOT_COMPLETED; R-1c is IMPLEMENTED / NOT_ACCEPTED.
 
 ---
 
@@ -1513,7 +1513,7 @@ Small-commit split:
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  CURRENT / NOT_COMPLETED  Final smartphone Web evidence aggregate
-      NOT_STARTED
+      IMPLEMENTED / NOT_ACCEPTED
 R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
@@ -1590,7 +1590,7 @@ R-1a acceptance record:
 - explicit operator approval: received
 ```
 
-R-1a and R-1b are COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and NOT_STARTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
+R-1a and R-1b are COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. R-1 completion requirements must not be imported into R-1a. R-1a did not update version metadata, implement the aggregate release gate, create final smartphone Web evidence, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
 
 
 ## R-1b — Aggregate source-tree/test gate and v2.1.0 candidate metadata
@@ -1671,7 +1671,69 @@ R-1d one-time committed-source fixed ZIP and same-artifact verification
 R-1e explicit approval, annotated tag, GitHub Release, and published SHA-256 verification
 ```
 
-R-1b is COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and NOT_STARTED. The accepted R-1b gate remains artifact-free and publication-free; R-1c owns the final integrated smartphone Web evidence aggregate.
+R-1b is COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. The accepted R-1b gate remains artifact-free and publication-free; R-1c owns the final integrated smartphone Web evidence aggregate.
+
+## R-1c — Final PC/smartphone Web evidence aggregate
+
+Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current small commit: R-1c
+Parent R-1: CURRENT / NOT_COMPLETED
+
+Purpose:
+
+```text
+- Require the exact clean official-main candidate source for final evidence.
+- Aggregate Google Health sleep, daily advice, post-advice chat, in-app TTS,
+  deterministic character display, and the final integrated daily loop.
+- Require actual DRC Backend plus PC and smartphone Flutter Web execution.
+- Validate an ignored private manifest without reading raw screenshots/audio/health data.
+- Keep fixed ZIP, tag, GitHub Release, and publication work in R-1d/R-1e.
+```
+
+Implementation files:
+
+```text
+docs/v210_final_smartphone_web_evidence.md
+docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json
+scripts/check_v210_final_smartphone_web_evidence.py
+```
+
+Required private manifest destination:
+
+```text
+operator_evidence/v210_final_smartphone_web_evidence_r1c.json
+```
+
+The committed example remains deliberately rejected. The ignored private manifest may
+be accepted only after the final candidate is committed and pushed, `HEAD == origin/main`,
+the working tree is clean, and the operator has reviewed all six required evidence items
+on both PC and smartphone Web. Screenshot references must use public-safe opaque
+`private-operator-evidence://v210/r1c/...` values; raw files and private values remain outside Git.
+
+Implementation verification:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_final_smartphone_web_evidence.py
+python scripts\check_v210_release_readiness.py --with-flutter --with-builds
+git diff --check
+```
+
+Current state:
+
+```text
+validator and rejected example: implemented
+private manifest accepted: false
+final PC Web aggregate accepted: false
+final smartphone Web aggregate accepted: false
+fixed ZIP built: false
+tag created: false
+GitHub Release created: false
+```
+
+R-1c remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
+R-1d and R-1e remain `PLANNED`.
 
 T-1c Visual Studio 18 compatibility correction:
 

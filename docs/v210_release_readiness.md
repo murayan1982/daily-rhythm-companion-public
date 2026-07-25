@@ -10,7 +10,7 @@ Release state: CANDIDATE / NOT_RELEASED
 ```text
 R-1a: COMPLETED / ACCEPTED
 R-1b: COMPLETED / ACCEPTED
-R-1c: CURRENT / NOT_COMPLETED (NOT_STARTED)
+R-1c: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
 R-1d and R-1e: PLANNED
 ```
 
@@ -32,12 +32,13 @@ The Flutter build number advances from `+2` to `+3`. Runtime health and FastAPI/
 
 ## Aggregate child checks
 
-The portable gate runs these 18 accepted source-tree checks in sorted order:
+The accepted R-1b gate ran 18 source-tree checks. The current portable gate runs those same 18 checks plus the R-1c validator as a nineteenth child check, in sorted order:
 
 ```text
 check_v210_character_display_current_behavior_inventory.py
 check_v210_character_display_home_integration.py
 check_v210_character_display_state.py
+check_v210_final_smartphone_web_evidence.py
 check_v210_fitbit_current_behavior_inventory.py
 check_v210_fitbit_real_operator_contract.py
 check_v210_fitbit_real_sleep_normalization.py
@@ -137,7 +138,7 @@ no modification of v2.0.0/v2.0.1 historical release records
 ```text
 accepted on: 2026-07-25
 implementation commit: 72dd42c
-all accepted v2.1.0 child checks: 18 / 18 passed
+accepted R-1b child checks: 18 / 18 passed
 v2.0.x maintenance/compatibility aggregate: passed
 Backend pytest: 110 passed
 Flutter test: 103 passed
@@ -152,4 +153,12 @@ git diff --check and diff review: passed
 explicit operator approval: received
 ```
 
-R-1b is `COMPLETED / ACCEPTED`. R-1c is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+R-1b is `COMPLETED / ACCEPTED`. R-1c is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
+
+## Current R-1c implementation
+
+R-1c adds `scripts/check_v210_final_smartphone_web_evidence.py`, the public-safe contract `docs/v210_final_smartphone_web_evidence.md`, and a deliberately rejected operator-manifest example. The current aggregate source-tree gate includes the R-1c validator as its nineteenth child check while preserving the accepted R-1b record of 18 / 18 checks.
+
+The R-1c default validator performs no provider, Backend, browser, screenshot, audio, health-data, ZIP, tag, or GitHub action. Final acceptance requires the ignored manifest to validate against the exact clean synchronized implementation commit after actual PC and smartphone Web review.
+
+R-1c is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1d/R-1e remain `PLANNED`.

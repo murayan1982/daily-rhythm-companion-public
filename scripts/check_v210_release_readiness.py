@@ -1,7 +1,7 @@
-"""Run the accepted R-1b v2.1.0 release-candidate aggregate readiness gate.
+"""Run the accepted R-1b gate plus the current R-1c source contract.
 
-The portable default is credential-free and artifact-free. It runs all accepted
-v2.1.0 source-tree checks plus Backend pytest. ``--with-flutter`` adds the full
+The portable default is credential-free and artifact-free. It runs the accepted
+R-1b source/test baseline, the current R-1c validator contract, and Backend pytest. ``--with-flutter`` adds the full
 Flutter test suite. ``--with-builds`` additionally requires Web and Windows
 builds and reproduces the accepted R-1b gate on the Windows release host.
 No mode builds a release ZIP or creates a tag/GitHub Release.
@@ -29,6 +29,7 @@ AGGREGATE_CHECKS = (
     "scripts/check_v210_character_display_current_behavior_inventory.py",
     "scripts/check_v210_character_display_home_integration.py",
     "scripts/check_v210_character_display_state.py",
+    "scripts/check_v210_final_smartphone_web_evidence.py",
     "scripts/check_v210_fitbit_current_behavior_inventory.py",
     "scripts/check_v210_fitbit_real_operator_contract.py",
     "scripts/check_v210_fitbit_real_sleep_normalization.py",
@@ -77,6 +78,8 @@ PUBLIC_SAFE_FILES = (
     "docs/DRC_v210_goal_checklist_small_commit.md",
     "docs/v210_release_readiness_current_behavior_inventory.md",
     "docs/v210_release_readiness.md",
+    "docs/v210_final_smartphone_web_evidence.md",
+    "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
     "docs/v210_release_record.md",
     "release_notes/v2.1.0.md",
 )
@@ -161,6 +164,7 @@ def verify_contract() -> None:
     scripts_readme = read("scripts/README.md")
     inventory = read("docs/v210_release_readiness_current_behavior_inventory.md")
     readiness = read("docs/v210_release_readiness.md")
+    evidence_doc = read("docs/v210_final_smartphone_web_evidence.md")
     release_record = read("docs/v210_release_record.md")
     release_notes = read("release_notes/v2.1.0.md")
 
@@ -172,6 +176,7 @@ def verify_contract() -> None:
         (scripts_readme, "scripts README"),
         (inventory, "R-1a inventory"),
         (readiness, "R-1b readiness"),
+        (evidence_doc, "R-1c evidence contract"),
     ):
         require(source, "R-1a", f"{label} R-1a marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1a accepted marker")
@@ -179,9 +184,10 @@ def verify_contract() -> None:
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1b accepted marker")
         require(source, "R-1c", f"{label} R-1c marker")
         require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1c current marker")
+        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1c implementation marker")
 
     require(checklist, "Current small commit: R-1c", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1c implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1c implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted state")
@@ -201,6 +207,9 @@ def verify_contract() -> None:
     require(readiness, "flutter build web", "Web build requirement")
     require(readiness, "flutter build windows", "Windows build requirement")
     require(readiness, "does not invoke build_release.bat", "artifact-free boundary")
+    require(readiness, "accepted R-1b record of 18 / 18 checks", "accepted R-1b check count")
+    require(readiness, "nineteenth child check", "current R-1c aggregate count")
+    require(evidence_doc, "Status: IMPLEMENTED / NOT_ACCEPTED", "R-1c evidence status")
 
     for child in AGGREGATE_CHECKS:
         if not (ROOT / child).is_file():
@@ -326,7 +335,9 @@ def main() -> None:
     print("v210_release_readiness_parent_phase: R-1-current-not-completed")
     print(f"v210_release_readiness_backend_version: {EXPECTED_BACKEND_VERSION}")
     print(f"v210_release_readiness_flutter_version: {EXPECTED_FLUTTER_VERSION}")
+    print("v210_release_readiness_accepted_r1b_aggregate_checks: 18")
     print(f"v210_release_readiness_aggregate_checks: {len(AGGREGATE_CHECKS)}")
+    print("v210_release_readiness_r1c_status: implemented-not-accepted")
     print("v210_release_readiness_v20x_compatibility_gate: true")
     print(f"v210_release_readiness_expected_backend_tests: {EXPECTED_BACKEND_TESTS}")
     print(f"v210_release_readiness_expected_flutter_tests: {EXPECTED_FLUTTER_TESTS}")
