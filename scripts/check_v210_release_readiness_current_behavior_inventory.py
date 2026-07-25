@@ -46,7 +46,7 @@ REQUIRED_R1C_FILES = (
     "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
 )
 
-R1D_FILES_MUST_NOT_EXIST = (
+REQUIRED_R1D_FILES = (
     "build_v210_fixed_release_zip_from_head.ps1",
     "scripts/check_v210_fixed_release_zip.py",
 )
@@ -116,7 +116,7 @@ def main() -> None:
         require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1d current state")
 
     require(checklist, "Current small commit: R-1d", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1d implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted queue state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted queue state")
@@ -142,9 +142,9 @@ def main() -> None:
     for relative in REQUIRED_R1C_FILES:
         if not (ROOT / relative).is_file():
             raise AssertionError(f"Missing separately checked R-1c file: {relative}")
-    for relative in R1D_FILES_MUST_NOT_EXIST:
-        if (ROOT / relative).exists():
-            raise AssertionError(f"R-1a/R-1b must not create R-1d implementation: {relative}")
+    for relative in REQUIRED_R1D_FILES:
+        if not (ROOT / relative).is_file():
+            raise AssertionError(f"Missing separately checked R-1d implementation: {relative}")
 
     builder = read("build_release.bat")
     for marker in (
@@ -186,6 +186,8 @@ def main() -> None:
         "release_notes/v2.1.0.md",
         "docs/v210_final_smartphone_web_evidence.md",
         "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
+        "build_v210_fixed_release_zip_from_head.ps1",
+        "scripts/check_v210_fixed_release_zip.py",
     ):
         assert_no_sensitive_values(relative, read(relative))
 
@@ -204,6 +206,7 @@ def main() -> None:
     print("v210_release_readiness_inventory_v210_aggregate_gate: true")
     print("v210_release_readiness_inventory_r1c_validator: true")
     print("v210_release_readiness_inventory_final_smartphone_web_aggregate: true")
+    print("v210_release_readiness_inventory_r1d_implementation: true")
     print("v210_release_readiness_inventory_fixed_zip_built: false")
     print("v210_release_readiness_inventory_tag_created: false")
     print("v210_release_readiness_inventory_github_release_created: false")

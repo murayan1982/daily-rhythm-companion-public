@@ -110,7 +110,7 @@ R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
 R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
-      NOT_STARTED
+      IMPLEMENTED / NOT_ACCEPTED
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
@@ -165,7 +165,7 @@ GitHub Release created: false
 historical release records changed: false
 ```
 
-R-1a and R-1b are `COMPLETED / ACCEPTED`. R-1c is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
+R-1a, R-1b, and R-1c are `COMPLETED / ACCEPTED`. R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
 
 
 ## Accepted R-1b candidate transition
@@ -196,3 +196,8 @@ tag created: false
 GitHub Release created: false
 R-1d current/not completed: true
 ```
+
+
+## Current R-1d implementation transition
+
+The separately checked R-1d implementation now adds `build_v210_fixed_release_zip_from_head.ps1` and `scripts/check_v210_fixed_release_zip.py`. This transition preserves the accepted R-1a inventory snapshot and R-1b/R-1c records. Source presence proves only `IMPLEMENTED / NOT_ACCEPTED`; the release tuple remains unfilled until a later clean synchronized official-main operator run builds exactly one versioned ZIP and verifies that same file without rebuilding.

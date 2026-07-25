@@ -11,7 +11,7 @@ Release state: CANDIDATE / NOT_RELEASED
 R-1a: COMPLETED / ACCEPTED
 R-1b: COMPLETED / ACCEPTED
 R-1c: COMPLETED / ACCEPTED
-R-1d: CURRENT / NOT_COMPLETED (NOT_STARTED)
+R-1d: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
 R-1e: PLANNED
 ```
 
@@ -162,4 +162,20 @@ R-1c adds `scripts/check_v210_final_smartphone_web_evidence.py`, the public-safe
 
 The ignored private manifest validated against exact clean synchronized candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19`. The actual DRC Backend, PC Web, and smartphone Web completed all six required evidence items; screenshot references remained opaque and raw screenshots/audio/health values/private paths remained outside Git.
 
-R-1c is `COMPLETED / ACCEPTED`; R-1d is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; R-1e remains `PLANNED`.
+R-1c is `COMPLETED / ACCEPTED`; R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1e remains `PLANNED`.
+
+
+## R-1d implementation boundary
+
+R-1d adds:
+
+```text
+build_v210_fixed_release_zip_from_head.ps1
+scripts/check_v210_fixed_release_zip.py
+```
+
+The builder requires clean synchronized official Public `main`, preserves the annotated v2.0.0/v2.0.1 tags, requires `DRC_v2.1.0` to be absent, rejects an existing versioned v2.1.0 ZIP, creates one detached committed-HEAD worktree, invokes `build_release.bat release` exactly once, renames only that output to a versioned basename, and records the source HEAD / basename / size / SHA-256 outside the ZIP. It does not verify, tag, or publish.
+
+The verifier default is artifact-free and is included as the twentieth aggregate child check. Its explicit ZIP mode accepts only one caller-supplied `DailyRhythmCompanion_v2.1.0_*.zip`, requires the builder-recorded source HEAD and SHA-256, runs package hygiene and CRC checks, safely extracts the ZIP, runs Backend/Flutter tests and requested Web/Windows builds, and verifies that the same ZIP's size, timestamp, and SHA-256 did not change. It never rebuilds the artifact.
+
+R-1d remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`. The fixed ZIP, exact release tuple, same-artifact acceptance, tag, and GitHub Release do not exist yet.

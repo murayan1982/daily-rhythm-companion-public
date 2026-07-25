@@ -34,6 +34,7 @@ AGGREGATE_CHECKS = (
     "scripts/check_v210_fitbit_real_operator_contract.py",
     "scripts/check_v210_fitbit_real_sleep_normalization.py",
     "scripts/check_v210_fitbit_token_status_reconnect.py",
+    "scripts/check_v210_fixed_release_zip.py",
     "scripts/check_v210_flutter_sleep_provider_source_ui.py",
     "scripts/check_v210_google_health_migration_audit.py",
     "scripts/check_v210_google_health_real_operator_verification.py",
@@ -65,7 +66,7 @@ PROTECTED_GENERIC_PACKAGE_HASHES = {
     ".gitignore": "740b4903072fef306fba8880bc9f8d57ac2055ed38168314b6834ce0eec0c8a3",
 }
 
-R1D_FILES_MUST_NOT_EXIST = (
+REQUIRED_R1D_FILES = (
     "build_v210_fixed_release_zip_from_head.ps1",
     "scripts/check_v210_fixed_release_zip.py",
 )
@@ -82,6 +83,8 @@ PUBLIC_SAFE_FILES = (
     "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
     "docs/v210_release_record.md",
     "release_notes/v2.1.0.md",
+    "build_v210_fixed_release_zip_from_head.ps1",
+    "scripts/check_v210_fixed_release_zip.py",
 )
 
 
@@ -188,7 +191,7 @@ def verify_contract() -> None:
         require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1d current marker")
 
     require(checklist, "Current small commit: R-1d", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1d implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted state")
@@ -252,9 +255,9 @@ def verify_contract() -> None:
     forbid(release_record, "Status: RELEASED", "early released state")
     forbid(release_notes, "Status: RELEASED", "early release-notes state")
 
-    for relative in R1D_FILES_MUST_NOT_EXIST:
-        if (ROOT / relative).exists():
-            raise AssertionError(f"R-1c acceptance sync must not create R-1d implementation: {relative}")
+    for relative in REQUIRED_R1D_FILES:
+        if not (ROOT / relative).is_file():
+            raise AssertionError(f"Missing R-1d implementation file: {relative}")
 
     assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record")
     assert_hashes(PROTECTED_GENERIC_PACKAGE_HASHES, "Protected generic package boundary")
@@ -346,6 +349,7 @@ def main() -> None:
     print("v210_release_readiness_accepted_r1b_aggregate_checks: 18")
     print(f"v210_release_readiness_aggregate_checks: {len(AGGREGATE_CHECKS)}")
     print("v210_release_readiness_r1c_status: completed-accepted")
+    print("v210_release_readiness_r1d_status: implemented-not-accepted")
     print("v210_release_readiness_v20x_compatibility_gate: true")
     print(f"v210_release_readiness_expected_backend_tests: {EXPECTED_BACKEND_TESTS}")
     print(f"v210_release_readiness_expected_flutter_tests: {EXPECTED_FLUTTER_TESTS}")

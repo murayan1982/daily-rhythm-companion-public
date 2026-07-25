@@ -9,7 +9,7 @@ Current source candidate metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**NOT_RELEAS
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0 (**W-1 through W-5, C-1, T-1, and V-1 COMPLETED / ACCEPTED; R-1 CURRENT / NOT_COMPLETED**)
-Current small commit: R-1d — one-time fixed ZIP build and same-artifact verification (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: R-1d — one-time fixed ZIP build and same-artifact verification (**CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -23,7 +23,7 @@ R-1  CURRENT / NOT_COMPLETED
   R-1a  COMPLETED / ACCEPTED
   R-1b  COMPLETED / ACCEPTED  Aggregate source-tree/test gate and v2.1.0 candidate metadata
   R-1c  COMPLETED / ACCEPTED  Final smartphone Web evidence aggregate
-  R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification (NOT_STARTED)
+  R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification (IMPLEMENTED / NOT_ACCEPTED)
   R-1e  PLANNED  Explicit approval, publication, and post-publication verification
 ```
 
@@ -3785,3 +3785,8 @@ python scripts\smoke_framework_v200_final_release_artifact_record.py
 Any fixed ZIP built from an earlier source state is not the final artifact after the Public-P6 pre-build follow-ups change the release surface. Build only after the final Public pre-build synchronization commit is committed and pushed, `HEAD == origin/main`, the working tree is clean, and all source-tree and Flutter checks pass.
 
 R-1c is completed and accepted. The ignored private manifest validated against exact clean candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19` and recorded all six required PC/smartphone Web items as accepted: Google Health / 実データ / 取得済み, Framework daily advice, live post-advice chat, real in-app TTS play/stop/replay/completion/regenerate, deterministic character display, and the final integrated review. Raw screenshots, audio, health values, tokens, provider payloads, paths, LAN IPs, and operator evidence remain outside Git. R-1d is now current/not completed and owns the one-time fixed ZIP plus same-artifact verification; R-1e retains tag, GitHub Release, and publication verification. See [`docs/v210_final_smartphone_web_evidence.md`](docs/v210_final_smartphone_web_evidence.md).
+
+
+## v2.1.0 R-1d fixed-ZIP implementation boundary
+
+R-1d now contains the source-only one-time builder and exact same-artifact verifier. The implementation is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; no v2.1.0 ZIP, tag, or GitHub Release has been created. After this implementation commit is accepted and pushed, the operator must build exactly once from clean synchronized Public `main`, then verify that exact ZIP without rebuilding.

@@ -4,7 +4,7 @@ Updated: 2026-07-25
 Status: IN_PROGRESS
 Current small commit: R-1d — one-time fixed ZIP build and same-artifact verification
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -95,7 +95,7 @@ R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartp
   R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
   R-1c  COMPLETED / ACCEPTED                     Final smartphone Web evidence aggregate
   R-1d  CURRENT / NOT_COMPLETED                    One-time fixed ZIP build and same-artifact verification
-         NOT_STARTED
+         IMPLEMENTED / NOT_ACCEPTED
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
@@ -1514,7 +1514,7 @@ R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
 R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
-      NOT_STARTED
+      IMPLEMENTED / NOT_ACCEPTED
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
@@ -1736,7 +1736,62 @@ git diff --check
 ```
 
 R-1c is `COMPLETED / ACCEPTED`.
-R-1d is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; R-1e remains `PLANNED`.
+R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1e remains `PLANNED`.
+
+
+## R-1d — One-time fixed ZIP build and same-artifact verification
+
+Status: CURRENT / NOT_COMPLETED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current small commit: R-1d
+Parent R-1: CURRENT / NOT_COMPLETED
+
+Implementation files:
+
+```text
+build_v210_fixed_release_zip_from_head.ps1
+scripts/check_v210_fixed_release_zip.py
+```
+
+Implementation contract:
+
+```text
+- clean synchronized official Public main
+- HEAD == origin/main
+- immutable annotated DRC_v2.0.0 and DRC_v2.0.1 tags
+- DRC_v2.1.0 absent
+- no existing DailyRhythmCompanion_v2.1.0_*.zip
+- one detached committed-HEAD worktree
+- build_release.bat release invoked exactly once
+- one versioned fixed ZIP moved into ignored release/
+- source HEAD / basename / size / SHA-256 printed outside the ZIP
+- builder stops before verification, tag, or GitHub Release
+- verifier accepts only an explicitly supplied exact ZIP
+- verifier never rebuilds and confirms the same file remains unchanged
+```
+
+Implementation verification before commit:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_fixed_release_zip.py
+python scripts\check_v210_release_readiness_current_behavior_inventory.py
+python scripts\check_v210_final_smartphone_web_evidence.py
+python scripts\check_v210_release_readiness.py --with-flutter --with-builds
+git diff --check
+```
+
+Stop rule:
+
+```text
+Do not run build_v210_fixed_release_zip_from_head.ps1 in the implementation commit.
+Do not build or verify the fixed ZIP.
+Do not create DRC_v2.1.0.
+Do not publish a GitHub Release.
+```
+
+R-1d remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
+R-1e remains `PLANNED`.
 
 T-1c Visual Studio 18 compatibility correction:
 

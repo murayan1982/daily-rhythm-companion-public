@@ -2,7 +2,7 @@
 
 Updated: 2026-07-25
 Status: PREPARED / NOT_RELEASED
-Current phase: R-1d CURRENT / NOT_COMPLETED (NOT_STARTED)
+Current phase: R-1d CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
 
 ## Candidate identity
 
@@ -36,7 +36,7 @@ No value in this prepared record claims that a v2.1.0 artifact or publication ex
 R-1a release/readiness inventory: COMPLETED / ACCEPTED
 R-1b aggregate gate and candidate metadata: COMPLETED / ACCEPTED (implementation commit 72dd42c)
 R-1c final smartphone Web aggregate: COMPLETED / ACCEPTED
-R-1d fixed ZIP build and same-artifact verification: CURRENT / NOT_COMPLETED (NOT_STARTED)
+R-1d fixed ZIP build and same-artifact verification: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
 R-1e publication and post-publication verification: PLANNED
 parent R-1: CURRENT / NOT_COMPLETED
 ```
@@ -69,3 +69,18 @@ DRC_v2.0.1 tag, GitHub Release, fixed ZIP, and records: unchanged
 ## Publication boundary
 
 R-1d must record the exact committed source HEAD and the one fixed ZIP basename/size/SHA-256 tuple. R-1e must receive explicit operator approval for that exact tuple before creating `DRC_v2.1.0` or publishing a GitHub Release. The published asset must be re-downloaded and its SHA-256 must match this record before R-1 can complete.
+
+
+## R-1d implementation record
+
+```text
+builder implementation: build_v210_fixed_release_zip_from_head.ps1
+same-artifact verifier implementation: scripts/check_v210_fixed_release_zip.py
+implementation state: IMPLEMENTED / NOT_ACCEPTED
+fixed ZIP built: false
+release tuple recorded: false
+same-artifact verification executed: false
+tag or GitHub Release created: false
+```
+
+Source presence does not fill the release tuple. The builder must first be committed, accepted, pushed, and then run exactly once from clean synchronized official Public `main`.

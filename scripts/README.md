@@ -17,7 +17,7 @@ W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
 current small commit: R-1d CURRENT / NOT_COMPLETED
-current implementation state: NOT_STARTED
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed small commit: R-1c COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
@@ -25,7 +25,7 @@ completed phase: T-1 COMPLETED / ACCEPTED
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 and V-1 are completed and accepted. R-1a is completed and accepted at implementation commit `dbc84db`; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c is current/not completed and implemented/not accepted; R-1d and R-1e remain planned. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b at `e1f8d6f`; V-1c at `995145d`.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 and V-1 are completed and accepted. R-1a is completed and accepted at implementation commit `dbc84db`; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c is completed/accepted; R-1d is current/not completed and implemented/not accepted; R-1e remains planned. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b at `e1f8d6f`; V-1c at `995145d`.
 
 
 ## v2.1.0 R-1a release/readiness current behavior inventory check
@@ -4549,3 +4549,22 @@ python scripts\check_v210_final_smartphone_web_evidence.py `
 ```
 
 The accepted record covers six evidence items on PC and smartphone Web, public-safe opaque screenshot references, actual DRC Backend use, real Google Health and Framework/TTS execution, and no committed raw/private evidence. R-1c is `COMPLETED / ACCEPTED`; R-1d is `CURRENT / NOT_COMPLETED` and owns the one-time fixed ZIP plus same-artifact verification.
+
+
+## v2.1.0 R-1d one-time fixed ZIP and same-artifact verifier
+
+Source-only implementation check:
+
+```powershell
+python scripts\check_v210_fixed_release_zip.py
+```
+
+After the implementation commit is accepted and pushed, the one-time builder is:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\build_v210_fixed_release_zip_from_head.ps1
+```
+
+The builder requires clean synchronized official Public `main`, preserves the annotated v2.0.0/v2.0.1 tags, requires `DRC_v2.1.0` to be absent, rejects an existing `DailyRhythmCompanion_v2.1.0_*.zip`, creates a detached committed-HEAD worktree, and invokes `build_release.bat release` exactly once. It prints the exact source HEAD, basename, size, and SHA-256 and stops before verification or publication.
+
+The generated ZIP must then be passed explicitly to `check_v210_fixed_release_zip.py` with the builder-recorded source HEAD and SHA-256. The verifier never invokes a builder and confirms that the same file remains unchanged before and after package inspection, safe extraction, tests, and requested builds.

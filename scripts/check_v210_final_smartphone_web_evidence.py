@@ -115,7 +115,7 @@ FORBIDDEN_SUCCESS_MARKERS = (
     "app_store_claim",
 )
 
-R1D_FILES_MUST_NOT_EXIST = (
+REQUIRED_R1D_FILES = (
     "build_v210_fixed_release_zip_from_head.ps1",
     "scripts/check_v210_fixed_release_zip.py",
 )
@@ -132,6 +132,8 @@ PUBLIC_SAFE_FILES = (
     "docs/v210_release_record.md",
     "release_notes/v2.1.0.md",
     "docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.json",
+    "build_v210_fixed_release_zip_from_head.ps1",
+    "scripts/check_v210_fixed_release_zip.py",
 )
 
 
@@ -228,7 +230,7 @@ def verify_public_contract() -> None:
         require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1d current marker")
 
     require(checklist, "Current small commit: R-1d", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation state")
+    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1d implementation state")
     require(checklist, "R-1c  COMPLETED / ACCEPTED", "R-1c accepted state")
     require(checklist, "R-1d  CURRENT / NOT_COMPLETED", "R-1d current state")
     require(evidence_doc, "Status: COMPLETED / ACCEPTED", "evidence status")
@@ -257,9 +259,9 @@ def verify_public_contract() -> None:
     if example.get("all_required_items_accepted") is not False:
         raise ValidationError("Public example manifest must not claim accepted evidence")
 
-    for relative in R1D_FILES_MUST_NOT_EXIST:
-        if (ROOT / relative).exists():
-            raise ValidationError(f"R-1c must not create R-1d implementation: {relative}")
+    for relative in REQUIRED_R1D_FILES:
+        if not (ROOT / relative).is_file():
+            raise ValidationError(f"Missing R-1d implementation file: {relative}")
 
     forbid(release_record, "Status: RELEASED", "early release state")
     forbid(release_notes, "Status: RELEASED", "early release-notes state")
