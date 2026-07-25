@@ -1,10 +1,10 @@
 # v2.1.0 V-1c HomeScreen character display integration
 
-Updated: 2026-07-24
+Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: V-1c — HomeScreen extraction and integration
 Parent phase: V-1 — COMPLETED / ACCEPTED
-Current small commit: R-1 — CURRENT / NOT_COMPLETED (NOT_STARTED)
+Current small commit: none — v2.1.0 RELEASED / ACCEPTED
 
 ## Purpose
 
@@ -193,4 +193,4 @@ real provider or motion execution: false
 release records changed: false
 ```
 
-V-1c and parent V-1 are `COMPLETED / ACCEPTED`. R-1 is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+V-1c, parent V-1, R-1e, and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.

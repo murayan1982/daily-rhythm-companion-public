@@ -87,17 +87,17 @@ def main() -> None:
     tasklist = read("tasklist.md")
     scripts_readme = read("scripts/README.md")
 
-    require(checklist, "Current small commit: R-1", "checklist current small commit")
+    require(checklist, "Current small commit: none", "checklist completed state")
     require(checklist, "T-1  COMPLETED / ACCEPTED", "parent T-1 state")
     require(checklist, "T-1a  COMPLETED / ACCEPTED", "T-1a state")
     require(checklist, "T-1b  COMPLETED / ACCEPTED", "T-1b state")
     require(checklist, "T-1c  COMPLETED / ACCEPTED", "T-1c state")
     require(checklist, "C-1  COMPLETED / ACCEPTED", "C-1 accepted state")
     require(checklist, "V-1  COMPLETED / ACCEPTED", "V-1 state")
-    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
-    require(readme, "Current small commit: R-1", "README current small commit")
-    require(roadmap, "Current small commit: R-1", "roadmap current small commit")
-    require(tasklist, "current small commit: R-1e CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "R-1 completed state")
+    require(readme, "Current small commit: none", "README completed state")
+    require(roadmap, "Current small commit: none", "roadmap completed state")
+    require(tasklist, "current small commit: none", "tasklist completed state")
     require(scripts_readme, "check_v210_tts_player_current_behavior_inventory.py", "scripts command")
 
     for marker in (
@@ -160,7 +160,7 @@ def main() -> None:
         assert_no_sensitive_values(relative, read(relative))
 
     print("v210_tts_player_inventory_status: completed-accepted")
-    print("v210_tts_player_inventory_current_small_commit: R-1")
+    print("v210_tts_player_inventory_current_small_commit: none")
     print("v210_tts_player_inventory_parent_phase: T-1-completed-accepted")
     print("v210_tts_player_inventory_backend_artifact_ttl_seconds: 86400")
     print("v210_tts_player_inventory_backend_artifact_max_count: 100")

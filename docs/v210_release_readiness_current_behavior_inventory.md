@@ -3,8 +3,8 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1a
-Current small commit: R-1e
-Parent phase: R-1 CURRENT / NOT_COMPLETED
+Current small commit: none (R-1e accepted; v2.1.0 released)
+Parent phase: R-1 COMPLETED / ACCEPTED
 
 ## Purpose
 
@@ -86,7 +86,7 @@ W-5b2: configured Google Health request returned HTTP 200, normalized sleep summ
 T-1c: real in-app TTS generation and audible play/stop/replay/completion/expiry/regenerate behavior were accepted on PC and smartphone Web.
 ```
 
-Raw screenshots, exact sleep values, raw audio, tokens, provider payloads, private paths, and LAN IPs remain outside Git. R-1 currently has no final integrated smartphone Web evidence aggregate covering the frozen v2.1.0 candidate source.
+Raw screenshots, exact sleep values, raw audio, tokens, provider payloads, private paths, and LAN IPs remain outside Git. At the R-1a inventory checkpoint, R-1 had no final integrated smartphone Web evidence aggregate; R-1c later completed and accepted that aggregate.
 
 ## Missing v2.1.0 release/readiness files
 
@@ -110,8 +110,7 @@ R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
 R-1d  COMPLETED / ACCEPTED     One-time fixed ZIP build and same-artifact verification
-R-1e  CURRENT / NOT_COMPLETED  Explicit approval, publication, and post-publication verification
-      NOT_STARTED
+R-1e  COMPLETED / ACCEPTED  Explicit approval, publication, and post-publication verification
 ```
 
 ### R-1b boundary
@@ -165,7 +164,7 @@ GitHub Release created: false
 historical release records changed: false
 ```
 
-R-1a through R-1d are `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+R-1a through R-1d are `COMPLETED / ACCEPTED`. R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
 
 
 ## Accepted R-1b candidate transition
@@ -194,7 +193,7 @@ raw/private evidence committed: false
 fixed ZIP built: false
 tag created: false
 GitHub Release created: false
-R-1d current/not completed: true
+R-1d current/not completed at R-1c acceptance: true
 ```
 
 
@@ -213,7 +212,25 @@ accepted-candidate builder invocation count: 1
 same-artifact verification: passed
 tag created: false
 GitHub Release created: false
-R-1e current/not completed: true
+R-1e current/not completed at R-1d acceptance: true
 ```
 
-R-1d is `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+R-1d is `COMPLETED / ACCEPTED`. R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
+
+
+## Accepted R-1e publication transition
+
+```text
+explicit final operator approval: received
+annotated tag: DRC_v2.1.0
+annotated tag target: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec
+GitHub Release: published
+published fixed ZIP: DailyRhythmCompanion_v2.1.0_20260725_160036.zip
+published asset size bytes: 1747337
+published asset SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+post-publication downloaded-asset SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+post-publication SHA-256 re-verification: passed
+fixed ZIP rebuilt or replaced: false
+R-1e: COMPLETED / ACCEPTED
+parent R-1: COMPLETED / ACCEPTED
+```

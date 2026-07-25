@@ -50,7 +50,7 @@ def main()->None:
     require(denied.stdout,'network_request: False','legacy execution network denial')
     print('v210_google_health_migration_audit_status: completed-accepted')
     print('v210_google_health_migration_audit_completed_small_commit: W-5b1')
-    print('v210_google_health_migration_audit_current_small_commit: R-1')
+    print('v210_google_health_migration_audit_current_small_commit: none')
     print('v210_google_health_migration_audit_parent_phase: W-5-completed-accepted')
     print('v210_google_health_migration_audit_legacy_fitbit_execution: retired')
     print('v210_google_health_migration_audit_real_operator_execution: accepted-in-W-5b2')

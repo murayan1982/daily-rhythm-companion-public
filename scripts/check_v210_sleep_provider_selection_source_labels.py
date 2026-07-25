@@ -89,10 +89,10 @@ def main() -> None:
     files = {relative: read(relative) for relative in W4A_FILES}
 
     checklist = files["docs/DRC_v210_goal_checklist_small_commit.md"]
-    require(checklist, "Current small commit: R-1", "W-5 current commit")
+    require(checklist, "Current small commit: none", "W-5 current commit")
     require(checklist, "W-5b1  COMPLETED / ACCEPTED", "W-5b1 accepted state")
     require(checklist, "W-5a  COMPLETED / ACCEPTED", "W-5a accepted state")
-    require(checklist, "Current small-commit state: CURRENT / NOT_COMPLETED", "W-5 current state")
+    require(checklist, "Current small-commit state: none", "W-5 current state")
     require(checklist, "W-4  COMPLETED / ACCEPTED", "W-4 phase state")
     require(checklist, "W-4a  COMPLETED / ACCEPTED", "W-4a accepted state")
     require(checklist, "W-4b  COMPLETED / ACCEPTED", "W-4b accepted state")
@@ -104,7 +104,7 @@ def main() -> None:
         "V-1  COMPLETED / ACCEPTED",
         "V-1 accepted state",
     )
-    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "R-1 completed state")
 
     model = files["backend/app/models/sleep_provider_selection.py"]
     for marker in (
@@ -170,7 +170,7 @@ def main() -> None:
 
     print("v210_sleep_provider_selection_status: completed-accepted")
     print("v210_sleep_provider_selection_completed_small_commit: W-4a")
-    print("v210_sleep_provider_selection_current_small_commit: R-1")
+    print("v210_sleep_provider_selection_current_small_commit: none")
     print("v210_sleep_provider_selection_parent_phase: W-4-completed-accepted")
     print("v210_sleep_provider_selection_real_operator_execution: false")
     print("v210_sleep_provider_selection_release_records_changed: false")

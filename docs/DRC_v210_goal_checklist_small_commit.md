@@ -1,18 +1,18 @@
 # Daily Rhythm Companion v2.1.0 goal checklist — small commits
 
 Updated: 2026-07-25
-Status: IN_PROGRESS
-Current small commit: R-1e — explicit approval, publication, and post-publication verification
-Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: NOT_STARTED
-Parent R-1 state: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
+Current small commit: none (R-1e accepted; v2.1.0 released)
+Current small-commit state: none
+Current implementation state: COMPLETED / ACCEPTED
+Parent R-1 state: COMPLETED / ACCEPTED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
 W-3 state: COMPLETED / ACCEPTED
 W-4 state: COMPLETED / ACCEPTED
 W-5 state: COMPLETED / ACCEPTED
-Current released version: v2.0.1
-Current source candidate metadata: Backend 2.1.0 / Flutter 2.1.0+3 (NOT_RELEASED)
+Current released version: v2.1.0
+Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (RELEASED)
 
 ## Source-of-truth rule
 
@@ -89,17 +89,16 @@ V-1  COMPLETED / ACCEPTED                  Character display extraction and dete
   V-1a  COMPLETED / ACCEPTED                     Current behavior inventory and implementation contract
   V-1b  COMPLETED / ACCEPTED                       Deterministic presentation model and standalone widget
   V-1c  COMPLETED / ACCEPTED                     HomeScreen extraction and integration
-R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartphone Web evidence,
+R-1  COMPLETED / ACCEPTED                  v2.1.0 aggregate readiness, smartphone Web evidence,
                               fixed-ZIP verification, approval, and release preparation
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
   R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
   R-1c  COMPLETED / ACCEPTED                     Final smartphone Web evidence aggregate
   R-1d  COMPLETED / ACCEPTED                     One-time fixed ZIP build and same-artifact verification
-  R-1e  CURRENT / NOT_COMPLETED                    Explicit approval, publication, and post-publication verification
-         NOT_STARTED
+  R-1e  COMPLETED / ACCEPTED                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, T-1, V-1, and R-1a through R-1d are completed and accepted. The final exact-candidate PC/smartphone Web aggregate and the unchanged fixed-ZIP tuple are accepted. R-1e is current/not completed and not started.
+W-1 through W-5, C-1, T-1, V-1, and R-1a through R-1e are completed and accepted. The exact-candidate PC/smartphone Web aggregate, unchanged fixed-ZIP tuple, publication, and downloaded-asset verification are accepted. v2.1.0 is released.
 
 ---
 
@@ -1332,7 +1331,7 @@ T-1c acceptance record:
 ```
 
 T-1c and parent T-1 were completed and accepted on 2026-07-24.
-V-1 is COMPLETED / ACCEPTED and R-1 is CURRENT / NOT_COMPLETED (NOT_STARTED).
+V-1 is COMPLETED / ACCEPTED. At the T-1 acceptance checkpoint, R-1 was CURRENT / NOT_COMPLETED (NOT_STARTED); R-1e and parent R-1 are now COMPLETED / ACCEPTED and v2.1.0 is released.
 
 ---
 
@@ -1414,7 +1413,7 @@ V-1a acceptance record:
 - release records changed: false
 ```
 
-V-1a, V-1b, V-1c, and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / NOT_COMPLETED; R-1c is IMPLEMENTED / NOT_ACCEPTED.
+V-1a, V-1b, V-1c, and parent V-1 were completed and accepted on 2026-07-24. At that checkpoint, R-1 was CURRENT / NOT_COMPLETED and R-1c was IMPLEMENTED / NOT_ACCEPTED; R-1e and parent R-1 are now COMPLETED / ACCEPTED and v2.1.0 is released.
 
 ## V-1b — Deterministic presentation model and standalone widget
 
@@ -1455,7 +1454,7 @@ V-1b acceptance record:
 - release records changed: false
 ```
 
-V-1b and V-1c were completed and accepted on 2026-07-24. Parent V-1 is also COMPLETED / ACCEPTED; R-1 is CURRENT / NOT_COMPLETED; R-1c is IMPLEMENTED / NOT_ACCEPTED.
+V-1b and V-1c were completed and accepted on 2026-07-24. Parent V-1 is also COMPLETED / ACCEPTED. At that checkpoint, R-1 was CURRENT / NOT_COMPLETED and R-1c was IMPLEMENTED / NOT_ACCEPTED; R-1e and parent R-1 are now COMPLETED / ACCEPTED and v2.1.0 is released.
 
 ## V-1c — HomeScreen extraction and integration
 
@@ -1499,13 +1498,13 @@ V-1c acceptance record:
 - diff review / explicit operator approval: passed
 ```
 
-V-1c and parent V-1 were completed and accepted on 2026-07-24. R-1 is CURRENT / NOT_COMPLETED; R-1c is IMPLEMENTED / NOT_ACCEPTED.
+V-1c and parent V-1 were completed and accepted on 2026-07-24. R-1a through R-1e and parent R-1 are now COMPLETED / ACCEPTED; v2.1.0 is released.
 
 ---
 
 # R-1 — v2.1.0 readiness and release preparation
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Small-commit split:
 
@@ -1514,8 +1513,7 @@ R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
 R-1d  COMPLETED / ACCEPTED     One-time fixed ZIP build and same-artifact verification
-R-1e  CURRENT / NOT_COMPLETED  Explicit approval, publication, and post-publication verification
-      NOT_STARTED
+R-1e  COMPLETED / ACCEPTED  Explicit approval, publication, and post-publication verification
 ```
 
 ## R-1a — Release/readiness current behavior inventory
@@ -1671,15 +1669,15 @@ R-1d one-time committed-source fixed ZIP and same-artifact verification
 R-1e explicit approval, annotated tag, GitHub Release, and published SHA-256 verification
 ```
 
-R-1b is COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. The accepted R-1b gate remains artifact-free and publication-free; R-1c owns the final integrated smartphone Web evidence aggregate.
+R-1b is COMPLETED / ACCEPTED. At the R-1b acceptance checkpoint, R-1c was CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. The accepted R-1b gate remained artifact-free and publication-free; R-1c later completed and accepted the final integrated smartphone Web evidence aggregate.
 
 ## R-1c — Final PC/smartphone Web evidence aggregate
 
 Status: COMPLETED / ACCEPTED
 Implementation state: COMPLETED / ACCEPTED
 Completed small commit: R-1c
-Current small commit: R-1e
-Parent R-1: CURRENT / NOT_COMPLETED
+Current small commit at R-1c acceptance: R-1d
+Parent R-1 at R-1c acceptance: CURRENT / NOT_COMPLETED
 
 Purpose:
 
@@ -1721,7 +1719,7 @@ public-safe opaque screenshot references: recorded
 raw/private evidence committed: false
 fixed ZIP built: false
 tag created: false
-GitHub Release created: false
+GitHub Release created at R-1d acceptance: false
 ```
 
 Acceptance-sync verification before commit:
@@ -1735,16 +1733,15 @@ python scripts\check_v210_release_readiness.py --with-flutter --with-builds
 git diff --check
 ```
 
-R-1c is `COMPLETED / ACCEPTED`.
-R-1d is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1e remains `PLANNED`.
+R-1c is `COMPLETED / ACCEPTED`. At the R-1c acceptance checkpoint, R-1d was `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`, while R-1e remained `PLANNED`. R-1d and R-1e are now `COMPLETED / ACCEPTED` and v2.1.0 is released.
 
 
 ## Historical R-1d implementation state — One-time fixed ZIP build and same-artifact verification
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: R-1e
-Parent R-1: CURRENT / NOT_COMPLETED
+Status at this historical checkpoint: CURRENT / NOT_COMPLETED
+Implementation state at this historical checkpoint: IMPLEMENTED / NOT_ACCEPTED
+Next small commit at this historical checkpoint: R-1d acceptance execution
+Parent R-1 at this historical checkpoint: CURRENT / NOT_COMPLETED
 
 Implementation files:
 
@@ -1792,8 +1789,7 @@ Do not create DRC_v2.1.0.
 Do not publish a GitHub Release.
 ```
 
-R-1d remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
-R-1e remains `PLANNED`.
+At this historical implementation checkpoint, R-1d remained `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`, and R-1e remained `PLANNED`. Both are now `COMPLETED / ACCEPTED`.
 
 T-1c Visual Studio 18 compatibility correction:
 
@@ -1811,8 +1807,8 @@ T-1c Visual Studio 18 compatibility correction:
 Status: COMPLETED / ACCEPTED
 Implementation state: COMPLETED / ACCEPTED
 Completed small commit: R-1d
-Current small commit: R-1e
-Parent R-1: CURRENT / NOT_COMPLETED
+Next small commit at R-1d acceptance: R-1e
+Parent R-1 at R-1d acceptance: CURRENT / NOT_COMPLETED
 
 ```text
 implementation commits: 42e93f1, 377d98d, 6e7af31
@@ -1830,8 +1826,38 @@ Flutter Web build from extracted ZIP: passed
 Flutter Windows build from extracted ZIP: passed
 same-artifact verification without rebuilding: passed
 verifier builder invocation: false
-DRC_v2.1.0 tag created: false
-GitHub Release created: false
+DRC_v2.1.0 tag created at R-1d acceptance: false
+GitHub Release created at R-1d acceptance: false
 ```
 
-A superseded pre-fix candidate was rejected before publication and is not part of the accepted tuple. R-1d is `COMPLETED / ACCEPTED`; R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+A superseded pre-fix candidate was rejected before publication and is not part of the accepted tuple. R-1d is `COMPLETED / ACCEPTED`; R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
+
+
+## R-1e acceptance and v2.1.0 release record
+
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
+Completed small commit: R-1e
+Current small commit: none
+Parent R-1: COMPLETED / ACCEPTED
+
+```text
+explicit final operator approval: received on 2026-07-25
+publication-preparation source commit: c6263feb2f2550293635c2535d5f19a4eb6a4c3d
+annotated tag: DRC_v2.1.0
+annotated tag type: tag
+annotated tag target: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec
+GitHub Release: published
+GitHub Release draft: false
+GitHub Release prerelease: false
+published asset: DailyRhythmCompanion_v2.1.0_20260725_160036.zip
+published asset size bytes: 1747337
+published asset SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+post-publication downloaded-asset size bytes: 1747337
+post-publication downloaded-asset SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+post-publication SHA-256 re-verification: passed
+fixed ZIP rebuilt or replaced: false
+raw/private evidence committed: false
+```
+
+R-1e and parent R-1 are `COMPLETED / ACCEPTED`. Daily Rhythm Companion v2.1.0 is released. The next strategic line remains v3.0.0; no v3.0.0 implementation is started by this release-record sync.

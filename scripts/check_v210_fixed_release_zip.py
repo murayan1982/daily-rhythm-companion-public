@@ -4,7 +4,7 @@ Default mode is source-only and artifact-free. ``--source-tree`` additionally
 requires clean synchronized official Public main and runs the accepted v2.1.0
 aggregate gate. ``--release-zip`` verifies one explicitly supplied fixed ZIP
 without rebuilding it, then runs tests/builds from a safe temporary extraction.
-No mode creates a tag or publishes a GitHub Release.
+No mode creates, replaces, or republishes a tag or GitHub Release.
 """
 
 from __future__ import annotations
@@ -277,7 +277,7 @@ def verify_candidate_contract(*, root: Path = ROOT) -> None:
 def verify_accepted_contract(*, root: Path = ROOT) -> None:
     for relative in REQUIRED_RELEASE_FILES:
         if not (root / relative).is_file():
-            raise AssertionError(f"Missing accepted R-1d release file: {relative}")
+            raise AssertionError(f"Missing released v2.1.0 file: {relative}")
 
     checklist = read("docs/DRC_v210_goal_checklist_small_commit.md", root=root)
     readme = read("README.md", root=root)
@@ -301,41 +301,41 @@ def verify_accepted_contract(*, root: Path = ROOT) -> None:
         require(source, "R-1d", f"{label} R-1d marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1d accepted state")
         require(source, "R-1e", f"{label} R-1e marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1e current state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1e accepted state")
 
-    require(checklist, "Current small commit: R-1e", "accepted current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1e implementation state")
+    require(checklist, "Current small commit: none", "completed small-commit state")
+    require(checklist, "Current implementation state: COMPLETED / ACCEPTED", "R-1e implementation state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "parent R-1 accepted state")
     require(checklist, "R-1d  COMPLETED / ACCEPTED", "R-1d accepted queue state")
-    require(checklist, "R-1e  CURRENT / NOT_COMPLETED", "R-1e current queue state")
+    require(checklist, "R-1e  COMPLETED / ACCEPTED", "R-1e accepted queue state")
     require(read("backend/app/version.py", root=root), 'APP_VERSION = "2.1.0"', "Backend version")
     require(read("app/pubspec.yaml", root=root), "version: 2.1.0+3", "Flutter version")
 
     for marker in (
-        "Status: PREPARED / NOT_RELEASED",
-        "Current phase: R-1e CURRENT / NOT_COMPLETED (NOT_STARTED)",
-        "source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec",
+        "Status: RELEASED / ACCEPTED",
+        "Current phase: none (R-1e and parent R-1 COMPLETED / ACCEPTED)",
+        "release source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec",
         "fixed ZIP basename: DailyRhythmCompanion_v2.1.0_20260725_160036.zip",
         "fixed ZIP size: 1747337 bytes",
         "fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5",
         "fixed ZIP builder invocation count for the accepted candidate: 1",
         "same-artifact verification: COMPLETED / PASSED",
-        "explicit final operator approval: NOT_RECEIVED",
-        "annotated tag publication: NOT_CREATED",
-        "GitHub Release publication: NOT_CREATED",
+        "explicit final operator approval: RECEIVED",
+        "annotated tag publication: PUBLISHED",
+        "GitHub Release publication: PUBLISHED",
+        "post-publication SHA-256 verification: COMPLETED / PASSED",
     ):
-        require(release_record, marker, "accepted R-1d release record")
+        require(release_record, marker, "released v2.1.0 record")
 
-    require(release_notes, "Status: RELEASE CANDIDATE / NOT_RELEASED", "candidate notes")
-    require(release_notes, "R-1d state: COMPLETED / ACCEPTED", "accepted R-1d notes")
-    require(release_notes, "Release tag: `DRC_v2.1.0` — NOT_CREATED", "unpublished tag")
-    forbid(release_record, "Status: RELEASED", "early release record")
-    forbid(release_notes, "Status: RELEASED", "early release notes")
+    require(release_notes, "Status: RELEASED", "released notes")
+    require(release_notes, "Release tag: `DRC_v2.1.0`", "published tag")
+    require(release_notes, "GitHub Release: PUBLISHED", "published release")
+    require(release_notes, "Post-publication SHA-256 verification: COMPLETED / PASSED", "post-publication verification")
 
     assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record", root=root)
     assert_hashes(PROTECTED_GENERIC_PACKAGE_HASHES, "Protected generic package boundary", root=root)
     for relative in PUBLIC_SAFE_FILES:
         assert_no_sensitive_values(relative, read(relative, root=root))
-
 
 def verify_git_source() -> tuple[str, str]:
     git_root = Path(capture(["git", "rev-parse", "--show-toplevel"])).resolve()
@@ -344,9 +344,7 @@ def verify_git_source() -> tuple[str, str]:
 
     dirty = capture(["git", "status", "--porcelain", "--untracked-files=all"])
     if dirty:
-        raise AssertionError(
-            "Working tree contains tracked or untracked changes; commit or remove them first"
-        )
+        raise AssertionError("Working tree contains tracked or untracked changes; commit or remove them first")
 
     branch = capture(["git", "branch", "--show-current"])
     if branch != "main":
@@ -361,25 +359,22 @@ def verify_git_source() -> tuple[str, str]:
     if head != origin_main:
         raise AssertionError(f"HEAD does not match origin/main: {head} != {origin_main}")
 
-    roots = [
-        line
-        for line in capture(["git", "rev-list", "--max-parents=0", "HEAD"]).splitlines()
-        if line
-    ]
+    roots = [line for line in capture(["git", "rev-list", "--max-parents=0", "HEAD"]).splitlines() if line]
     if len(roots) != 1:
         raise AssertionError(f"Official Public repository must have one root commit, got {len(roots)}")
 
-    for tag_name in ("DRC_v2.0.0", "DRC_v2.0.1"):
+    for tag_name in ("DRC_v2.0.0", "DRC_v2.0.1", RELEASE_TAG):
         if capture(["git", "tag", "--list", tag_name]) != tag_name:
             raise AssertionError(f"Annotated tag {tag_name} is required")
         if capture(["git", "cat-file", "-t", tag_name]) != "tag":
             raise AssertionError(f"{tag_name} must remain an annotated tag")
 
-    if capture(["git", "tag", "--list", RELEASE_TAG]):
-        raise AssertionError(f"{RELEASE_TAG} must not exist before R-1e approval")
+    tag_target = capture(["git", "rev-parse", RELEASE_TAG + "^{}"] )
+    if tag_target != RELEASE_SOURCE_HEAD:
+        raise AssertionError(f"{RELEASE_TAG} target mismatch: {tag_target} != {RELEASE_SOURCE_HEAD}")
 
+    subprocess.run(["git", "merge-base", "--is-ancestor", RELEASE_SOURCE_HEAD, "HEAD"], cwd=ROOT, check=True)
     return head, origin_main
-
 
 def parse_flutter_count(output: str) -> int:
     plain = re.sub(r"\x1b\[[0-9;?]*[ -/]*[@-~]", "", output)
@@ -455,11 +450,10 @@ def verify_release_zip(
     if re.fullmatch(r"[0-9a-f]{64}", expected_sha256) is None:
         raise AssertionError("--expected-sha256 must be a lowercase 64-character SHA-256")
 
-    head, origin_main = verify_git_source()
-    if head != expected_source_head or origin_main != expected_source_head:
+    verify_git_source()
+    if expected_source_head != RELEASE_SOURCE_HEAD:
         raise AssertionError(
-            f"Expected source HEAD mismatch: HEAD={head}, origin/main={origin_main}, "
-            f"expected={expected_source_head}"
+            f"Expected release source mismatch: {expected_source_head} != {RELEASE_SOURCE_HEAD}"
         )
 
     before_stat = zip_path.stat()
@@ -649,8 +643,8 @@ def main() -> None:
         same_artifact_verified = True
 
     print("v210_fixed_release_zip_status: completed-accepted")
-    print("v210_fixed_release_zip_current_small_commit: R-1e")
-    print("v210_fixed_release_zip_parent_phase: R-1-current-not-completed")
+    print("v210_fixed_release_zip_current_small_commit: none")
+    print("v210_fixed_release_zip_parent_phase: R-1-completed-accepted")
     print(f"v210_fixed_release_zip_source_tree_verified: {str(source_tree_verified).lower()}")
     print(f"v210_fixed_release_zip_source_head: {source_head}")
     print(f"v210_fixed_release_zip_recorded_source_head: {RELEASE_SOURCE_HEAD}")
@@ -662,8 +656,8 @@ def main() -> None:
     print(f"v210_fixed_release_zip_flutter_executed: {str(args.with_flutter).lower()}")
     print(f"v210_fixed_release_zip_builds_executed: {str(args.with_builds).lower()}")
     print("v210_fixed_release_zip_builder_invoked_by_verifier: false")
-    print("v210_fixed_release_zip_tag_created: false")
-    print("v210_fixed_release_zip_github_release_created: false")
+    print("v210_fixed_release_zip_tag_created: true")
+    print("v210_fixed_release_zip_github_release_created: true")
     print("[v210-fixed-release-zip-check] OK")
 
 

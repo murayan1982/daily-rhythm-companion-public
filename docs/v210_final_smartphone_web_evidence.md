@@ -3,9 +3,9 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1c
-Current small commit: R-1e — CURRENT / NOT_COMPLETED
-Parent phase: R-1 — CURRENT / NOT_COMPLETED
-Release state: CANDIDATE / NOT_RELEASED
+Current small commit: none (R-1e accepted; v2.1.0 released)
+Parent phase: R-1 — COMPLETED / ACCEPTED
+Release state: RELEASED / ACCEPTED
 Accepted prerequisite: R-1a — COMPLETED / ACCEPTED at implementation commit `dbc84db`
 Accepted prerequisite: R-1b — COMPLETED / ACCEPTED at implementation commit `72dd42c`
 
@@ -168,7 +168,7 @@ operator_evidence files
 
 Only a later acceptance-sync commit may record boolean/classification outcomes and the accepted candidate source commit. It must not copy the ignored manifest or raw evidence into Git.
 
-## Acceptance record
+## Historical R-1c acceptance record
 
 ```text
 accepted on: 2026-07-25
@@ -186,8 +186,26 @@ deterministic character display and final integrated review: accepted
 public-safe opaque screenshot references: recorded
 raw screenshots/audio/health data/private values committed: false
 fixed ZIP: not built
-DRC_v2.1.0 tag: not created
-GitHub Release: not created
+DRC_v2.1.0 tag at R-1c acceptance: not created
+GitHub Release at R-1c acceptance: not created
 ```
 
-R-1c and R-1d are `COMPLETED / ACCEPTED`. R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+R-1c and R-1d are `COMPLETED / ACCEPTED`. R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
+
+
+## Accepted R-1e publication transition
+
+```text
+explicit final operator approval: received
+annotated tag: DRC_v2.1.0
+annotated tag target: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec
+GitHub Release: published
+published fixed ZIP: DailyRhythmCompanion_v2.1.0_20260725_160036.zip
+published asset size bytes: 1747337
+published asset SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+post-publication downloaded-asset SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
+post-publication SHA-256 re-verification: passed
+fixed ZIP rebuilt or replaced: false
+R-1e: COMPLETED / ACCEPTED
+parent R-1: COMPLETED / ACCEPTED
+```

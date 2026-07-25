@@ -1,7 +1,7 @@
 """Validate the accepted R-1a release/readiness inventory.
 
 This source-tree-only check preserves the accepted R-1a snapshot while allowing
-the accepted R-1b candidate metadata, accepted R-1c evidence record, accepted R-1d artifact record, and current R-1e pointer. It
+the accepted R-1b candidate metadata, accepted R-1c evidence record, accepted R-1d artifact record, and accepted R-1e publication record. It
 never reads credentials, executes providers, builds a ZIP, or inspects tags.
 """
 
@@ -115,16 +115,16 @@ def main() -> None:
         require(source, "R-1d", f"{label} R-1d marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1d accepted state")
         require(source, "R-1e", f"{label} R-1e marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1e current state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1e accepted state")
 
-    require(checklist, "Current small commit: R-1e", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1e implementation state")
-    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
+    require(checklist, "Current small commit: none", "completed small-commit state")
+    require(checklist, "Current implementation state: COMPLETED / ACCEPTED", "R-1e implementation state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted queue state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted queue state")
     require(checklist, "R-1c  COMPLETED / ACCEPTED", "R-1c accepted queue state")
     require(checklist, "R-1d  COMPLETED / ACCEPTED", "R-1d accepted queue state")
-    require(checklist, "R-1e  CURRENT / NOT_COMPLETED", "R-1e current queue state")
+    require(checklist, "R-1e  COMPLETED / ACCEPTED", "R-1e accepted queue state")
     require(inventory, "Backend pytest: 110 passed", "R-1a Backend snapshot")
     require(inventory, "Flutter test: 103 passed", "R-1a Flutter snapshot")
     require(inventory, "backend APP_VERSION: 2.0.1", "R-1a Backend metadata snapshot")
@@ -136,6 +136,8 @@ def main() -> None:
     require(inventory, "Accepted R-1c evidence transition", "accepted R-1c transition marker")
     require(inventory, "Accepted R-1d artifact transition", "accepted R-1d transition marker")
     require(inventory, "accepted release source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec", "accepted R-1d source")
+    require(inventory, "Accepted R-1e publication transition", "accepted R-1e transition marker")
+    require(read("docs/v210_release_record.md"), "Status: RELEASED / ACCEPTED", "released v2.1.0 record")
 
     require(read("backend/app/version.py"), 'APP_VERSION = "2.1.0"', "active R-1b Backend candidate")
     require(read("app/pubspec.yaml"), "version: 2.1.0+3", "active R-1b Flutter candidate")
@@ -197,8 +199,8 @@ def main() -> None:
 
     print("v210_release_readiness_inventory_status: completed-accepted")
     print("v210_release_readiness_inventory_completed_small_commit: R-1a")
-    print("v210_release_readiness_inventory_current_small_commit: R-1e")
-    print("v210_release_readiness_inventory_parent_phase: R-1-current-not-completed")
+    print("v210_release_readiness_inventory_current_small_commit: none")
+    print("v210_release_readiness_inventory_parent_phase: R-1-completed-accepted")
     print("v210_release_readiness_inventory_snapshot_backend_version: 2.0.1")
     print("v210_release_readiness_inventory_snapshot_flutter_version: 2.0.1+2")
     print("v210_release_readiness_inventory_active_backend_version: 2.1.0")
@@ -213,8 +215,8 @@ def main() -> None:
     print("v210_release_readiness_inventory_r1d_implementation: true")
     print("v210_release_readiness_inventory_r1d_completed_accepted: true")
     print("v210_release_readiness_inventory_fixed_zip_built: true")
-    print("v210_release_readiness_inventory_tag_created: false")
-    print("v210_release_readiness_inventory_github_release_created: false")
+    print("v210_release_readiness_inventory_tag_created: true")
+    print("v210_release_readiness_inventory_github_release_created: true")
     print("[v210-release-readiness-current-behavior-inventory-check] OK")
 
 

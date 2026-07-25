@@ -1,7 +1,7 @@
-"""Run the accepted R-1b gate plus the current R-1c source contract.
+"""Run the accepted R-1b gate plus the completed v2.1.0 release contract.
 
 The portable default is credential-free and artifact-free. It runs the accepted
-R-1b source/test baseline, the current R-1c validator contract, and Backend pytest. ``--with-flutter`` adds the full
+R-1b source/test baseline, the accepted R-1c through R-1e release contracts, and Backend pytest. ``--with-flutter`` adds the full
 Flutter test suite. ``--with-builds`` additionally requires Web and Windows
 builds and reproduces the accepted R-1b gate on the Windows release host.
 No mode builds a release ZIP or creates a tag/GitHub Release.
@@ -190,16 +190,16 @@ def verify_contract() -> None:
         require(source, "R-1d", f"{label} R-1d marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1d accepted marker")
         require(source, "R-1e", f"{label} R-1e marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1e current marker")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1e accepted marker")
 
-    require(checklist, "Current small commit: R-1e", "current small commit")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1e implementation state")
-    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
+    require(checklist, "Current small commit: none", "completed small-commit state")
+    require(checklist, "Current implementation state: COMPLETED / ACCEPTED", "R-1e implementation state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted state")
     require(checklist, "R-1c  COMPLETED / ACCEPTED", "R-1c accepted state")
     require(checklist, "R-1d  COMPLETED / ACCEPTED", "R-1d accepted state")
-    require(checklist, "R-1e  CURRENT / NOT_COMPLETED", "R-1e current state")
+    require(checklist, "R-1e  COMPLETED / ACCEPTED", "R-1e accepted state")
 
     backend_version = read("backend/app/version.py")
     require(backend_version, f'APP_VERSION = "{EXPECTED_BACKEND_VERSION}"', "Backend candidate version")
@@ -236,29 +236,29 @@ def verify_contract() -> None:
     require(readiness, Path(V20X_COMPATIBILITY_GATE).name, "v2.0.x compatibility gate")
 
     for marker in (
-        "Status: RELEASE CANDIDATE / NOT_RELEASED",
+        "Status: RELEASED",
         "Backend semantic version: `2.1.0`",
         "Flutter package version: `2.1.0+3`",
-        "Release tag: `DRC_v2.1.0` — NOT_CREATED",
+        "Release tag: `DRC_v2.1.0`",
+        "GitHub Release: PUBLISHED",
+        "Post-publication SHA-256 verification: COMPLETED / PASSED",
     ):
-        require(release_notes, marker, "candidate release notes")
+        require(release_notes, marker, "released v2.1.0 notes")
 
     for marker in (
-        "Status: PREPARED / NOT_RELEASED",
-        "Current phase: R-1e CURRENT / NOT_COMPLETED (NOT_STARTED)",
-        "source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec",
+        "Status: RELEASED / ACCEPTED",
+        "Current phase: none (R-1e and parent R-1 COMPLETED / ACCEPTED)",
+        "release source HEAD: 6e7af31f85eb6ee7887df3e184ac6a58142d6fec",
         "fixed ZIP basename: DailyRhythmCompanion_v2.1.0_20260725_160036.zip",
         "fixed ZIP size: 1747337 bytes",
         "fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5",
         "same-artifact verification: COMPLETED / PASSED",
-        "explicit final operator approval: NOT_RECEIVED",
-        "annotated tag publication: NOT_CREATED",
-        "GitHub Release publication: NOT_CREATED",
+        "explicit final operator approval: RECEIVED",
+        "annotated tag publication: PUBLISHED",
+        "GitHub Release publication: PUBLISHED",
+        "post-publication SHA-256 verification: COMPLETED / PASSED",
     ):
-        require(release_record, marker, "accepted R-1d release record")
-
-    forbid(release_record, "Status: RELEASED", "early released state")
-    forbid(release_notes, "Status: RELEASED", "early release-notes state")
+        require(release_record, marker, "released v2.1.0 record")
 
     for relative in REQUIRED_R1D_FILES:
         if not (ROOT / relative).is_file():
@@ -347,14 +347,15 @@ def main() -> None:
     print("v210_release_readiness_status: completed-accepted")
     print("v210_release_readiness_completed_small_commit: R-1b")
     print("v210_release_readiness_accepted_small_commit: R-1c")
-    print("v210_release_readiness_current_small_commit: R-1e")
-    print("v210_release_readiness_parent_phase: R-1-current-not-completed")
+    print("v210_release_readiness_current_small_commit: none")
+    print("v210_release_readiness_parent_phase: R-1-completed-accepted")
     print(f"v210_release_readiness_backend_version: {EXPECTED_BACKEND_VERSION}")
     print(f"v210_release_readiness_flutter_version: {EXPECTED_FLUTTER_VERSION}")
     print("v210_release_readiness_accepted_r1b_aggregate_checks: 18")
     print(f"v210_release_readiness_aggregate_checks: {len(AGGREGATE_CHECKS)}")
     print("v210_release_readiness_r1c_status: completed-accepted")
     print("v210_release_readiness_r1d_status: completed-accepted")
+    print("v210_release_readiness_r1e_status: completed-accepted")
     print("v210_release_readiness_v20x_compatibility_gate: true")
     print(f"v210_release_readiness_expected_backend_tests: {EXPECTED_BACKEND_TESTS}")
     print(f"v210_release_readiness_expected_flutter_tests: {EXPECTED_FLUTTER_TESTS}")
@@ -363,8 +364,8 @@ def main() -> None:
     print(f"v210_release_readiness_windows_build_executed: {str(windows_build_executed).lower()}")
     print("v210_release_readiness_fixed_zip_built: true")
     print("v210_release_readiness_same_artifact_verified: true")
-    print("v210_release_readiness_tag_created: false")
-    print("v210_release_readiness_github_release_created: false")
+    print("v210_release_readiness_tag_created: true")
+    print("v210_release_readiness_github_release_created: true")
     print("[v210-release-readiness-check] OK")
 
 

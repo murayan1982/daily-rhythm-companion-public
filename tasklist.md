@@ -7,20 +7,20 @@
 ```text
 Public repository: murayan1982/daily-rhythm-companion-public
 immutable capability baseline: v2.0.0
-current released version: v2.0.1
-current source candidate metadata: Backend 2.1.0 / Flutter 2.1.0+3 NOT_RELEASED
-release / annotated tag: DRC_v2.0.1
-v2.0.1 status: RELEASED
+current released version: v2.1.0
+current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 RELEASED
+release / annotated tag: DRC_v2.1.0
+v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
-current development line: v2.1.0
-current small commit: R-1e CURRENT / NOT_COMPLETED
-current implementation step: R-1e CURRENT / NOT_COMPLETED
-current implementation state: NOT_STARTED
-completed small commit: R-1d COMPLETED / ACCEPTED
+completed development line: v2.1.0 COMPLETED / ACCEPTED
+current small commit: none
+current implementation step: none
+current implementation state: COMPLETED / ACCEPTED
+completed small commit: R-1e COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
-v2.0.1の固定ZIP、annotated tag、GitHub Release、公開後SHA-256再検証は完了している。公開済み`DRC_v2.0.0`と`DRC_v2.0.1`を変更せず、今後の変更は新しいコミットと新しいバージョンで行う。
+v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、次の開発対象は計画済みv3.0.0として新しいコミットで進める。
 
 ## 2. Source of truth
 
@@ -78,13 +78,12 @@ R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
 R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
 R-1d  COMPLETED / ACCEPTED     One-time fixed ZIP build and same-artifact verification
-R-1e  CURRENT / NOT_COMPLETED  Explicit approval, publication, and post-publication verification
-      NOT_STARTED
+R-1e  COMPLETED / ACCEPTED  Explicit approval, publication, and post-publication verification
 ```
 
-R-1a was completed and accepted on 2026-07-25 at implementation commit `dbc84db`. It records the reusable generic packaging boundary, the hard-coded historical v2.0.1 release gate, current 2.0.1 metadata, accepted 110 Backend / 103 Flutter test baseline, prior smartphone Web evidence, and missing v2.1.0 release files. Acceptance passed after compileall, all 18 v2.1.0 checks, v2.0.x guards, 110 Backend tests, 103 Flutter tests, diff review, and operator approval. It changed no runtime, version metadata, release builder, fixed ZIP, tag, or GitHub Release. R-1b and R-1c are completed/accepted; R-1d is completed/accepted for the exact fixed ZIP tuple; R-1e is current/not completed and not started.
+R-1a was completed and accepted on 2026-07-25 at implementation commit `dbc84db`. It records the reusable generic packaging boundary, the hard-coded historical v2.0.1 release gate, current 2.0.1 metadata, accepted 110 Backend / 103 Flutter test baseline, prior smartphone Web evidence, and missing v2.1.0 release files. Acceptance passed after compileall, all 18 v2.1.0 checks, v2.0.x guards, 110 Backend tests, 103 Flutter tests, diff review, and operator approval. It changed no runtime, version metadata, release builder, fixed ZIP, tag, or GitHub Release. R-1b and R-1c are completed/accepted; R-1d is completed/accepted for the exact fixed ZIP tuple; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
 
-R-1bは実装コミット`72dd42c`でCOMPLETED / ACCEPTED。Backend `2.1.0` / Flutter `2.1.0+3`候補metadata、18個の既存v2.1.0 checkを集約するgate、110 Backend / 103 Flutter test、Web / Windows build、候補release notes、未記入release recordを受け入れた。固定ZIP、tag、GitHub Release、provider実行、最終スマートフォンWeb aggregateは含めていない。R-1cとR-1dはCOMPLETED / ACCEPTED。R-1eはCURRENT / NOT_COMPLETEDかつNOT_STARTED。
+R-1bは実装コミット`72dd42c`でCOMPLETED / ACCEPTED。Backend `2.1.0` / Flutter `2.1.0+3`候補metadata、18個の既存v2.1.0 checkを集約するgate、110 Backend / 103 Flutter test、Web / Windows build、候補release notes、未記入release recordを受け入れた。固定ZIP、tag、GitHub Release、provider実行、最終スマートフォンWeb aggregateは含めていない。R-1cからR-1eと親R-1はCOMPLETED / ACCEPTEDで、v2.1.0は正式リリース済み。
 
 Detailed inventory:
 
@@ -124,7 +123,7 @@ V-1c  COMPLETED / ACCEPTED       HomeScreen extraction and integration
 
 詳細: `docs/v210_character_display_current_behavior_inventory.md`
 
-V-1aは実装コミット`1602b2f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、Flutter test 84件、diff確認、明示的なオペレーター承認が通過した。Flutter runtime、Backend runtime、既存テスト、dependencies/assets、real provider/motion execution、release recordsは変更していない。V-1b、V-1c、親V-1もCOMPLETED / ACCEPTEDとなり、R-1がCURRENT / NOT_COMPLETEDである。
+V-1aは実装コミット`1602b2f`でCOMPLETED / ACCEPTED。compileall、全`check_v210_*.py`、v2.0.x compatibility / maintenance guards、Backend pytest 110件、Flutter test 84件、diff確認、明示的なオペレーター承認が通過した。Flutter runtime、Backend runtime、既存テスト、dependencies/assets、real provider/motion execution、release recordsは変更していない。V-1b、V-1c、親V-1もCOMPLETED / ACCEPTEDであり、その後R-1eと親R-1もCOMPLETED / ACCEPTEDとなってv2.1.0を公開済み。
 
 ### V-1b — Deterministic presentation model and standalone widget
 
@@ -944,7 +943,7 @@ M-8  COMPLETED  test/docs: add v2.0.x aggregate maintenance readiness
 M-9  COMPLETED  release: fixed-ZIP verification and v2.0.1 patch release record
 ```
 
-M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1、V-1は受け入れ済みで、Google Health API経由のreal provider execution、PC/スマートフォンWeb、アプリ内TTS再生、決定論的character表示まで確認済みである。R-1aはCOMPLETED / ACCEPTEDで、R-1bはCOMPLETED / ACCEPTEDで、R-1cとR-1dはCOMPLETED / ACCEPTEDで、現在はR-1eがCURRENT / NOT_COMPLETEDかつNOT_STARTEDである。
+M-1〜M-9は受け入れ済みで、v2.0.1は正式リリース済み。W-1〜W-5、C-1、T-1、V-1、R-1a〜R-1eと親R-1も受け入れ済みで、Google Health API経由のreal provider execution、PC/スマートフォンWeb、アプリ内TTS再生、決定論的character表示、固定ZIP、公開、公開後検証まで確認済み。v2.1.0は正式リリース済みである。
 
 ---
 
@@ -965,7 +964,7 @@ Primary theme: Realtime multimodal character runtime
 Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
 ```
 
-v2.1.0はW-1からW-5、C-1、T-1、V-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生、決定論的character表示が確認済みである。R-1aはCOMPLETED / ACCEPTEDで、R-1bはCOMPLETED / ACCEPTEDで、R-1cとR-1dはCOMPLETED / ACCEPTEDで、現在はR-1eがCURRENT / NOT_COMPLETEDかつNOT_STARTED、v3.0.0は計画段階である。
+v2.1.0はW-1からW-5、C-1、T-1、V-1、R-1aからR-1eと親R-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生、決定論的character表示、固定ZIP、公開、公開後検証が確認済みである。v2.1.0は正式リリース済みで、v3.0.0は計画段階である。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally
@@ -974,7 +973,7 @@ v2.1.0はW-1からW-5、C-1、T-1、V-1まで受け入れ済みで、Google Heal
 - [x] T-1c: commit implementation only after all tests/builds pass
 - [x] Restore and track `app/windows/flutter/CMakeLists.txt`; scope the root SDK ignore to `/flutter/`.
 
-R-1cはCOMPLETED / ACCEPTED。cleanな`main == origin/main`の実装commit `1e922e68685dadfc1008f1119d0ce492584e8f19`に対してignored private manifestがvalidateされ、Google Health実データ、Framework daily advice、live post-advice chat、実TTS再生、character表示、final integrated reviewの6項目をPC/スマートフォンWebで確認済み。raw screenshot/audio/health値/token/path/LAN IP/operator evidenceはGit外。R-1dはCOMPLETED / ACCEPTED。固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip` はsource `6e7af31f85eb6ee7887df3e184ac6a58142d6fec` / 1747337 bytes / SHA-256 `55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5` のexact tupleで受け入れ済み。tagとGitHub Releaseは未実施で、R-1eがCURRENT / NOT_COMPLETEDかつNOT_STARTED。
+R-1cはCOMPLETED / ACCEPTED。cleanな`main == origin/main`の実装commit `1e922e68685dadfc1008f1119d0ce492584e8f19`に対してignored private manifestがvalidateされ、Google Health実データ、Framework daily advice、live post-advice chat、実TTS再生、character表示、final integrated reviewの6項目をPC/スマートフォンWebで確認済み。raw screenshot/audio/health値/token/path/LAN IP/operator evidenceはGit外。R-1dはCOMPLETED / ACCEPTED。固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip` はsource `6e7af31f85eb6ee7887df3e184ac6a58142d6fec` / 1747337 bytes / SHA-256 `55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5` のexact tupleで受け入れ済み。R-1eと親R-1もCOMPLETED / ACCEPTEDで、tag、GitHub Release、公開後検証まで完了。
 
 
 ## Historical R-1d implementation handoff
@@ -984,11 +983,11 @@ implementation: build_v210_fixed_release_zip_from_head.ps1
 verification: scripts/check_v210_fixed_release_zip.py
 fixed ZIP built: false
 same-artifact verification: not run
-DRC_v2.1.0 tag: not created
-GitHub Release: not created
+DRC_v2.1.0 tag at that historical checkpoint: not created
+GitHub Release at that historical checkpoint: not created
 ```
 
-Commit and push this implementation first. Only then run the builder once from clean synchronized official `main`.
+Historical handoff instruction: commit and push this implementation first, then run the builder once from clean synchronized official `main`. This step is already completed and must not be repeated for the released artifact.
 
 ## R-1d accepted fixed-ZIP handoff
 
@@ -1000,8 +999,8 @@ fixed ZIP size bytes: 1747337
 fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5
 accepted-candidate build invocation count: 1
 same-artifact verification: passed
-DRC_v2.1.0 tag: not created
-GitHub Release: not created
+DRC_v2.1.0 tag at that historical checkpoint: not created
+GitHub Release at that historical checkpoint: not created
 ```
 
-The exact fixed ZIP must remain unchanged in `release/`. R-1e is current/not completed and requires explicit approval for this tuple before publication.
+The exact fixed ZIP must remain unchanged in `release/`. R-1e is completed/accepted after explicit approval for this tuple, publication, and downloaded-asset verification.

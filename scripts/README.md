@@ -9,23 +9,23 @@ The authoritative v2.1.0 source of truth is `docs/DRC_v210_goal_checklist_small_
 Current state:
 
 ```text
-current released version: v2.0.1 RELEASED
-current source candidate metadata: Backend 2.1.0 / Flutter 2.1.0+3 NOT_RELEASED
+current released version: v2.1.0 RELEASED / ACCEPTED
+current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
-current development line: v2.1.0
+completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: R-1e CURRENT / NOT_COMPLETED
-current implementation state: NOT_STARTED
-completed small commit: R-1d COMPLETED / ACCEPTED
+current small commit: none
+current implementation state: COMPLETED / ACCEPTED
+completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 ```
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
-W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 and V-1 are completed and accepted. R-1a is completed and accepted at implementation commit `dbc84db`; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e is current/not completed and not started. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b at `e1f8d6f`; V-1c at `995145d`.
+W-2 is completed and accepted. It adds conservative token/status/reconnect states, one-time OAuth state consumption, injected fake-HTTP refresh tests, and old/new Flutter response parsing without performing configured real Fitbit execution. W-3 is also completed and accepted after the full mock-safe gate, 84 backend tests, 50 Flutter tests, diff review, and operator approval passed. W-4 is completed and accepted. W-4a passed 8 focused backend tests, 92 full backend tests, and 50 Flutter tests. W-4b implementation commit `1fbea58` passed 4 focused model tests, 35 widget tests, 92 backend tests, 57 Flutter tests, diff review, and operator approval. W-5a implementation commit `7f84980` is completed and accepted after the public-safe preflights, source-tree guards, 92 backend tests, 57 Flutter tests, diff review, and operator approval passed. W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1a is completed and accepted at implementation commit `a4263ca`; C-1b is completed and accepted at implementation commit `3055995`; C-1c and parent C-1 are completed and accepted at implementation commit `c856374`. T-1 and V-1 are completed and accepted. R-1a is completed and accepted at implementation commit `dbc84db`; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e and parent R-1 are completed/accepted; v2.1.0 is released. V-1a is completed and accepted at implementation commit `1602b2f`; V-1b at `e1f8d6f`; V-1c at `995145d`.
 
 
 ## v2.1.0 R-1a release/readiness current behavior inventory check
@@ -46,7 +46,7 @@ cd ..
 git diff --check
 ```
 
-The accepted R-1a check is credential-free, provider-free, network-free, and artifact-free. It freezes the accepted release surface before v2.1.0 release implementation: backend `2.0.1`, Flutter `2.0.1+2`, generic denylist packaging, generic ZIP hygiene validation, historical v2.0.1 one-time builder/verifier, `release/` Git exclusion, 110 Backend tests, 103 Flutter tests, and immutable v2.0.0/v2.0.1 records. Acceptance passed on 2026-07-25 at implementation commit `dbc84db` after compileall, all 18 v2.1.0 checks, v2.0.x guards, 110 Backend tests, 103 Flutter tests, diff review, and operator approval. No v2.1.0 release builder, aggregate gate, release record, release notes, fixed ZIP, tag, or GitHub Release was created by R-1a. R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e is current/not completed and not started.
+The accepted R-1a check is credential-free, provider-free, network-free, and artifact-free. It freezes the accepted release surface before v2.1.0 release implementation: backend `2.0.1`, Flutter `2.0.1+2`, generic denylist packaging, generic ZIP hygiene validation, historical v2.0.1 one-time builder/verifier, `release/` Git exclusion, 110 Backend tests, 103 Flutter tests, and immutable v2.0.0/v2.0.1 records. Acceptance passed on 2026-07-25 at implementation commit `dbc84db` after compileall, all 18 v2.1.0 checks, v2.0.x guards, 110 Backend tests, 103 Flutter tests, diff review, and operator approval. No v2.1.0 release builder, aggregate gate, release record, release notes, fixed ZIP, tag, or GitHub Release was created by R-1a. R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
 
 
 ## v2.1.0 R-1b release-candidate aggregate readiness gate
@@ -67,9 +67,9 @@ python scripts\check_v210_release_readiness.py --with-flutter --with-builds
 
 The gate runs compileall, all 18 previously accepted `check_v210_*.py` child checks, the accepted v2.0.x maintenance/compatibility aggregate, and 110 Backend tests. The full mode additionally requires 103 Flutter tests, a Web build, and a Windows build. It snapshots `backend/local_data` and `release` and fails if either changes. It does not run providers, start a browser, invoke `build_release.bat`, build a fixed ZIP, create `DRC_v2.1.0`, or publish a GitHub Release.
 
-R-1b sets active candidate metadata to Backend `2.1.0` and Flutter `2.1.0+3`. `scripts/check_v20x_application_version_metadata.py` continues to protect the accepted M-2 `2.0.1` record while allowing the later aligned v2.1.0 candidate source. Candidate notes and the prepared release record remain explicitly `NOT_RELEASED`.
+R-1b set candidate metadata to Backend `2.1.0` and Flutter `2.1.0+3`. `scripts/check_v20x_application_version_metadata.py` continues to protect the accepted M-2 `2.0.1` record while allowing the later aligned v2.1.0 source. The historical R-1b candidate notes and prepared release record were explicitly `NOT_RELEASED`; R-1e later finalized and published them.
 
-R-1b was accepted on 2026-07-25 at implementation commit `72dd42c`. The full Windows-host gate passed all 18 child checks, the v2.0.x compatibility aggregate, 110 Backend tests, 103 Flutter tests, Web build, and Windows build. `backend/local_data` and `release` remained unchanged; no fixed ZIP, tag, or GitHub Release was created. R-1c and R-1d are now completed/accepted; R-1e is current/not completed and not started.
+R-1b was accepted on 2026-07-25 at implementation commit `72dd42c`. The full Windows-host gate passed all 18 child checks, the v2.0.x compatibility aggregate, 110 Backend tests, 103 Flutter tests, Web build, and Windows build. `backend/local_data` and `release` remained unchanged; no fixed ZIP, tag, or GitHub Release was created. R-1c and R-1d are now completed/accepted; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
 
 ## v2.1.0 V-1a character display current behavior inventory check
 
@@ -91,7 +91,7 @@ git diff --check
 
 The V-1a check is credential-free, provider-free, network-free, decoder-free, and motion-adapter-free. It verifies the 4,195-line HomeScreen inventory, stable CharacterPreset fields, advice-source fallback boundary, accepted TTS playback phases, separate Motion Demo state, 2,669-line existing widget-test baseline, pubspec asset registration, three character images, two backgrounds, one repository fallback image, unchanged Flutter runtime/tests/assets, and immutable v2.0.0/v2.0.1 release records.
 
-V-1a, V-1b, V-1c, and parent V-1 are `COMPLETED / ACCEPTED`. V-1c was accepted at implementation commit `995145d`; R-1a is `COMPLETED / ACCEPTED`; R-1b is `COMPLETED / ACCEPTED` at implementation commit `72dd42c`; R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+V-1a, V-1b, V-1c, and parent V-1 are `COMPLETED / ACCEPTED`. V-1c was accepted at implementation commit `995145d`; R-1a is `COMPLETED / ACCEPTED`; R-1b is `COMPLETED / ACCEPTED` at implementation commit `72dd42c`; R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
 
 ## v2.1.0 V-1b deterministic character display state check
 
@@ -114,7 +114,7 @@ python -m pytest -q backend/tests
 git diff --check
 ```
 
-The accepted V-1b check is credential-free, provider-free, network-free, decoder-free, and motion-adapter-free. It verifies mood/advice/fallback content states, idle/loading/speaking activity states, deterministic precedence, safe fallback copy, the standalone static character card, nine model tests, four widget tests, unchanged HomeScreen/Motion Demo/assets/dependencies, and immutable release records. Acceptance passed with implementation commit `e1f8d6f`, 110 Backend tests, 9 focused model tests, 4 focused widget tests, and 97 full Flutter tests. V-1b does not connect HomeScreen or claim Live2D/VTube Studio execution; V-1c and parent V-1 are completed/accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e is current/not completed and not started.
+The accepted V-1b check is credential-free, provider-free, network-free, decoder-free, and motion-adapter-free. It verifies mood/advice/fallback content states, idle/loading/speaking activity states, deterministic precedence, safe fallback copy, the standalone static character card, nine model tests, four widget tests, unchanged HomeScreen/Motion Demo/assets/dependencies, and immutable release records. Acceptance passed with implementation commit `e1f8d6f`, 110 Backend tests, 9 focused model tests, 4 focused widget tests, and 97 full Flutter tests. V-1b does not connect HomeScreen or claim Live2D/VTube Studio execution; V-1c and parent V-1 are completed/accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
 
 
 ## v2.1.0 V-1c HomeScreen character display integration check
@@ -142,7 +142,7 @@ cd ..
 git diff --check
 ```
 
-The V-1c check is credential-free, provider-free, network-free, and motion-adapter-free. It verifies HomeScreen wiring for mood/advice/loading/speaking/fallback, repository fallback-image retry, five focused HomeScreen tests, five focused card tests, unchanged V-1b presentation model, unchanged Backend/Motion Demo/dependencies/static assets, and immutable release records. V-1c and parent V-1 are `COMPLETED / ACCEPTED` at implementation commit `995145d`; R-1a is `COMPLETED / ACCEPTED`; R-1b is `COMPLETED / ACCEPTED` at implementation commit `72dd42c`; R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+The V-1c check is credential-free, provider-free, network-free, and motion-adapter-free. It verifies HomeScreen wiring for mood/advice/loading/speaking/fallback, repository fallback-image retry, five focused HomeScreen tests, five focused card tests, unchanged V-1b presentation model, unchanged Backend/Motion Demo/dependencies/static assets, and immutable release records. V-1c and parent V-1 are `COMPLETED / ACCEPTED` at implementation commit `995145d`; R-1a is `COMPLETED / ACCEPTED`; R-1b is `COMPLETED / ACCEPTED` at implementation commit `72dd42c`; R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
 
 Run the W-1 checks from the repository root:
 
@@ -173,7 +173,7 @@ The W-1 source-tree check verifies:
 - R-1a is COMPLETED / ACCEPTED
 - R-1b is COMPLETED / ACCEPTED at implementation commit 72dd42c
 - R-1c and R-1d are COMPLETED / ACCEPTED
-- R-1e is CURRENT / NOT_COMPLETED and NOT_STARTED
+- R-1e and parent R-1 are COMPLETED / ACCEPTED; v2.1.0 is RELEASED
 - the accepted W-1 inventory and W-1 acceptance state remain recorded
 - files outside the accepted W-2 change surface still match the inspected W-1 baseline
 - approved W-2 runtime and Flutter files carry the separately checked W-2 contract
@@ -239,7 +239,7 @@ collect smartphone Web evidence, or build a release artifact.
 
 W-3 is `COMPLETED / ACCEPTED`. Acceptance recorded 84 backend tests and 50
 Flutter tests, with real Fitbit execution remaining false. W-4 is also
-`COMPLETED / ACCEPTED`; W-5a, W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1, T-1, and V-1 are completed and accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e is current/not completed and not started.
+`COMPLETED / ACCEPTED`; W-5a, W-5b1, W-5b2, and parent W-5 are completed and accepted. C-1, T-1, and V-1 are completed and accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
 
 
 ## v2.1.0 W-4a sleep-provider selection status check
@@ -4532,7 +4532,7 @@ W-5b2 is `COMPLETED / ACCEPTED`. Acceptance records execution commit `ed50d9e`,
 HTTP 200, normalized real Google Health sleep, PC/smartphone Web display, 100
 backend tests, 57 Flutter tests, and operator-confirmed Fitbit Versa 2 origin.
 Screenshots and private sleep values remain outside Git. Parent W-5 is completed;
-C-1, T-1, and V-1 are completed and accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e is current/not completed and not started.
+C-1, T-1, and V-1 are completed and accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c and R-1d are completed/accepted; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
 
 ## v2.1.0 R-1c accepted final PC/smartphone Web evidence validator
 
@@ -4549,7 +4549,7 @@ python scripts\check_v210_final_smartphone_web_evidence.py `
   --manifest-json .\operator_evidence\v210_final_smartphone_web_evidence_r1c.json
 ```
 
-The accepted record covers six evidence items on PC and smartphone Web, public-safe opaque screenshot references, actual DRC Backend use, real Google Health and Framework/TTS execution, and no committed raw/private evidence. R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e is `CURRENT / NOT_COMPLETED` and owns explicit approval, publication, and post-publication verification.
+The accepted record covers six evidence items on PC and smartphone Web, public-safe opaque screenshot references, actual DRC Backend use, real Google Health and Framework/TTS execution, and no committed raw/private evidence. R-1c and R-1d are `COMPLETED / ACCEPTED`; R-1e is `COMPLETED / ACCEPTED`; explicit approval, publication, and post-publication verification passed.
 
 
 ## Historical v2.1.0 R-1d implementation and verifier
@@ -4598,7 +4598,12 @@ fixed ZIP SHA-256: 55bf584592b1824948ec847205132582a436f2c521feb593bac914a490407
 accepted-candidate builder invocation count: 1
 same-artifact verification: passed
 verifier rebuilt artifact: false
-tag / GitHub Release: not created
+tag / GitHub Release at R-1d acceptance: not created
 ```
 
-R-1d is `COMPLETED / ACCEPTED`. R-1e is current/not completed and must receive explicit tuple approval before publication.
+R-1d is `COMPLETED / ACCEPTED`. R-1e is completed/accepted after explicit tuple approval, publication, and downloaded-asset verification.
+
+
+## v2.1.0 R-1e publication completion
+
+R-1e and parent R-1 are `COMPLETED / ACCEPTED`. Explicit approval was received for the exact tuple, annotated tag `DRC_v2.1.0` was published at `6e7af31f85eb6ee7887df3e184ac6a58142d6fec`, the GitHub Release was published with the unchanged fixed ZIP, and the downloaded asset was independently verified at `1747337` bytes / SHA-256 `55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5`. No provider, runtime, dependency, asset, historical release record, or fixed ZIP content changed in the post-publication source sync.

@@ -124,13 +124,12 @@ def main() -> None:
         require(source, "V-1", f"{label} parent marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} parent accepted state")
         require(source, "R-1", f"{label} R-1 marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1 current state")
 
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
     require(checklist, "V-1c  COMPLETED / ACCEPTED", "accepted V-1c state")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1e implementation marker")
-    require(checklist, "Current small commit: R-1e", "R-1e current small commit")
-    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
+    require(checklist, "Current implementation state: COMPLETED / ACCEPTED", "R-1e implementation marker")
+    require(checklist, "Current small commit: none", "completed small-commit state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "R-1 completed state")
 
     for marker in (
         "import '../models/character_display_presentation.dart';",
@@ -234,8 +233,7 @@ def main() -> None:
         "Live2D execution: accepted",
         "VTube Studio execution: accepted",
         "real motion execution: true",
-        "R-1  COMPLETED",
-    ):
+            ):
         forbid(contract + checklist + inventory, forbidden, "premature completion/execution claim")
 
     forbid(home + widget + model, "WebSocket", "motion runtime connection")
@@ -268,7 +266,7 @@ def main() -> None:
 
     print("v210_character_display_home_integration_status: completed-accepted")
     print("v210_character_display_home_integration_completed_small_commit: V-1c")
-    print("v210_character_display_home_integration_current_small_commit: R-1")
+    print("v210_character_display_home_integration_current_small_commit: none")
     print("v210_character_display_home_integration_parent_phase: V-1-completed-accepted")
     print("v210_character_display_home_integration_content_states: mood,advice,fallback")
     print("v210_character_display_home_integration_activity_states: idle,loading,speaking")

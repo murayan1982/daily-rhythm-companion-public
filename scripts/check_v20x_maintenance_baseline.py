@@ -95,7 +95,8 @@ def main() -> None:
         require(files[relative], "docs/DRC_v20x_maintenance_checklist.md", f"{relative} active maintenance source")
         require(files[relative], "M-7", f"{relative} accepted M-7 state")
 
-    require(files["README.md"], "Current released version: v2.0.1", "README released patch")
+    require(files["README.md"], "Current released version: v2.1.0", "README current release")
+    require(files["README.md"], "Historical v2.0.1 patch release:", "README immutable v2.0.1 patch")
     require(files["roadmap.md"], "Status: Completed / released", "roadmap maintenance status")
     require(files["roadmap.md"], "M-1  COMPLETED", "roadmap M-1 completion")
     require(files["roadmap.md"], "M-2  COMPLETED", "roadmap M-2 completion")

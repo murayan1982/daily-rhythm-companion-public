@@ -118,9 +118,9 @@ def main() -> None:
     require(checklist, "V-1  COMPLETED / ACCEPTED", "parent V-1 state")
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
     require(checklist, "V-1c  COMPLETED / ACCEPTED", "accepted V-1c state")
-    require(checklist, "Current implementation state: NOT_STARTED", "R-1e implementation state")
-    require(checklist, "Current small commit: R-1e", "R-1e current small commit")
-    require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
+    require(checklist, "Current implementation state: COMPLETED / ACCEPTED", "R-1e implementation state")
+    require(checklist, "Current small commit: none", "completed small-commit state")
+    require(checklist, "R-1  COMPLETED / ACCEPTED", "R-1 completed state")
 
     for marker in (
         "enum CharacterDisplayContentState",
@@ -230,7 +230,7 @@ def main() -> None:
 
     print("v210_character_display_state_status: completed-accepted")
     print("v210_character_display_state_completed_small_commit: V-1b")
-    print("v210_character_display_state_current_small_commit: R-1")
+    print("v210_character_display_state_current_small_commit: none")
     print("v210_character_display_state_parent_phase: V-1-completed-accepted")
     print("v210_character_display_state_content_states: mood,advice,fallback")
     print("v210_character_display_state_activity_states: idle,loading,speaking")
