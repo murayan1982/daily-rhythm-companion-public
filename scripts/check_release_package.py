@@ -75,10 +75,16 @@ BLOCKED_SUFFIXES = {
 }
 
 
+# Android/iOS registrants remain blocked because they are not part of the accepted
+# committed desktop scaffold. Linux/Windows registrants are committed source files
+# in v2.1.0 and are required by the accepted T-1c desktop plugin integration.
 BLOCKED_NORMALIZED_EXACT_PATHS = {
     "app/android/app/src/main/java/io/flutter/plugins/generatedpluginregistrant.java",
     "app/ios/runner/generatedpluginregistrant.h",
     "app/ios/runner/generatedpluginregistrant.m",
+}
+
+ALLOWED_COMMITTED_FLUTTER_GENERATED_PATHS = {
     "app/linux/flutter/generated_plugin_registrant.cc",
     "app/linux/flutter/generated_plugin_registrant.h",
     "app/linux/flutter/generated_plugins.cmake",
@@ -216,8 +222,11 @@ def _is_blocked(zip_name: str) -> str | None:
     if basename in BLOCKED_BASENAMES:
         return f"blocked basename: {basename}"
 
-    if normalized.lower() in BLOCKED_NORMALIZED_EXACT_PATHS:
+    normalized_lower = normalized.lower()
+    if normalized_lower in BLOCKED_NORMALIZED_EXACT_PATHS:
         return f"blocked untracked Flutter generated file: {normalized}"
+    if normalized_lower in ALLOWED_COMMITTED_FLUTTER_GENERATED_PATHS:
+        return None
 
     for pattern in BLOCKED_NORMALIZED_PATTERNS:
         if fnmatch.fnmatch(normalized.lower(), pattern.lower()):

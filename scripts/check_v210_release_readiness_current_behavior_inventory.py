@@ -26,7 +26,7 @@ PROTECTED_HISTORICAL_HASHES = {
 R1A_FROZEN_RELEASE_SURFACE_HASHES = {
     "build_release.bat": "1e939e31187b58efe7c5987fd763dba733ff706ad864a14cf945e641a9f23c1a",
     "build_v201_fixed_release_zip_from_head.ps1": "89d3fe3e39484b36272d9c8ec8499276ffe305ec844a87cca5d90fef8931ab1b",
-    "scripts/check_release_package.py": "56b5550b2d7145c3bfc4d9ff4370499df261c9f629ba551820588d859fbcff50",
+    "scripts/check_release_package.py": "57d6e4a6fae67bbc2e8c9e9b5c710f4d951866ad4007606075c244c6a29d212b",
     "scripts/check_v20x_maintenance_readiness.py": "ea27a4ee8b415317d7d1cedef3182d7365cbecaf86d68b5dd21d393c23e92160",
     "scripts/check_v20x_patch_release.py": "e4eefc408abcbccc2651c1113ae8264269cce1d77525067173e0a06a7ef685cf",
     "docs/v20x_maintenance_readiness.md": "980b7a5b84aaa1faca801ed79d7cc66cbea7d79b1dd913dced4e5f58d99dabd3",

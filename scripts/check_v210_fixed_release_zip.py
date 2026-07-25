@@ -68,7 +68,7 @@ PROTECTED_HISTORICAL_HASHES = {
 
 PROTECTED_GENERIC_PACKAGE_HASHES = {
     "build_release.bat": "1e939e31187b58efe7c5987fd763dba733ff706ad864a14cf945e641a9f23c1a",
-    "scripts/check_release_package.py": "56b5550b2d7145c3bfc4d9ff4370499df261c9f629ba551820588d859fbcff50",
+    "scripts/check_release_package.py": "57d6e4a6fae67bbc2e8c9e9b5c710f4d951866ad4007606075c244c6a29d212b",
     ".gitignore": "740b4903072fef306fba8880bc9f8d57ac2055ed38168314b6834ce0eec0c8a3",
 }
 
