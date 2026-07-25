@@ -3,15 +3,16 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1b
-Current small commit: R-1c
+Current small commit: R-1d
 Parent phase: R-1 CURRENT / NOT_COMPLETED
 Release state: CANDIDATE / NOT_RELEASED
 
 ```text
 R-1a: COMPLETED / ACCEPTED
 R-1b: COMPLETED / ACCEPTED
-R-1c: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
-R-1d and R-1e: PLANNED
+R-1c: COMPLETED / ACCEPTED
+R-1d: CURRENT / NOT_COMPLETED (NOT_STARTED)
+R-1e: PLANNED
 ```
 
 ## Purpose
@@ -155,10 +156,10 @@ explicit operator approval: received
 
 R-1b is `COMPLETED / ACCEPTED`. R-1c is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
 
-## Current R-1c implementation
+## Accepted R-1c evidence transition
 
-R-1c adds `scripts/check_v210_final_smartphone_web_evidence.py`, the public-safe contract `docs/v210_final_smartphone_web_evidence.md`, and a deliberately rejected operator-manifest example. The current aggregate source-tree gate includes the R-1c validator as its nineteenth child check while preserving the accepted R-1b record of 18 / 18 checks.
+R-1c adds `scripts/check_v210_final_smartphone_web_evidence.py`, the public-safe contract `docs/v210_final_smartphone_web_evidence.md`, and a deliberately rejected operator-manifest example. The aggregate source-tree gate includes the R-1c validator as its nineteenth child check while preserving the accepted R-1b record of 18 / 18 checks.
 
-The R-1c default validator performs no provider, Backend, browser, screenshot, audio, health-data, ZIP, tag, or GitHub action. Final acceptance requires the ignored manifest to validate against the exact clean synchronized implementation commit after actual PC and smartphone Web review.
+The ignored private manifest validated against exact clean synchronized candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19`. The actual DRC Backend, PC Web, and smartphone Web completed all six required evidence items; screenshot references remained opaque and raw screenshots/audio/health values/private paths remained outside Git.
 
-R-1c is `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`; R-1d/R-1e remain `PLANNED`.
+R-1c is `COMPLETED / ACCEPTED`; R-1d is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; R-1e remains `PLANNED`.

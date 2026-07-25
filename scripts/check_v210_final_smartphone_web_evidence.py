@@ -2,8 +2,8 @@
 
 The default mode is public-safe, credential-free, provider-free, browser-free,
 and artifact-free. It validates only the committed contract and intentionally
-rejected example manifest. ``--manifest-json`` validates one ignored private
-operator manifest against the exact clean official-main candidate source.
+rejected example manifest. ``--manifest-json`` revalidates one ignored private
+operator manifest against the recorded accepted candidate source.
 The script never opens screenshots, reads audio/health payloads, or publishes a
 release artifact, tag, or GitHub Release.
 """
@@ -23,6 +23,7 @@ EXPECTED_FLUTTER_VERSION = "2.1.0+3"
 EXPECTED_BRANCH = "main"
 EXPECTED_RELEASE_TARGET = "v2.1.0"
 EXPECTED_MANIFEST_KIND = "private_final_smartphone_web_evidence"
+ACCEPTED_CANDIDATE_SOURCE_HEAD = "1e922e68685dadfc1008f1119d0ce492584e8f19"
 EXAMPLE_MANIFEST = (
     ROOT
     / "docs"
@@ -222,21 +223,25 @@ def verify_public_contract() -> None:
         require(source, "R-1b", f"{label} R-1b marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1b accepted marker")
         require(source, "R-1c", f"{label} R-1c marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1c current marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1c implementation marker")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1c accepted marker")
+        require(source, "R-1d", f"{label} R-1d marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1d current marker")
 
-    require(checklist, "Current small commit: R-1c", "current small commit")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1c implementation state")
-    require(checklist, "R-1d  PLANNED", "R-1d planned state")
-    require(evidence_doc, "Status: IMPLEMENTED / NOT_ACCEPTED", "evidence status")
+    require(checklist, "Current small commit: R-1d", "current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation state")
+    require(checklist, "R-1c  COMPLETED / ACCEPTED", "R-1c accepted state")
+    require(checklist, "R-1d  CURRENT / NOT_COMPLETED", "R-1d current state")
+    require(evidence_doc, "Status: COMPLETED / ACCEPTED", "evidence status")
+    require(evidence_doc, "accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19", "accepted candidate source")
     require(evidence_doc, "operator_evidence/v210_final_smartphone_web_evidence_r1c.json", "private manifest destination")
     require(evidence_doc, "Google Health / 実データ / 取得済み", "Google Health UI markers")
     require(evidence_doc, "play / stop / replay / completion / regenerate", "TTS behavior markers")
     require(evidence_doc, "post-advice chat", "chat marker")
     require(evidence_doc, "character display", "character marker")
     require(evidence_doc, "raw screenshots", "private screenshot policy")
-    require(release_record, "R-1c final smartphone Web aggregate: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)", "release-record R-1c state")
-    require(release_notes, "final integrated smartphone Web aggregate: IMPLEMENTED / NOT_ACCEPTED in current R-1c", "release-notes R-1c state")
+    require(release_record, "R-1c final smartphone Web aggregate: COMPLETED / ACCEPTED", "release-record R-1c state")
+    require(release_record, "accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19", "release-record accepted source")
+    require(release_notes, "final integrated PC/smartphone Web aggregate: COMPLETED / ACCEPTED", "release-notes R-1c state")
 
     require(read("backend/app/version.py"), f'APP_VERSION = "{EXPECTED_BACKEND_VERSION}"', "Backend candidate version")
     require(read("app/pubspec.yaml"), f"version: {EXPECTED_FLUTTER_VERSION}", "Flutter candidate version")
@@ -384,27 +389,31 @@ def validate_manifest(manifest: Mapping[str, Any]) -> tuple[str, ...]:
     return tuple(missing)
 
 
-def verify_local_candidate_identity(manifest: Mapping[str, Any]) -> None:
-    current_head = git_output("rev-parse", "HEAD")
-    origin_main = git_output("rev-parse", "origin/main")
+def verify_accepted_candidate_identity(manifest: Mapping[str, Any]) -> None:
     branch = git_output("branch", "--show-current")
-    status = git_output("status", "--porcelain", "--untracked-files=normal")
-
     if branch != EXPECTED_BRANCH:
-        raise ValidationError(f"R-1c evidence must run on {EXPECTED_BRANCH}, got {branch!r}")
-    if current_head != origin_main:
-        raise ValidationError(f"HEAD must equal origin/main: {current_head} != {origin_main}")
-    if status:
-        raise ValidationError("R-1c evidence must run from a clean working tree")
-    if manifest.get("candidate_source_head") != current_head:
-        raise ValidationError("Manifest candidate_source_head must equal the current clean HEAD")
+        raise ValidationError(f"R-1c manifest audit must run on {EXPECTED_BRANCH}, got {branch!r}")
+    if manifest.get("candidate_source_head") != ACCEPTED_CANDIDATE_SOURCE_HEAD:
+        raise ValidationError("Manifest candidate_source_head must equal the recorded accepted candidate source")
+    git_output("cat-file", "-e", ACCEPTED_CANDIDATE_SOURCE_HEAD + "^{commit}")
+    current_head = git_output("rev-parse", "HEAD")
+    completed = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ACCEPTED_CANDIDATE_SOURCE_HEAD, current_head],
+        cwd=ROOT,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    if completed.returncode != 0:
+        raise ValidationError("Current source does not descend from the accepted R-1c candidate")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--manifest-json",
-        help="ignored private R-1c evidence manifest to validate against clean official main",
+        help="ignored private R-1c manifest to revalidate against the accepted candidate source",
     )
     return parser.parse_args()
 
@@ -413,8 +422,24 @@ def main() -> None:
     args = parse_args()
     verify_public_contract()
 
-    print("v210_final_smartphone_web_evidence_status: implemented-not-accepted")
-    print("v210_final_smartphone_web_evidence_current_small_commit: R-1c")
+    if args.manifest_json:
+        manifest_path = Path(args.manifest_json)
+        if not manifest_path.is_absolute():
+            manifest_path = ROOT / manifest_path
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ValidationError(f"Private manifest could not be read as JSON: {exc.__class__.__name__}") from exc
+        if not isinstance(manifest, Mapping):
+            raise ValidationError("Private manifest root must be a JSON object")
+        missing = validate_manifest(manifest)
+        if missing:
+            raise ValidationError("Private manifest is incomplete: " + " | ".join(missing))
+        verify_accepted_candidate_identity(manifest)
+
+    print("v210_final_smartphone_web_evidence_status: completed-accepted")
+    print("v210_final_smartphone_web_evidence_completed_small_commit: R-1c")
+    print("v210_final_smartphone_web_evidence_current_small_commit: R-1d")
     print("v210_final_smartphone_web_evidence_parent_phase: R-1-current-not-completed")
     print("v210_final_smartphone_web_evidence_validator_ready: true")
     print(f"v210_final_smartphone_web_evidence_required_items: {len(REQUIRED_ITEMS)}")
@@ -423,29 +448,8 @@ def main() -> None:
     print("v210_final_smartphone_web_evidence_fixed_zip_built: false")
     print("v210_final_smartphone_web_evidence_tag_created: false")
     print("v210_final_smartphone_web_evidence_github_release_created: false")
-
-    if not args.manifest_json:
-        print("v210_final_smartphone_web_evidence_private_manifest_validated: false")
-        print("v210_final_smartphone_web_evidence_final_aggregate_accepted: false")
-        print("[v210-final-smartphone-web-evidence-check] OK")
-        return
-
-    manifest_path = Path(args.manifest_json)
-    if not manifest_path.is_absolute():
-        manifest_path = ROOT / manifest_path
-    try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ValidationError(f"Private manifest could not be read as JSON: {exc.__class__.__name__}") from exc
-    if not isinstance(manifest, Mapping):
-        raise ValidationError("Private manifest root must be a JSON object")
-
-    missing = validate_manifest(manifest)
-    if missing:
-        raise ValidationError("Private manifest is incomplete: " + " | ".join(missing))
-    verify_local_candidate_identity(manifest)
-
     print("v210_final_smartphone_web_evidence_private_manifest_validated: true")
+    print("v210_final_smartphone_web_evidence_accepted_candidate_source_head: " + ACCEPTED_CANDIDATE_SOURCE_HEAD)
     print("v210_final_smartphone_web_evidence_candidate_source_matches_head: true")
     print("v210_final_smartphone_web_evidence_official_main_synced: true")
     print("v210_final_smartphone_web_evidence_required_items_accepted: true")

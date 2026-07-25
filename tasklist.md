@@ -13,10 +13,10 @@ release / annotated tag: DRC_v2.0.1
 v2.0.1 status: RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 current development line: v2.1.0
-current small commit: R-1c CURRENT / NOT_COMPLETED
-current implementation step: R-1c CURRENT / NOT_COMPLETED
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
-completed phase: V-1 COMPLETED / ACCEPTED
+current small commit: R-1d CURRENT / NOT_COMPLETED
+current implementation step: R-1d CURRENT / NOT_COMPLETED
+current implementation state: NOT_STARTED
+completed small commit: R-1c COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -76,9 +76,9 @@ Small-commit split:
 ```text
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
-R-1c  CURRENT / NOT_COMPLETED  Final smartphone Web evidence aggregate
-      IMPLEMENTED / NOT_ACCEPTED
-R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
+R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
+R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
+      NOT_STARTED
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
@@ -974,4 +974,4 @@ v2.1.0はW-1からW-5、C-1、T-1、V-1まで受け入れ済みで、Google Heal
 - [ ] T-1c: commit implementation only after all tests/builds pass
 - [x] Restore and track `app/windows/flutter/CMakeLists.txt`; scope the root SDK ignore to `/flutter/`.
 
-R-1c実装はIMPLEMENTED / NOT_ACCEPTED。公開側にはfinal PC/スマートフォンWeb evidence契約、拒否状態example、validatorのみを追加する。実装commitをpush後、cleanな`main == origin/main`でignored private manifestを作成し、Google Health実データ、daily advice、post-advice chat、実TTS再生、character表示、final integrated reviewをPC/スマートフォンWebで確認する。raw screenshot/audio/health値/token/path/LAN IP/operator evidenceはGit外。固定ZIP、tag、GitHub ReleaseはR-1d/R-1eまで未実施。
+R-1cはCOMPLETED / ACCEPTED。cleanな`main == origin/main`の実装commit `1e922e68685dadfc1008f1119d0ce492584e8f19`に対してignored private manifestがvalidateされ、Google Health実データ、Framework daily advice、live post-advice chat、実TTS再生、character表示、final integrated reviewの6項目をPC/スマートフォンWebで確認済み。raw screenshot/audio/health値/token/path/LAN IP/operator evidenceはGit外。R-1dはCURRENT / NOT_COMPLETEDで、固定ZIP、tag、GitHub Releaseは未実施。

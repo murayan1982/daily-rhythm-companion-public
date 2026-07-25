@@ -3,7 +3,7 @@
 Updated: 2026-07-25
 Status: COMPLETED / ACCEPTED
 Completed small commit: R-1a
-Current small commit: R-1c
+Current small commit: R-1d
 Parent phase: R-1 CURRENT / NOT_COMPLETED
 
 ## Purpose
@@ -108,9 +108,9 @@ No v2.1.0 fixed ZIP, `DRC_v2.1.0` annotated tag, or v2.1.0 GitHub Release is cre
 ```text
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
-R-1c  CURRENT / NOT_COMPLETED  Final smartphone Web evidence aggregate
-      IMPLEMENTED / NOT_ACCEPTED
-R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
+R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
+R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
+      NOT_STARTED
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
@@ -179,15 +179,20 @@ scripts/check_v210_fixed_release_zip.py
 
 This later transition does not retroactively alter the R-1a acceptance record or claim a fixed ZIP, tag, GitHub Release, provider execution, or final smartphone Web aggregate.
 
-## Current R-1c implementation transition
+## Accepted R-1c evidence transition
 
-The separately checked R-1c implementation adds the final PC/smartphone Web evidence contract, a deliberately rejected public example manifest, and a validator for one ignored private manifest. This transition does not claim final evidence acceptance. It keeps the R-1a snapshot and accepted R-1b candidate gate intact while changing the current source-tree aggregate from 18 accepted historical child checks to 19 current checks including the R-1c validator.
+The separately checked R-1c implementation added the final PC/smartphone Web evidence contract, a deliberately rejected public example manifest, and a validator for one ignored private manifest. The private manifest validated against exact clean synchronized candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19` after all six required evidence items were reviewed with the actual DRC Backend on PC and smartphone Web. The accepted R-1a snapshot and R-1b candidate gate remain intact, and the current source-tree aggregate retains 19 checks including the accepted R-1c validator.
 
 ```text
-final private manifest validated: false
-final PC Web aggregate accepted: false
-final smartphone Web aggregate accepted: false
+accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19
+final private manifest validated: true
+required evidence items accepted: 6 / 6
+final PC Web aggregate accepted: true
+final smartphone Web aggregate accepted: true
+public-safe opaque screenshot references recorded: true
+raw/private evidence committed: false
 fixed ZIP built: false
 tag created: false
 GitHub Release created: false
+R-1d current/not completed: true
 ```

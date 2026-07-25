@@ -2,7 +2,7 @@
 
 Updated: 2026-07-25
 Status: PREPARED / NOT_RELEASED
-Current phase: R-1c CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
+Current phase: R-1d CURRENT / NOT_COMPLETED (NOT_STARTED)
 
 ## Candidate identity
 
@@ -35,25 +35,29 @@ No value in this prepared record claims that a v2.1.0 artifact or publication ex
 ```text
 R-1a release/readiness inventory: COMPLETED / ACCEPTED
 R-1b aggregate gate and candidate metadata: COMPLETED / ACCEPTED (implementation commit 72dd42c)
-R-1c final smartphone Web aggregate: CURRENT / NOT_COMPLETED (IMPLEMENTED / NOT_ACCEPTED)
-R-1d fixed ZIP build and same-artifact verification: PLANNED
+R-1c final smartphone Web aggregate: COMPLETED / ACCEPTED
+R-1d fixed ZIP build and same-artifact verification: CURRENT / NOT_COMPLETED (NOT_STARTED)
 R-1e publication and post-publication verification: PLANNED
 parent R-1: CURRENT / NOT_COMPLETED
 ```
 
-## R-1c evidence placeholder
+## R-1c accepted evidence record
 
 ```text
-R-1c implementation commit: NOT_RECORDED
-accepted candidate source HEAD: NOT_RECORDED
-private manifest validation: NOT_COMPLETED
-PC Web final aggregate: NOT_COMPLETED
-smartphone Web final aggregate: NOT_COMPLETED
-public-safe screenshot references: NOT_RECORDED
+R-1c implementation commit: 1e922e6
+accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19
+private manifest validation: COMPLETED / ACCEPTED
+required evidence items: 6 / 6 accepted
+PC Web final aggregate: COMPLETED / ACCEPTED
+smartphone Web final aggregate: COMPLETED / ACCEPTED
+actual DRC Backend API used: true
+public-safe screenshot references: RECORDED_AS_OPAQUE_PRIVATE_URIS
 raw/private evidence committed: false
+fixed ZIP built by R-1c: false
+tag or GitHub Release created by R-1c: false
 ```
 
-These placeholders may be filled only by the later public-safe R-1c acceptance synchronization after the ignored private manifest validates against clean synchronized `main`.
+The ignored manifest and raw evidence remain outside Git. R-1d must use a later clean committed source HEAD for the one-time fixed ZIP and same-artifact verification.
 
 ## Immutable historical releases
 

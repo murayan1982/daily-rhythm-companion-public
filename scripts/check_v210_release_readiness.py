@@ -183,15 +183,17 @@ def verify_contract() -> None:
         require(source, "R-1b", f"{label} R-1b marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1b accepted marker")
         require(source, "R-1c", f"{label} R-1c marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1c current marker")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1c implementation marker")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1c accepted marker")
+        require(source, "R-1d", f"{label} R-1d marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1d current marker")
 
-    require(checklist, "Current small commit: R-1c", "current small commit")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1c implementation state")
+    require(checklist, "Current small commit: R-1d", "current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted state")
-    require(checklist, "R-1c  CURRENT / NOT_COMPLETED", "R-1c current state")
+    require(checklist, "R-1c  COMPLETED / ACCEPTED", "R-1c accepted state")
+    require(checklist, "R-1d  CURRENT / NOT_COMPLETED", "R-1d current state")
     require(checklist, "R-1e  PLANNED", "R-1e planned state")
 
     backend_version = read("backend/app/version.py")
@@ -208,8 +210,13 @@ def verify_contract() -> None:
     require(readiness, "flutter build windows", "Windows build requirement")
     require(readiness, "does not invoke build_release.bat", "artifact-free boundary")
     require(readiness, "accepted R-1b record of 18 / 18 checks", "accepted R-1b check count")
-    require(readiness, "nineteenth child check", "current R-1c aggregate count")
-    require(evidence_doc, "Status: IMPLEMENTED / NOT_ACCEPTED", "R-1c evidence status")
+    require(readiness, "nineteenth child check", "accepted R-1c aggregate count")
+    require(evidence_doc, "Status: COMPLETED / ACCEPTED", "R-1c evidence status")
+    require(
+        evidence_doc,
+        "accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19",
+        "accepted R-1c candidate source",
+    )
 
     for child in AGGREGATE_CHECKS:
         if not (ROOT / child).is_file():
@@ -247,7 +254,7 @@ def verify_contract() -> None:
 
     for relative in R1D_FILES_MUST_NOT_EXIST:
         if (ROOT / relative).exists():
-            raise AssertionError(f"R-1b must not create R-1d implementation: {relative}")
+            raise AssertionError(f"R-1c acceptance sync must not create R-1d implementation: {relative}")
 
     assert_hashes(PROTECTED_HISTORICAL_HASHES, "Protected historical release record")
     assert_hashes(PROTECTED_GENERIC_PACKAGE_HASHES, "Protected generic package boundary")
@@ -331,13 +338,14 @@ def main() -> None:
 
     print("v210_release_readiness_status: completed-accepted")
     print("v210_release_readiness_completed_small_commit: R-1b")
-    print("v210_release_readiness_current_small_commit: R-1c")
+    print("v210_release_readiness_accepted_small_commit: R-1c")
+    print("v210_release_readiness_current_small_commit: R-1d")
     print("v210_release_readiness_parent_phase: R-1-current-not-completed")
     print(f"v210_release_readiness_backend_version: {EXPECTED_BACKEND_VERSION}")
     print(f"v210_release_readiness_flutter_version: {EXPECTED_FLUTTER_VERSION}")
     print("v210_release_readiness_accepted_r1b_aggregate_checks: 18")
     print(f"v210_release_readiness_aggregate_checks: {len(AGGREGATE_CHECKS)}")
-    print("v210_release_readiness_r1c_status: implemented-not-accepted")
+    print("v210_release_readiness_r1c_status: completed-accepted")
     print("v210_release_readiness_v20x_compatibility_gate: true")
     print(f"v210_release_readiness_expected_backend_tests: {EXPECTED_BACKEND_TESTS}")
     print(f"v210_release_readiness_expected_flutter_tests: {EXPECTED_FLUTTER_TESTS}")

@@ -1,8 +1,9 @@
 # Daily Rhythm Companion v2.1.0 R-1c final PC/smartphone Web evidence aggregate
 
 Updated: 2026-07-25
-Status: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: R-1c — CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
+Completed small commit: R-1c
+Current small commit: R-1d — CURRENT / NOT_COMPLETED
 Parent phase: R-1 — CURRENT / NOT_COMPLETED
 Release state: CANDIDATE / NOT_RELEASED
 Accepted prerequisite: R-1a — COMPLETED / ACCEPTED at implementation commit `dbc84db`
@@ -12,7 +13,7 @@ Accepted prerequisite: R-1b — COMPLETED / ACCEPTED at implementation commit `7
 
 R-1c defines the final integrated PC and smartphone Flutter Web checkpoint for the exact clean v2.1.0 candidate source. It combines the accepted Google Health, daily advice, post-advice chat, in-app TTS, and deterministic character display surfaces into one public-safe private-manifest validation boundary.
 
-The committed implementation does not claim that the final checkpoint has run. It provides:
+The accepted R-1c record confirms that the final checkpoint ran against exact candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19`. The committed public-safe implementation and acceptance record provide:
 
 ```text
 docs/v210_final_smartphone_web_evidence.md
@@ -167,16 +168,26 @@ operator_evidence files
 
 Only a later acceptance-sync commit may record boolean/classification outcomes and the accepted candidate source commit. It must not copy the ignored manifest or raw evidence into Git.
 
-## Current implementation state
+## Acceptance record
 
 ```text
-validator and rejected example: implemented
-private final manifest validation: not performed
-final PC Web aggregate: not accepted
-final smartphone Web aggregate: not accepted
+accepted on: 2026-07-25
+implementation commit: 1e922e6
+accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19
+private final manifest validation: completed / accepted
+required evidence items: 6 / 6 accepted
+actual DRC Backend API used: true
+final PC Web aggregate: completed / accepted
+final smartphone Web aggregate: completed / accepted
+Google Health real request and normalized display: accepted
+Framework daily advice and live post-advice chat: accepted
+real Framework/TTS play / stop / replay / completion / regenerate: accepted
+deterministic character display and final integrated review: accepted
+public-safe opaque screenshot references: recorded
+raw screenshots/audio/health data/private values committed: false
 fixed ZIP: not built
 DRC_v2.1.0 tag: not created
 GitHub Release: not created
 ```
 
-R-1c remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`. R-1d and R-1e remain `PLANNED`.
+R-1c is `COMPLETED / ACCEPTED`. R-1d is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; R-1e remains `PLANNED`.

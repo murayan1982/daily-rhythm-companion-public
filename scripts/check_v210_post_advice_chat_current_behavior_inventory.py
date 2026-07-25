@@ -82,7 +82,7 @@ def main() -> None:
     require(checklist, "C-1b  COMPLETED / ACCEPTED", "C-1b accepted state")
     require(checklist, "C-1c  COMPLETED / ACCEPTED", "C-1c accepted state")
     require(roadmap, "Current small commit: R-1", "roadmap current state")
-    require(tasklist, "current small commit: R-1c CURRENT / NOT_COMPLETED", "tasklist current state")
+    require(tasklist, "current small commit: R-1d CURRENT / NOT_COMPLETED", "tasklist current state")
     require(scripts_readme, "check_v210_post_advice_chat_backend_lifecycle.py", "C-1b command")
 
     require(inventory, "Status: C-1a COMPLETED / ACCEPTED", "inventory accepted status")

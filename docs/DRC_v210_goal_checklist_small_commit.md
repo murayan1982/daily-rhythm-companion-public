@@ -2,9 +2,9 @@
 
 Updated: 2026-07-25
 Status: IN_PROGRESS
-Current small commit: R-1c — final smartphone Web evidence aggregate
+Current small commit: R-1d — one-time fixed ZIP build and same-artifact verification
 Current small-commit state: CURRENT / NOT_COMPLETED
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
+Current implementation state: NOT_STARTED
 Parent R-1 state: CURRENT / NOT_COMPLETED
 W-1 state: COMPLETED / ACCEPTED
 W-2 state: COMPLETED / ACCEPTED
@@ -93,13 +93,13 @@ R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartp
                               fixed-ZIP verification, approval, and release preparation
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
   R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
-  R-1c  CURRENT / NOT_COMPLETED                     Final smartphone Web evidence aggregate
-         IMPLEMENTED / NOT_ACCEPTED
-  R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
+  R-1c  COMPLETED / ACCEPTED                     Final smartphone Web evidence aggregate
+  R-1d  CURRENT / NOT_COMPLETED                    One-time fixed ZIP build and same-artifact verification
+         NOT_STARTED
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
-W-1 through W-5, C-1, T-1, and V-1 are completed and accepted. The configured Google Health path was verified with Fitbit Versa 2-origin sleep on PC and smartphone Web. T-1 real in-app TTS playback, expiry mapping, and regeneration were verified on PC and smartphone Web. R-1a is completed and accepted; R-1b is completed/accepted; R-1c is current/not completed and implemented/not accepted; R-1d and R-1e remain planned.
+W-1 through W-5, C-1, T-1, V-1, R-1a, R-1b, and R-1c are completed and accepted. The final exact-candidate PC/smartphone Web aggregate accepted Google Health real-data presentation, Framework daily advice and live post-advice chat, real in-app TTS playback/recovery, deterministic character display, and the integrated daily loop. R-1d is current/not completed and not started; R-1e remains planned.
 
 ---
 
@@ -1512,9 +1512,9 @@ Small-commit split:
 ```text
 R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
 R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
-R-1c  CURRENT / NOT_COMPLETED  Final smartphone Web evidence aggregate
-      IMPLEMENTED / NOT_ACCEPTED
-R-1d  PLANNED                  One-time fixed ZIP build and same-artifact verification
+R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
+R-1d  CURRENT / NOT_COMPLETED  One-time fixed ZIP build and same-artifact verification
+      NOT_STARTED
 R-1e  PLANNED                  Explicit approval, publication, and post-publication verification
 ```
 
@@ -1598,7 +1598,7 @@ R-1a and R-1b are COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPL
 Status: COMPLETED / ACCEPTED
 Implementation state: COMPLETED / ACCEPTED
 Completed small commit: R-1b
-Current small commit: R-1c
+Current small commit: R-1d
 
 Implementation commit:
 
@@ -1675,9 +1675,10 @@ R-1b is COMPLETED / ACCEPTED. R-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / 
 
 ## R-1c — Final PC/smartphone Web evidence aggregate
 
-Status: CURRENT / NOT_COMPLETED
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
-Current small commit: R-1c
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
+Completed small commit: R-1c
+Current small commit: R-1d
 Parent R-1: CURRENT / NOT_COMPLETED
 
 Purpose:
@@ -1699,41 +1700,43 @@ docs/operator_evidence_templates/v210_final_smartphone_web_evidence_r1c.example.
 scripts/check_v210_final_smartphone_web_evidence.py
 ```
 
-Required private manifest destination:
+Accepted private manifest destination:
 
 ```text
 operator_evidence/v210_final_smartphone_web_evidence_r1c.json
 ```
 
-The committed example remains deliberately rejected. The ignored private manifest may
-be accepted only after the final candidate is committed and pushed, `HEAD == origin/main`,
-the working tree is clean, and the operator has reviewed all six required evidence items
-on both PC and smartphone Web. Screenshot references must use public-safe opaque
-`private-operator-evidence://v210/r1c/...` values; raw files and private values remain outside Git.
-
-Implementation verification:
-
-```powershell
-python -m compileall -q backend scripts
-python scripts\check_v210_final_smartphone_web_evidence.py
-python scripts\check_v210_release_readiness.py --with-flutter --with-builds
-git diff --check
-```
-
-Current state:
+Acceptance record:
 
 ```text
-validator and rejected example: implemented
-private manifest accepted: false
-final PC Web aggregate accepted: false
-final smartphone Web aggregate accepted: false
+accepted on: 2026-07-25
+implementation commit: 1e922e6
+accepted candidate source HEAD: 1e922e68685dadfc1008f1119d0ce492584e8f19
+private manifest validation: passed
+required evidence items: 6 / 6 accepted
+actual DRC Backend API used: true
+final PC Web aggregate: COMPLETED / ACCEPTED
+final smartphone Web aggregate: COMPLETED / ACCEPTED
+public-safe opaque screenshot references: recorded
+raw/private evidence committed: false
 fixed ZIP built: false
 tag created: false
 GitHub Release created: false
 ```
 
-R-1c remains `CURRENT / NOT_COMPLETED` and `IMPLEMENTED / NOT_ACCEPTED`.
-R-1d and R-1e remain `PLANNED`.
+Acceptance-sync verification before commit:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v210_final_smartphone_web_evidence.py
+python scripts\check_v210_final_smartphone_web_evidence.py `
+  --manifest-json .\operator_evidence\v210_final_smartphone_web_evidence_r1c.json
+python scripts\check_v210_release_readiness.py --with-flutter --with-builds
+git diff --check
+```
+
+R-1c is `COMPLETED / ACCEPTED`.
+R-1d is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; R-1e remains `PLANNED`.
 
 T-1c Visual Studio 18 compatibility correction:
 

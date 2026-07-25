@@ -128,8 +128,8 @@ def main() -> None:
 
     require(checklist, "V-1b  COMPLETED / ACCEPTED", "accepted V-1b state")
     require(checklist, "V-1c  COMPLETED / ACCEPTED", "accepted V-1c state")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1c implementation marker")
-    require(checklist, "Current small commit: R-1c", "R-1c current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation marker")
+    require(checklist, "Current small commit: R-1d", "R-1d current small commit")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "R-1 current state")
 
     for marker in (

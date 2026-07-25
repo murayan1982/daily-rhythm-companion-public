@@ -6,7 +6,7 @@ Current source candidate metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**NOT_RELEAS
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Current development line: v2.1.0
-Current small commit: R-1c — final smartphone Web evidence aggregate (**CURRENT / NOT_COMPLETED; IMPLEMENTED / NOT_ACCEPTED**)
+Current small commit: R-1d — one-time fixed ZIP build and same-artifact verification (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 Strategic target: v3.0.0
 
 ---
@@ -505,9 +505,9 @@ V-1  COMPLETED / ACCEPTED                  Character display extraction and dete
 R-1  CURRENT / NOT_COMPLETED                  v2.1.0 aggregate readiness, smartphone Web evidence, and release preparation
   R-1a  COMPLETED / ACCEPTED                     Release/readiness current behavior inventory
   R-1b  COMPLETED / ACCEPTED                     Aggregate source-tree/test gate and v2.1.0 candidate metadata
-  R-1c  CURRENT / NOT_COMPLETED                     Final smartphone Web evidence aggregate
+  R-1c  COMPLETED / ACCEPTED                     Final smartphone Web evidence aggregate
+  R-1d  CURRENT / NOT_COMPLETED                    One-time fixed ZIP build and same-artifact verification
          NOT_STARTED
-  R-1d  PLANNED                                    One-time fixed ZIP build and same-artifact verification
   R-1e  PLANNED                                    Explicit approval, publication, and post-publication verification
 ```
 
@@ -6636,4 +6636,4 @@ Day83 does not build release zips, call providers, call Google Health, start the
 
 If Day83 causes source changes, build a new fixed zip once after Day83 source checks pass and reuse that zip for the final Day83 verification.
 
-R-1c is CURRENT / NOT_COMPLETED and IMPLEMENTED / NOT_ACCEPTED. The candidate now contains a final PC/smartphone Web evidence validator and rejected public example. Acceptance still requires a clean synchronized implementation commit plus an ignored private manifest covering Google Health real-data presentation, daily advice, post-advice chat, in-app TTS, deterministic character display, private screenshot review, and the final integrated daily loop. R-1d/R-1e remain planned and no fixed ZIP, tag, or GitHub Release exists.
+R-1c is COMPLETED / ACCEPTED. The ignored private manifest validated against accepted candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19` after the actual DRC Backend, PC Web, and smartphone Web completed all six required evidence items. Raw screenshots and private values remain outside Git. R-1d is CURRENT / NOT_COMPLETED and no fixed ZIP, tag, or GitHub Release exists; R-1e remains planned.

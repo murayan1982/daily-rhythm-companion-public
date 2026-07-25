@@ -1,7 +1,7 @@
 """Validate the accepted R-1a release/readiness inventory.
 
 This source-tree-only check preserves the accepted R-1a snapshot while allowing
-the accepted R-1b candidate metadata and the implemented R-1c evidence validator while R-1c is current. It
+the accepted R-1b candidate metadata, accepted R-1c evidence record, and current R-1d pointer. It
 never reads credentials, executes providers, builds a ZIP, or inspects tags.
 """
 
@@ -111,15 +111,17 @@ def main() -> None:
         require(source, "R-1b", f"{label} R-1b marker")
         require(source, "COMPLETED / ACCEPTED", f"{label} R-1b accepted state")
         require(source, "R-1c", f"{label} R-1c marker")
-        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1c current state")
-        require(source, "IMPLEMENTED / NOT_ACCEPTED", f"{label} R-1c implementation state")
+        require(source, "COMPLETED / ACCEPTED", f"{label} R-1c accepted state")
+        require(source, "R-1d", f"{label} R-1d marker")
+        require(source, "CURRENT / NOT_COMPLETED", f"{label} R-1d current state")
 
-    require(checklist, "Current small commit: R-1c", "current small commit")
-    require(checklist, "Current implementation state: IMPLEMENTED / NOT_ACCEPTED", "R-1c implementation state")
+    require(checklist, "Current small commit: R-1d", "current small commit")
+    require(checklist, "Current implementation state: NOT_STARTED", "R-1d implementation state")
     require(checklist, "R-1  CURRENT / NOT_COMPLETED", "parent R-1 state")
     require(checklist, "R-1a  COMPLETED / ACCEPTED", "R-1a accepted queue state")
     require(checklist, "R-1b  COMPLETED / ACCEPTED", "R-1b accepted queue state")
-    require(checklist, "R-1c  CURRENT / NOT_COMPLETED", "R-1c current queue state")
+    require(checklist, "R-1c  COMPLETED / ACCEPTED", "R-1c accepted queue state")
+    require(checklist, "R-1d  CURRENT / NOT_COMPLETED", "R-1d current queue state")
     require(checklist, "R-1e  PLANNED", "R-1e queue state")
     require(inventory, "Backend pytest: 110 passed", "R-1a Backend snapshot")
     require(inventory, "Flutter test: 103 passed", "R-1a Flutter snapshot")
@@ -129,6 +131,7 @@ def main() -> None:
     require(inventory, "all check_v210_*.py: 18 / 18 passed", "accepted R-1a check count")
     require(inventory, "explicit operator approval: received", "R-1a operator acceptance")
     require(inventory, "Accepted R-1b candidate transition", "accepted R-1b transition marker")
+    require(inventory, "Accepted R-1c evidence transition", "accepted R-1c transition marker")
 
     require(read("backend/app/version.py"), 'APP_VERSION = "2.1.0"', "active R-1b Backend candidate")
     require(read("app/pubspec.yaml"), "version: 2.1.0+3", "active R-1b Flutter candidate")
@@ -188,7 +191,7 @@ def main() -> None:
 
     print("v210_release_readiness_inventory_status: completed-accepted")
     print("v210_release_readiness_inventory_completed_small_commit: R-1a")
-    print("v210_release_readiness_inventory_current_small_commit: R-1c")
+    print("v210_release_readiness_inventory_current_small_commit: R-1d")
     print("v210_release_readiness_inventory_parent_phase: R-1-current-not-completed")
     print("v210_release_readiness_inventory_snapshot_backend_version: 2.0.1")
     print("v210_release_readiness_inventory_snapshot_flutter_version: 2.0.1+2")
@@ -200,7 +203,7 @@ def main() -> None:
     print("v210_release_readiness_inventory_generic_package_checker: true")
     print("v210_release_readiness_inventory_v210_aggregate_gate: true")
     print("v210_release_readiness_inventory_r1c_validator: true")
-    print("v210_release_readiness_inventory_final_smartphone_web_aggregate: false")
+    print("v210_release_readiness_inventory_final_smartphone_web_aggregate: true")
     print("v210_release_readiness_inventory_fixed_zip_built: false")
     print("v210_release_readiness_inventory_tag_created: false")
     print("v210_release_readiness_inventory_github_release_created: false")

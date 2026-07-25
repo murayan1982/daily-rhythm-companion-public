@@ -16,8 +16,9 @@ current development line: v2.1.0
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: R-1c CURRENT / NOT_COMPLETED
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
+current small commit: R-1d CURRENT / NOT_COMPLETED
+current implementation state: NOT_STARTED
+completed small commit: R-1c COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 ```
@@ -4532,19 +4533,19 @@ backend tests, 57 Flutter tests, and operator-confirmed Fitbit Versa 2 origin.
 Screenshots and private sleep values remain outside Git. Parent W-5 is completed;
 C-1, T-1, and V-1 are completed and accepted; R-1a is completed/accepted; R-1b is completed/accepted at implementation commit `72dd42c`; R-1c is current/not completed and implemented/not accepted.
 
-## v2.1.0 R-1c final PC/smartphone Web evidence validator
+## v2.1.0 R-1c accepted final PC/smartphone Web evidence validator
 
 ```powershell
 python scripts\check_v210_final_smartphone_web_evidence.py
 ```
 
-The default check is credential-free, provider-free, browser-free, screenshot-free, and artifact-free. It validates the committed R-1c contract and confirms that the public example manifest is deliberately rejected. It does not count source-tree, API-only, command-output-only, mock-only, fallback-only, skipped, unavailable, or placeholder evidence as final acceptance.
+The default check is credential-free, provider-free, browser-free, screenshot-free, and artifact-free. It validates the committed accepted R-1c record, confirms that the public example manifest remains deliberately rejected, and records accepted candidate source `1e922e68685dadfc1008f1119d0ce492584e8f19` without reading ignored evidence.
 
-After the R-1c implementation commit is pushed and the final candidate has been reviewed on PC and smartphone Web, validate the ignored private manifest with:
+The ignored private manifest may be revalidated locally with:
 
 ```powershell
 python scripts\check_v210_final_smartphone_web_evidence.py `
   --manifest-json .\operator_evidence\v210_final_smartphone_web_evidence_r1c.json
 ```
 
-Manifest validation requires a clean `main`, `HEAD == origin/main`, matching 40-character `candidate_source_head`, Backend `2.1.0`, Flutter `2.1.0+3`, six accepted evidence items, public-safe opaque screenshot references, and no committed raw/private evidence. R-1c remains IMPLEMENTED / NOT_ACCEPTED until that private validation and later public-safe acceptance synchronization pass.
+The accepted record covers six evidence items on PC and smartphone Web, public-safe opaque screenshot references, actual DRC Backend use, real Google Health and Framework/TTS execution, and no committed raw/private evidence. R-1c is `COMPLETED / ACCEPTED`; R-1d is `CURRENT / NOT_COMPLETED` and owns the one-time fixed ZIP plus same-artifact verification.
