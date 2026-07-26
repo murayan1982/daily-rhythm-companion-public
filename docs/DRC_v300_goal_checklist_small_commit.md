@@ -7,22 +7,24 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-0 CURRENT / NOT_COMPLETED
-Current small commit: RT-0b CURRENT / NOT_COMPLETED
-Current implementation step: released Framework public realtime readiness review
+Current small commit: RT-0c CURRENT / NOT_COMPLETED
+Current implementation step: blocked/unblocked decision and DRC-to-FW handoff boundary
 Current implementation state: NOT_STARTED
-Completed small commit: RT-0a COMPLETED / ACCEPTED
-Next acceptance action: inspect released Framework public APIs and record the RT-0b readiness matrix without changing DRC or Framework runtime
+Completed small commit: RT-0b COMPLETED / ACCEPTED
+Next acceptance action: define the RT-0c handoff order without starting RT-1 or changing Framework
 ```
 
 ## Source of truth
 
 This file is the active v3.0.0 small-commit checklist.
 
-Supporting RT-0a inventory:
+Supporting RT-0 inventories and checks:
 
 ```text
 docs/v300_realtime_current_behavior_inventory.md
 scripts/check_v300_realtime_current_behavior_inventory.py
+docs/v300_framework_realtime_contract_readiness.md
+scripts/check_v300_framework_realtime_contract_readiness.py
 ```
 
 Historical release sources remain immutable:
@@ -107,9 +109,9 @@ None of those states may be substituted for another.
 
 ```text
 RT-0a  COMPLETED / ACCEPTED      Inventory current DRC realtime-related code and freeze the v3 planning boundary
-RT-0b  CURRENT / NOT_COMPLETED   Verify released Framework public realtime prerequisites and classify every gap
+RT-0b  COMPLETED / ACCEPTED     Verify released Framework public realtime prerequisites and classify every gap
+RT-0c  CURRENT / NOT_COMPLETED   Accept the blocked/unblocked decision and freeze the DRC-to-FW handoff boundary
         NOT_STARTED
-RT-0c  PLANNED                   Accept the blocked/unblocked decision and freeze the DRC-to-FW handoff boundary
 ```
 
 RT-1 through RT-9 remain blocked until RT-0c accepts that the required Framework
@@ -268,24 +270,149 @@ Do not wire STT, streaming LLM, cancellation, TTS queues, barge-in, or motion ex
 Do not modify AI Character Framework.
 RT-0a was marked accepted only after local verification and operator approval.
 RT-0a implementation did not start RT-0b; RT-0b becomes current only after RT-0a acceptance.
+Historical RT-0a acceptance marker: `RT-0c  PLANNED`.
 ```
 
-## Current RT-0b output
-
-RT-0b is CURRENT / NOT_COMPLETED and NOT_STARTED. It will inspect the released AI Character Framework public surface and classify:
+## RT-0b purpose
 
 ```text
-voice-input/STT session
-realtime lifecycle/event model
-streaming result model
-hard cancellation and interruption
-TTS queue/output control
-motion-event/VTS adapter
-provider-neutral capability report
-typed results and public errors
-installable/project-root-independent import
-session close/dispose
+- Inspect the released AI Character Framework v5.0.0 public host-app surface.
+- Freeze the exact released commit and public export inventory used for the review.
+- Classify every v3 prerequisite as READY_CURRENT_USE, PARTIAL_BLOCKING,
+  MISSING_BLOCKING, or DEFECT_BLOCKING.
+- Preserve the accepted v4 text-chat and v5 one-shot voice-output behavior while
+  distinguishing it from full realtime readiness.
+- Record the accumulated DRC real-app integration feedback and new realtime gaps.
+- Make no DRC or Framework runtime change and perform no real provider execution.
 ```
 
-The review will use released/verifiable public APIs only. Framework internals or
-unreleased source candidates cannot unblock DRC.
+At RT-0a acceptance, RT-0b was `NOT_STARTED`. RT-0b is now COMPLETED / ACCEPTED after the RT-0a/RT-0b gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval passed.
+
+## RT-0b released Framework snapshot
+
+```text
+Repository: murayan1982/ai-character-framework
+Released line: v5.0.0
+Inspected public-source commit: 6494da306015c4f714f869b43e773ba51a2478a2
+Release implementation commit: a2df57e2e8ed226b7c9e9c72ed68a79c8a48b6db
+RT-0b readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+```
+
+Detailed matrix:
+
+```text
+docs/v300_framework_realtime_contract_readiness.md
+```
+
+Credential-free source-tree gate:
+
+```text
+scripts/check_v300_framework_realtime_contract_readiness.py
+```
+
+## RT-0b readiness summary
+
+```text
+READY_CURRENT_USE:
+- full-response public text chat for existing v2.1.0 use;
+- one-shot provider-neutral voice-output request/result and opaque handoff.
+
+PARTIAL_BLOCKING:
+- text streaming and state/events;
+- typed results/public errors across all session types;
+- consolidated capability reporting;
+- project-root-independent stable factories;
+- provider config responsibility;
+- session close/dispose.
+
+MISSING_BLOCKING:
+- public voice-input/STT session;
+- unified realtime session/lifecycle;
+- provider-level hard cancellation;
+- TTS queue/cancel/flush and barge-in acknowledgement;
+- public motion-event/Live2D/VTS adapter;
+- installable SDK packaging boundary.
+
+DEFECT_BLOCKING:
+- released README uses session.speak(...), while the released implementation
+  exposes VoiceOutputSession.create_output(...) and no speak() method.
+```
+
+RT-0b records Framework feedback `FW-F1` through `FW-F12`. RT-0c owns their
+handoff ordering and the explicit blocked/unblocked acceptance decision.
+
+## RT-0b change surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_framework_realtime_contract_readiness.md
+scripts/check_v300_framework_realtime_contract_readiness.py
+```
+
+## RT-0b explicit non-change surface
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/**
+app/test/**
+app/pubspec.yaml
+app/android/**
+app/ios/**
+backend/.env.example
+backend/app/version.py
+docs/v300_realtime_current_behavior_inventory.md
+scripts/check_v300_realtime_current_behavior_inventory.py
+release_notes/**
+historical v2.x checklists and release records
+AI Character Framework repository/runtime
+release ZIPs, tags, GitHub Releases, and private operator evidence
+```
+
+## RT-0b verification
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+Accepted RT-0b status:
+
+```text
+v300_framework_realtime_contract_readiness_status: completed-accepted
+v300_framework_release_snapshot: v5.0.0@6494da306015c4f714f869b43e773ba51a2478a2
+v300_framework_public_readiness: blocked-framework-update-required
+v300_framework_required_contracts_ready: False
+v300_rt0b_drc_runtime_changed: False
+v300_rt0b_existing_tests_changed: False
+v300_rt0b_framework_runtime_changed: False
+v300_rt0b_real_provider_execution: False
+v300_rt1_authorization: blocked-pending-rt0c-and-released-fw-update
+```
+
+## RT-0b stop rule
+
+```text
+Do not modify AI Character Framework in RT-0b.
+Do not import Framework internals to replace missing public contracts.
+Do not add another DRC method/factory probing layer for realtime features.
+Do not add microphone, transport, STT, cancellation, queue, barge-in, or motion runtime.
+RT-1 through RT-9 remain blocked after RT-0b implementation and acceptance.
+RT-0c must accept the handoff boundary, and a released Framework update must
+provide the required public contracts before RT-1 can be authorized.
+```

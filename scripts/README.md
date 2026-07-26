@@ -4638,3 +4638,68 @@ The gate does not import AI Character Framework, call providers or network, read
 private env files, open a microphone, start Flutter/browser execution, or start a
 realtime session. RT-0b is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; RT-0c
 remains planned, and RT-1 through RT-9 remain blocked.
+
+
+## v3.0.0 RT-0b released Framework public realtime readiness
+
+Detailed readiness matrix: `docs/v300_framework_realtime_contract_readiness.md`.
+
+At RT-0a acceptance, RT-0b was `NOT_STARTED`. RT-0b is now
+`COMPLETED / ACCEPTED`; RT-0c is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+
+Run the credential-free source-tree review from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The RT-0b gate checks the recorded released Framework snapshot:
+
+```text
+release: v5.0.0
+commit: 6494da306015c4f714f869b43e773ba51a2478a2
+public readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+```
+
+Expected pre-acceptance output:
+
+```text
+v300_framework_realtime_contract_readiness_status: completed-accepted
+v300_framework_release_snapshot: v5.0.0@6494da306015c4f714f869b43e773ba51a2478a2
+v300_framework_public_readiness: blocked-framework-update-required
+v300_framework_required_contracts_ready: False
+v300_rt0b_drc_runtime_changed: False
+v300_rt0b_existing_tests_changed: False
+v300_rt0b_framework_runtime_changed: False
+v300_rt0b_real_provider_execution: False
+v300_rt1_authorization: blocked-pending-rt0c-and-released-fw-update
+```
+
+The gate protects Backend/Flutter runtime, existing tests, platform/version
+metadata, accepted RT-0a evidence, and immutable v2.x release records with
+normalized hashes. It verifies that the review records:
+
+```text
+- public text-chat and one-shot voice-output current-use boundaries;
+- missing public voice-input/STT, realtime, cancellation, queue, and motion contracts;
+- partial streaming/events, capabilities, errors, factories, and close lifecycle;
+- absent standard installable package metadata in the inspected release;
+- README session.speak(...) versus implementation create_output(...) mismatch;
+- Framework feedback FW-F1 through FW-F12;
+- BLOCKED_FRAMEWORK_UPDATE_REQUIRED and blocked RT-1 authorization.
+```
+
+This check does not import or clone AI Character Framework, call GitHub or a
+provider, read private env files, open a microphone, start Flutter/browser
+execution, or start a realtime session. RT-0b changed no DRC or Framework
+runtime. RT-0c is current and RT-1 through RT-9 remain blocked.

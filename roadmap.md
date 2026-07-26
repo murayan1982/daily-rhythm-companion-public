@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-0b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: RT-0c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,8 +571,8 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-0 CURRENT / NOT_COMPLETED
-Current small commit: RT-0b CURRENT / NOT_COMPLETED; NOT_STARTED
-Completed small commit: RT-0a COMPLETED / ACCEPTED
+Current small commit: RT-0c CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-0b COMPLETED / ACCEPTED
 
 Goal:
 
@@ -652,6 +652,40 @@ AI Character Framework prerequisites:
 
 DRC must not bypass missing public Framework contracts by importing Framework internals.
 
+### RT-0b released Framework readiness result
+
+```text
+Released Framework line: v5.0.0
+Inspected commit: 6494da306015c4f714f869b43e773ba51a2478a2
+Current RT-0b implementation: COMPLETED / ACCEPTED
+Framework public readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+```
+
+Accepted current-use boundaries:
+
+```text
+- public full-response text chat;
+- basic text chunk streaming and app-facing events for non-realtime use;
+- one-shot provider-neutral voice output with opaque audio handoff.
+```
+
+Blocking public-contract gaps:
+
+```text
+- installable/project-root-independent SDK and stable factory/method contracts;
+- typed streaming chunks, terminal outcomes, and provider-neutral error codes;
+- one consolidated capability snapshot;
+- public voice-input/STT session;
+- unified realtime lifecycle/event session;
+- provider-level hard cancellation;
+- TTS queue/cancel/flush and barge-in acknowledgement;
+- uniform session close/dispose;
+- public motion-event/Live2D/VTS adapter.
+```
+
+RT-0b records existing feedback `FW-F1` through `FW-F8` and adds realtime
+feedback `FW-F9` through `FW-F12`. RT-0c will freeze the DRC-to-FW handoff order.
+
 Possible v3.0.0 platform scope, to be accepted separately:
 
 ```text
@@ -668,9 +702,9 @@ Accepted planning split for v3.0.0:
 ```text
 RT-0   CURRENT / NOT_COMPLETED   Prerequisite, inventory, and public-contract readiness
   RT-0a  COMPLETED / ACCEPTED      DRC realtime current behavior inventory
-  RT-0b  CURRENT / NOT_COMPLETED   Released Framework public realtime readiness review
+  RT-0b  COMPLETED / ACCEPTED     Released Framework public realtime readiness review
+  RT-0c  CURRENT / NOT_COMPLETED   Blocked/unblocked decision and DRC-to-FW handoff boundary
           NOT_STARTED
-  RT-0c  PLANNED                   Blocked/unblocked decision and DRC-to-FW handoff boundary
 RT-1   BLOCKED                   DRC realtime state, event, capability, and session model
 RT-2   BLOCKED                   Microphone permission and guarded capture path
 RT-3   BLOCKED                   Real STT / voice-input integration
@@ -682,10 +716,27 @@ RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
 ```
 
-RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. It does not evaluate or accept Framework readiness. RT-0b is current but not started and must use released, verifiable public Framework APIs; RT-0c must explicitly accept the decision.
+RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is COMPLETED / ACCEPTED and used only released, verifiable public Framework APIs. RT-0c is now current and must explicitly accept the handoff decision.
+
+RT-0b inspected AI Character Framework v5.0.0 public source commit
+`6494da306015c4f714f869b43e773ba51a2478a2`. The released root package exports
+public text-chat and one-shot voice-output sessions, but no public voice-input,
+realtime, or motion session. Text streaming/events and per-session capability
+metadata are partial; provider-level hard cancellation, TTS queue/cancel/flush,
+unified close/dispose, and an installable project-root-independent SDK boundary
+are not released. The released README also documents `session.speak(...)` while
+the implementation exposes `VoiceOutputSession.create_output(...)`.
+
+```text
+RT-0b Framework readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+RT-1 authorization: BLOCKED pending RT-0c and a released Framework update
+```
+
+Detailed matrix: `docs/v300_framework_realtime_contract_readiness.md`.
+
 The v3.0.0 plan remains blocked when any required public Framework contract is
-missing. DRC must not unblock itself through Framework internal imports or
-provider-specific implementations.
+missing. DRC must not unblock itself through Framework internal imports,
+provider-specific implementations, or additional method/factory probing.
 
 ---
 

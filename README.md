@@ -9,16 +9,16 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-0b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: RT-0c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 
 Current phase state:
 
 ```text
 RT-0  CURRENT / NOT_COMPLETED
   RT-0a  COMPLETED / ACCEPTED     Realtime current behavior inventory
-  RT-0b  CURRENT / NOT_COMPLETED  Framework public realtime readiness review
+  RT-0b  COMPLETED / ACCEPTED    Framework public realtime readiness review
+  RT-0c  CURRENT / NOT_COMPLETED  Blocked/unblocked decision and DRC-to-FW handoff boundary
           NOT_STARTED
-  RT-0c  PLANNED                  Blocked/unblocked decision and DRC-to-FW handoff boundary
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -111,8 +111,10 @@ The active v3.0.0 planning source of truth is:
 - [`docs/DRC_v300_goal_checklist_small_commit.md`](docs/DRC_v300_goal_checklist_small_commit.md)
 - [`docs/v300_realtime_current_behavior_inventory.md`](docs/v300_realtime_current_behavior_inventory.md)
 - [`scripts/check_v300_realtime_current_behavior_inventory.py`](scripts/check_v300_realtime_current_behavior_inventory.py)
+- [`docs/v300_framework_realtime_contract_readiness.md`](docs/v300_framework_realtime_contract_readiness.md)
+- [`scripts/check_v300_framework_realtime_contract_readiness.py`](scripts/check_v300_framework_realtime_contract_readiness.py)
 
-RT-0a is completed and accepted. It records the actual v2.1.0 realtime-related boundaries without changing Backend/Flutter runtime, existing tests, version metadata, or release records. Acceptance passed after compileall, the RT-0a source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. RT-0b is now CURRENT / NOT_COMPLETED and NOT_STARTED; RT-0c remains planned, and RT-1 remains blocked.
+RT-0a is completed and accepted. It records the actual v2.1.0 realtime-related boundaries without changing Backend/Flutter runtime, existing tests, version metadata, or release records. Acceptance passed after compileall, the RT-0a source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is now COMPLETED / ACCEPTED after compileall, both RT-0 source-tree gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval passed. The released Framework v5.0.0 public readiness decision remains BLOCKED_FRAMEWORK_UPDATE_REQUIRED. RT-0c is CURRENT / NOT_COMPLETED and NOT_STARTED; RT-1 remains blocked pending RT-0c plus a released Framework update.
 
 Historical v2.1.0 terminal marker retained for accepted v2.1.0 checks:
 
@@ -465,32 +467,75 @@ The repository can be published as an understandable AI Character Framework demo
 Daily Rhythm Companion is not meant to be a production health app at v1.0. It is a realistic demo app that shows how a Flutter UI and FastAPI backend can pass app context into AI Character Framework and present the result through text, optional voice, optional motion, and saved daily records.
 
 
-## v3.0.0 RT-0 current behavior review
+## v3.0.0 RT-0 prerequisite and Framework readiness review
 
 Current state:
 
 ```text
 RT-0   CURRENT / NOT_COMPLETED
-RT-0a  CURRENT / NOT_COMPLETED
-RT-0a implementation: IMPLEMENTED / NOT_ACCEPTED
-RT-0b  PLANNED
-RT-0c  PLANNED
-RT-1 authorization: BLOCKED pending RT-0b and RT-0c
+RT-0a  COMPLETED / ACCEPTED
+RT-0b  COMPLETED / ACCEPTED
+RT-0b Framework readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+RT-0c  CURRENT / NOT_COMPLETED
+RT-0c implementation: NOT_STARTED
+RT-1 authorization: BLOCKED pending RT-0c and a released Framework update
 ```
 
-RT-0a inspected the actual Backend, Flutter, platform manifests, tests, roadmap,
-and tasklist. The current source has guarded voice-input and motion request
-boundaries, configured full-response Framework text chat, opaque TTS artifact
-handoff, in-app audio playback, and deterministic static character states. It
-does not yet have microphone permission/capture, STT execution, realtime
-transport, incremental DRC LLM orchestration, provider-level hard cancellation,
-TTS queue/barge-in, or real Live2D/VTS motion execution.
+At RT-0a acceptance, RT-0b was `NOT_STARTED`. RT-0a inspected the actual DRC
+Backend, Flutter, platform manifests, tests, roadmap, and tasklist. It confirmed
+that current voice input and motion are guarded boundaries, text chat is a
+full-response Framework call, voice output is a one-shot opaque artifact handoff,
+and no realtime transport, microphone capture, hard cancellation, TTS queue, or
+real motion execution exists.
 
-RT-0a is docs/test-only. Run its source-tree gate from the repository root:
+RT-0b then reviewed the released AI Character Framework v5.0.0 public source at:
+
+```text
+6494da306015c4f714f869b43e773ba51a2478a2
+```
+
+Released public host-app factories are limited to:
+
+```text
+create_text_chat_session
+create_voice_output_session
+```
+
+The review found the existing v4 text-chat and v5 one-shot voice-output
+boundaries valid for accepted v2.1.0 use, but not sufficient for v3 realtime
+work. Missing or blocking prerequisites include:
+
+```text
+- installable/project-root-independent SDK boundary;
+- stable factory and method signatures with docs/API conformance;
+- typed streaming results and provider-neutral public errors;
+- one consolidated realtime capability snapshot;
+- uniform close/dispose lifecycle;
+- public voice-input/STT session;
+- unified realtime lifecycle/event contract;
+- provider-level hard cancellation;
+- TTS queue/cancel/flush and barge-in acknowledgement;
+- public motion-event/Live2D/VTS adapter.
+```
+
+The released README also calls `session.speak(...)`, while the inspected
+`VoiceOutputSession` implementation exposes `create_output(...)` and no public
+`speak()` method. RT-0b records this as a public docs/API conformance defect,
+not as a DRC compatibility layer to add.
+
+Detailed contracts:
+
+```text
+docs/v300_realtime_current_behavior_inventory.md
+docs/v300_framework_realtime_contract_readiness.md
+```
+
+Run the docs/test-only gates from the repository root:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
 python -m pytest -q backend/tests
 
 cd app
@@ -500,11 +545,9 @@ cd ..
 git diff --check
 ```
 
-Detailed contract: `docs/v300_realtime_current_behavior_inventory.md`.
-
-RT-0a must be accepted before RT-0b starts. RT-0 does not authorize DRC realtime
-runtime changes until the released Framework public prerequisites are reviewed
-and the blocked/unblocked decision is accepted.
+RT-0b changed no DRC or Framework runtime, called no provider or network, and is COMPLETED / ACCEPTED. RT-0c will freeze the DRC-to-FW feedback handoff;
+DRC implementation remains blocked until the required contracts are released
+and verifiable through the Framework public surface.
 
 ## Required demo-app requirements
 
