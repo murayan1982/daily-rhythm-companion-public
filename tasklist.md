@@ -13,10 +13,10 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current small commit: none
-current implementation step: none; waiting for future released Framework realtime public contracts
-current implementation state: COMPLETED / ACCEPTED
-completed small commit: RT-0c COMPLETED / ACCEPTED
+current small commit: RT-1b CURRENT / NOT_COMPLETED
+current implementation step: Backend realtime model and Framework-contract normalization boundary
+current implementation state: NOT_STARTED
+completed small commit: RT-1a COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -35,6 +35,8 @@ docs/v300_framework_realtime_contract_readiness.md
 scripts/check_v300_framework_realtime_contract_readiness.py
 docs/v300_framework_v510_reassessment.md
 scripts/check_v300_framework_v510_reassessment.py
+docs/v300_framework_v520_contract_adoption.md
+scripts/check_v300_framework_v520_contract_adoption.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1298,10 +1300,10 @@ Secondary work: provider selection, LLM chat lifecycle, in-app TTS playback, sta
 
 ```text
 Primary theme: Realtime multimodal character runtime
-Current parent phase: RT-0 COMPLETED / ACCEPTED
-Current small commit: none
-Completed small commit: RT-0c COMPLETED / ACCEPTED
-Blocked implementation phases: RT-1 through RT-9
+Current parent phase: RT-1 CURRENT / NOT_COMPLETED
+Current small commit: RT-1b CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-1a COMPLETED / ACCEPTED
+Current authorization: RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
 ```
 
 RT-0aは現行実コードの棚卸し、目的、scope、除外範囲、変更/非変更面を固定するdocs/test-only小コミットとしてCOMPLETED / ACCEPTEDとなった。RT-0a受け入れ時点のRT-0bはNOT_STARTED。RT-0bはCOMPLETED / ACCEPTEDで、released Framework v5.0.0 public readinessをBLOCKED_FRAMEWORK_UPDATE_REQUIREDと判定した。RT-0cでreleased Framework v5.1.0の再評価、DRC-to-FW handoff境界、進行順を受け入れた。required Framework public contractのrelease前にRT-1以降を開始しない。
@@ -1344,3 +1346,30 @@ GitHub Release at that historical checkpoint: not created
 ```
 
 The exact fixed ZIP must remain unchanged in `release/`. R-1e is completed/accepted after explicit approval for this tuple, publication, and downloaded-asset verification.
+
+### RT-1a — Released Framework v5.2.0 public-contract adoption gate
+
+```text
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
+Framework snapshot: v5.2.0@c2e247064987c94bf735a359700f0462439b8286
+decision: RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
+```
+
+- [x] released v5.2.0 tag/commitを固定する。
+- [x] public Voice Input / Realtime / interrupt-output-control / Motion exportsを確認する。
+- [x] real runtimeが未実装であることを別状態として記録する。
+- [x] global capability snapshotのv5.1 schema残存を記録する。
+- [x] RT-1をmock-contract-onlyで開始可能と判定する。
+- [x] RT-3/RT-4/RT-5/RT-7のreal-runtime blockを維持する。
+- [x] Backend/Flutter runtimeと既存testsを変更しないsource-tree gateを追加する。
+- [x] local gate、Backend 110件、Flutter 103件、diff review、明示承認を通す。
+- [x] acceptance syncでRT-1aをCOMPLETED / ACCEPTEDへ更新する。
+- [ ] accepted stateをコミットする。
+
+RT-1aはcompileall、RT-0a/RT-0b/RT-0c/RT-1a gate、DRC `.venv`でのBackend 110件、Flutter 103件、diff review、明示承認の通過後にCOMPLETED / ACCEPTEDとなった。
+
+次小コミットはRT-1b CURRENT / NOT_COMPLETED; NOT_STARTED。Backend-onlyでDRC所有の
+realtime state/event/capability/session modelとFramework event normalizerを
+追加する。API route、WebSocket/SSE、microphone、Flutter UI、provider実行は
+RT-1bへ含めない。

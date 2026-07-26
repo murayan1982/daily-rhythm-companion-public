@@ -4762,3 +4762,36 @@ The gate is source-tree-only and credential-free. It protects DRC runtime,
 existing tests, platform/version metadata, accepted RT-0a/RT-0b evidence, and
 immutable v2.x release records. It does not import Framework, call GitHub or a
 provider, open a microphone, or start a realtime session.
+
+## v3.0.0 RT-1a Framework v5.2.0 public-contract adoption check
+
+Detailed contract: `docs/v300_framework_v520_contract_adoption.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
+python scripts\check_v300_framework_v510_reassessment.py
+python scripts\check_v300_framework_v520_contract_adoption.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+The RT-1a check is credential-free, provider-free, microphone-free,
+network-free, playback-free, and motion-runtime-free. RT-1a is COMPLETED / ACCEPTED
+after compileall, the RT-0/RT-1a gates, Backend 110 tests through the DRC `.venv`,
+Flutter 103 tests, diff review, and explicit operator approval passed. It preserves
+the accepted RT-0 records and all Backend/Flutter runtime and existing tests while recording:
+
+```text
+RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
+real Framework realtime execution: not ready
+next implementation: RT-1b CURRENT / NOT_COMPLETED; NOT_STARTED; Backend model/normalizer only
+```

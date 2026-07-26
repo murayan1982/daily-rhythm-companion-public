@@ -6,12 +6,12 @@ Updated: 2026-07-26
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-0 COMPLETED / ACCEPTED
-Current small commit: none
-Current implementation step: none; waiting for future released Framework realtime public contracts
-Current implementation state: COMPLETED / ACCEPTED
-Completed small commit: RT-0c COMPLETED / ACCEPTED
-Next action: keep RT-1 through RT-9 blocked until the required released Framework contracts are verifiable
+Current parent phase: RT-1 CURRENT / NOT_COMPLETED
+Current small commit: RT-1b CURRENT / NOT_COMPLETED
+Current implementation step: Backend realtime model and Framework-contract normalization boundary
+Current implementation state: NOT_STARTED
+Completed small commit: RT-1a COMPLETED / ACCEPTED
+Next action: implement RT-1b against mock-safe v5.2.0 public contracts without adding routes, transport, microphone, Flutter UI, or provider execution
 ```
 
 ## Source of truth
@@ -27,6 +27,8 @@ docs/v300_framework_realtime_contract_readiness.md
 scripts/check_v300_framework_realtime_contract_readiness.py
 docs/v300_framework_v510_reassessment.md
 scripts/check_v300_framework_v510_reassessment.py
+docs/v300_framework_v520_contract_adoption.md
+scripts/check_v300_framework_v520_contract_adoption.py
 ```
 
 Historical release sources remain immutable:
@@ -539,4 +541,59 @@ RT-0c stop rule:
 Do not start RT-1 after RT-0c acceptance until a later Framework release
 provides the missing public contracts. Do not migrate the existing DRC runtime
 adapter in this docs/test-only commit. Do not add another import or method probe.
+```
+
+## RT-1 split after Framework v5.2.0 release
+
+```text
+RT-1a  COMPLETED / ACCEPTED
+       Verified the released v5.2.0 mock-safe public contracts and authorized the
+       bounded DRC integration surface.
+
+RT-1b  CURRENT / NOT_COMPLETED; NOT_STARTED
+       Add Backend-only DRC realtime state/event/capability/session models and a
+       Framework-contract normalizer. No API route or provider execution.
+```
+
+RT-1a decision:
+
+```text
+RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
+```
+
+The released v5.2.0 root exports public Voice Input, Realtime, interrupt/output
+control, and Motion contracts. Their real provider/runtime implementations are
+not complete. RT-1 may begin with model and mock-contract integration only.
+
+Phase boundaries after RT-1a acceptance:
+
+```text
+RT-1: CURRENT / mock-contract-only
+RT-2: BLOCKED pending parent RT-1 acceptance
+RT-3: BLOCKED_REAL_STT_NOT_IMPLEMENTED
+RT-4: BLOCKED_REAL_STREAMING_CANCEL_NOT_IMPLEMENTED
+RT-5: BLOCKED_REAL_OUTPUT_CONTROL_NOT_IMPLEMENTED
+RT-6: PLANNED_AFTER_RT1; mock motion contract available
+RT-7: BLOCKED_REAL_MOTION_ADAPTER_NOT_IMPLEMENTED
+RT-8 through RT-9: BLOCKED by prerequisites
+```
+
+Detailed contract:
+
+```text
+docs/v300_framework_v520_contract_adoption.md
+scripts/check_v300_framework_v520_contract_adoption.py
+```
+
+## Historical accepted marker compatibility
+
+The following strings are retained only so the accepted RT-0b/RT-0c source-tree
+checks continue to validate their historical checkpoints. They do not describe
+the active RT-1a state.
+
+```text
+Historical RT-0c parent marker: Current parent phase: RT-0 COMPLETED / ACCEPTED
+Historical RT-0c terminal marker: Current small commit: none
+Historical RT-0c completion marker: Completed small commit: RT-0c COMPLETED / ACCEPTED
+Historical RT-0b planning marker: RT-1   BLOCKED
 ```

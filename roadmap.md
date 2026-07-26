@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (**RT-0 COMPLETED / ACCEPTED; realtime implementation remains blocked**)
+Current small commit: RT-1b CURRENT / NOT_COMPLETED (**Backend realtime model and normalization boundary; NOT_STARTED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,9 +570,9 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-0 COMPLETED / ACCEPTED
-Current small commit: none
-Completed small commit: RT-0c COMPLETED / ACCEPTED
+Status: RT-1 CURRENT / NOT_COMPLETED
+Current small commit: RT-1b CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-1a COMPLETED / ACCEPTED
 
 Goal:
 
@@ -731,7 +731,10 @@ RT-0   COMPLETED / ACCEPTED      Prerequisite, inventory, and public-contract re
   RT-0a  COMPLETED / ACCEPTED      DRC realtime current behavior inventory
   RT-0b  COMPLETED / ACCEPTED      Released Framework public realtime readiness review
   RT-0c  COMPLETED / ACCEPTED      Framework v5.1.0 reassessment and remaining realtime block decision
-RT-1   BLOCKED                   DRC realtime state, event, capability, and session model
+RT-1   CURRENT / NOT_COMPLETED   DRC realtime state, event, capability, and session model
+  RT-1a  COMPLETED / ACCEPTED      Framework v5.2.0 public-contract adoption gate
+  RT-1b  CURRENT / NOT_COMPLETED   Backend realtime model and normalization boundary
+          NOT_STARTED
 RT-2   BLOCKED                   Microphone permission and guarded capture path
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
@@ -6788,3 +6791,38 @@ tag / GitHub Release at R-1d acceptance: not created
 ```
 
 A superseded pre-fix candidate was rejected before publication and is not part of this tuple. R-1d is `COMPLETED / ACCEPTED`; R-1e and parent R-1 are `COMPLETED / ACCEPTED`; v2.1.0 is released.
+
+### RT-1a released Framework v5.2.0 adoption
+
+```text
+Implementation: COMPLETED / ACCEPTED
+Decision: RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
+Released Framework: v5.2.0@c2e247064987c94bf735a359700f0462439b8286
+```
+
+v5.2.0 publishes mock-safe public Voice Input, Realtime, interrupt/output
+control, and Motion session contracts. This authorizes RT-1 Backend model and
+normalization work without authorizing real STT, real orchestration, hard
+cancellation, TTS queue control, barge-in detection, or Live2D/VTS execution.
+
+```text
+RT-2 remains blocked pending RT-1 acceptance.
+RT-3 remains blocked because real STT is not implemented.
+RT-4 remains blocked because incremental streaming and real cancellation are not implemented.
+RT-5 remains blocked because real queue/flush/playback control is not implemented.
+RT-6 may follow RT-1 using the public mock motion contract.
+RT-7 remains blocked because real Live2D/VTS adapter execution is not implemented.
+```
+
+The released global `get_capabilities()` snapshot remains on the v5.1 schema and
+still reports the new boundaries as missing. DRC RT-1 must normalize the
+v5.2.0 session-specific capability/info contracts rather than trusting that
+global snapshot alone.
+
+Historical accepted RT-0b planning marker retained for its immutable check:
+
+```text
+RT-1   BLOCKED
+```
+
+RT-1a was accepted after compileall, all RT-0/RT-1a source-tree gates, Backend 110 tests through the DRC `.venv`, Flutter 103 tests, diff review, and explicit operator approval passed. The active small commit is now RT-1b, which remains NOT_STARTED.

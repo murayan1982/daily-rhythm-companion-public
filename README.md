@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (**RT-0 COMPLETED / ACCEPTED; realtime implementation remains blocked**)
+Current small commit: RT-1b CURRENT / NOT_COMPLETED (**Backend realtime model and normalization boundary; NOT_STARTED**)
 
 Current phase state:
 
@@ -18,6 +18,10 @@ RT-0  COMPLETED / ACCEPTED
   RT-0a  COMPLETED / ACCEPTED     Realtime current behavior inventory
   RT-0b  COMPLETED / ACCEPTED     Framework public realtime readiness review
   RT-0c  COMPLETED / ACCEPTED     Framework v5.1.0 reassessment and remaining realtime block decision
+RT-1  CURRENT / NOT_COMPLETED
+  RT-1a  COMPLETED / ACCEPTED      Framework v5.2.0 mock-safe public-contract adoption gate
+  RT-1b  CURRENT / NOT_COMPLETED   Backend realtime model and normalization boundary
+          NOT_STARTED
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -32,7 +36,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-0 COMPLETED / ACCEPTED; RT-1 through RT-9 remain blocked pending future Framework public contracts
+Current v3 phase: RT-1 CURRENT / NOT_COMPLETED; RT-1a COMPLETED / ACCEPTED; RT-1b NOT_STARTED; RT-1 mock-contract integration is authorized
 
 ## Current release and development status
 
@@ -3971,3 +3975,25 @@ GitHub Release at R-1d acceptance: not created
 ```
 
 R-1d and R-1e are `COMPLETED / ACCEPTED`. The fixed ZIP remains ignored under `release/` and must not be renamed, rebuilt, overwritten, or modified. The annotated tag and published asset match the accepted tuple, and post-publication verification passed.
+
+## Framework v5.2.0 adoption checkpoint
+
+AI Character Framework v5.2.0 releases provider-neutral public Voice Input,
+Realtime, interrupt/output-control, and Motion session contracts. RT-1a records:
+
+```text
+RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
+real Framework STT/realtime/cancel/TTS-queue/Live2D execution: not implemented
+DRC runtime changes in RT-1a: none
+```
+
+After RT-1a acceptance, RT-1b will add Backend-only DRC realtime models and a
+normalization boundary. Real STT, streaming cancellation, output control, and
+Live2D/VTS execution remain blocked.
+
+Detailed gate:
+
+```text
+docs/v300_framework_v520_contract_adoption.md
+scripts/check_v300_framework_v520_contract_adoption.py
+```
