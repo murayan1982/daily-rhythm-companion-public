@@ -13,14 +13,14 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current small commit: RT-0c CURRENT / NOT_COMPLETED
-current implementation step: blocked/unblocked decision and DRC-to-FW handoff boundary
-current implementation state: NOT_STARTED
-completed small commit: RT-0b COMPLETED / ACCEPTED
+current small commit: none
+current implementation step: none; waiting for future released Framework realtime public contracts
+current implementation state: COMPLETED / ACCEPTED
+completed small commit: RT-0c COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
-v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。Framework public readinessはBLOCKED_FRAMEWORK_UPDATE_REQUIREDのまま。現在はRT-0cがCURRENT / NOT_COMPLETEDかつNOT_STARTEDで、RT-1以降はRT-0cとreleased Framework update待ちでblockedである。
+v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
 
 ## 2. Source of truth
@@ -33,6 +33,8 @@ docs/v300_realtime_current_behavior_inventory.md
 scripts/check_v300_realtime_current_behavior_inventory.py
 docs/v300_framework_realtime_contract_readiness.md
 scripts/check_v300_framework_realtime_contract_readiness.py
+docs/v300_framework_v510_reassessment.md
+scripts/check_v300_framework_v510_reassessment.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -77,19 +79,18 @@ v2.0.0とv2.0.1の公開記録は履歴として保持し、v2.1.0の進捗管�
 ---
 
 
-# 3. 現在の小コミット
+# 3. 完了したRT-0 prerequisite phase
 
 ## RT-0 — v3.0.0 prerequisite and current behavior review
 
-Status: CURRENT / NOT_COMPLETED
+Status: COMPLETED / ACCEPTED
 
 Small-commit split:
 
 ```text
 RT-0a  COMPLETED / ACCEPTED      DRC realtime current behavior inventory
-RT-0b  COMPLETED / ACCEPTED     Released Framework public realtime readiness review
-RT-0c  CURRENT / NOT_COMPLETED   Blocked/unblocked decision and DRC-to-FW handoff boundary
-        NOT_STARTED
+RT-0b  COMPLETED / ACCEPTED      Released Framework public realtime readiness review
+RT-0c  COMPLETED / ACCEPTED      Framework v5.1.0 reassessment and remaining realtime block decision
 ```
 
 ### RT-0a — Realtime current behavior inventory
@@ -312,6 +313,99 @@ RT-0bではFrameworkを変更しない。
 missing public contractをDRC internal/provider-specific implementationで代替しない。
 realtime向けに新しいfactory/method probeやsys.path/CWD workaroundを追加しない。
 RT-0b受け入れ後もRT-1は開始せず、RT-0cでhandoff境界を受け入れる。
+```
+
+### RT-0c — Released Framework v5.1.0 reassessment and remaining block decision
+
+Status: COMPLETED / ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
+
+目的:
+
+```text
+- accepted RT-0b v5.0.0 reviewを履歴として維持する。
+- released tag v5.1.0のpublic export、typed result、capability、lifecycle、artifact、package importを再確認する。
+- FW-F1〜FW-F12をRESOLVED_V510 / PARTIAL_V510 / MISSING_REALTIME_BLOCKERへ再分類する。
+- v5.1.0で解消した統合コストと、引き続きDRC realtimeを止める不足を分離する。
+- DRC/FW runtime、既存tests、version、release recordを変更しない。
+```
+
+確認したrelease:
+
+```text
+released tag: v5.1.0
+tag commit: b68c62b5e80328b8c50f9eeef98164f6ae2a3b0f
+post-tag release-note commit: c08c7539e2109a3a9a77be1c54a02f6e3bf06c30
+fixed ZIP SHA-256: 137f9f85602957b068881d8d26e34570bafa8e000c4a624fc19871b313612545
+```
+
+再分類:
+
+```text
+RESOLVED_V510:
+- FW-F4 capability snapshot
+- FW-F5 provider config ownership
+- FW-F7 opaque VoiceArtifactRef
+- FW-F8 public contract conformance gate
+
+PARTIAL_V510:
+- FW-F1 package-like import（wheel公開は未実施）
+- FW-F2 stable factory/method（text factory/project_rootはtransition）
+- FW-F3 typed result/error（Text Chat中心、全session統一ではない）
+- FW-F6 close/dispose（real resource cleanupは未接続）
+
+MISSING_REALTIME_BLOCKER:
+- FW-F9 public voice-input/STT
+- FW-F10 unified realtime lifecycle/events
+- FW-F11 hard cancel/TTS queue/flush/barge-in
+- FW-F12 public motion/Live2D/VTS adapter
+```
+
+判定:
+
+```text
+Host-app foundation: SUBSTANTIALLY_READY_WITH_TRANSITION_GAPS
+Realtime readiness: BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING
+RT-1 through RT-5: BLOCKED pending released voice-input/realtime/cancel contracts
+RT-6 through RT-7: BLOCKED pending released motion contract
+```
+
+変更対象:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_framework_v510_reassessment.md
+scripts/check_v300_framework_v510_reassessment.py
+```
+
+検証:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
+python scripts\check_v300_framework_v510_reassessment.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+Stop rule:
+
+```text
+RT-0cでDRC/FW runtimeを変更しない。
+package-like PYTHONPATH検証をwheel install完了と表現しない。
+missing realtime contractをDRC internal/provider-specific実装で代替しない。
+新しいsys.path/CWD/module-cache workaroundを追加しない。
+RT-0c受け入れ後も、required Framework public contractのrelease前にRT-1を開始しない。
 ```
 
 ---
@@ -1204,14 +1298,13 @@ Secondary work: provider selection, LLM chat lifecycle, in-app TTS playback, sta
 
 ```text
 Primary theme: Realtime multimodal character runtime
-Current parent phase: RT-0 CURRENT / NOT_COMPLETED
-Completed small commit: RT-0a COMPLETED / ACCEPTED
-Current small commit: RT-0c CURRENT / NOT_COMPLETED; NOT_STARTED
-Completed small commit: RT-0b COMPLETED / ACCEPTED
+Current parent phase: RT-0 COMPLETED / ACCEPTED
+Current small commit: none
+Completed small commit: RT-0c COMPLETED / ACCEPTED
 Blocked implementation phases: RT-1 through RT-9
 ```
 
-RT-0aは現行実コードの棚卸し、目的、scope、除外範囲、変更/非変更面を固定するdocs/test-only小コミットとしてCOMPLETED / ACCEPTEDとなった。RT-0a受け入れ時点のRT-0bはNOT_STARTED。RT-0bはCOMPLETED / ACCEPTEDで、released Framework v5.0.0 public readinessをBLOCKED_FRAMEWORK_UPDATE_REQUIREDと判定した。現在のRT-0cでDRC-to-FW handoff境界と進行順を受け入れる。RT-0c受け入れとrequired Framework public contractのrelease前にRT-1以降を開始しない。
+RT-0aは現行実コードの棚卸し、目的、scope、除外範囲、変更/非変更面を固定するdocs/test-only小コミットとしてCOMPLETED / ACCEPTEDとなった。RT-0a受け入れ時点のRT-0bはNOT_STARTED。RT-0bはCOMPLETED / ACCEPTEDで、released Framework v5.0.0 public readinessをBLOCKED_FRAMEWORK_UPDATE_REQUIREDと判定した。RT-0cでreleased Framework v5.1.0の再評価、DRC-to-FW handoff境界、進行順を受け入れた。required Framework public contractのrelease前にRT-1以降を開始しない。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally

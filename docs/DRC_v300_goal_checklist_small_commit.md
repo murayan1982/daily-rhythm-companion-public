@@ -6,12 +6,12 @@ Updated: 2026-07-26
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-0 CURRENT / NOT_COMPLETED
-Current small commit: RT-0c CURRENT / NOT_COMPLETED
-Current implementation step: blocked/unblocked decision and DRC-to-FW handoff boundary
-Current implementation state: NOT_STARTED
-Completed small commit: RT-0b COMPLETED / ACCEPTED
-Next acceptance action: define the RT-0c handoff order without starting RT-1 or changing Framework
+Current parent phase: RT-0 COMPLETED / ACCEPTED
+Current small commit: none
+Current implementation step: none; waiting for future released Framework realtime public contracts
+Current implementation state: COMPLETED / ACCEPTED
+Completed small commit: RT-0c COMPLETED / ACCEPTED
+Next action: keep RT-1 through RT-9 blocked until the required released Framework contracts are verifiable
 ```
 
 ## Source of truth
@@ -25,6 +25,8 @@ docs/v300_realtime_current_behavior_inventory.md
 scripts/check_v300_realtime_current_behavior_inventory.py
 docs/v300_framework_realtime_contract_readiness.md
 scripts/check_v300_framework_realtime_contract_readiness.py
+docs/v300_framework_v510_reassessment.md
+scripts/check_v300_framework_v510_reassessment.py
 ```
 
 Historical release sources remain immutable:
@@ -110,11 +112,10 @@ None of those states may be substituted for another.
 ```text
 RT-0a  COMPLETED / ACCEPTED      Inventory current DRC realtime-related code and freeze the v3 planning boundary
 RT-0b  COMPLETED / ACCEPTED     Verify released Framework public realtime prerequisites and classify every gap
-RT-0c  CURRENT / NOT_COMPLETED   Accept the blocked/unblocked decision and freeze the DRC-to-FW handoff boundary
-        NOT_STARTED
+RT-0c  COMPLETED / ACCEPTED     Reassess released Framework v5.1.0 and accept the remaining realtime block
 ```
 
-RT-1 through RT-9 remain blocked until RT-0c accepts that the required Framework
+RT-1 through RT-9 remain blocked after RT-0c acceptance until the required Framework
 contracts are released and verifiable.
 
 ## RT-0a purpose
@@ -415,4 +416,127 @@ Do not add microphone, transport, STT, cancellation, queue, barge-in, or motion 
 RT-1 through RT-9 remain blocked after RT-0b implementation and acceptance.
 RT-0c must accept the handoff boundary, and a released Framework update must
 provide the required public contracts before RT-1 can be authorized.
+```
+
+## RT-0c Framework v5.1.0 reassessment
+
+Historical RT-0b decision: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+Historical RT-0b authorization marker: RT-1 authorization: BLOCKED pending RT-0c and a released Framework update
+Historical RT-0c pre-implementation marker: RT-0c  CURRENT / NOT_COMPLETED; NOT_STARTED
+
+Current RT-0c state:
+
+```text
+RT-0c implementation: COMPLETED / ACCEPTED
+Framework release: v5.1.0
+Framework tag commit: b68c62b5e80328b8c50f9eeef98164f6ae2a3b0f
+Host-app foundation: SUBSTANTIALLY_READY_WITH_TRANSITION_GAPS
+Realtime decision: BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING
+```
+
+Accepted v5.1.0 host-app foundations recorded by RT-0c:
+
+```text
+FW-F4 capability snapshot: RESOLVED_V510
+FW-F5 provider config ownership: RESOLVED_V510
+FW-F7 opaque voice artifact: RESOLVED_V510
+FW-F8 public conformance gate: RESOLVED_V510
+```
+
+Transition gaps recorded by RT-0c:
+
+```text
+FW-F1 package-like import without a published wheel: PARTIAL_V510
+FW-F2 factory/method transition surfaces: PARTIAL_V510
+FW-F3 typed Text Chat result without universal cross-session result: PARTIAL_V510
+FW-F6 lifecycle methods without real provider cleanup proof: PARTIAL_V510
+```
+
+Remaining blockers:
+
+```text
+FW-F9 public voice-input/STT: MISSING_REALTIME_BLOCKER
+FW-F10 unified realtime lifecycle/events: MISSING_REALTIME_BLOCKER
+FW-F11 hard cancel/TTS queue/flush/barge-in: MISSING_REALTIME_BLOCKER
+FW-F12 public motion/VTS adapter: MISSING_REALTIME_BLOCKER
+```
+
+RT-1 through RT-5 remain blocked until released public voice-input, realtime,
+and cancellation/queue contracts are verifiable. RT-6 through RT-7 remain
+blocked until a released public motion contract is verifiable. RT-8 through
+RT-9 remain blocked by their prerequisite runtime phases.
+
+Detailed contract:
+
+```text
+docs/v300_framework_v510_reassessment.md
+scripts/check_v300_framework_v510_reassessment.py
+```
+
+RT-0c change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_framework_v510_reassessment.md
+scripts/check_v300_framework_v510_reassessment.py
+```
+
+RT-0c explicit non-change surface:
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/**
+app/test/**
+app/pubspec.yaml
+app/android/**
+app/ios/**
+backend/.env.example
+backend/app/version.py
+docs/v300_realtime_current_behavior_inventory.md
+scripts/check_v300_realtime_current_behavior_inventory.py
+docs/v300_framework_realtime_contract_readiness.md
+scripts/check_v300_framework_realtime_contract_readiness.py
+release_notes/**
+historical v2.x checklists and release records
+AI Character Framework repository/runtime
+```
+
+RT-0c verification:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
+python scripts\check_v300_framework_v510_reassessment.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+Expected accepted marker:
+
+```text
+v300_framework_v510_reassessment_status: completed-accepted
+v300_framework_release_snapshot: v5.1.0@b68c62b5e80328b8c50f9eeef98164f6ae2a3b0f
+v300_framework_realtime_prerequisites_ready: False
+v300_rt1_authorization: blocked-pending-released-voice-input-realtime-cancel-contracts
+v300_rt6_authorization: blocked-pending-released-motion-contract
+```
+
+RT-0c stop rule:
+
+```text
+Do not start RT-1 after RT-0c acceptance until a later Framework release
+provides the missing public contracts. Do not migrate the existing DRC runtime
+adapter in this docs/test-only commit. Do not add another import or method probe.
 ```

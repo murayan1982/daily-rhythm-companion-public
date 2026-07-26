@@ -4644,8 +4644,8 @@ remains planned, and RT-1 through RT-9 remain blocked.
 
 Detailed readiness matrix: `docs/v300_framework_realtime_contract_readiness.md`.
 
-At RT-0a acceptance, RT-0b was `NOT_STARTED`. RT-0b is now
-`COMPLETED / ACCEPTED`; RT-0c is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`.
+At RT-0a acceptance, RT-0b was `NOT_STARTED`. RT-0b later became
+`COMPLETED / ACCEPTED`; at that checkpoint RT-0c became current and not started. RT-0c is now `COMPLETED / ACCEPTED`.
 
 Run the credential-free source-tree review from the DRC repository root:
 
@@ -4671,7 +4671,7 @@ commit: 6494da306015c4f714f869b43e773ba51a2478a2
 public readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
 ```
 
-Expected pre-acceptance output:
+Expected accepted output:
 
 ```text
 v300_framework_realtime_contract_readiness_status: completed-accepted
@@ -4703,3 +4703,62 @@ This check does not import or clone AI Character Framework, call GitHub or a
 provider, read private env files, open a microphone, start Flutter/browser
 execution, or start a realtime session. RT-0b changed no DRC or Framework
 runtime. RT-0c is current and RT-1 through RT-9 remain blocked.
+
+## v3.0.0 RT-0c Framework v5.1.0 reassessment
+
+Detailed reassessment: `docs/v300_framework_v510_reassessment.md`.
+
+RT-0a, RT-0b, and RT-0c are `COMPLETED / ACCEPTED`. No v3.0.0 small commit
+is current while the required Framework realtime public contracts remain unreleased.
+
+Run from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python scripts\check_v300_framework_realtime_contract_readiness.py
+python scripts\check_v300_framework_v510_reassessment.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The RT-0c gate records:
+
+```text
+Framework release: v5.1.0
+Tag commit: b68c62b5e80328b8c50f9eeef98164f6ae2a3b0f
+Host-app foundation: SUBSTANTIALLY_READY_WITH_TRANSITION_GAPS
+Realtime decision: BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING
+RESOLVED_V510: FW-F4, FW-F5, FW-F7, FW-F8
+PARTIAL_V510: FW-F1, FW-F2, FW-F3, FW-F6
+MISSING_REALTIME_BLOCKER: FW-F9, FW-F10, FW-F11, FW-F12
+```
+
+Expected pre-acceptance output:
+
+```text
+v300_framework_v510_reassessment_status: completed-accepted
+v300_framework_release_snapshot: v5.1.0@b68c62b5e80328b8c50f9eeef98164f6ae2a3b0f
+v300_framework_host_app_foundation: substantially-ready-with-transition-gaps
+v300_framework_realtime_prerequisites_ready: False
+v300_framework_feedback_resolved: FW-F4,FW-F5,FW-F7,FW-F8
+v300_framework_feedback_partial: FW-F1,FW-F2,FW-F3,FW-F6
+v300_framework_feedback_missing: FW-F9,FW-F10,FW-F11,FW-F12
+v300_rt0c_drc_runtime_changed: False
+v300_rt0c_existing_tests_changed: False
+v300_rt0c_framework_runtime_changed: False
+v300_rt0c_real_provider_execution: False
+v300_rt1_authorization: blocked-pending-released-voice-input-realtime-cancel-contracts
+v300_rt6_authorization: blocked-pending-released-motion-contract
+```
+
+The gate is source-tree-only and credential-free. It protects DRC runtime,
+existing tests, platform/version metadata, accepted RT-0a/RT-0b evidence, and
+immutable v2.x release records. It does not import Framework, call GitHub or a
+provider, open a microphone, or start a realtime session.

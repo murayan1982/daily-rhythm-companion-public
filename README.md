@@ -9,16 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-0c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: none (**RT-0 COMPLETED / ACCEPTED; realtime implementation remains blocked**)
 
 Current phase state:
 
 ```text
-RT-0  CURRENT / NOT_COMPLETED
+RT-0  COMPLETED / ACCEPTED
   RT-0a  COMPLETED / ACCEPTED     Realtime current behavior inventory
-  RT-0b  COMPLETED / ACCEPTED    Framework public realtime readiness review
-  RT-0c  CURRENT / NOT_COMPLETED  Blocked/unblocked decision and DRC-to-FW handoff boundary
-          NOT_STARTED
+  RT-0b  COMPLETED / ACCEPTED     Framework public realtime readiness review
+  RT-0c  COMPLETED / ACCEPTED     Framework v5.1.0 reassessment and remaining realtime block decision
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -33,7 +32,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-0 prerequisite review
+Current v3 phase: RT-0 COMPLETED / ACCEPTED; RT-1 through RT-9 remain blocked pending future Framework public contracts
 
 ## Current release and development status
 
@@ -113,8 +112,10 @@ The active v3.0.0 planning source of truth is:
 - [`scripts/check_v300_realtime_current_behavior_inventory.py`](scripts/check_v300_realtime_current_behavior_inventory.py)
 - [`docs/v300_framework_realtime_contract_readiness.md`](docs/v300_framework_realtime_contract_readiness.md)
 - [`scripts/check_v300_framework_realtime_contract_readiness.py`](scripts/check_v300_framework_realtime_contract_readiness.py)
+- [`docs/v300_framework_v510_reassessment.md`](docs/v300_framework_v510_reassessment.md)
+- [`scripts/check_v300_framework_v510_reassessment.py`](scripts/check_v300_framework_v510_reassessment.py)
 
-RT-0a is completed and accepted. It records the actual v2.1.0 realtime-related boundaries without changing Backend/Flutter runtime, existing tests, version metadata, or release records. Acceptance passed after compileall, the RT-0a source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is now COMPLETED / ACCEPTED after compileall, both RT-0 source-tree gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval passed. The released Framework v5.0.0 public readiness decision remains BLOCKED_FRAMEWORK_UPDATE_REQUIRED. RT-0c is CURRENT / NOT_COMPLETED and NOT_STARTED; RT-1 remains blocked pending RT-0c plus a released Framework update.
+RT-0a, RT-0b, and RT-0c are completed and accepted. RT-0b remains the historical v5.0.0 review with `BLOCKED_FRAMEWORK_UPDATE_REQUIRED`; RT-0c separately accepts the released Framework v5.1.0 reassessment. The host-app foundation is substantially improved through typed Text Chat results, capability snapshots, `speak()`, lifecycle methods, opaque artifacts, conformance gates, and package-like import verification. Public voice input, unified realtime lifecycle, hard cancellation/TTS queue/barge-in, and motion adapters remain missing, so RT-1 through RT-9 remain blocked by `BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`.
 
 Historical v2.1.0 terminal marker retained for accepted v2.1.0 checks:
 
@@ -472,13 +473,13 @@ Daily Rhythm Companion is not meant to be a production health app at v1.0. It is
 Current state:
 
 ```text
-RT-0   CURRENT / NOT_COMPLETED
+RT-0   COMPLETED / ACCEPTED
 RT-0a  COMPLETED / ACCEPTED
 RT-0b  COMPLETED / ACCEPTED
-RT-0b Framework readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
-RT-0c  CURRENT / NOT_COMPLETED
-RT-0c implementation: NOT_STARTED
-RT-1 authorization: BLOCKED pending RT-0c and a released Framework update
+RT-0b historical Framework readiness: BLOCKED_FRAMEWORK_UPDATE_REQUIRED
+RT-0c  COMPLETED / ACCEPTED
+RT-1 through RT-5 authorization: BLOCKED pending released voice-input/realtime/cancel contracts
+RT-6 through RT-7 authorization: BLOCKED pending a released motion contract
 ```
 
 At RT-0a acceptance, RT-0b was `NOT_STARTED`. RT-0a inspected the actual DRC
@@ -545,9 +546,55 @@ cd ..
 git diff --check
 ```
 
-RT-0b changed no DRC or Framework runtime, called no provider or network, and is COMPLETED / ACCEPTED. RT-0c will freeze the DRC-to-FW feedback handoff;
+RT-0b changed no DRC or Framework runtime, called no provider or network, and is COMPLETED / ACCEPTED. RT-0c accepted the v5.1.0 reassessment and the remaining DRC-to-FW handoff boundary;
 DRC implementation remains blocked until the required contracts are released
 and verifiable through the Framework public surface.
+
+### RT-0c Framework v5.1.0 reassessment
+
+RT-0c inspects released tag `v5.1.0` at
+`b68c62b5e80328b8c50f9eeef98164f6ae2a3b0f` without rewriting the accepted
+v5.0.0 RT-0b record.
+
+```text
+RT-0c implementation: COMPLETED / ACCEPTED
+Framework v5.1.0 host-app foundation: SUBSTANTIALLY_READY_WITH_TRANSITION_GAPS
+Realtime decision: BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING
+```
+
+Resolved v5.1.0 foundations:
+
+```text
+- CapabilityStatus / FrameworkCapabilities / get_capabilities()
+- FW-owned provider configuration reporting
+- VoiceArtifactRef opaque artifact model
+- public contract conformance and package-import release gates
+```
+
+Partially resolved transition boundaries:
+
+```text
+- package-like import works outside the repository root, but no wheel is published;
+- factory/method stability is improved, but text factory and project_root remain transition surfaces;
+- TextChatResult / ask_result() are typed, but outcome/error models are not unified across all sessions;
+- close/dispose/context manager exist, but real provider resource cleanup is not yet exercised.
+```
+
+Still missing and blocking realtime DRC work:
+
+```text
+- public voice-input/STT session;
+- unified realtime lifecycle and typed event stream;
+- provider hard cancel, TTS queue/flush, and barge-in;
+- public motion-event/Live2D/VTS adapter.
+```
+
+Detailed reassessment:
+
+```text
+docs/v300_framework_v510_reassessment.md
+scripts/check_v300_framework_v510_reassessment.py
+```
 
 ## Required demo-app requirements
 
