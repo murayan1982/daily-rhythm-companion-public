@@ -9,11 +9,16 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (**R-1e and v2.1.0 release COMPLETED / ACCEPTED**)
+Current small commit: RT-0b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 
 Current phase state:
 
 ```text
+RT-0  CURRENT / NOT_COMPLETED
+  RT-0a  COMPLETED / ACCEPTED     Realtime current behavior inventory
+  RT-0b  CURRENT / NOT_COMPLETED  Framework public realtime readiness review
+          NOT_STARTED
+  RT-0c  PLANNED                  Blocked/unblocked decision and DRC-to-FW handoff boundary
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -28,6 +33,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
+Current v3 phase: RT-0 prerequisite review
 
 ## Current release and development status
 
@@ -100,7 +106,21 @@ The authoritative v2.1.0 source of truth is:
 - [`docs/v210_release_record.md`](docs/v210_release_record.md)
 - [`release_notes/v2.1.0.md`](release_notes/v2.1.0.md)
 
-W-1 established and accepted this source of truth after source-tree verification, diff review, and operator approval passed.
+The active v3.0.0 planning source of truth is:
+
+- [`docs/DRC_v300_goal_checklist_small_commit.md`](docs/DRC_v300_goal_checklist_small_commit.md)
+- [`docs/v300_realtime_current_behavior_inventory.md`](docs/v300_realtime_current_behavior_inventory.md)
+- [`scripts/check_v300_realtime_current_behavior_inventory.py`](scripts/check_v300_realtime_current_behavior_inventory.py)
+
+RT-0a is completed and accepted. It records the actual v2.1.0 realtime-related boundaries without changing Backend/Flutter runtime, existing tests, version metadata, or release records. Acceptance passed after compileall, the RT-0a source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. RT-0b is now CURRENT / NOT_COMPLETED and NOT_STARTED; RT-0c remains planned, and RT-1 remains blocked.
+
+Historical v2.1.0 terminal marker retained for accepted v2.1.0 checks:
+
+```text
+Current small commit: none
+```
+
+W-1 established and accepted the historical v2.1.0 source of truth after source-tree verification, diff review, and operator approval passed.
 
 The completed v2.0.x maintenance source of truth remains available as historical accepted work:
 
@@ -443,6 +463,48 @@ The repository can be published as an understandable AI Character Framework demo
 ```
 
 Daily Rhythm Companion is not meant to be a production health app at v1.0. It is a realistic demo app that shows how a Flutter UI and FastAPI backend can pass app context into AI Character Framework and present the result through text, optional voice, optional motion, and saved daily records.
+
+
+## v3.0.0 RT-0 current behavior review
+
+Current state:
+
+```text
+RT-0   CURRENT / NOT_COMPLETED
+RT-0a  CURRENT / NOT_COMPLETED
+RT-0a implementation: IMPLEMENTED / NOT_ACCEPTED
+RT-0b  PLANNED
+RT-0c  PLANNED
+RT-1 authorization: BLOCKED pending RT-0b and RT-0c
+```
+
+RT-0a inspected the actual Backend, Flutter, platform manifests, tests, roadmap,
+and tasklist. The current source has guarded voice-input and motion request
+boundaries, configured full-response Framework text chat, opaque TTS artifact
+handoff, in-app audio playback, and deterministic static character states. It
+does not yet have microphone permission/capture, STT execution, realtime
+transport, incremental DRC LLM orchestration, provider-level hard cancellation,
+TTS queue/barge-in, or real Live2D/VTS motion execution.
+
+RT-0a is docs/test-only. Run its source-tree gate from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+Detailed contract: `docs/v300_realtime_current_behavior_inventory.md`.
+
+RT-0a must be accepted before RT-0b starts. RT-0 does not authorize DRC realtime
+runtime changes until the released Framework public prerequisites are reviewed
+and the blocked/unblocked decision is accepted.
 
 ## Required demo-app requirements
 

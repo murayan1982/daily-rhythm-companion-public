@@ -1,13 +1,14 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-07-25
+Updated: 2026-07-26
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (**R-1e and v2.1.0 release COMPLETED / ACCEPTED**)
+Current small commit: RT-0b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 Strategic target: v3.0.0
+Historical v2.1.0 terminal marker: `Current small commit: none`
 
 ---
 
@@ -569,7 +570,9 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: Strategic target
+Status: RT-0 CURRENT / NOT_COMPLETED
+Current small commit: RT-0b CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-0a COMPLETED / ACCEPTED
 
 Goal:
 
@@ -578,6 +581,37 @@ Evolve DRC from a daily character companion with configured text/TTS demos into 
 ```
 
 Priority: P2 after v2.1.0 stability and required AI Character Framework public boundaries
+
+
+### Current implementation boundary at RT-0a
+
+The inspected v2.1.0 source currently provides:
+
+```text
+- HTTP request/response demo routes, not a realtime transport.
+- Metadata-only guarded voice-input status/request surfaces with no audio processing.
+- Configured full-response Framework text chat through ask(), not DRC streaming orchestration.
+- One-at-a-time voice artifact generation and in-app local playback control.
+- Static character activity states: idle, loading, speaking.
+- Motion discovery/request simulation that never sends motion or opens VTS WebSocket.
+- Existing project-root/import-context workarounds for the external Framework checkout.
+```
+
+The inspected source does not provide:
+
+```text
+- Microphone permission or capture.
+- Real STT or incremental transcript delivery.
+- WebSocket/SSE/realtime session transport.
+- Provider-level hard cancel or unified interruption.
+- TTS queue control or barge-in.
+- Realtime character lifecycle states.
+- Public Framework motion adapter or real Live2D/VTS execution.
+```
+
+RT-0a changes planning documents and one source-tree check only. Runtime,
+existing tests, versions, and v2.x release records remain unchanged. Detailed
+inventory: `docs/v300_realtime_current_behavior_inventory.md`.
 
 Core target capabilities:
 
@@ -629,22 +663,29 @@ Possible v3.0.0 platform scope, to be accepted separately:
 
 These platform items are not automatically required merely because the major version is v3.0.0. They need a separate accepted scope and threat/operations model.
 
-Provisional v3.0.0 phases:
+Accepted planning split for v3.0.0:
 
 ```text
-RT-0  Framework public realtime contract readiness review
-RT-1  DRC realtime state and event model
-RT-2  Microphone permission and guarded capture path
-RT-3  Real STT / voice-input integration
-RT-4  Streaming LLM and cancellation integration
-RT-5  TTS queue, interruption, and barge-in integration
-RT-6  Character motion public-event integration
-RT-7  Live2D / VTS configured adapter execution
-RT-8  PC and smartphone realtime acceptance evidence
-RT-9  Security, cleanup, release readiness, fixed ZIP, tag, and GitHub Release
+RT-0   CURRENT / NOT_COMPLETED   Prerequisite, inventory, and public-contract readiness
+  RT-0a  COMPLETED / ACCEPTED      DRC realtime current behavior inventory
+  RT-0b  CURRENT / NOT_COMPLETED   Released Framework public realtime readiness review
+          NOT_STARTED
+  RT-0c  PLANNED                   Blocked/unblocked decision and DRC-to-FW handoff boundary
+RT-1   BLOCKED                   DRC realtime state, event, capability, and session model
+RT-2   BLOCKED                   Microphone permission and guarded capture path
+RT-3   BLOCKED                   Real STT / voice-input integration
+RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
+RT-5   BLOCKED                   TTS queue, interruption, and barge-in
+RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
+RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
+RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
+RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
 ```
 
-The v3.0.0 plan must remain blocked at RT-0 if the required AI Character Framework public contracts are not released and verifiable.
+RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. It does not evaluate or accept Framework readiness. RT-0b is current but not started and must use released, verifiable public Framework APIs; RT-0c must explicitly accept the decision.
+The v3.0.0 plan remains blocked when any required public Framework contract is
+missing. DRC must not unblock itself through Framework internal imports or
+provider-specific implementations.
 
 ---
 

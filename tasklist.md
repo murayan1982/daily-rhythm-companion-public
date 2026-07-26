@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-25
+更新日: 2026-07-26
 
 ## 1. 現在地
 
@@ -13,16 +13,25 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current small commit: none
-current implementation step: none
-current implementation state: COMPLETED / ACCEPTED
-completed small commit: R-1e COMPLETED / ACCEPTED
+current small commit: RT-0b CURRENT / NOT_COMPLETED
+current implementation step: released Framework public realtime readiness review
+current implementation state: NOT_STARTED
+completed small commit: RT-0a COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
-v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、次の開発対象は計画済みv3.0.0として新しいコミットで進める。
+v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0bはCURRENT / NOT_COMPLETEDかつNOT_STARTEDで、RT-1以降は引き続きblockedである。
+
 
 ## 2. Source of truth
+
+v3.0.0のactive checklistとRT-0a棚卸し:
+
+```text
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_realtime_current_behavior_inventory.md
+scripts/check_v300_realtime_current_behavior_inventory.py
+```
 
 v2.1.0のauthoritative詳細タスクリスト:
 
@@ -65,36 +74,130 @@ v2.0.0とv2.0.1の公開記録は履歴として保持し、v2.1.0の進捗管�
 
 ---
 
+
 # 3. 現在の小コミット
 
-## R-1 — v2.1.0 aggregate readiness and release preparation
+## RT-0 — v3.0.0 prerequisite and current behavior review
 
 Status: CURRENT / NOT_COMPLETED
 
 Small-commit split:
 
 ```text
-R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
-R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
-R-1c  COMPLETED / ACCEPTED     Final smartphone Web evidence aggregate
-R-1d  COMPLETED / ACCEPTED     One-time fixed ZIP build and same-artifact verification
-R-1e  COMPLETED / ACCEPTED  Explicit approval, publication, and post-publication verification
+RT-0a  COMPLETED / ACCEPTED      DRC realtime current behavior inventory
+RT-0b  CURRENT / NOT_COMPLETED   Released Framework public realtime readiness review
+        NOT_STARTED
+RT-0c  PLANNED                   Blocked/unblocked decision and DRC-to-FW handoff boundary
 ```
 
-R-1a was completed and accepted on 2026-07-25 at implementation commit `dbc84db`. It records the reusable generic packaging boundary, the hard-coded historical v2.0.1 release gate, current 2.0.1 metadata, accepted 110 Backend / 103 Flutter test baseline, prior smartphone Web evidence, and missing v2.1.0 release files. Acceptance passed after compileall, all 18 v2.1.0 checks, v2.0.x guards, 110 Backend tests, 103 Flutter tests, diff review, and operator approval. It changed no runtime, version metadata, release builder, fixed ZIP, tag, or GitHub Release. R-1b and R-1c are completed/accepted; R-1d is completed/accepted for the exact fixed ZIP tuple; R-1e and parent R-1 are completed/accepted; v2.1.0 is released.
+### RT-0a — Realtime current behavior inventory
 
-R-1bは実装コミット`72dd42c`でCOMPLETED / ACCEPTED。Backend `2.1.0` / Flutter `2.1.0+3`候補metadata、18個の既存v2.1.0 checkを集約するgate、110 Backend / 103 Flutter test、Web / Windows build、候補release notes、未記入release recordを受け入れた。固定ZIP、tag、GitHub Release、provider実行、最終スマートフォンWeb aggregateは含めていない。R-1cからR-1eと親R-1はCOMPLETED / ACCEPTEDで、v2.1.0は正式リリース済み。
-
-Detailed inventory:
+目的:
 
 ```text
-docs/v210_release_readiness_current_behavior_inventory.md
-scripts/check_v210_release_readiness_current_behavior_inventory.py
+- Backend、Flutter、platform metadata、tests、roadmap、tasklistを実コードどおり棚卸しする。
+- voice input / LLM / TTS / character / motionの実runtime、guarded boundary、discovery-onlyを分離する。
+- v3.0.0の目的、scope、除外範囲、RT-0以降の責任分割を固定する。
+- 旧R-1節のCURRENT表示をCOMPLETED / ACCEPTEDへ同期する。
+- runtime、既存tests、version、release recordsを変更しない。
+```
+
+変更対象:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_realtime_current_behavior_inventory.md
+scripts/check_v300_realtime_current_behavior_inventory.py
+```
+
+実コード確認結果:
+
+```text
+- Backendは通常HTTP request/responseで、WebSocket/SSE/realtime sessionは未実装。
+- voice inputはmetadata-onlyでaccepted=false / not_started / transcript=null。
+- Framework text chatはfull-response ask()で、DRC streaming/cancel orchestrationは未実装。
+- TTSは単発artifact生成とFlutter内再生で、queue/生成cancel/barge-inは未実装。
+- character activityはidle/loading/speakingのみ。
+- motionはprobe/simulatorでmotion_sent=false / vts_connection_used=false。
+- microphone dependency、Android RECORD_AUDIO、iOS microphone usage descriptionは未追加。
+- HomeScreen 4,161行、widget_test.dart 2,753行で、realtime追加前の抽出が必要。
+```
+
+詳細:
+
+```text
+docs/v300_realtime_current_behavior_inventory.md
+```
+
+検証:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+受け入れ結果:
+
+```text
+implementation: COMPLETED / ACCEPTED
+compileall: passed
+RT-0a source-tree gate: passed
+Backend pytest: 110 passed
+Flutter test: 103 passed
+git diff --check: passed
+runtime changed: false
+existing tests changed: false
+real provider execution: false
+microphone used: false
+realtime session started: false
+diff review / explicit operator approval: passed
+RT-1 authorization: BLOCKED pending RT-0b and RT-0c
+```
+
+Stop rule:
+
+```text
+RT-0a実装中にはRT-0bを開始しない。RT-0a受け入れ後、RT-0bを次のCURRENT小コミットとして開始する。
+Frameworkを変更しない。
+microphone、realtime transport、STT、streaming、cancel、TTS queue、barge-in、motion executionを追加しない。
+RT-0aはローカル検証、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDへ同期した。
 ```
 
 ---
 
+
 # 4. 直近完了した小コミット
+
+## R-1 — v2.1.0 aggregate readiness and release preparation
+
+Status: COMPLETED / ACCEPTED
+
+```text
+R-1a  COMPLETED / ACCEPTED   Release/readiness current behavior inventory
+R-1b  COMPLETED / ACCEPTED   Aggregate source-tree/test gate and v2.1.0 candidate metadata
+R-1c  COMPLETED / ACCEPTED   Final smartphone Web evidence aggregate
+R-1d  COMPLETED / ACCEPTED   One-time fixed ZIP build and same-artifact verification
+R-1e  COMPLETED / ACCEPTED   Explicit approval, publication, and post-publication verification
+```
+
+R-1eと親R-1はCOMPLETED / ACCEPTED。v2.1.0は固定ZIP、annotated tag、GitHub Release、公開後SHA-256再検証まで完了している。R-1の詳細な履歴source of truthは`docs/DRC_v210_goal_checklist_small_commit.md`、`docs/v210_release_readiness.md`、`docs/v210_release_record.md`、`release_notes/v2.1.0.md`に保持する。
+
+```text
+historical v2.1.0 terminal state: current small commit: none
+```
+
+---
 
 ## V-1 — Character display extraction and deterministic states
 
@@ -961,10 +1064,13 @@ Secondary work: provider selection, LLM chat lifecycle, in-app TTS playback, sta
 
 ```text
 Primary theme: Realtime multimodal character runtime
-Large changes: real STT, microphone capture, streaming/cancel, TTS interruption, Live2D/VTS real execution, runtime orchestration
+Current parent phase: RT-0 CURRENT / NOT_COMPLETED
+Completed small commit: RT-0a COMPLETED / ACCEPTED
+Current small commit: RT-0b CURRENT / NOT_COMPLETED; NOT_STARTED
+Blocked implementation phases: RT-1 through RT-9
 ```
 
-v2.1.0はW-1からW-5、C-1、T-1、V-1、R-1aからR-1eと親R-1まで受け入れ済みで、Google Health API経由のFitbit Versa 2-origin sleep、PC/スマートフォンWeb表示、アプリ内TTS再生、決定論的character表示、固定ZIP、公開、公開後検証が確認済みである。v2.1.0は正式リリース済みで、v3.0.0は計画段階である。
+RT-0aは現行実コードの棚卸し、目的、scope、除外範囲、変更/非変更面を固定するdocs/test-only小コミットとしてCOMPLETED / ACCEPTEDとなった。RT-0bでreleased Framework public realtime contractを確認し、RT-0cでblocked/unblocked判断とDRC-to-FW handoff境界を受け入れる。RT-0c受け入れ前にRT-1以降を開始しない。
 
 - [x] T-1c: pin audioplayers 6.7.1 for Flutter 3.41.7
 - [x] T-1c: restore missing Windows Flutter CMake scaffold locally

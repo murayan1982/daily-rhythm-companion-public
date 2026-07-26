@@ -4607,3 +4607,34 @@ R-1d is `COMPLETED / ACCEPTED`. R-1e is completed/accepted after explicit tuple 
 ## v2.1.0 R-1e publication completion
 
 R-1e and parent R-1 are `COMPLETED / ACCEPTED`. Explicit approval was received for the exact tuple, annotated tag `DRC_v2.1.0` was published at `6e7af31f85eb6ee7887df3e184ac6a58142d6fec`, the GitHub Release was published with the unchanged fixed ZIP, and the downloaded asset was independently verified at `1747337` bytes / SHA-256 `55bf584592b1824948ec847205132582a436f2c521feb593bac914a4904074e5`. No provider, runtime, dependency, asset, historical release record, or fixed ZIP content changed in the post-publication source sync.
+
+
+## v3.0.0 RT-0a realtime current behavior inventory
+
+Detailed inventory: `docs/v300_realtime_current_behavior_inventory.md`.
+
+Run the credential-free source-tree gate from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_realtime_current_behavior_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+RT-0a is `COMPLETED / ACCEPTED`. Acceptance passed after compileall, the
+credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff
+review, and explicit operator approval. The check validates the actual v2.1.0 voice-input, chat, TTS, character, motion, transport,
+permission, and integration-cost boundaries while protecting Backend/Flutter
+runtime, existing tests, platform metadata, version metadata, and immutable v2.x
+release records with normalized hashes.
+
+The gate does not import AI Character Framework, call providers or network, read
+private env files, open a microphone, start Flutter/browser execution, or start a
+realtime session. RT-0b is `CURRENT / NOT_COMPLETED` and `NOT_STARTED`; RT-0c
+remains planned, and RT-1 through RT-9 remain blocked.
