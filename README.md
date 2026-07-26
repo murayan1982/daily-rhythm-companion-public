@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-1b CURRENT / NOT_COMPLETED (**Backend realtime model and normalization boundary; NOT_STARTED**)
+Current small commit: none (**RT-1b COMPLETED / ACCEPTED; RT-2 split pending**)
 
 Current phase state:
 
@@ -18,10 +18,11 @@ RT-0  COMPLETED / ACCEPTED
   RT-0a  COMPLETED / ACCEPTED     Realtime current behavior inventory
   RT-0b  COMPLETED / ACCEPTED     Framework public realtime readiness review
   RT-0c  COMPLETED / ACCEPTED     Framework v5.1.0 reassessment and remaining realtime block decision
-RT-1  CURRENT / NOT_COMPLETED
+RT-1  COMPLETED / ACCEPTED
   RT-1a  COMPLETED / ACCEPTED      Framework v5.2.0 mock-safe public-contract adoption gate
-  RT-1b  CURRENT / NOT_COMPLETED   Backend realtime model and normalization boundary
-          NOT_STARTED
+  RT-1b  COMPLETED / ACCEPTED      Backend realtime model and normalization boundary
+RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture path
+      NOT_STARTED
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -36,7 +37,18 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-1 CURRENT / NOT_COMPLETED; RT-1a COMPLETED / ACCEPTED; RT-1b NOT_STARTED; RT-1 mock-contract integration is authorized
+Current v3 phase: RT-1 COMPLETED / ACCEPTED; RT-2 CURRENT / NOT_COMPLETED; guarded-capture planning authorized; real STT remains blocked
+
+## v3.0.0 RT-1b Backend realtime normalization
+
+RT-1b adds DRC-owned Backend realtime state, event, capability, and session
+models plus a Framework v5.2.0 public-contract normalizer. The normalizer accepts
+Framework-style objects or mappings without importing Framework and prefers
+v5.2.0 session-specific info over the stale inherited global capability
+snapshot.
+
+This checkpoint adds no FastAPI route, realtime transport, microphone access,
+provider execution, Flutter change, or real runtime orchestration. Acceptance state: **COMPLETED / ACCEPTED** after focused Backend 6, full Backend 116, Flutter 103, diff review, and explicit operator approval passed.
 
 ## Current release and development status
 
@@ -3987,9 +3999,10 @@ real Framework STT/realtime/cancel/TTS-queue/Live2D execution: not implemented
 DRC runtime changes in RT-1a: none
 ```
 
-After RT-1a acceptance, RT-1b will add Backend-only DRC realtime models and a
-normalization boundary. Real STT, streaming cancellation, output control, and
-Live2D/VTS execution remain blocked.
+RT-1b is COMPLETED / ACCEPTED and adds the Backend-only DRC realtime models and
+normalization boundary. RT-2 guarded microphone permission/capture planning may
+begin; real STT, streaming cancellation, output control, and Live2D/VTS execution
+remain blocked.
 
 Detailed gate:
 

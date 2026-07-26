@@ -13,10 +13,11 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current small commit: RT-1b CURRENT / NOT_COMPLETED
-current implementation step: Backend realtime model and Framework-contract normalization boundary
+current parent phase: RT-2 CURRENT / NOT_COMPLETED
+current small commit: none
+current implementation step: RT-2 small-commit split pending
 current implementation state: NOT_STARTED
-completed small commit: RT-1a COMPLETED / ACCEPTED
+completed small commit: RT-1b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -37,6 +38,8 @@ docs/v300_framework_v510_reassessment.md
 scripts/check_v300_framework_v510_reassessment.py
 docs/v300_framework_v520_contract_adoption.md
 scripts/check_v300_framework_v520_contract_adoption.py
+docs/v300_backend_realtime_normalization.md
+scripts/check_v300_backend_realtime_normalization.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1300,10 +1303,10 @@ Secondary work: provider selection, LLM chat lifecycle, in-app TTS playback, sta
 
 ```text
 Primary theme: Realtime multimodal character runtime
-Current parent phase: RT-1 CURRENT / NOT_COMPLETED
-Current small commit: RT-1b CURRENT / NOT_COMPLETED; NOT_STARTED
-Completed small commit: RT-1a COMPLETED / ACCEPTED
-Current authorization: RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
+Current parent phase: RT-2 CURRENT / NOT_COMPLETED
+Current small commit: none
+Completed small commit: RT-1b COMPLETED / ACCEPTED
+Current authorization: RT2_GUARDED_CAPTURE_PLANNING_AUTHORIZED
 ```
 
 RT-0aは現行実コードの棚卸し、目的、scope、除外範囲、変更/非変更面を固定するdocs/test-only小コミットとしてCOMPLETED / ACCEPTEDとなった。RT-0a受け入れ時点のRT-0bはNOT_STARTED。RT-0bはCOMPLETED / ACCEPTEDで、released Framework v5.0.0 public readinessをBLOCKED_FRAMEWORK_UPDATE_REQUIREDと判定した。RT-0cでreleased Framework v5.1.0の再評価、DRC-to-FW handoff境界、進行順を受け入れた。required Framework public contractのrelease前にRT-1以降を開始しない。
@@ -1365,7 +1368,7 @@ decision: RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
 - [x] Backend/Flutter runtimeと既存testsを変更しないsource-tree gateを追加する。
 - [x] local gate、Backend 110件、Flutter 103件、diff review、明示承認を通す。
 - [x] acceptance syncでRT-1aをCOMPLETED / ACCEPTEDへ更新する。
-- [ ] accepted stateをコミットする。
+- [x] accepted stateをコミットする。
 
 RT-1aはcompileall、RT-0a/RT-0b/RT-0c/RT-1a gate、DRC `.venv`でのBackend 110件、Flutter 103件、diff review、明示承認の通過後にCOMPLETED / ACCEPTEDとなった。
 
@@ -1373,3 +1376,30 @@ RT-1aはcompileall、RT-0a/RT-0b/RT-0c/RT-1a gate、DRC `.venv`でのBackend 110
 realtime state/event/capability/session modelとFramework event normalizerを
 追加する。API route、WebSocket/SSE、microphone、Flutter UI、provider実行は
 RT-1bへ含めない。
+
+
+### RT-1b — Backend realtime model and Framework-contract normalization
+
+```text
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
+parent RT-1: COMPLETED / ACCEPTED
+```
+
+- [x] DRC-owned realtime state enumを追加する。
+- [x] DRC-owned realtime event typeとevent modelを追加する。
+- [x] public/mock/realを分離したcapability modelを追加する。
+- [x] DRC-owned realtime session snapshotを追加する。
+- [x] Framework object/mappingを扱うnormalizerを追加する。
+- [x] Framework Enumの`.value`を安全に正規化する。
+- [x] session-specific v5.2.0 metadataをstale global snapshotより優先する。
+- [x] unknown future eventを失敗させず保持する。
+- [x] metadataのsecret/private keyをredactする。
+- [x] focused Backend 6件、full Backend 116件をlocal実装検証で通す。
+- [x] API route、transport、microphone、Flutter、Framework import、provider実行を追加しない。
+- [x] operator環境でfocused/full Backend、Flutter 103件、diff reviewを通す。
+- [x] explicit approval後にRT-1bとparent RT-1をCOMPLETED / ACCEPTEDへ同期する。
+- [x] compileall、focused Backend 6件、full Backend 116件、Flutter 103件、`git diff --check`を通す。
+- [x] Framework import、API route、microphone、provider execution、realtime runtime開始がないことを確認する。
+
+RT-1bは2026-07-26にCOMPLETED / ACCEPTED。次はRT-2のguarded microphone permission/capture pathを小コミットへ分割してから着手する。real STTは引き続きFW実装待ち。

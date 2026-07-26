@@ -6,12 +6,12 @@ Updated: 2026-07-26
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-1 CURRENT / NOT_COMPLETED
-Current small commit: RT-1b CURRENT / NOT_COMPLETED
-Current implementation step: Backend realtime model and Framework-contract normalization boundary
+Current parent phase: RT-2 CURRENT / NOT_COMPLETED
+Current small commit: none
+Current implementation step: RT-2 guarded microphone permission/capture split pending
 Current implementation state: NOT_STARTED
-Completed small commit: RT-1a COMPLETED / ACCEPTED
-Next action: implement RT-1b against mock-safe v5.2.0 public contracts without adding routes, transport, microphone, Flutter UI, or provider execution
+Completed small commit: RT-1b COMPLETED / ACCEPTED
+Next action: inspect the existing Flutter/platform permission surface and define the RT-2 small-commit split before adding microphone access
 ```
 
 ## Source of truth
@@ -29,6 +29,8 @@ docs/v300_framework_v510_reassessment.md
 scripts/check_v300_framework_v510_reassessment.py
 docs/v300_framework_v520_contract_adoption.md
 scripts/check_v300_framework_v520_contract_adoption.py
+docs/v300_backend_realtime_normalization.md
+scripts/check_v300_backend_realtime_normalization.py
 ```
 
 Historical release sources remain immutable:
@@ -550,8 +552,8 @@ RT-1a  COMPLETED / ACCEPTED
        Verified the released v5.2.0 mock-safe public contracts and authorized the
        bounded DRC integration surface.
 
-RT-1b  CURRENT / NOT_COMPLETED; NOT_STARTED
-       Add Backend-only DRC realtime state/event/capability/session models and a
+RT-1b  COMPLETED / ACCEPTED
+       Adds Backend-only DRC realtime state/event/capability/session models and a
        Framework-contract normalizer. No API route or provider execution.
 ```
 
@@ -568,8 +570,8 @@ not complete. RT-1 may begin with model and mock-contract integration only.
 Phase boundaries after RT-1a acceptance:
 
 ```text
-RT-1: CURRENT / mock-contract-only
-RT-2: BLOCKED pending parent RT-1 acceptance
+RT-1: COMPLETED / ACCEPTED
+RT-2: CURRENT / NOT_COMPLETED; guarded capture only; NOT_STARTED
 RT-3: BLOCKED_REAL_STT_NOT_IMPLEMENTED
 RT-4: BLOCKED_REAL_STREAMING_CANCEL_NOT_IMPLEMENTED
 RT-5: BLOCKED_REAL_OUTPUT_CONTROL_NOT_IMPLEMENTED
@@ -583,7 +585,33 @@ Detailed contract:
 ```text
 docs/v300_framework_v520_contract_adoption.md
 scripts/check_v300_framework_v520_contract_adoption.py
+docs/v300_backend_realtime_normalization.md
+scripts/check_v300_backend_realtime_normalization.py
 ```
+
+
+
+## RT-1b implementation checkpoint
+
+```text
+Implementation state: COMPLETED / ACCEPTED
+Backend models added: true
+Framework-contract normalizer added: true
+Focused Backend tests: 6 passed in local implementation verification
+Full Backend tests: 116 passed in local implementation verification
+Framework import: false
+API route added: false
+microphone used: false
+realtime runtime started: false
+Provider execution: false
+Flutter runtime changed: false
+```
+
+RT-1b was accepted on 2026-07-26 after compileall, the RT-1b source/runtime
+gate, focused Backend 6, full Backend 116 with one existing warning, Flutter 103,
+`git diff --check`, 10-file diff review, and explicit operator approval passed.
+Parent RT-1 is COMPLETED / ACCEPTED. RT-2 is CURRENT / NOT_COMPLETED but remains
+NOT_STARTED until its guarded permission/capture small-commit split is accepted.
 
 ## Historical accepted marker compatibility
 

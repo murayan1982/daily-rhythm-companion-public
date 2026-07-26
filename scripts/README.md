@@ -4795,3 +4795,37 @@ RT1_MOCK_CONTRACT_INTEGRATION_AUTHORIZED
 real Framework realtime execution: not ready
 next implementation: RT-1b CURRENT / NOT_COMPLETED; NOT_STARTED; Backend model/normalizer only
 ```
+
+
+## v3.0.0 RT-1b Backend realtime normalization check
+
+Detailed contract: `docs/v300_backend_realtime_normalization.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_backend_realtime_normalization.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests/test_framework_realtime_normalizer.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+```
+
+Current acceptance state: `COMPLETED / ACCEPTED`.
+
+RT-1b adds DRC-owned Backend realtime models and a Framework v5.2.0 contract
+normalizer only. It does not import Framework, add a route or transport, use a
+microphone, call providers, change Flutter runtime, or start realtime execution.
+The docs-only RT-0a through RT-1a whole-tree hash gates are historical and are
+not rerun after this first v3 Backend code checkpoint.
+
+RT-1b was accepted on 2026-07-26 after compileall, the RT-1b gate, focused
+Backend 6, full Backend 116 with one existing warning, Flutter 103,
+`git diff --check`, 10-file diff review, and explicit operator approval passed.
+The accepted check reports parent RT-1 completed and RT-2 guarded-capture
+planning authorized.
