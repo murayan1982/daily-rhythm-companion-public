@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: none
-current implementation step: RT-2 small-commit split pending
+current small commit: RT-2b CURRENT / NOT_COMPLETED
+current implementation step: add DRC-owned permission state/result and fake/unsupported gateway contracts
 current implementation state: NOT_STARTED
-completed small commit: RT-1b COMPLETED / ACCEPTED
+completed small commit: RT-2a COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1304,9 +1304,9 @@ Secondary work: provider selection, LLM chat lifecycle, in-app TTS playback, sta
 ```text
 Primary theme: Realtime multimodal character runtime
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: none
+Current small commit: RT-2a CURRENT / NOT_COMPLETED
 Completed small commit: RT-1b COMPLETED / ACCEPTED
-Current authorization: RT2_GUARDED_CAPTURE_PLANNING_AUTHORIZED
+Current authorization: RT2A_INVENTORY_IMPLEMENTED_NOT_ACCEPTED
 ```
 
 RT-0aは現行実コードの棚卸し、目的、scope、除外範囲、変更/非変更面を固定するdocs/test-only小コミットとしてCOMPLETED / ACCEPTEDとなった。RT-0a受け入れ時点のRT-0bはNOT_STARTED。RT-0bはCOMPLETED / ACCEPTEDで、released Framework v5.0.0 public readinessをBLOCKED_FRAMEWORK_UPDATE_REQUIREDと判定した。RT-0cでreleased Framework v5.1.0の再評価、DRC-to-FW handoff境界、進行順を受け入れた。required Framework public contractのrelease前にRT-1以降を開始しない。
@@ -1403,3 +1403,20 @@ parent RT-1: COMPLETED / ACCEPTED
 - [x] Framework import、API route、microphone、provider execution、realtime runtime開始がないことを確認する。
 
 RT-1bは2026-07-26にCOMPLETED / ACCEPTED。次はRT-2のguarded microphone permission/capture pathを小コミットへ分割してから着手する。real STTは引き続きFW実装待ち。
+
+### RT-2a permission/capture inventory and split
+
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
+
+- [x] `app/pubspec.yaml`にmicrophone/permission/capture packageがないことを確認する。
+- [x] Android main manifestに`RECORD_AUDIO`がないことを確認する。
+- [x] iOS `Info.plist`に`NSMicrophoneUsageDescription`がないことを確認する。
+- [x] Flutter voice-input UIがmetadata-only backend requestで、録音しないことを確認する。
+- [x] Backend voice-input demoがaudioを受け取らず、real STTを開始しないことを確認する。
+- [x] RT-2b〜RT-2eをpermission contract、platform permission、fake capture、guarded real captureへ分割する。
+- [x] always-on/background recording、raw audio default persistence、RT-3前のSTT送信を除外する。
+- [x] operator環境でgate、Backend 116件、Flutter 103件、diff reviewを通す。
+- [x] explicit approval後にRT-2aをCOMPLETED / ACCEPTEDへ同期する。
+
+RT-2aは2026-07-26にCOMPLETED / ACCEPTED。compileall、RT-1b/RT-2a gate、Backend 116件、Flutter 103件、`git diff --check`、7-file diff review、explicit operator approvalが通過した。Backend/Flutter runtime、existing tests、pubspec、Android/iOS permission、version、release recordは変更していない。RT-2bはapp-owned permission contractとfake/unsupported gatewayだけに限定して開始可能。

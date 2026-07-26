@@ -4740,7 +4740,7 @@ PARTIAL_V510: FW-F1, FW-F2, FW-F3, FW-F6
 MISSING_REALTIME_BLOCKER: FW-F9, FW-F10, FW-F11, FW-F12
 ```
 
-Expected pre-acceptance output:
+Accepted output:
 
 ```text
 v300_framework_v510_reassessment_status: completed-accepted
@@ -4829,3 +4829,49 @@ Backend 6, full Backend 116 with one existing warning, Flutter 103,
 `git diff --check`, 10-file diff review, and explicit operator approval passed.
 The accepted check reports parent RT-1 completed and RT-2 guarded-capture
 planning authorized.
+
+
+## v3.0.0 RT-2a microphone permission/capture inventory check
+
+Detailed contract: `docs/v300_microphone_permission_capture_inventory.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_microphone_permission_capture_inventory.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+Current implementation state: `COMPLETED / ACCEPTED`. RT-2b is `CURRENT / NOT_COMPLETED; NOT_STARTED`.
+
+RT-2a is docs/test-only. The gate freezes Backend and Flutter runtime/test trees,
+`pubspec.yaml`, Android/iOS permission metadata, versions, and release notes while
+recording the RT-2b through RT-2e split. It does not request permission, access a
+microphone, capture audio, import Framework, call a provider, upload audio, or
+start STT/realtime execution.
+
+Expected pre-acceptance output:
+
+```text
+v300_microphone_permission_capture_inventory_status: completed-accepted
+v300_rt2a_backend_runtime_changed: False
+v300_rt2a_flutter_runtime_changed: False
+v300_rt2a_existing_tests_changed: False
+v300_rt2a_microphone_dependency_added: False
+v300_rt2a_android_record_audio_added: False
+v300_rt2a_ios_microphone_usage_added: False
+v300_rt2a_microphone_accessed: False
+v300_rt2a_audio_captured: False
+v300_rt2_parent_status: current-pending-rt2b-implementation
+v300_rt2b_authorization: authorized-permission-contract-and-fake-gateway-only
+```
+
+RT-2a was accepted on 2026-07-26 after compileall, the RT-1b and RT-2a gates, Backend 116 with one existing warning, Flutter 103, `git diff --check`, seven-file diff review, and explicit operator approval passed.

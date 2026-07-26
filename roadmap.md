@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (**RT-1b COMPLETED / ACCEPTED; RT-2 split pending**)
+Current small commit: RT-2b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,8 +571,8 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: none
-Completed small commit: RT-1b COMPLETED / ACCEPTED
+Current small commit: RT-2b CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-2a COMPLETED / ACCEPTED
 
 Goal:
 
@@ -735,7 +735,11 @@ RT-1   COMPLETED / ACCEPTED     DRC realtime state, event, capability, and sessi
   RT-1a  COMPLETED / ACCEPTED      Framework v5.2.0 public-contract adoption gate
   RT-1b  COMPLETED / ACCEPTED      Backend realtime model and normalization boundary
 RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
-        NOT_STARTED
+  RT-2a  COMPLETED / ACCEPTED      Permission/capture inventory and small-commit split
+  RT-2b  CURRENT / NOT_COMPLETED     App-owned permission contract and fake gateway; NOT_STARTED
+  RT-2c  BLOCKED                   Platform permission wiring without capture
+  RT-2d  BLOCKED                   Capture lifecycle contract and fake engine
+  RT-2e  BLOCKED                   Explicitly guarded bounded microphone capture
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -746,6 +750,31 @@ RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and rel
 ```
 
 RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is COMPLETED / ACCEPTED and used only released, verifiable public Framework APIs. RT-0c is also COMPLETED / ACCEPTED after the v5.1.0 reassessment, local gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval.
+
+RT-2a was accepted on 2026-07-26 after compileall, the RT-1b and RT-2a gates, Backend 116 with one existing warning, Flutter 103, `git diff --check`, seven-file diff review, and explicit operator approval passed. No runtime, dependency, platform permission, microphone, capture, version, or release surface changed.
+
+### RT-2 guarded permission/capture small-commit split
+
+RT-2 is split so platform permission, microphone capture, and STT cannot be
+mistaken for one another:
+
+```text
+RT-2a  Inventory the current Flutter/platform surface and freeze the safety contract.
+       Docs/test-only; no dependency, permission, microphone, capture, or runtime change.
+RT-2b  Add DRC-owned permission states, result models, gateway interface, and fake gateway.
+       No platform plugin, manifest permission, or microphone access.
+RT-2c  Wire explicit user-triggered platform permission requests and declarations.
+       No audio capture, STT call, upload, or persistence.
+RT-2d  Add capture lifecycle models/controller and a fake capture engine.
+       Enforce idle/requesting/ready/capturing/stopping/completed/denied/error cleanup states.
+RT-2e  Add an explicitly enabled bounded real capture adapter with hard duration and cleanup.
+       Raw audio is not persisted by default and is not sent to STT until RT-3 is authorized.
+```
+
+Cross-platform behavior must return typed unsupported/unavailable states rather than
+silently touching a microphone. Permission denial, permanent denial, restriction,
+unsupported platform, busy capture, timeout, cancellation, and cleanup failure remain
+distinct. Always-on/background recording is excluded.
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit
 `6494da306015c4f714f869b43e773ba51a2478a2`. The released root package exports

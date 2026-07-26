@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: none
-Current implementation step: RT-2 guarded microphone permission/capture split pending
+Current small commit: RT-2b CURRENT / NOT_COMPLETED
+Current implementation step: DRC-owned permission state/result and fake/unsupported gateway contracts
 Current implementation state: NOT_STARTED
-Completed small commit: RT-1b COMPLETED / ACCEPTED
-Next action: inspect the existing Flutter/platform permission surface and define the RT-2 small-commit split before adding microphone access
+Completed small commit: RT-2a COMPLETED / ACCEPTED
+Next acceptance action: implement RT-2b without a platform plugin, manifest permission, microphone access, capture, or STT execution
 ```
 
 ## Source of truth
@@ -571,7 +571,7 @@ Phase boundaries after RT-1a acceptance:
 
 ```text
 RT-1: COMPLETED / ACCEPTED
-RT-2: CURRENT / NOT_COMPLETED; guarded capture only; NOT_STARTED
+RT-2: CURRENT / NOT_COMPLETED; RT-2a COMPLETED / ACCEPTED; RT-2b NOT_STARTED; microphone access NOT_STARTED
 RT-3: BLOCKED_REAL_STT_NOT_IMPLEMENTED
 RT-4: BLOCKED_REAL_STREAMING_CANCEL_NOT_IMPLEMENTED
 RT-5: BLOCKED_REAL_OUTPUT_CONTROL_NOT_IMPLEMENTED
@@ -612,6 +612,63 @@ gate, focused Backend 6, full Backend 116 with one existing warning, Flutter 103
 `git diff --check`, 10-file diff review, and explicit operator approval passed.
 Parent RT-1 is COMPLETED / ACCEPTED. RT-2 is CURRENT / NOT_COMPLETED but remains
 NOT_STARTED until its guarded permission/capture small-commit split is accepted.
+
+## RT-2 small-commit split
+
+```text
+RT-2a  COMPLETED / ACCEPTED
+       Current Flutter/platform permission and capture inventory; docs/test-only.
+RT-2b  CURRENT / NOT_COMPLETED; NOT_STARTED
+       DRC-owned permission state/result and gateway interface with fake gateway.
+RT-2c  BLOCKED pending RT-2b acceptance
+       Explicit user-triggered platform permission wiring; no capture.
+RT-2d  BLOCKED pending RT-2c acceptance
+       Capture lifecycle/controller and fake engine; no microphone access.
+RT-2e  BLOCKED pending RT-2d acceptance
+       Explicitly enabled bounded real capture and cleanup; no STT execution.
+```
+
+RT-2a inspected the actual source and confirmed:
+
+```text
+Flutter microphone/permission/capture dependency: absent
+Android RECORD_AUDIO: absent
+iOS NSMicrophoneUsageDescription: absent
+Web/desktop microphone adapter: absent
+App-owned microphone permission gateway: absent
+App-owned capture engine/controller: absent
+Current voice-input UI: metadata-only backend request
+Current Backend voice-input route: no audio body and no STT execution
+```
+
+Safety contract for later RT-2 children:
+
+```text
+explicit user action only
+safe default disabled/unavailable
+typed denied/permanently-denied/restricted/unsupported/error states
+single active capture
+hard bounded duration and explicit stop/cancel
+no always-on or background recording
+no raw audio persistence by default
+cleanup after completion/cancel/error
+no STT/provider upload before RT-3 authorization
+```
+
+RT-2a was accepted on 2026-07-26 after compileall, the RT-1b and RT-2a gates, Backend 116 with one existing warning, Flutter 103, `git diff --check`, seven-file diff review, and explicit operator approval passed.
+
+RT-2a protected results:
+
+```text
+Backend runtime changed: false
+Flutter runtime changed: false
+Existing tests changed: false
+Microphone dependency added: false
+Android RECORD_AUDIO added: false
+iOS microphone usage added: false
+Microphone accessed: false
+Audio captured: false
+```
 
 ## Historical accepted marker compatibility
 
