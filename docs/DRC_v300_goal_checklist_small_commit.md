@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2b CURRENT / NOT_COMPLETED
-Current implementation step: DRC-owned permission state/result and fake/unsupported gateway contracts
+Current small commit: RT-2c CURRENT / NOT_COMPLETED
+Current implementation step: explicit user-triggered platform permission wiring without capture
 Current implementation state: NOT_STARTED
-Completed small commit: RT-2a COMPLETED / ACCEPTED
-Next acceptance action: implement RT-2b without a platform plugin, manifest permission, microphone access, capture, or STT execution
+Completed small commit: RT-2b COMPLETED / ACCEPTED
+Next implementation action: implement RT-2c platform permission wiring without capture
 ```
 
 ## Source of truth
@@ -618,9 +618,9 @@ NOT_STARTED until its guarded permission/capture small-commit split is accepted.
 ```text
 RT-2a  COMPLETED / ACCEPTED
        Current Flutter/platform permission and capture inventory; docs/test-only.
-RT-2b  CURRENT / NOT_COMPLETED; NOT_STARTED
+RT-2b  COMPLETED / ACCEPTED
        DRC-owned permission state/result and gateway interface with fake gateway.
-RT-2c  BLOCKED pending RT-2b acceptance
+RT-2c  CURRENT / NOT_COMPLETED; NOT_STARTED
        Explicit user-triggered platform permission wiring; no capture.
 RT-2d  BLOCKED pending RT-2c acceptance
        Capture lifecycle/controller and fake engine; no microphone access.
@@ -682,3 +682,45 @@ Historical RT-0c terminal marker: Current small commit: none
 Historical RT-0c completion marker: Completed small commit: RT-0c COMPLETED / ACCEPTED
 Historical RT-0b planning marker: RT-1   BLOCKED
 ```
+
+## RT-2b app-owned permission contract and fake gateway
+
+Implementation state: COMPLETED / ACCEPTED
+
+Changed runtime/test files:
+
+```text
+app/lib/services/microphone_permission.dart
+app/test/microphone_permission_test.dart
+```
+
+Contract additions:
+
+```text
+status: unknown, granted, denied, permanentlyDenied, restricted, unsupported, failed
+operation: check, request, openSettings
+result: safe message, technical code, request/settings affordances, immutable public metadata
+gateway: checkPermission, requestPermission, openAppSettings
+fake: deterministic request sequence and call counters; no OS side effect
+```
+
+Protected boundaries:
+
+```text
+permission/capture dependency added: false
+Android RECORD_AUDIO added: false
+iOS NSMicrophoneUsageDescription added: false
+MethodChannel or browser media API added: false
+HomeScreen/voice-input UI changed: false
+Backend changed: false
+Framework imported: false
+platform permission requested: false
+microphone accessed: false
+audio captured or persisted: false
+provider/STT called: false
+```
+
+Acceptance completed on 2026-07-26 after compileall, the RT-2b source gate,
+focused Flutter 9, full Flutter 112, Backend 116 with one existing warning,
+`git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
+RT-2c is CURRENT / NOT_COMPLETED, authorized only for platform permission wiring without capture, and NOT_STARTED.

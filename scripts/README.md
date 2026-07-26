@@ -4858,7 +4858,7 @@ recording the RT-2b through RT-2e split. It does not request permission, access 
 microphone, capture audio, import Framework, call a provider, upload audio, or
 start STT/realtime execution.
 
-Expected pre-acceptance output:
+Expected accepted output:
 
 ```text
 v300_microphone_permission_capture_inventory_status: completed-accepted
@@ -4875,3 +4875,52 @@ v300_rt2b_authorization: authorized-permission-contract-and-fake-gateway-only
 ```
 
 RT-2a was accepted on 2026-07-26 after compileall, the RT-1b and RT-2a gates, Backend 116 with one existing warning, Flutter 103, `git diff --check`, seven-file diff review, and explicit operator approval passed.
+
+
+## v3.0.0 RT-2b microphone permission contract check
+
+Detailed contract: `docs/v300_microphone_permission_contract.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_microphone_permission_contract.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter test test/microphone_permission_test.dart
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+Current implementation state: `COMPLETED / ACCEPTED`.
+
+RT-2b adds the app-owned Flutter permission model/interface and deterministic
+fake gateway only. It does not add a permission plugin, capture package, platform
+declaration, MethodChannel, UI integration, microphone access, audio capture,
+Backend change, Framework import, provider execution, or STT execution. The
+accepted docs-only RT-2a whole-tree hash gate is historical and is not rerun after
+this first RT-2 Flutter code checkpoint.
+
+Expected pre-acceptance output:
+
+```text
+v300_microphone_permission_contract_status: completed-accepted
+v300_rt2b_flutter_contract_added: True
+v300_rt2b_focused_tests_added: True
+v300_rt2b_dependency_added: False
+v300_rt2b_platform_permission_added: False
+v300_rt2b_method_channel_added: False
+v300_rt2b_ui_changed: False
+v300_rt2b_backend_changed: False
+v300_rt2b_microphone_accessed: False
+v300_rt2b_audio_captured: False
+v300_rt2_parent_status: current-pending-rt2c-implementation
+v300_rt2c_authorization: authorized-platform-permission-wiring-without-capture-only
+```
+
+RT-2b was accepted on 2026-07-26 after compileall, the RT-2b gate, focused Flutter 9, full Flutter 112, Backend 116 with one existing warning, `git diff --check`, nine-file review, the portable protected-surface gate fixes, and explicit operator approval passed. RT-2c is CURRENT / NOT_COMPLETED and NOT_STARTED.

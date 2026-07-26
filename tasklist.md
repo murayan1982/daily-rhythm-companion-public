@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2b CURRENT / NOT_COMPLETED
-current implementation step: add DRC-owned permission state/result and fake/unsupported gateway contracts
+current small commit: RT-2c CURRENT / NOT_COMPLETED
+current implementation step: add explicit user-triggered platform permission wiring without capture
 current implementation state: NOT_STARTED
-completed small commit: RT-2a COMPLETED / ACCEPTED
+completed small commit: RT-2b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -40,6 +40,10 @@ docs/v300_framework_v520_contract_adoption.md
 scripts/check_v300_framework_v520_contract_adoption.py
 docs/v300_backend_realtime_normalization.md
 scripts/check_v300_backend_realtime_normalization.py
+docs/v300_microphone_permission_capture_inventory.md
+scripts/check_v300_microphone_permission_capture_inventory.py
+docs/v300_microphone_permission_contract.md
+scripts/check_v300_microphone_permission_contract.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1420,3 +1424,33 @@ implementation: COMPLETED / ACCEPTED
 - [x] explicit approval後にRT-2aをCOMPLETED / ACCEPTEDへ同期する。
 
 RT-2aは2026-07-26にCOMPLETED / ACCEPTED。compileall、RT-1b/RT-2a gate、Backend 116件、Flutter 103件、`git diff --check`、7-file diff review、explicit operator approvalが通過した。Backend/Flutter runtime、existing tests、pubspec、Android/iOS permission、version、release recordは変更していない。RT-2bはapp-owned permission contractとfake/unsupported gatewayだけに限定して開始可能。
+
+### RT-2b app-owned permission contract and fake gateway
+
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
+
+- [x] unknown/granted/denied/permanently-denied/restricted/unsupported/failed statesを追加する。
+- [x] check/request/open-settings operationをtyped contractへ分離する。
+- [x] conservativeなcanRequest/canOpenSettings判定を追加する。
+- [x] safe user messageとtechnical codeを分離する。
+- [x] immutable public metadataを追加する。
+- [x] platform-neutral `MicrophonePermissionGateway` interfaceを追加する。
+- [x] OS permissionを呼ばないdeterministic fake gatewayを追加する。
+- [x] fake check/request/settings call countとrequest sequenceをtestする。
+- [x] focused Flutter testsを追加する。
+- [x] dependency、manifest、MethodChannel、UI、microphone、capture、Backend、Framework、provider、STTを変更しない。
+- [x] operator環境でRT-2b gate、focused Flutter 9件、full Flutter 112件、Backend 116件、diff reviewを通す。
+- [x] explicit approval後にRT-2bをCOMPLETED / ACCEPTEDへ同期する。
+
+RT-2bは2026-07-26にCOMPLETED / ACCEPTED。compileall、RT-2b gate、focused Flutter 9件、full Flutter 112件、Backend 116件、`git diff --check`、9-file diff review、gate portability fixes、explicit operator approvalが通過した。RT-2c platform permission wiring without captureはCURRENT / NOT_COMPLETED、NOT_STARTED。
+
+### RT-2c platform permission wiring without capture
+
+status: CURRENT / NOT_COMPLETED
+implementation: NOT_STARTED
+
+- [ ] explicit user actionからのみplatform permission requestを開始する。
+- [ ] permission dependencyとAndroid/iOS declarationを最小追加する。
+- [ ] app-owned gateway interfaceの実装として閉じ込める。
+- [ ] microphone open、audio capture、raw audio、Backend upload、Framework/provider/STTを開始しない。

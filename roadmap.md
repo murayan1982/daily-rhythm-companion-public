@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: RT-2c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,8 +571,8 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2b CURRENT / NOT_COMPLETED; NOT_STARTED
-Completed small commit: RT-2a COMPLETED / ACCEPTED
+Current small commit: RT-2c CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-2b COMPLETED / ACCEPTED
 
 Goal:
 
@@ -736,8 +736,8 @@ RT-1   COMPLETED / ACCEPTED     DRC realtime state, event, capability, and sessi
   RT-1b  COMPLETED / ACCEPTED      Backend realtime model and normalization boundary
 RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED      Permission/capture inventory and small-commit split
-  RT-2b  CURRENT / NOT_COMPLETED     App-owned permission contract and fake gateway; NOT_STARTED
-  RT-2c  BLOCKED                   Platform permission wiring without capture
+  RT-2b  COMPLETED / ACCEPTED         App-owned permission contract and fake gateway
+  RT-2c  CURRENT / NOT_COMPLETED     Platform permission wiring without capture; NOT_STARTED
   RT-2d  BLOCKED                   Capture lifecycle contract and fake engine
   RT-2e  BLOCKED                   Explicitly guarded bounded microphone capture
 RT-3   BLOCKED                   Real STT / voice-input integration
@@ -6871,3 +6871,28 @@ public event string.
 RT-1b contains no route, transport, microphone, Flutter, provider, real STT,
 real orchestration, hard cancel, real queue flush, audio barge-in detection, or
 real motion execution. Parent RT-1 is COMPLETED / ACCEPTED after RT-1b acceptance.
+
+### RT-2b app-owned microphone permission contract
+
+RT-2b implements only the Flutter-owned permission data and fake-gateway boundary:
+
+```text
+MicrophonePermissionStatus
+MicrophonePermissionOperation
+MicrophonePermissionResult
+MicrophonePermissionGateway
+FakeMicrophonePermissionGateway
+```
+
+The result contract keeps denied, permanently denied, restricted, unsupported,
+and failed states distinct. The fake gateway is deterministic, records check,
+request, and settings-call counts, and explicitly reports that no platform
+permission was requested and no settings page was opened.
+
+RT-2b does not add a permission/capture dependency, Android/iOS declaration,
+MethodChannel, UI integration, microphone access, audio capture, raw-audio
+persistence, Backend change, Framework import, provider call, or STT execution.
+Acceptance state: `COMPLETED / ACCEPTED` after compileall, the RT-2b gate,
+focused Flutter 9, full Flutter 112, Backend 116 with one existing warning,
+`git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
+RT-2c is CURRENT / NOT_COMPLETED, authorized for platform permission wiring without capture, and NOT_STARTED.

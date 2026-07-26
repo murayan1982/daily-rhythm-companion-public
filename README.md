@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2b (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: RT-2c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
 
 Current phase state:
 
@@ -23,9 +23,9 @@ RT-1  COMPLETED / ACCEPTED
   RT-1b  COMPLETED / ACCEPTED      Backend realtime model and normalization boundary
 RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED        Permission/capture inventory and small-commit split
-  RT-2b  CURRENT / NOT_COMPLETED       App-owned permission contract and fake gateway
+  RT-2b  COMPLETED / ACCEPTED           App-owned permission contract and fake gateway
+  RT-2c  CURRENT / NOT_COMPLETED       Platform permission wiring without capture
           NOT_STARTED
-  RT-2c  BLOCKED                     Platform permission wiring without capture
   RT-2d  BLOCKED                     Capture lifecycle contract and fake engine
   RT-2e  BLOCKED                     Explicitly guarded bounded microphone capture
 T-1  COMPLETED / ACCEPTED
@@ -42,7 +42,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2b CURRENT / NOT_COMPLETED; app-owned permission contract and fake gateway NOT_STARTED; platform permission, microphone access, capture, and STT remain blocked
+Current v3 phase: RT-2c CURRENT / NOT_COMPLETED; platform permission wiring NOT_STARTED; microphone access, capture, and STT remain blocked
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -67,6 +67,21 @@ metadata-only and explicitly states that it does not record audio.
 This checkpoint is docs/test-only. It changes no Backend or Flutter runtime,
 existing tests, platform manifests, dependency metadata, version, or release
 record. Acceptance state: **COMPLETED / ACCEPTED** after compileall, the RT-1b and RT-2a gates, Backend 116, Flutter 103, `git diff --check`, seven-file diff review, and explicit operator approval passed.
+
+## v3.0.0 RT-2b microphone permission contract
+
+RT-2b adds a Flutter-owned permission status/result contract, a platform-neutral
+gateway interface, and a deterministic fake gateway. The contract keeps unknown,
+granted, denied, permanently denied, restricted, unsupported, and failed states
+separate and exposes conservative request/settings affordances.
+
+The fake gateway never calls an operating-system permission API, opens settings,
+accesses a microphone, or captures audio. This checkpoint adds no dependency,
+manifest declaration, MethodChannel, UI integration, Backend change, Framework
+import, provider call, or STT execution. Acceptance state: **COMPLETED / ACCEPTED** after compileall,
+the RT-2b gate, focused Flutter 9, full Flutter 112, Backend 116,
+`git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
+RT-2c is now authorized for platform permission wiring without capture and remains NOT_STARTED.
 
 ## Current release and development status
 
