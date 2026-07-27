@@ -571,11 +571,11 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-c3 CURRENT / NOT_COMPLETED
-Completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
-Current implementation: RT-2e-c3 NOT_STARTED; explicit real Android bounded capture and cleanup evidence only
+Current small commit: RT-2e-c3b CURRENT / NOT_COMPLETED
+Completed small commit: RT-2e-c3a COMPLETED / ACCEPTED
+Current implementation: RT-2e-c3b NOT_STARTED; explicit physical-Android permission/capture/cleanup evidence
 Next implementation authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
-Real-device evidence: RT-2e-c3 CURRENT / NOT_COMPLETED; NOT_STARTED
+Real-device evidence: RT-2e-c3b CURRENT / NOT_COMPLETED; NOT_STARTED
 
 Goal:
 
@@ -749,6 +749,8 @@ RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
       RT-2e-c1  COMPLETED / ACCEPTED                 Operator-only harness/readiness contract
       RT-2e-c2  COMPLETED / ACCEPTED                 Operator-only harness and fake/widget tests
       RT-2e-c3  CURRENT / NOT_COMPLETED              Real Android bounded capture and cleanup evidence
+        RT-2e-c3a  COMPLETED / ACCEPTED                    Real Android operator preflight and safe evidence contract
+        RT-2e-c3b  CURRENT / NOT_COMPLETED                 Explicit real Android bounded capture and cleanup evidence
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -783,7 +785,8 @@ RT-2e-c split:
 ```text
 RT-2e-c1  Operator-only harness/readiness contract; docs/test-only
 RT-2e-c2  Operator-only harness implementation and fake/widget tests; no real execution
-RT-2e-c3  Real Android permission, bounded capture, automatic private-artifact cleanup evidence
+RT-2e-c3a Real Android operator preflight/runbook and marker-only safe evidence contract; docs/test-only
+RT-2e-c3b Explicit physical-Android permission, bounded capture, automatic private-artifact cleanup evidence
 ```
 
 RT-2e-c1 fixes a double opt-in operator boundary: a separate Flutter target
@@ -796,8 +799,13 @@ private artifact is discarded immediately by opaque id; path and bytes never
 enter UI/log/evidence. RT-2e-c1 and RT-2e-c2 are accepted. RT-2e-c2 added the
 separate double-opt-in operator target, lazy post-acknowledgement dependency
 construction, explicit permission/capture actions, immediate opaque-id discard,
-and fake/widget tests only. RT-2e-c3 is now authorized for explicit real Android
-bounded capture and cleanup evidence.
+and fake/widget tests only. RT-2e-c3a froze the physical-Android runbook,
+manual permission reset/request sequence, exact operator command, one bounded
+non-sensitive capture, immediate opaque-id cleanup, and marker-only safe evidence.
+Acceptance passed with compileall, the RT-2e-c3a gate, Backend 116 with the
+existing warning, `flutter analyze`, full Flutter 171, `git diff --check`, exact
+ten-file review, and explicit operator approval. RT-2e-c3b is now CURRENT /
+NOT_COMPLETED and NOT_STARTED.
        Raw audio is not persisted by default and is not sent to STT until RT-3 is authorized.
 ```
 
@@ -831,7 +839,8 @@ RT-2e-c authorization: authorized-explicit-opt-in-real-device-bounded-capture-ev
 RT-2e-c1 implementation: COMPLETED / ACCEPTED; docs/test-only
 RT-2e-c2 authorization: completed-accepted-fake-widget-only
 RT-2e-c2 implementation: COMPLETED / ACCEPTED; no real execution
-RT-2e-c3 authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+RT-2e-c3a status: COMPLETED / ACCEPTED; docs/test-only preflight
+RT-2e-c3b authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 ```
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit

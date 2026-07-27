@@ -5267,5 +5267,61 @@ v300_rt2ec2_real_permission_request_executed: False
 v300_rt2ec2_real_microphone_accessed: False
 v300_rt2ec2_real_audio_captured: False
 v300_rt2ec_parent_status: current-pending-rt2ec3-implementation
-v300_rt2ec3_authorization: blocked-pending-rt2ec2-acceptance
+v300_rt2ec3_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+```
+
+## v3.0.0 RT-2e-c3a real Android capture preflight check
+
+Detailed contract: `docs/v300_rt2ec_real_android_capture_preflight.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_rt2ec_real_android_capture_preflight.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+RT-2e-c3a is COMPLETED / ACCEPTED and docs/test-only. It reread the accepted
+operator target, permission gateway, record adapter, Android declaration, and
+safe-evidence panel before any real-device execution. The gate fixes one
+physical-Android target, exact separate-target launch, manual permission reset,
+explicit check/request/start/stop actions, one non-sensitive capture stopped
+before 15 seconds, immediate private-artifact discard, and marker-only evidence.
+Acceptance passed with compileall, the RT-2e-c3a gate, Backend 116 with the
+existing warning, `flutter analyze`, full Flutter 171, `git diff --check`, exact
+ten-file review, and explicit operator approval. It did not launch Flutter,
+connect a device, request permission, access a microphone, capture audio, create
+operator evidence, upload audio, or execute STT. RT-2e-c3b is CURRENT /
+NOT_COMPLETED and NOT_STARTED.
+
+Expected output:
+
+```text
+v300_rt2ec_real_android_capture_preflight_status: completed-accepted
+v300_rt2ec3a_exact_current_surface_inspected: True
+v300_rt2ec3a_physical_android_required: True
+v300_rt2ec3a_separate_operator_target_required: True
+v300_rt2ec3a_compile_time_opt_in_required: True
+v300_rt2ec3a_in_app_acknowledgement_required: True
+v300_rt2ec3a_explicit_permission_request_required: True
+v300_rt2ec3a_single_bounded_capture_required: True
+v300_rt2ec3a_maximum_capture_seconds: 15
+v300_rt2ec3a_private_artifact_cleanup_required: True
+v300_rt2ec3a_safe_evidence_contract_added: True
+v300_rt2ec3a_default_app_wiring_changed: False
+v300_rt2ec3a_flutter_runtime_changed: False
+v300_rt2ec3a_permission_request_executed: False
+v300_rt2ec3a_microphone_accessed: False
+v300_rt2ec3a_audio_captured: False
+v300_rt2ec_parent_status: current-pending-rt2ec3b-execution
+v300_rt2ec3b_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 ```

@@ -4,7 +4,7 @@ Status: COMPLETED / ACCEPTED
 Parent small commit: RT-2e-c CURRENT / NOT_COMPLETED
 Previous small commit: RT-2e-c1 COMPLETED / ACCEPTED
 Completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
-Current evidence small commit: RT-2e-c3 CURRENT / NOT_COMPLETED; NOT_STARTED
+Current evidence small commit: RT-2e-c3a COMPLETED / ACCEPTED
 Authorization: separate-operator-harness-and-fake-widget-tests-only
 
 ## Purpose
@@ -155,6 +155,21 @@ RT-2e-c2 is COMPLETED / ACCEPTED after compileall, the RT-2e-c2 gate,
 Backend 116 with one existing warning, `flutter analyze`, focused Flutter 10,
 full Flutter 171, `git diff --check`, exact twelve-file review, and explicit
 operator approval passed. No real permission request, microphone access, audio
-capture, upload, or STT execution occurred. RT-2e-c3 is CURRENT /
-NOT_COMPLETED and NOT_STARTED under `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`. Real-device execution remains
-limited to the explicit operator evidence flow, with no upload or STT.
+capture, upload, or STT execution occurred. RT-2e-c3a is COMPLETED / ACCEPTED
+as docs/test-only preflight. RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED
+under `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`;
+no upload or STT is authorized.
+
+## RT-2e-c3a preflight follow-up
+
+RT-2e-c3a is COMPLETED / ACCEPTED as a docs/test-only physical-Android
+operator preflight. It fixes the exact separate-target command, manual permission
+reset and explicit request, one non-sensitive capture stopped before 15 seconds,
+immediate opaque-id private-artifact discard, and marker-only safe evidence.
+No Flutter/runtime/dependency/platform/Backend source changed and no permission
+request, microphone access, audio capture, evidence collection, upload, or STT
+execution occurred. Acceptance passed with compileall, the RT-2e-c3a gate,
+Backend 116 with the existing warning, `flutter analyze`, full Flutter 171,
+`git diff --check`, exact ten-file review, and explicit operator approval.
+RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under
+`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.

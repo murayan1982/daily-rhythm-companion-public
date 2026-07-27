@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2e-c3 CURRENT / NOT_COMPLETED
-current implementation step: explicit real Android bounded capture and cleanup evidence only
+current small commit: RT-2e-c3b CURRENT / NOT_COMPLETED
+current implementation step: explicit real Android bounded capture and cleanup evidence
 current implementation state: NOT_STARTED
-completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
+completed small commit: RT-2e-c3a COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1557,12 +1557,33 @@ authorization: completed-accepted-fake-widget-only
 ##### RT-2e-c3 real Android bounded capture and cleanup evidence
 
 status: CURRENT / NOT_COMPLETED
+
+###### RT-2e-c3a real Android operator preflight and safe evidence contract
+
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED; docs/test-only
+authorization: completed-docs-test-only-preflight
+
+- [x] accepted `b2e2adb` operator target、permission gateway、record adapter、Android manifest、safe evidence surfaceをexact archive SHA-256 `18d39ea0676bcd3213c104a71fd5ce2c096c6b96002eb7aaef7ceccd06a2fd86`から再確認する。
+- [x] physical Android deviceだけを受け入れ、Web/Windows/iOS/emulatorをevidence targetにしない。
+- [x] `flutter run -d <ANDROID_DEVICE_ID> --target lib/main_rt2ec_operator.dart --dart-define=DRC_RT2EC_OPERATOR=true`を唯一のoperator起動経路として固定する。
+- [x] Android設定で既存microphone permissionを事前にrevoked/deniedへ戻し、in-app acknowledgement後にcheck/request/start/stopを別々に明示操作する。
+- [x] non-sensitive test phraseを1回だけ、15秒未満で録音し、stop後のprivate artifact即時discardを必須にする。
+- [x] marker-only evidenceをallowlisted status/code/boolean/durationへ限定し、device serial/model、private path、opaque id、raw audio、audio content、raw screenshotを除外する。
+- [x] docs/test-only source/surface gateを追加し、Flutter/Backend/runtime/platform/dependency変更とreal executionがないことを検証する。
+- [x] compileall、RT-2e-c3a gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 171件、`git diff --check`、exact ten-file review、explicit operator approval後にCOMPLETED / ACCEPTEDへ同期した。
+
+###### RT-2e-c3b explicit real Android bounded capture and cleanup evidence
+
+status: CURRENT / NOT_COMPLETED
 implementation: NOT_STARTED
 authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 
-- [ ] RT-2e-c2 acceptance後にexplicit operator targetをreal Android deviceで起動する。
-- [ ] explicit opt-in operator command/flow以外ではpermission requestやmicrophone openを実行しない。
-- [ ] bounded capture、automatic private-artifact cleanup、no upload/no STTをreal Android deviceで検証する。
-- [ ] raw audio、private path、transcript、provider payload、private operator pathをcommitしない。
+- [ ] clean accepted RT-2e-c3a HEADからphysical Android operator targetを起動する。
+- [ ] permission request attempted=true、permission status=grantedをsafe evidenceで確認する。
+- [ ] 1回のbounded completed captureでduration 1..15000 ms、microphone/audio=true、raw audio exposed=falseを確認する。
+- [ ] private artifact registered/discarded=true、cleanup succeeded=trueを確認する。
+- [ ] Backendを起動せず、upload、Framework/provider、STT、transcript persistenceを実行しない。
+- [ ] raw audio、private path、opaque id、device serial/model、raw screenshot、private operator pathをcommitしない。
 
-RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-bは2026-07-27にCOMPLETED / ACCEPTED。operator `flutter pub get`、generated plugin review、analyzer cleanup、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件（既存warning 1件）、RT-2e-b gate、Android debug APK build、`git diff --check`、19-file review、explicit operator approvalが通過した。Kotlin incremental-cache daemonはcross-drive cache errorを報告したが、Gradle fallback後にAPK生成は成功した。real permission request、microphone access、audio capture、public raw path/bytes exposure、upload、STT executionは行っていない。RT-2e-c1はcompileall、RT-2e-c1 gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 161件、`git diff --check`、exact 8-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。RT-2e-c2はcompileall、RT-2e-c2 gate、Backend 116件（既存warning 1件）、`flutter analyze`、focused Flutter 10件、full Flutter 171件、`git diff --check`、exact 12-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。separate entrypoint、compile-time flag、in-app acknowledgement後のlazy dependency construction、explicit permission/capture actions、15-second bound、opaque-id immediate discard、safe evidence allowlist、fake/widget testsを追加した。default app、dependencies、platform、Backendは変更せず、real permission request、microphone access、audio capture、upload、STT executionは行っていない。RT-2e-c3は`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`でCURRENT / NOT_COMPLETED、NOT_STARTED。
+RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-bは2026-07-27にCOMPLETED / ACCEPTED。operator `flutter pub get`、generated plugin review、analyzer cleanup、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件（既存warning 1件）、RT-2e-b gate、Android debug APK build、`git diff --check`、19-file review、explicit operator approvalが通過した。Kotlin incremental-cache daemonはcross-drive cache errorを報告したが、Gradle fallback後にAPK生成は成功した。real permission request、microphone access、audio capture、public raw path/bytes exposure、upload、STT executionは行っていない。RT-2e-c1はcompileall、RT-2e-c1 gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 161件、`git diff --check`、exact 8-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。RT-2e-c2はcompileall、RT-2e-c2 gate、Backend 116件（既存warning 1件）、`flutter analyze`、focused Flutter 10件、full Flutter 171件、`git diff --check`、exact 12-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。separate entrypoint、compile-time flag、in-app acknowledgement後のlazy dependency construction、explicit permission/capture actions、15-second bound、opaque-id immediate discard、safe evidence allowlist、fake/widget testsを追加した。default app、dependencies、platform、Backendは変更せず、real permission request、microphone access、audio capture、upload、STT executionは行っていない。RT-2e-c3aはcompileall、RT-2e-c3a gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 171件、`git diff --check`、exact ten-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。docs/test-onlyであり、real permission request、microphone access、audio captureは行っていない。RT-2e-c3bは`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`でCURRENT / NOT_COMPLETED、NOT_STARTED。

@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-c3 CURRENT / NOT_COMPLETED
-Current implementation step: explicit real Android bounded capture and cleanup evidence only
+Current small commit: RT-2e-c3b CURRENT / NOT_COMPLETED
+Current implementation step: explicit physical-Android permission/capture/cleanup evidence
 Current implementation state: NOT_STARTED
-Completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
-Next implementation action: prepare and execute the explicit operator real-Android evidence flow; do not upload or run STT
+Completed small commit: RT-2e-c3a COMPLETED / ACCEPTED
+Next implementation action: run the accepted operator target only after clean-tree/device preflight; do not upload or execute STT
 ```
 
 ## Source of truth
@@ -925,9 +925,45 @@ existing warning, `flutter analyze`, focused Flutter 10, full Flutter 171,
 #### RT-2e-c3 real Android bounded capture and cleanup evidence
 
 State: CURRENT / NOT_COMPLETED
+
+##### RT-2e-c3a real Android operator preflight and safe evidence contract
+
+State: COMPLETED / ACCEPTED
+Implementation: COMPLETED / ACCEPTED; docs/test-only
+Authorization: completed-docs-test-only-preflight
+
+The accepted `b2e2adb` source archive with SHA-256
+`18d39ea0676bcd3213c104a71fd5ce2c096c6b96002eb7aaef7ceccd06a2fd86`
+was reread before real-device execution. The contract requires one physical
+Android device, the separate `main_rt2ec_operator.dart` target,
+`DRC_RT2EC_OPERATOR=true`, in-app acknowledgement, explicit permission
+check/request, and one non-sensitive capture stopped before the 15-second hard
+limit.
+
+Completed evidence is marker-only. It may contain the accepted safe panel
+status/code/boolean/duration fields and the clean source commit. It must not
+contain device serial/model, private path, opaque capture id, raw audio, audio
+content, transcript, provider payload, raw platform error, or raw screenshot.
+The completed artifact must be registered and immediately discarded, with
+cleanup succeeded. Backend upload, Framework/provider execution, and STT are
+forbidden.
+
+This checkpoint changed documentation and one source/surface gate only. It did
+not run Flutter, connect a device, request permission, access a microphone,
+capture audio, create private evidence, upload audio, or execute STT. Acceptance
+passed with compileall, the RT-2e-c3a gate, Backend 116 with the existing warning,
+`flutter analyze`, full Flutter 171, `git diff --check`, exact ten-file review,
+and explicit operator approval.
+
+##### RT-2e-c3b explicit real Android bounded capture and cleanup evidence
+
+State: CURRENT / NOT_COMPLETED
 Implementation: NOT_STARTED
 Authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 
-After RT-2e-c2 acceptance, perform an explicit real Android
-permission/capture/cleanup run. Private evidence, paths, and audio stay outside
-commits. No upload or STT execution.
+Run the explicit operator target from the clean accepted RT-2e-c3a commit on
+one physical Android device. Accept only granted permission,
+request attempted, completed capture, duration 1..15000 ms, microphone/audio
+true, raw audio exposed false, private artifact registered/discarded true, and
+cleanup succeeded true. Keep all private evidence and audio outside commits. No
+Backend upload or STT execution.

@@ -9,8 +9,9 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e-c3 (**CURRENT / NOT_COMPLETED**)
-Current implementation: RT-2e-c3 (**NOT_STARTED**)
+Current small commit: RT-2e-c3b (**CURRENT / NOT_COMPLETED**)
+Current implementation: RT-2e-c3b (**NOT_STARTED**)
+Parent evidence scope: RT-2e-c3 (**CURRENT / NOT_COMPLETED**)
 
 Current phase state:
 
@@ -34,6 +35,8 @@ RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture pat
       RT-2e-c1  COMPLETED / ACCEPTED                   Operator-only harness/readiness contract
       RT-2e-c2  COMPLETED / ACCEPTED                   Operator-only harness and fake/widget tests
       RT-2e-c3  CURRENT / NOT_COMPLETED                Real Android bounded capture and cleanup evidence
+        RT-2e-c3a  COMPLETED / ACCEPTED                      Real Android operator preflight and safe evidence contract
+        RT-2e-c3b  CURRENT / NOT_COMPLETED                   Explicit real Android bounded capture and cleanup evidence
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -48,7 +51,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2e CURRENT / NOT_COMPLETED; RT-2e-a, RT-2e-b, RT-2e-c1, and RT-2e-c2 are COMPLETED / ACCEPTED. RT-2e-c3 is CURRENT / NOT_COMPLETED and NOT_STARTED under its explicit real-Android evidence authorization. RT-2e-c2 added a separate compile-time and in-app double-opt-in operator harness plus fake/widget tests. No real permission request, microphone access, audio capture, Backend upload, or STT execution occurred in RT-2e-c2.
+Current v3 phase: RT-2e CURRENT / NOT_COMPLETED; RT-2e-a, RT-2e-b, RT-2e-c1, RT-2e-c2, and RT-2e-c3a are COMPLETED / ACCEPTED. RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under the explicit real-Android bounded-capture evidence authorization. RT-2e-c3a was docs/test-only; no real permission request, microphone access, audio capture, Backend upload, or STT execution occurred during its acceptance.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -224,8 +227,35 @@ operator approval passed. Verification used only fake permission, capture, and
 private-artifact dependencies in widget/unit tests. `app/lib/main.dart`,
 `HomeScreen`, dependencies, platform declarations, generated registration, and
 Backend remained unchanged. No real permission request, microphone access,
-audio capture, upload, or STT execution occurred. RT-2e-c3 is now CURRENT /
-NOT_COMPLETED and NOT_STARTED with authorization
+audio capture, upload, or STT execution occurred. RT-2e-c3 is CURRENT /
+NOT_COMPLETED. RT-2e-c3a is COMPLETED / ACCEPTED as docs/test-only preflight,
+and RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under the explicit
+real-Android evidence authorization.
+
+## v3.0.0 RT-2e-c3a real Android capture preflight
+
+RT-2e-c3a rereads the accepted operator target, permission gateway, record
+adapter, Android declaration, and safe-evidence panel before any real-device
+execution. It fixes one physical-Android operator run, the exact separate-target
+command, manual permission reset/request sequence, 15-second maximum, immediate
+private-artifact discard, and a marker-only evidence contract.
+
+The later RT-2e-c3b run must use `app/lib/main_rt2ec_operator.dart` with
+`--dart-define=DRC_RT2EC_OPERATOR=true`, require the in-app acknowledgement,
+request Android microphone permission explicitly, record one non-sensitive test
+phrase for less than 15 seconds, stop explicitly, and show only allowlisted safe
+evidence. The accepted result requires granted permission, a completed capture,
+positive duration no greater than 15000 ms, microphone/audio booleans true, raw
+audio exposure false, private artifact registered/discarded true, and cleanup
+succeeded true.
+
+This checkpoint changed documentation and one source/surface gate only. It did
+not run Flutter, connect a device, request permission, access a microphone,
+capture audio, create operator evidence, upload audio, or execute STT. Acceptance
+passed after compileall, the RT-2e-c3a gate, Backend 116 with the existing
+warning, `flutter analyze`, full Flutter 171, `git diff --check`, exact ten-file
+review, and explicit operator approval. RT-2e-c3b is now CURRENT /
+NOT_COMPLETED and NOT_STARTED under
 `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
 
 ## Current release and development status

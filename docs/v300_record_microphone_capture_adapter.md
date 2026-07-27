@@ -5,7 +5,7 @@ Date: 2026-07-27
 Parent small commit: RT-2e CURRENT / NOT_COMPLETED
 Current small commit: RT-2e-b COMPLETED / ACCEPTED
 Previous small commit: RT-2e-a COMPLETED / ACCEPTED
-Next small commit: RT-2e-c3 CURRENT / NOT_COMPLETED; NOT_STARTED
+Next small commit: RT-2e-c3a COMPLETED / ACCEPTED
 
 ## Purpose
 
@@ -157,8 +157,9 @@ the Kotlin incremental-cache daemon reported a cross-drive cache error before
 Gradle fallback produced the APK. No app launch, permission request, microphone
 access, or audio capture occurred. RT-2e-c1 is COMPLETED / ACCEPTED and was
 docs/test-only. RT-2e-c2 is COMPLETED / ACCEPTED under its fake/widget-only
-authorization. RT-2e-c3 is CURRENT / NOT_COMPLETED and NOT_STARTED under
-`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
+authorization. RT-2e-c3a is COMPLETED / ACCEPTED as docs/test-only preflight; RT-2e-c3b is
+CURRENT / NOT_COMPLETED and NOT_STARTED under the explicit real-Android evidence
+authorization.
 
 ## Expected gate
 
@@ -220,5 +221,20 @@ after compileall, the RT-2e-c2 gate, Backend 116 with one existing warning,
 `flutter analyze`, focused Flutter 10, full Flutter 171, `git diff --check`, exact
 twelve-file review, and explicit operator approval. No real permission request,
 microphone access, audio capture, Backend upload, provider call, or STT
-execution occurred. No upload or STT is authorized. RT-2e-c3 is CURRENT /
-NOT_COMPLETED and NOT_STARTED under `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
+execution occurred. No upload or STT is authorized. RT-2e-c3a is COMPLETED / ACCEPTED as docs/test-only preflight. RT-2e-c3b is
+CURRENT / NOT_COMPLETED and NOT_STARTED under
+`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
+
+## RT-2e-c3a preflight follow-up
+
+RT-2e-c3a is COMPLETED / ACCEPTED as a docs/test-only physical-Android
+operator preflight. It fixes the exact separate-target command, manual permission
+reset and explicit request, one non-sensitive capture stopped before 15 seconds,
+immediate opaque-id private-artifact discard, and marker-only safe evidence.
+No Flutter/runtime/dependency/platform/Backend source changed and no permission
+request, microphone access, audio capture, evidence collection, upload, or STT
+execution occurred. Acceptance passed with compileall, the RT-2e-c3a gate,
+Backend 116 with the existing warning, `flutter analyze`, full Flutter 171,
+`git diff --check`, exact ten-file review, and explicit operator approval.
+RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under
+`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
