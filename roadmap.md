@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e (**CURRENT / NOT_COMPLETED**)
+Current small commit: RT-2e-b (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,9 +571,9 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e CURRENT / NOT_COMPLETED
-Completed small commit: RT-2d COMPLETED / ACCEPTED
-Current implementation: RT-2e explicitly guarded bounded real capture adapter; NOT_STARTED
+Current small commit: RT-2e-b CURRENT / NOT_COMPLETED
+Completed small commit: RT-2e-a COMPLETED / ACCEPTED
+Current implementation: RT-2e-b NOT_STARTED; injectable recorder adapter and private temporary artifact boundary
 
 Goal:
 
@@ -740,7 +740,10 @@ RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
   RT-2b  COMPLETED / ACCEPTED         App-owned permission contract and fake gateway
   RT-2c  COMPLETED / ACCEPTED          Mobile platform permission wiring without capture
   RT-2d  COMPLETED / ACCEPTED          Capture lifecycle contract/controller and fake engine
-  RT-2e  CURRENT / NOT_COMPLETED         Explicitly guarded bounded microphone capture; NOT_STARTED
+  RT-2e  CURRENT / NOT_COMPLETED         Explicitly guarded bounded microphone capture
+    RT-2e-a  COMPLETED / ACCEPTED            Exact-surface and package-readiness checkpoint
+    RT-2e-b  CURRENT / NOT_COMPLETED          Injectable package adapter/private temporary artifact
+    RT-2e-c  BLOCKED                          Explicit operator real-device capture evidence
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -796,7 +799,9 @@ status: COMPLETED / ACCEPTED
 RT-2d authorization: COMPLETED / ACCEPTED
 RT-2d implementation: COMPLETED / ACCEPTED
 RT-2e authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
-RT-2e implementation: NOT_STARTED
+RT-2e-a implementation: COMPLETED / ACCEPTED; docs/test-only
+RT-2e-b authorization: authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only
+RT-2e-c authorization: blocked-pending-rt2eb-acceptance
 ```
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit
@@ -6947,3 +6952,49 @@ RT-2d gate, `flutter analyze` with no issues, focused Flutter 17, full Flutter
 142, Backend 116 with one existing warning, `git diff --check`, nine-file review,
 and explicit operator approval passed. No permission request, microphone access,
 audio capture, raw-audio exposure, upload, provider call, or STT execution occurred.
+
+
+### RT-2e-a exact-surface and recorder-package readiness checkpoint
+
+Status: COMPLETED / ACCEPTED
+
+Exact accepted surface findings:
+
+```text
+Dart SDK constraint: ^3.11.5
+permission_handler: 12.0.3 direct dependency
+record direct dependency: absent
+path_provider direct dependency: absent
+path_provider transitive dependency: present
+RT-2d controller/engine boundary: accepted
+Android RECORD_AUDIO: already declared
+iOS NSMicrophoneUsageDescription: already declared
+UI/startup capture wiring: absent
+```
+
+Dependency decision:
+
+```text
+record 7.x: not selected; current Dart 3.11.5 is below its Dart 3.12 minimum
+record 6.2.1: selected for RT-2e-b; compatible pre-7 line
+record startStream: forbidden for RT-2e because it exposes raw byte streams
+record file mode: allowed only behind a private temporary artifact boundary
+permission ownership: remains in the existing DRC permission gateway
+public result: opaque capture id only; no path/bytes/platform handle
+```
+
+RT-2e split:
+
+```text
+RT-2e-a  readiness/package decision; docs/test-only
+RT-2e-b  add pinned dependency, injectable adapter, private temporary artifact cleanup; no real execution
+RT-2e-c  explicit operator real-device capture evidence and acceptance
+```
+
+RT-2e-a does not add a dependency, regenerate plugin files, request permission,
+open a microphone, create an audio file, capture or expose bytes, upload data,
+or invoke Backend/Framework/provider/STT runtime. Acceptance completed on
+2026-07-27 after compileall, the RT-2e-a gate, `flutter analyze` with no
+issues, full Flutter 142, Backend 116 with one existing warning,
+`git diff --check`, seven-file review, and explicit operator approval passed.
+RT-2e-b is CURRENT / NOT_COMPLETED and NOT_STARTED.

@@ -5049,3 +5049,51 @@ RT-2d acceptance completed on 2026-07-27 after compileall, the RT-2d gate,
 operator approval passed. No permission request, real microphone access, audio
 capture, raw-audio exposure, Backend upload, Framework/provider call, or STT
 execution occurred. RT-2e is current but not started.
+
+
+## v3.0.0 RT-2e-a real capture adapter readiness check
+
+Detailed contract: `docs/v300_microphone_real_capture_adapter_readiness.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_microphone_real_capture_adapter_readiness.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+RT-2e-a is `COMPLETED / ACCEPTED` and docs/test-only. It records the
+exact accepted SDK/dependency/capture surface and selects `record` 6.2.1 for the
+later RT-2e-b adapter. Acceptance passed after compileall, the RT-2e-a gate,
+`flutter analyze` clean, full Flutter 142, Backend 116 with one existing warning,
+`git diff --check`, seven-file review, and explicit operator approval. It does
+not add the package, alter a lockfile or generated plugin registration, change
+Flutter runtime/platform/UI code, request permission, open a microphone,
+capture/create/upload audio, expose raw bytes/path/handles, or execute STT.
+RT-2e-b is CURRENT / NOT_COMPLETED and NOT_STARTED.
+
+Expected output:
+
+```text
+v300_microphone_real_capture_adapter_readiness_status: completed-accepted
+v300_rt2ea_exact_current_surface_inspected: True
+v300_rt2ea_record_candidate_selected: record-6.2.1
+v300_rt2ea_record_7x_compatible_with_current_sdk: False
+v300_rt2ea_dependency_added: False
+v300_rt2ea_flutter_runtime_changed: False
+v300_rt2ea_platform_files_changed: False
+v300_rt2ea_permission_request_executed: False
+v300_rt2ea_microphone_accessed: False
+v300_rt2ea_audio_captured: False
+v300_rt2e_parent_status: current-pending-rt2eb-implementation
+v300_rt2eb_authorization: authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only
+```

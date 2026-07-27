@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e (**CURRENT / NOT_COMPLETED**)
+Current small commit: RT-2e-b (**CURRENT / NOT_COMPLETED**)
 
 Current phase state:
 
@@ -27,7 +27,9 @@ RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture pat
   RT-2c  COMPLETED / ACCEPTED            Platform permission wiring without capture
   RT-2d  COMPLETED / ACCEPTED            Capture lifecycle contract/controller and fake engine
   RT-2e  CURRENT / NOT_COMPLETED           Explicitly guarded bounded microphone capture
-          NOT_STARTED
+    RT-2e-a  COMPLETED / ACCEPTED              Exact-surface and recorder-package readiness decision
+    RT-2e-b  CURRENT / NOT_COMPLETED            Injectable record adapter and private temporary artifact boundary
+    RT-2e-c  BLOCKED                            Explicit operator real-device capture evidence
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -42,7 +44,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2e CURRENT / NOT_COMPLETED and NOT_STARTED; RT-2d capture lifecycle and fake engine are accepted, while real microphone access, audio capture, Backend upload, and STT have not started
+Current v3 phase: RT-2e CURRENT / NOT_COMPLETED; RT-2e-a is COMPLETED / ACCEPTED and RT-2e-b is CURRENT / NOT_COMPLETED, NOT_STARTED. No recorder dependency, microphone access, audio capture, Backend upload, or STT execution has started
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -122,6 +124,32 @@ Backend 116 with one existing warning, `git diff --check`, nine-file review,
 and explicit operator approval passed. No permission request, real microphone
 access, audio capture, raw-audio exposure, Backend upload, Framework/provider
 call, or STT execution occurred. RT-2e is CURRENT / NOT_COMPLETED and NOT_STARTED.
+
+## v3.0.0 RT-2e-a real capture adapter readiness
+
+RT-2e-a rereads the exact accepted RT-2d Flutter, platform, permission, capture,
+dependency, and test surfaces before any recorder dependency is added. The current
+app uses Dart `^3.11.5`; therefore the `record` 7.x line, which requires Dart
+3.12 or newer, is not selected. `record` 6.2.1 is selected for the later
+RT-2e-b implementation because it is the final pre-7 line and supports the
+current SDK baseline.
+
+The later adapter must use file-mode recording behind a private temporary
+artifact boundary. `record.startStream` exposes raw audio bytes and is not
+allowed for RT-2e. The file path returned by `stop` must remain private; DRC
+public results continue to expose only an opaque capture identifier and safe
+metadata. Permission checks and requests remain owned by the existing
+`permission_handler` gateway rather than the recorder package.
+
+This checkpoint is docs/test-only. It adds no `record` or `path_provider` direct
+dependency, generated plugin registration, platform file change, Flutter runtime
+code, UI wiring, permission request, microphone access, audio capture, file
+creation, upload, Framework/provider call, or STT execution. Acceptance
+state: **COMPLETED / ACCEPTED** after compileall, the RT-2e-a gate,
+`flutter analyze` with no issues, full Flutter 142, Backend 116 with one
+existing warning, `git diff --check`, seven-file review, and explicit
+operator approval passed. RT-2e-b is CURRENT / NOT_COMPLETED and
+NOT_STARTED.
 
 ## Current release and development status
 

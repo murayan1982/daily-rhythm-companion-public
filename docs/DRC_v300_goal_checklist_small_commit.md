@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e CURRENT / NOT_COMPLETED
-Current implementation step: explicitly guarded bounded real capture adapter only
+Current small commit: RT-2e-b CURRENT / NOT_COMPLETED
+Current implementation step: injectable recorder adapter and private temporary artifact boundary
 Current implementation state: NOT_STARTED
-Completed small commit: RT-2d COMPLETED / ACCEPTED
-Next implementation action: inspect the actual capture/plugin surface before any RT-2e dependency or runtime execution
+Completed small commit: RT-2e-a COMPLETED / ACCEPTED
+Next implementation action: add pinned dependency, injectable adapter, private temporary artifact cleanup, and fake-driver tests only
 ```
 
 ## Source of truth
@@ -630,8 +630,13 @@ RT-2c  COMPLETED / ACCEPTED
        Android/iOS permission adapter and declarations; no UI invocation or capture.
 RT-2d  COMPLETED / ACCEPTED
        Capture lifecycle/controller and deterministic fake engine; no microphone access.
-RT-2e  CURRENT / NOT_COMPLETED; NOT_STARTED
-       Explicitly enabled bounded real capture and cleanup; no STT execution.
+RT-2e  CURRENT / NOT_COMPLETED
+  RT-2e-a  COMPLETED / ACCEPTED
+             Exact-surface and record 6.2.1 readiness; docs/test-only.
+  RT-2e-b  CURRENT / NOT_COMPLETED
+             NOT_STARTED; injectable adapter/private temporary artifact; fake tests only.
+  RT-2e-c  BLOCKED pending RT-2e-b acceptance
+             Explicit operator real-device bounded capture evidence.
 ```
 
 RT-2a inspected the actual source and confirmed:
@@ -822,10 +827,42 @@ audio capture, raw-audio exposure, upload, provider call, or STT execution occur
 
 ## RT-2e explicitly guarded bounded real capture adapter
 
-Implementation state: NOT_STARTED
+Parent state: CURRENT / NOT_COMPLETED
 Authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
 
-Before implementation, reread the actual Flutter/platform capture surface and
-dependency state. Runtime execution must remain explicit opt-in, bounded,
-single-active, cleanup-safe, non-persistent by default, and disconnected from
-STT until RT-3 is separately authorized.
+### RT-2e-a exact-surface and recorder-package readiness
+
+Implementation state: COMPLETED / ACCEPTED
+
+Exact accepted code review confirms Dart `^3.11.5`, no direct recorder or path
+provider dependency, accepted RT-2d controller/fake engine, and existing mobile
+permission declarations. `record` 7.x is not compatible with the current Dart
+baseline. RT-2e-b selects `record` 6.2.1, the compatible final pre-7 line.
+
+`startStream` is forbidden because it exposes raw bytes. A later concrete
+adapter may use file mode only with a private temporary path/artifact registry;
+public DRC results remain opaque. Permission ownership stays in the existing
+DRC permission gateway.
+
+RT-2e-a is docs/test-only and does not add dependencies, change generated plugin
+registrations or platform files, request permission, access a microphone,
+capture/create/upload audio, expose bytes/path/handles, or execute STT.
+Acceptance completed on 2026-07-27 after compileall, the RT-2e-a gate,
+`flutter analyze` clean, full Flutter 142, Backend 116 with one existing
+warning, `git diff --check`, seven-file review, and explicit operator
+approval passed.
+
+### RT-2e-b planned boundary
+
+State: CURRENT / NOT_COMPLETED
+Implementation: NOT_STARTED
+
+Pinned dependency, injectable recorder driver, private temporary artifact
+cleanup, and fake-driver tests only. Real capture execution remains separate.
+
+### RT-2e-c planned operator evidence
+
+State: BLOCKED pending RT-2e-b acceptance
+
+Explicit opt-in, bounded real-device capture and cleanup evidence. No upload or
+STT execution.

@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2e CURRENT / NOT_COMPLETED
-current implementation step: explicitly guarded bounded real capture adapter only
+current small commit: RT-2e-b CURRENT / NOT_COMPLETED
+current implementation step: injectable recorder adapter and private temporary artifact boundary
 current implementation state: NOT_STARTED
-completed small commit: RT-2d COMPLETED / ACCEPTED
+completed small commit: RT-2e-a COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1493,12 +1493,36 @@ RT-2dは2026-07-27にCOMPLETED / ACCEPTED。compileall、RT-2d gate、`flutter a
 ### RT-2e explicitly guarded bounded real capture adapter
 
 status: CURRENT / NOT_COMPLETED
+
+#### RT-2e-a exact-surface and recorder-package readiness
+
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED; docs/test-only
+
+- [x] 現行Flutter/platform/permission/capture/dependency/test境界をexact HEAD archiveから再確認する。
+- [x] Dart `^3.11.5`ではDart 3.12以上を要求する`record` 7.xを採用しない。
+- [x] RT-2e-b候補を互換pre-7 lineの`record` 6.2.1へ固定する。
+- [x] raw byte streamを公開する`startStream`をRT-2eで使用しない。
+- [x] file modeはprivate temporary artifact/path boundaryの内側だけで使用する方針を固定する。
+- [x] permission ownershipは既存permission gatewayに残し、recorder側のpermission APIへ委譲しない。
+- [x] docs/test-only gateを追加し、dependency/runtime/platform/UI変更がないことを検証する。
+- [x] operator verificationとexplicit approval後にRT-2e-aをCOMPLETED / ACCEPTEDへ同期する。
+
+#### RT-2e-b injectable recorder adapter and private temporary artifact
+
+status: CURRENT / NOT_COMPLETED
 implementation: NOT_STARTED
 
-- [ ] 実装前に現行Flutter/platform/capture境界と依存候補を実コードで再確認する。
-- [ ] explicit opt-in以外ではpermission requestやmicrophone openを実行しない。
-- [ ] single-active、hard duration、stop/cancel/error/close cleanupをRT-2d controller契約へ接続する。
-- [ ] raw audioを既定で永続化・uploadせず、RT-3受け入れ前はSTTへ送らない。
-- [ ] fake-only regressionと明示的operator execution evidenceを分離する。
+- [ ] `record: 6.2.1`と必要なdirect path dependencyを追加・lock解決する。
+- [ ] injected driverでstart/stop/cancel/disposeをRT-2d engineへ接続する。
+- [ ] private temporary path/artifact registryとstop/cancel/error/close cleanupを実装する。
+- [ ] unit testsはfake driverのみを使い、permission requestやreal captureを実行しない。
 
-RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。実装・実行はまだ開始していない。
+#### RT-2e-c explicit operator real-device capture evidence
+
+status: BLOCKED pending RT-2e-b acceptance
+
+- [ ] explicit opt-in operator command/flow以外ではpermission requestやmicrophone openを実行しない。
+- [ ] bounded capture、cleanup、no upload/no STTをreal Android deviceで検証する。
+
+RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-aは2026-07-27にCOMPLETED / ACCEPTED。compileall、RT-2e-a gate、Backend 116件（既存warning 1件）、`flutter analyze` clean、Flutter 142件、`git diff --check`、7-file review、explicit operator approvalが通過した。RT-2e-bはCURRENT / NOT_COMPLETED、NOT_STARTEDで、`authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only`。dependency追加、permission request、microphone access、audio capture、raw path/bytes exposure、upload、STT executionはまだ行っていない。
