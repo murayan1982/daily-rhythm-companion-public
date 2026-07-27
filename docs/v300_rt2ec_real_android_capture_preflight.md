@@ -263,8 +263,7 @@ RT-2e-c3a is COMPLETED / ACCEPTED after compileall, the RT-2e-c3a gate,
 Backend 116 with the existing warning, `flutter analyze`, full Flutter 171,
 `git diff --check`, exact ten-file review, and explicit operator approval passed.
 No real permission request, microphone access, or audio capture occurred during
-this docs/test-only checkpoint. RT-2e-c3b is CURRENT / NOT_COMPLETED and
-NOT_STARTED under
+this docs/test-only checkpoint. RT-2e-c3b is now COMPLETED / ACCEPTED under
 `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
 
 

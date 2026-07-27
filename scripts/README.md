@@ -5245,8 +5245,7 @@ Backend remain unchanged. Acceptance passed after compileall, the RT-2e-c2 gate,
 Backend 116 with one existing warning, `flutter analyze`, focused Flutter 10,
 full Flutter 171, `git diff --check`, exact twelve-file review, and explicit
 operator approval. No real permission request, microphone access, audio capture,
-upload, or STT execution occurred. RT-2e-c3 is CURRENT / NOT_COMPLETED and
-NOT_STARTED with `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`. No upload or STT is authorized.
+upload, or STT execution occurred at the RT-2e-c2 checkpoint. RT-2e-c3 is now COMPLETED / ACCEPTED from the accepted physical-Android evidence. No upload or STT is authorized, and RT-3 remains BLOCKED_REAL_STT_NOT_IMPLEMENTED.
 
 Expected output:
 
@@ -5266,8 +5265,11 @@ v300_rt2ec2_platform_files_changed: False
 v300_rt2ec2_real_permission_request_executed: False
 v300_rt2ec2_real_microphone_accessed: False
 v300_rt2ec2_real_audio_captured: False
-v300_rt2ec_parent_status: current-pending-rt2ec3-implementation
+v300_rt2ec_parent_status: completed-accepted
 v300_rt2ec3_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+v300_rt2ec3_status: completed-accepted
+v300_rt2_status: completed-accepted
+v300_next_phase: blocked-real-stt-not-implemented
 ```
 
 ## v3.0.0 RT-2e-c3a real Android capture preflight check
@@ -5300,8 +5302,7 @@ Acceptance passed with compileall, the RT-2e-c3a gate, Backend 116 with the
 existing warning, `flutter analyze`, full Flutter 171, `git diff --check`, exact
 ten-file review, and explicit operator approval. It did not launch Flutter,
 connect a device, request permission, access a microphone, capture audio, create
-operator evidence, upload audio, or execute STT. RT-2e-c3b is CURRENT /
-NOT_COMPLETED and NOT_STARTED.
+operator evidence, upload audio, or execute STT at the RT-2e-c3a checkpoint. RT-2e-c3b is now COMPLETED / ACCEPTED from the accepted marker-only physical-Android run.
 
 Expected output:
 
@@ -5322,10 +5323,19 @@ v300_rt2ec3a_flutter_runtime_changed: False
 v300_rt2ec3a_permission_request_executed: False
 v300_rt2ec3a_microphone_accessed: False
 v300_rt2ec3a_audio_captured: False
-v300_rt2ec_parent_status: current-pending-rt2ec3b-execution
+v300_rt2ec_parent_status: completed-accepted
 v300_rt2ec3b_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+v300_rt2ec3b_status: completed-accepted
+v300_rt2_status: completed-accepted
+v300_next_phase: blocked-real-stt-not-implemented
 ```
 
+
+Checkpoint note: the c2 and c3a gates continue to report their own historical
+non-execution facts (`real_permission_request_executed: False`, microphone/audio
+false) because those facts describe those individual checkpoints. Their parent
+and next-phase lines now reflect the accepted current state: RT-2 completed and
+RT-3 blocked.
 
 ## v3.0.0 RT-2e-c3b real Android capture evidence check
 

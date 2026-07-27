@@ -102,3 +102,13 @@ git status --short
 ```
 
 No second real-device execution is required for this docs/test acceptance sync.
+## Final checkpoint-gate status synchronization
+
+After this accepted evidence closed RT-2, the older RT-2e-c2 harness gate and
+RT-2e-c3a preflight gate retained checkpoint-specific non-execution booleans but
+still printed their former pending parent state. The docs/test-only final status
+synchronization keeps those checkpoint facts and explicitly labeled historical
+markers, while current gate output now reports RT-2e-c, RT-2e-c3, and RT-2 as
+`completed-accepted` and RT-3 as `blocked-real-stt-not-implemented`. No runtime,
+dependency, platform, permission, microphone, audio, Backend, upload, provider,
+or STT execution is part of the synchronization.

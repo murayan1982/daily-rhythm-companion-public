@@ -20,6 +20,19 @@ IMPLEMENTATION_PATHS = {
     "scripts/check_v300_rt2ec_real_android_capture_preflight.py",
 }
 
+FINAL_STATUS_SYNC_PATHS = {
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "docs/v300_rt2ec_operator_capture_harness.md",
+    "docs/v300_rt2ec_real_android_capture_preflight.md",
+    "docs/v300_rt2ec_real_android_capture_evidence.md",
+    "scripts/check_v300_rt2ec_operator_capture_harness.py",
+    "scripts/check_v300_rt2ec_real_android_capture_preflight.py",
+    "scripts/check_v300_rt2ec_real_android_capture_evidence.py",
+}
 
 def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
@@ -72,17 +85,20 @@ def validate_changed_surface() -> None:
     actual = changed_paths()
     if not actual:
         return
-    if actual == IMPLEMENTATION_PATHS:
+    if actual in (IMPLEMENTATION_PATHS, FINAL_STATUS_SYNC_PATHS):
         return
 
     unexpected = sorted(actual - IMPLEMENTATION_PATHS)
     missing = sorted(IMPLEMENTATION_PATHS - actual)
+    missing_final_sync = sorted(FINAL_STATUS_SYNC_PATHS - actual)
     details: list[str] = []
     if unexpected:
         details.append("unexpected changed paths:\n" + "\n".join(unexpected))
     if missing:
         details.append("missing ten-file implementation paths:\n" + "\n".join(missing))
-    details.append("required worktree form: clean tree or exact ten-file RT-2e-c3a surface")
+    if missing_final_sync:
+        details.append("missing eleven-file final-status-sync paths:\n" + "\n".join(missing_final_sync))
+    details.append("required worktree form: clean tree, exact ten-file RT-2e-c3a surface, or exact eleven-file final-status sync")
     raise AssertionError(
         "RT-2e-c3a source/surface mismatch:\n" + "\n".join(details)
     )
@@ -160,7 +176,9 @@ def validate_preflight_contract() -> None:
 
     for marker, label in (
         ("Status: COMPLETED / ACCEPTED", "accepted status"),
-        ("RT-2e-c3b CURRENT / NOT_COMPLETED", "current evidence step"),
+        ("Completed evidence small commit: RT-2e-c3b COMPLETED / ACCEPTED", "accepted evidence step"),
+        ("Historical RT-2e-c3a current-step marker retained for its checkpoint gate:", "historical marker label"),
+        ("RT-2e-c3b CURRENT / NOT_COMPLETED", "historical current-step marker"),
         ("18d39ea0676bcd3213c104a71fd5ce2c096c6b96002eb7aaef7ceccd06a2fd86", "archive hash"),
         ("one physical Android handset", "physical Android requirement"),
         ("Android emulator", "emulator exclusion"),
@@ -254,8 +272,11 @@ def main() -> None:
     print("v300_rt2ec3a_permission_request_executed: False")
     print("v300_rt2ec3a_microphone_accessed: False")
     print("v300_rt2ec3a_audio_captured: False")
-    print("v300_rt2ec_parent_status: current-pending-rt2ec3b-execution")
+    print("v300_rt2ec_parent_status: completed-accepted")
     print("v300_rt2ec3b_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only")
+    print("v300_rt2ec3b_status: completed-accepted")
+    print("v300_rt2_status: completed-accepted")
+    print("v300_next_phase: blocked-real-stt-not-implemented")
 
 
 if __name__ == "__main__":

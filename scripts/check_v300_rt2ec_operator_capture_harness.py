@@ -34,6 +34,20 @@ ACCEPTANCE_SYNC_PATHS = {
     "scripts/check_v300_rt2ec_operator_capture_harness.py",
 }
 
+FINAL_STATUS_SYNC_PATHS = {
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "docs/v300_rt2ec_operator_capture_harness.md",
+    "docs/v300_rt2ec_real_android_capture_preflight.md",
+    "docs/v300_rt2ec_real_android_capture_evidence.md",
+    "scripts/check_v300_rt2ec_operator_capture_harness.py",
+    "scripts/check_v300_rt2ec_real_android_capture_preflight.py",
+    "scripts/check_v300_rt2ec_real_android_capture_evidence.py",
+}
+
 
 def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
@@ -83,12 +97,13 @@ def validate_changed_surface() -> None:
     actual = changed_paths()
     if not actual:
         return
-    if actual == IMPLEMENTATION_PATHS or actual == ACCEPTANCE_SYNC_PATHS:
+    if actual in (IMPLEMENTATION_PATHS, ACCEPTANCE_SYNC_PATHS, FINAL_STATUS_SYNC_PATHS):
         return
 
     unexpected = sorted(actual - IMPLEMENTATION_PATHS)
     missing_implementation = sorted(IMPLEMENTATION_PATHS - actual)
     missing_acceptance = sorted(ACCEPTANCE_SYNC_PATHS - actual)
+    missing_final_sync = sorted(FINAL_STATUS_SYNC_PATHS - actual)
     details: list[str] = []
     if unexpected:
         details.append("unexpected changed paths:\n" + "\n".join(unexpected))
@@ -102,8 +117,13 @@ def validate_changed_surface() -> None:
             "missing nine-file acceptance-sync paths:\n"
             + "\n".join(missing_acceptance)
         )
+    if missing_final_sync:
+        details.append(
+            "missing eleven-file final-status-sync paths:\n"
+            + "\n".join(missing_final_sync)
+        )
     details.append(
-        "required worktree form: clean tree, exact twelve-file implementation/acceptance surface, or exact nine-file acceptance sync"
+        "required worktree form: clean tree, exact twelve-file implementation/acceptance surface, exact nine-file acceptance sync, or exact eleven-file final-status sync"
     )
     raise AssertionError(
         "RT-2e-c2 accepted-state surface mismatch:\n" + "\n".join(details)
@@ -265,21 +285,23 @@ def validate_docs() -> None:
     readiness = read("docs/v300_rt2ec_operator_capture_harness_readiness.md")
     adapter = read("docs/v300_record_microphone_capture_adapter.md")
     contract = read("docs/v300_rt2ec_operator_capture_harness.md")
+    evidence = read("docs/v300_rt2ec_real_android_capture_evidence.md")
 
     for source, marker, label in (
-        (readme, "RT-2e-c3 (**CURRENT / NOT_COMPLETED**)", "README current commit"),
+        (readme, "RT-2  COMPLETED / ACCEPTED", "README final parent state"),
         (roadmap, "RT-2e-c2 implementation: COMPLETED / ACCEPTED", "roadmap accepted state"),
         (tasklist, "implementation: COMPLETED / ACCEPTED", "tasklist state"),
         (checklist, "Implementation: COMPLETED / ACCEPTED", "checklist state"),
         (readiness, "RT-2e-c2 is COMPLETED / ACCEPTED", "readiness follow-up"),
         (adapter, "RT-2e-c2 is COMPLETED / ACCEPTED", "adapter follow-up"),
         (contract, "Status: COMPLETED / ACCEPTED", "contract status"),
+        (evidence, "Final checkpoint-gate status synchronization", "final sync record"),
         (scripts_readme, "v300_rt2ec_operator_capture_harness_status: completed-accepted", "expected gate"),
     ):
         require(source, marker, label)
 
     combined = "\n".join(
-        (readme, roadmap, tasklist, scripts_readme, checklist, readiness, adapter, contract)
+        (readme, roadmap, tasklist, scripts_readme, checklist, readiness, adapter, contract, evidence)
     )
     for marker in (
         "main_rt2ec_operator.dart",
@@ -292,6 +314,7 @@ def validate_docs() -> None:
         "authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only",
         "No real permission request",
         "No upload or STT",
+        "BLOCKED_REAL_STT_NOT_IMPLEMENTED",
     ):
         require(combined, marker, "operator implementation marker")
 
@@ -319,8 +342,11 @@ def main() -> None:
     print("v300_rt2ec2_real_permission_request_executed: False")
     print("v300_rt2ec2_real_microphone_accessed: False")
     print("v300_rt2ec2_real_audio_captured: False")
-    print("v300_rt2ec_parent_status: current-pending-rt2ec3-implementation")
+    print("v300_rt2ec_parent_status: completed-accepted")
     print("v300_rt2ec3_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only")
+    print("v300_rt2ec3_status: completed-accepted")
+    print("v300_rt2_status: completed-accepted")
+    print("v300_next_phase: blocked-real-stt-not-implemented")
 
 
 if __name__ == "__main__":

@@ -21,6 +21,20 @@ ACCEPTANCE_PATHS = {
     "scripts/check_v300_rt2ec_real_android_capture_evidence.py",
 }
 
+FINAL_STATUS_SYNC_PATHS = {
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "docs/v300_rt2ec_operator_capture_harness.md",
+    "docs/v300_rt2ec_real_android_capture_preflight.md",
+    "docs/v300_rt2ec_real_android_capture_evidence.md",
+    "scripts/check_v300_rt2ec_operator_capture_harness.py",
+    "scripts/check_v300_rt2ec_real_android_capture_preflight.py",
+    "scripts/check_v300_rt2ec_real_android_capture_evidence.py",
+}
+
 
 def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
@@ -69,16 +83,19 @@ def changed_paths() -> set[str]:
 
 def validate_changed_surface() -> None:
     actual = changed_paths()
-    if not actual or actual == ACCEPTANCE_PATHS:
+    if not actual or actual in (ACCEPTANCE_PATHS, FINAL_STATUS_SYNC_PATHS):
         return
     unexpected = sorted(actual - ACCEPTANCE_PATHS)
     missing = sorted(ACCEPTANCE_PATHS - actual)
+    missing_final_sync = sorted(FINAL_STATUS_SYNC_PATHS - actual)
     details: list[str] = []
     if unexpected:
         details.append("unexpected changed paths:\n" + "\n".join(unexpected))
     if missing:
         details.append("missing eleven-file acceptance paths:\n" + "\n".join(missing))
-    details.append("required worktree form: clean tree or exact eleven-file RT-2e-c3b acceptance surface")
+    if missing_final_sync:
+        details.append("missing eleven-file final-status-sync paths:\n" + "\n".join(missing_final_sync))
+    details.append("required worktree form: clean tree, exact eleven-file RT-2e-c3b acceptance surface, or exact eleven-file final-status sync")
     raise AssertionError("RT-2e-c3b source/surface mismatch:\n" + "\n".join(details))
 
 
@@ -214,6 +231,20 @@ def validate_docs_state() -> None:
         ("No upload or STT", "upload/STT exclusion"),
     ):
         require(combined, marker, label)
+    require(
+        read("docs/v300_rt2ec_real_android_capture_evidence.md"),
+        "Final checkpoint-gate status synchronization",
+        "final checkpoint status synchronization record",
+    )
+
+    harness_gate = read("scripts/check_v300_rt2ec_operator_capture_harness.py")
+    preflight_gate = read("scripts/check_v300_rt2ec_real_android_capture_preflight.py")
+    for source, label in ((harness_gate, "operator harness gate"), (preflight_gate, "preflight gate")):
+        require(source, 'print("v300_rt2ec_parent_status: completed-accepted")', f"{label} final parent output")
+        require(source, 'print("v300_rt2_status: completed-accepted")', f"{label} RT-2 output")
+        require(source, 'print("v300_next_phase: blocked-real-stt-not-implemented")', f"{label} next-phase output")
+        forbid(source, 'print("v300_rt2ec_parent_status: current-pending-', f"{label} stale executable pending output")
+
     require(
         read("scripts/README.md"),
         "v300_rt2ec_real_android_capture_evidence_status: completed-accepted",

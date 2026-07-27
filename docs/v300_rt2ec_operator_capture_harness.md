@@ -1,10 +1,10 @@
 # DRC v3.0.0 RT-2e-c2 operator capture harness
 
 Status: COMPLETED / ACCEPTED
-Parent small commit: RT-2e-c CURRENT / NOT_COMPLETED
+Parent small commit: RT-2e-c COMPLETED / ACCEPTED
 Previous small commit: RT-2e-c1 COMPLETED / ACCEPTED
 Completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
-Current evidence small commit: RT-2e-c3a COMPLETED / ACCEPTED
+Completed evidence small commit: RT-2e-c3b COMPLETED / ACCEPTED
 Authorization: separate-operator-harness-and-fake-widget-tests-only
 
 ## Purpose
@@ -155,10 +155,7 @@ RT-2e-c2 is COMPLETED / ACCEPTED after compileall, the RT-2e-c2 gate,
 Backend 116 with one existing warning, `flutter analyze`, focused Flutter 10,
 full Flutter 171, `git diff --check`, exact twelve-file review, and explicit
 operator approval passed. No real permission request, microphone access, audio
-capture, upload, or STT execution occurred. RT-2e-c3a is COMPLETED / ACCEPTED
-as docs/test-only preflight. RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED
-under `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`;
-no upload or STT is authorized.
+capture, upload, or STT execution occurred at the RT-2e-c2 checkpoint. RT-2e-c3a and RT-2e-c3b are now COMPLETED / ACCEPTED under the explicit real-Android evidence contract; no upload or STT is authorized.
 
 ## RT-2e-c3a preflight follow-up
 
@@ -171,7 +168,7 @@ request, microphone access, audio capture, evidence collection, upload, or STT
 execution occurred. Acceptance passed with compileall, the RT-2e-c3a gate,
 Backend 116 with the existing warning, `flutter analyze`, full Flutter 171,
 `git diff --check`, exact ten-file review, and explicit operator approval.
-RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under
+At this historical RT-2e-c3a checkpoint, RT-2e-c3b was CURRENT / NOT_COMPLETED and NOT_STARTED under
 `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
 
 

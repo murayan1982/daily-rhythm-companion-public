@@ -573,7 +573,7 @@ The released v5.2.0 root exports public Voice Input, Realtime, interrupt/output
 control, and Motion contracts. Their real provider/runtime implementations are
 not complete. RT-1 may begin with model and mock-contract integration only.
 
-Phase boundaries after RT-1a acceptance:
+Historical phase boundaries immediately after RT-1a acceptance:
 
 ```text
 RT-1: COMPLETED / ACCEPTED
@@ -616,10 +616,13 @@ Flutter runtime changed: false
 RT-1b was accepted on 2026-07-26 after compileall, the RT-1b source/runtime
 gate, focused Backend 6, full Backend 116 with one existing warning, Flutter 103,
 `git diff --check`, 10-file diff review, and explicit operator approval passed.
-Parent RT-1 is COMPLETED / ACCEPTED. RT-2 is CURRENT / NOT_COMPLETED but remains
-NOT_STARTED until its guarded permission/capture small-commit split is accepted.
+Parent RT-1 is COMPLETED / ACCEPTED. At this historical RT-1b checkpoint, RT-2 was CURRENT / NOT_COMPLETED and remained NOT_STARTED until its guarded permission/capture split was accepted. RT-2 is now COMPLETED / ACCEPTED.
 
 ## RT-2 small-commit split
+
+Current parent status: COMPLETED / ACCEPTED
+
+Historical split state at the early RT-2 checkpoints:
 
 ```text
 RT-2a  COMPLETED / ACCEPTED
@@ -827,8 +830,8 @@ audio capture, raw-audio exposure, upload, provider call, or STT execution occur
 
 ## RT-2e explicitly guarded bounded real capture adapter
 
-Parent state: CURRENT / NOT_COMPLETED
-Authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
+Parent state: COMPLETED / ACCEPTED
+Authorization outcome: completed-accepted-explicitly-guarded-bounded-real-capture
 
 ### RT-2e-a exact-surface and recorder-package readiness
 
@@ -875,8 +878,8 @@ or audio capture occurred.
 
 ### RT-2e-c explicit operator real-device capture evidence
 
-State: CURRENT / NOT_COMPLETED
-Authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
+State: COMPLETED / ACCEPTED
+Authorization outcome: completed-accepted-explicit-real-device-bounded-capture-evidence
 
 #### RT-2e-c1 operator-only harness/readiness contract
 
@@ -924,7 +927,7 @@ existing warning, `flutter analyze`, focused Flutter 10, full Flutter 171,
 
 #### RT-2e-c3 real Android bounded capture and cleanup evidence
 
-State: CURRENT / NOT_COMPLETED
+State: COMPLETED / ACCEPTED
 
 ##### RT-2e-c3a real Android operator preflight and safe evidence contract
 

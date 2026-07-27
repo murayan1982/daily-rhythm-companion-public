@@ -576,6 +576,7 @@ Completed small commit: RT-2e-c3b COMPLETED / ACCEPTED
 Current implementation: no authorized RT-3 implementation; real STT public runtime is not implemented
 Next implementation authorization: blocked-real-stt-not-implemented
 Real-device evidence: RT-2e-c3b COMPLETED / ACCEPTED; marker-only evidence recorded
+Checkpoint gate state: c2/c3a historical non-execution facts retained; current parent output synchronized to RT-2 COMPLETED / ACCEPTED
 
 Goal:
 
@@ -804,8 +805,7 @@ manual permission reset/request sequence, exact operator command, one bounded
 non-sensitive capture, immediate opaque-id cleanup, and marker-only safe evidence.
 Acceptance passed with compileall, the RT-2e-c3a gate, Backend 116 with the
 existing warning, `flutter analyze`, full Flutter 171, `git diff --check`, exact
-ten-file review, and explicit operator approval. RT-2e-c3b is now CURRENT /
-NOT_COMPLETED and NOT_STARTED.
+ten-file review, and explicit operator approval. RT-2e-c3b is now COMPLETED / ACCEPTED from the accepted physical-Android marker-only evidence.
        Raw audio is not persisted by default and is not sent to STT until RT-3 is authorized.
 ```
 
@@ -840,7 +840,7 @@ RT-2e-c1 implementation: COMPLETED / ACCEPTED; docs/test-only
 RT-2e-c2 authorization: completed-accepted-fake-widget-only
 RT-2e-c2 implementation: COMPLETED / ACCEPTED; no real execution
 RT-2e-c3a status: COMPLETED / ACCEPTED; docs/test-only preflight
-RT-2e-c3b authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+RT-2e-c3b status: COMPLETED / ACCEPTED; authorization completed-accepted-explicit-real-android-bounded-capture-evidence
 ```
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit
@@ -7036,7 +7036,7 @@ or invoke Backend/Framework/provider/STT runtime. Acceptance completed on
 2026-07-27 after compileall, the RT-2e-a gate, `flutter analyze` with no
 issues, full Flutter 142, Backend 116 with one existing warning,
 `git diff --check`, seven-file review, and explicit operator approval passed.
-RT-2e-b is COMPLETED / ACCEPTED after `flutter pub get`, generated plugin review, analyzer cleanup, focused Flutter 18/18, full Flutter 161, Backend 116 with one existing warning, the RT-2e-b gate, Android debug APK compilation, `git diff --check`, 19-file review, and explicit operator approval. The Kotlin incremental-cache daemon reported a cross-drive cache error before Gradle fallback produced the APK. RT-2e-c is CURRENT / NOT_COMPLETED and NOT_STARTED.
+RT-2e-b is COMPLETED / ACCEPTED after `flutter pub get`, generated plugin review, analyzer cleanup, focused Flutter 18/18, full Flutter 161, Backend 116 with one existing warning, the RT-2e-b gate, Android debug APK compilation, `git diff --check`, 19-file review, and explicit operator approval. The Kotlin incremental-cache daemon reported a cross-drive cache error before Gradle fallback produced the APK. At this historical RT-2e-a checkpoint, RT-2e-c was CURRENT / NOT_COMPLETED and NOT_STARTED; RT-2e-c is now COMPLETED / ACCEPTED.
 
 
 ### RT-2e-b implementation checkpoint
@@ -7055,7 +7055,8 @@ real permission request: not executed
 no real microphone access: true
 real audio capture: not executed
 raw byte stream: forbidden
-RT-2e-c: current-pending-rt2ec-implementation
+RT-2e-c historical checkpoint: current-pending-rt2ec-implementation
+RT-2e-c current status: completed-accepted
 ```
 
 The adapter compiles a real-capable production boundary, but no current UI,
