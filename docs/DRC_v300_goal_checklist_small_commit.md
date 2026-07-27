@@ -6,12 +6,12 @@ Updated: 2026-07-27
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-2 COMPLETED / ACCEPTED
-Current small commit: none
-Current implementation step: RT-3 blocked; real STT public runtime is not implemented
-Current implementation state: BLOCKED_REAL_STT_NOT_IMPLEMENTED
-Completed small commit: RT-2e-c3b COMPLETED / ACCEPTED
-Next implementation action: no RT-3 implementation until an accepted real STT public boundary exists
+Current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+Current small commit: RT-3b CURRENT / NOT_COMPLETED
+Current implementation step: App-owned host-audio handoff lifecycle contract
+Current implementation state: NOT_STARTED
+Completed small commit: RT-3a COMPLETED / ACCEPTED
+Next implementation action: implement RT-3b fake-only lifecycle contract without upload or FW import
 ```
 
 ## Source of truth
@@ -37,6 +37,8 @@ docs/v300_microphone_permission_contract.md
 scripts/check_v300_microphone_permission_contract.py
 docs/v300_microphone_platform_permission_wiring.md
 scripts/check_v300_microphone_platform_permission_wiring.py
+docs/v300_framework_v530_stt_integration_inventory.md
+scripts/check_v300_framework_v530_stt_integration_inventory.py
 ```
 
 Historical release sources remain immutable:
@@ -995,3 +997,54 @@ An earlier non-acceptance dry run confirmed cleanup but did not retain the
 duration marker. The accepted marker is from the later single-capture acceptance
 session. RT-2 is now COMPLETED / ACCEPTED. RT-3 remains
 `BLOCKED_REAL_STT_NOT_IMPLEMENTED`.
+
+## RT-3a Framework v5.3.0 STT integration inventory
+
+```text
+RT-3: CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+RT-3a: COMPLETED / ACCEPTED
+RT-3a implementation: COMPLETED / ACCEPTED
+RT-3b: CURRENT / NOT_COMPLETED
+RT-3c: BLOCKED_PENDING_RT3B_ACCEPTANCE
+RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+```
+
+RT-3a fixes the exact DRC/FW boundary before runtime work:
+
+```text
+DRC private mobile capture
+-> app-owned opaque/private artifact lifecycle
+-> future private backend staging
+-> FW public VoiceInputAudioSource
+-> FW public VoiceInputSession
+-> provider adapter
+-> typed VoiceInputResult
+```
+
+Verified current facts:
+
+```text
+FW v5.3.0 public host-audio contract: present
+FW v5.3.0 fake adapter: present
+FW v5.3.0 VoiceInputSession adapter wiring: present
+FW v5.3.0 guarded real adapter: present
+FW v5.3.0 actual provider execution: absent
+DRC private capture artifact boundary: present
+DRC operator immediate discard: present
+DRC voice-input audio upload/staging: absent
+DRC current voice-input endpoint: metadata-only
+```
+
+RT-3b authorization:
+
+```text
+authorized-app-owned-host-audio-lifecycle-contract-fake-only
+```
+
+RT-3a acceptance evidence: source-only gate, Backend 116, clean Flutter analysis,
+Flutter 171, exact seven-file review, and `git diff --check` passed.
+
+RT-3b must not upload audio or call FW/provider code. RT-3c may later add
+private backend staging and a fake FW public-session handoff. RT-3d real STT
+evidence remains blocked until FW implements and accepts concrete provider
+execution.

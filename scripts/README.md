@@ -5392,3 +5392,65 @@ v300_next_phase: blocked-real-stt-not-implemented
 
 RT-2e-c3b is COMPLETED / ACCEPTED. RT-2 is closed as COMPLETED / ACCEPTED.
 No upload or STT is authorized; RT-3 remains BLOCKED_REAL_STT_NOT_IMPLEMENTED.
+
+## v3.0.0 RT-3a Framework v5.3.0 STT integration inventory
+
+Detailed inventory:
+
+```text
+docs/v300_framework_v530_stt_integration_inventory.md
+```
+
+Set the already-vendored FW root in the current private operator shell, then run:
+
+```powershell
+$env:FRAMEWORK_ROOT = (Resolve-Path `
+  ".\vendor\ai-character-framework-5.3.0").Path
+
+python -m compileall -q backend scripts
+python scripts\check_v300_framework_v530_stt_integration_inventory.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The gate inspects source only. It does not import FW, load backend `.env`, read
+credential values, read/upload audio, open a microphone, create a provider
+client, execute STT, or change vendor files. It prints no private FW path.
+
+Expected accepted-state markers include:
+
+```text
+v300_framework_v530_stt_integration_inventory_status: completed-accepted
+v300_framework_public_host_audio_contract_present: True
+v300_framework_public_voice_input_session_wiring_present: True
+v300_framework_fake_adapter_present: True
+v300_framework_guarded_real_adapter_present: True
+v300_framework_real_provider_execution_present: False
+v300_drc_capture_private_artifact_boundary_present: True
+v300_drc_operator_auto_discard_present: True
+v300_drc_backend_audio_upload_boundary_present: False
+v300_drc_voice_input_endpoint_metadata_only: True
+v300_rt3_parent_status: current-blocked-real-provider-execution-not-implemented
+v300_rt3b_authorization: authorized-app-owned-host-audio-lifecycle-contract-fake-only
+```
+
+
+RT-3a acceptance evidence:
+
+```text
+source-only inventory gate: passed
+Backend: 116 passed, one existing warning
+flutter analyze: No issues found
+Flutter: 171 passed
+git diff --check: passed
+exact changed surface: seven files
+```
+
+RT-3a is COMPLETED / ACCEPTED. RT-3b is CURRENT / NOT_COMPLETED and is authorized only for the app-owned fake-only host-audio lifecycle contract. Real STT acceptance remains blocked because FW v5.3.0 has no concrete provider execution.

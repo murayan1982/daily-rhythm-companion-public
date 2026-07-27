@@ -9,9 +9,10 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-2e-c3b accepted)
-Current implementation: RT-2 microphone permission and guarded capture path (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3 (**BLOCKED_REAL_STT_NOT_IMPLEMENTED**)
+Current small commit: RT-3b (**CURRENT / NOT_COMPLETED**)
+Current implementation: App-owned host-audio handoff lifecycle contract (**NOT_STARTED**)
+Completed small commit: RT-3a (**COMPLETED / ACCEPTED**)
+Next realtime phase: RT-3 (**CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED**)
 
 Current phase state:
 
@@ -37,7 +38,11 @@ RT-2  COMPLETED / ACCEPTED          Microphone permission and guarded capture pa
       RT-2e-c3  COMPLETED / ACCEPTED                  Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                      Real Android operator preflight and safe evidence contract
         RT-2e-c3b  COMPLETED / ACCEPTED                      Explicit real Android bounded capture and cleanup evidence
-RT-3  BLOCKED_REAL_STT_NOT_IMPLEMENTED  Real STT / voice-input integration
+RT-3  CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voice-input integration
+  RT-3a  COMPLETED / ACCEPTED                                  Framework v5.3.0 STT integration inventory
+  RT-3b  CURRENT / NOT_COMPLETED                                App-owned host-audio handoff lifecycle contract
+  RT-3c  BLOCKED_PENDING_RT3B_ACCEPTANCE                        Private backend staging and fake FW public-session handoff
+  RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -52,7 +57,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2 COMPLETED / ACCEPTED. RT-2e-c3b completed the explicitly opted-in physical-Android bounded-capture evidence at source commit `ddae21944ac0e251cd8194bf93982bd5dc7a4ae8`: permission granted, one 4820 ms acceptance capture, microphone/audio true, raw-audio exposure false, private artifact registered and discarded, cleanup succeeded, Backend/upload/STT false, and the post-run working tree clean. The c2/c3a checkpoint gates retain their historical non-execution facts while their parent-status output is synchronized to this final state. RT-3 remains BLOCKED_REAL_STT_NOT_IMPLEMENTED.
+Current v3 phase: RT-3a is COMPLETED / ACCEPTED after the source-only FW v5.3.0 inventory gate, Backend 116, clean Flutter analysis, Flutter 171, exact seven-file review, and `git diff --check` passed. RT-3b is CURRENT / NOT_COMPLETED and may add only an app-owned host-audio lifecycle contract with fake dependencies. FW v5.3.0 still reports `real_stt_not_implemented`, never reads audio, and never executes a real provider, so real RT-3 acceptance remains blocked pending an FW release with actual provider execution.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4248,3 +4253,27 @@ Historical RT-2e-c3a pre-execution marker:
 ```text
 RT-2e-c3b CURRENT / NOT_COMPLETED
 ```
+
+## v3.0.0 RT-3a Framework v5.3.0 STT integration inventory
+
+RT-3a inspects the exact DRC `c7a6afd85f29fe07564ded02a76fa645b2fb9a69`
+tree and the locally vendored AI Character Framework v5.3.0 public STT surface.
+It confirms that FW v5.3.0 exposes provider-neutral host-audio contracts,
+`VoiceInputSession.transcribe_audio_result(...)`, a fake adapter, and a guarded
+real-adapter boundary.
+
+The exact FW implementation also confirms that
+`GuardedRealVoiceInputProviderAdapter` remains unavailable after its guards pass:
+it returns the typed `real_stt_not_implemented` outcome, does not dereference the
+audio source, and does not execute a provider. The current DRC voice-input API is
+metadata-only and has no private audio upload/staging route. The existing
+operator harness discards completed private artifacts immediately, so it is
+evidence-only and is not yet the RT-3 handoff path.
+
+This checkpoint changes no Backend or Flutter runtime, existing tests,
+dependencies, platform files, private environment, vendor files, provider
+configuration, version metadata, or release record. It does not import FW,
+read/upload audio, open a microphone, execute STT, or call a provider. Acceptance
+state: **COMPLETED / ACCEPTED** after the source-only inventory gate, Backend 116,
+clean Flutter analysis, Flutter 171, exact seven-file review, and
+`git diff --check` passed.

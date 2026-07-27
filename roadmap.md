@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-2e-c3b accepted; RT-3 blocked)
+Current small commit: RT-3b CURRENT / NOT_COMPLETED (app-owned host-audio handoff lifecycle contract)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,11 +570,11 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-2 COMPLETED / ACCEPTED
-Current small commit: none
-Completed small commit: RT-2e-c3b COMPLETED / ACCEPTED
-Current implementation: no authorized RT-3 implementation; real STT public runtime is not implemented
-Next implementation authorization: blocked-real-stt-not-implemented
+Status: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+Current small commit: RT-3b CURRENT / NOT_COMPLETED
+Completed small commit: RT-3a COMPLETED / ACCEPTED
+Current implementation: App-owned host-audio handoff lifecycle contract NOT_STARTED
+Next implementation authorization: RT-3b fake-only lifecycle contract authorized; real acceptance remains blocked pending FW provider execution
 Real-device evidence: RT-2e-c3b COMPLETED / ACCEPTED; marker-only evidence recorded
 Checkpoint gate state: c2/c3a historical non-execution facts retained; current parent output synchronized to RT-2 COMPLETED / ACCEPTED
 
@@ -752,7 +752,11 @@ RT-2   COMPLETED / ACCEPTED      Microphone permission and guarded capture path
       RT-2e-c3  COMPLETED / ACCEPTED                 Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                    Real Android operator preflight and safe evidence contract
         RT-2e-c3b  COMPLETED / ACCEPTED                    Explicit real Android bounded capture and cleanup evidence
-RT-3   BLOCKED                   Real STT / voice-input integration
+RT-3   CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voice-input integration
+  RT-3a  COMPLETED / ACCEPTED                                   Framework v5.3.0 STT integration inventory
+  RT-3b  CURRENT / NOT_COMPLETED                                 App-owned host-audio handoff lifecycle contract
+  RT-3c  BLOCKED_PENDING_RT3B_ACCEPTANCE                         Private backend staging and fake FW public-session handoff
+  RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
@@ -7093,3 +7097,22 @@ Historical pre-acceptance markers retained for checkpoint gate compatibility:
 RT-2e-c3b CURRENT / NOT_COMPLETED
 RT-2e-c3b authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 ```
+
+### RT-3a Framework v5.3.0 STT integration inventory
+
+Status: COMPLETED / ACCEPTED
+
+RT-3a records the exact public integration shape before DRC runtime changes.
+FW v5.3.0 provides public host-audio types, fake-adapter execution, and
+`VoiceInputSession` adapter wiring, but its guarded real adapter explicitly
+returns `real_stt_not_implemented` and performs no real provider execution.
+
+DRC currently has a private mobile capture artifact boundary and explicit
+discard, but no production retention/lease handoff, no voice-input audio upload
+or backend staging route, and no backend adapter that constructs the FW public
+host-audio request. RT-3a was accepted after the source-only gate, Backend 116,
+clean Flutter analysis, Flutter 171, exact seven-file review, and `git diff --check`
+passed. RT-3b is now authorized to define only the DRC-owned fake-only lifecycle
+contract. RT-3c may add private staging plus a fake FW public-session
+handoff after RT-3b acceptance. RT-3d real provider evidence remains blocked
+until FW exposes and accepts actual provider execution.
