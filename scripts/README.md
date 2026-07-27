@@ -5211,5 +5211,61 @@ v300_rt2ec1_microphone_accessed: False
 v300_rt2ec1_audio_captured: False
 v300_rt2ec_parent_status: current-pending-rt2ec2-implementation
 v300_rt2ec2_authorization: authorized-separate-operator-harness-and-fake-widget-tests-only
+v300_rt2ec3_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+```
+
+## v3.0.0 RT-2e-c2 operator capture harness check
+
+Detailed contract: `docs/v300_rt2ec_operator_capture_harness.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_rt2ec_operator_capture_harness.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test test/rt2ec_microphone_capture_operator_test.dart
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+RT-2e-c2 is COMPLETED / ACCEPTED. It adds the separate
+`main_rt2ec_operator.dart` target, fail-closed `DRC_RT2EC_OPERATOR=true` flag,
+in-app acknowledgement before production dependency construction, explicit
+permission/capture actions, exact 15-second bound, immediate
+`discardPrivateArtifact`, safe evidence allowlist, and fake/widget tests. The
+default app, dependencies, platform declarations, generated registration, and
+Backend remain unchanged. Acceptance passed after compileall, the RT-2e-c2 gate,
+Backend 116 with one existing warning, `flutter analyze`, focused Flutter 10,
+full Flutter 171, `git diff --check`, exact twelve-file review, and explicit
+operator approval. No real permission request, microphone access, audio capture,
+upload, or STT execution occurred. RT-2e-c3 is CURRENT / NOT_COMPLETED and
+NOT_STARTED with `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`. No upload or STT is authorized.
+
+Expected output:
+
+```text
+v300_rt2ec_operator_capture_harness_status: completed-accepted
+v300_rt2ec2_separate_entrypoint_added: True
+v300_rt2ec2_compile_time_opt_in_added: True
+v300_rt2ec2_acknowledgement_before_dependencies: True
+v300_rt2ec2_explicit_permission_actions_added: True
+v300_rt2ec2_bounded_capture_seconds: 15
+v300_rt2ec2_private_artifact_auto_discard_added: True
+v300_rt2ec2_safe_evidence_allowlist_added: True
+v300_rt2ec2_fake_widget_tests_added: True
+v300_rt2ec2_default_app_wiring_changed: False
+v300_rt2ec2_dependency_changed: False
+v300_rt2ec2_platform_files_changed: False
+v300_rt2ec2_real_permission_request_executed: False
+v300_rt2ec2_real_microphone_accessed: False
+v300_rt2ec2_real_audio_captured: False
+v300_rt2ec_parent_status: current-pending-rt2ec3-implementation
 v300_rt2ec3_authorization: blocked-pending-rt2ec2-acceptance
 ```

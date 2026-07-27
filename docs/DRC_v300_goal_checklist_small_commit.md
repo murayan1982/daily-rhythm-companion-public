@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-c2 CURRENT / NOT_COMPLETED
-Current implementation step: separate operator harness and fake/widget tests only
+Current small commit: RT-2e-c3 CURRENT / NOT_COMPLETED
+Current implementation step: explicit real Android bounded capture and cleanup evidence only
 Current implementation state: NOT_STARTED
-Completed small commit: RT-2e-c1 COMPLETED / ACCEPTED
-Next implementation action: add the separate double-opt-in operator harness with fake/widget tests; do not execute real permission or capture
+Completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
+Next implementation action: prepare and execute the explicit operator real-Android evidence flow; do not upload or run STT
 ```
 
 ## Source of truth
@@ -906,19 +906,27 @@ eight-file review, and explicit operator approval.
 
 #### RT-2e-c2 operator-only harness and fake/widget tests
 
-State: CURRENT / NOT_COMPLETED
-Implementation: NOT_STARTED
-Authorization: authorized-separate-operator-harness-and-fake-widget-tests-only
+State: COMPLETED / ACCEPTED
+Implementation: COMPLETED / ACCEPTED
+Authorization: completed-accepted-fake-widget-only
 
-After RT-2e-c1 acceptance, add the separate operator entrypoint, double opt-in
-harness, and fake/widget tests. This stage still performs no real permission
-request, microphone access, or audio capture.
+The separate `main_rt2ec_operator.dart` target now fails closed without
+`DRC_RT2EC_OPERATOR=true`, requires an in-app acknowledgement before invoking
+the production dependency factory, and exposes permission check/request plus
+capture start/stop/cancel as separate actions. Start is granted-only and bounded
+to 15 seconds. Completed artifacts are immediately discarded by opaque id and
+only safe evidence fields are rendered. Fake/widget tests cover the double
+opt-in, no-startup-action boundary, bounded request, discard, cancel, and exact
+allowlist. This stage performed no real permission request, microphone access, or audio
+capture. Acceptance followed compileall, the RT-2e-c2 gate, Backend 116 with one
+existing warning, `flutter analyze`, focused Flutter 10, full Flutter 171,
+`git diff --check`, exact twelve-file review, and explicit operator approval.
 
 #### RT-2e-c3 real Android bounded capture and cleanup evidence
 
-State: BLOCKED
+State: CURRENT / NOT_COMPLETED
 Implementation: NOT_STARTED
-Authorization: blocked-pending-rt2ec2-acceptance
+Authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 
 After RT-2e-c2 acceptance, perform an explicit real Android
 permission/capture/cleanup run. Private evidence, paths, and audio stay outside

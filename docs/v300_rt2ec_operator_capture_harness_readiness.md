@@ -3,8 +3,8 @@
 Status: COMPLETED / ACCEPTED
 Parent small commit: RT-2e-c CURRENT / NOT_COMPLETED
 Completed small commit: RT-2e-c1 COMPLETED / ACCEPTED
-Current small commit: RT-2e-c2 CURRENT / NOT_COMPLETED; NOT_STARTED
-Evidence small commit: RT-2e-c3 BLOCKED / NOT_STARTED
+Completed small commit: RT-2e-c2 COMPLETED / ACCEPTED
+Current evidence small commit: RT-2e-c3 CURRENT / NOT_COMPLETED; NOT_STARTED
 Authorization: docs-test-only-readiness-before-real-device-execution
 
 ## Purpose
@@ -40,9 +40,8 @@ RT-2e-c2  operator harness implementation and fake/widget tests; no real executi
 RT-2e-c3  explicit real Android bounded capture and cleanup evidence
 ```
 
-RT-2e-c1 is accepted. RT-2e-c2 is authorized for the separate operator
-harness and fake/widget tests only. RT-2e-c3 remains blocked until RT-2e-c2 is
-accepted.
+RT-2e-c1 and RT-2e-c2 are accepted. RT-2e-c3 is authorized for explicit real
+Android bounded capture and cleanup evidence only.
 
 ## Required operator boundary
 
@@ -135,3 +134,22 @@ approval passed. No permission request, microphone access, audio capture,
 upload, or STT execution occurred. RT-2e-c2 is CURRENT / NOT_COMPLETED and
 NOT_STARTED with authorization
 `authorized-separate-operator-harness-and-fake-widget-tests-only`.
+
+## RT-2e-c2 implementation follow-up
+
+RT-2e-c2 is COMPLETED / ACCEPTED. The accepted readiness contract is now
+represented by a separate `main_rt2ec_operator.dart` target and operator
+harness. The production dependency factory is not invoked without
+`DRC_RT2EC_OPERATOR=true` and a completed in-app acknowledgement. Permission
+check/request and capture start/stop/cancel are explicit actions, start is
+granted-only and bounded to 15 seconds, completed private artifacts are
+immediately removed through `discardPrivateArtifact`, and UI evidence remains
+the accepted safe allowlist.
+
+Verification in RT-2e-c2 used fake/widget tests only. Acceptance passed after
+compileall, the RT-2e-c2 gate, Backend 116 with one existing warning,
+`flutter analyze`, focused Flutter 10, full Flutter 171, `git diff --check`, exact
+twelve-file review, and explicit operator approval. No real permission request,
+microphone access, audio capture, upload, or STT execution occurred. RT-2e-c3
+is CURRENT / NOT_COMPLETED and NOT_STARTED under `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`. No upload or
+STT is authorized.

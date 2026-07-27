@@ -9,7 +9,8 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e-c2 (**CURRENT / NOT_COMPLETED**)
+Current small commit: RT-2e-c3 (**CURRENT / NOT_COMPLETED**)
+Current implementation: RT-2e-c3 (**NOT_STARTED**)
 
 Current phase state:
 
@@ -31,8 +32,8 @@ RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture pat
     RT-2e-b  COMPLETED / ACCEPTED                Injectable record adapter and private temporary artifact boundary
     RT-2e-c  CURRENT / NOT_COMPLETED              Explicit operator real-device capture evidence
       RT-2e-c1  COMPLETED / ACCEPTED                   Operator-only harness/readiness contract
-      RT-2e-c2  CURRENT / NOT_COMPLETED                Operator-only harness and fake/widget tests
-      RT-2e-c3  BLOCKED                                Real Android bounded capture and cleanup evidence
+      RT-2e-c2  COMPLETED / ACCEPTED                   Operator-only harness and fake/widget tests
+      RT-2e-c3  CURRENT / NOT_COMPLETED                Real Android bounded capture and cleanup evidence
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -47,7 +48,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2e CURRENT / NOT_COMPLETED; RT-2e-a, RT-2e-b, and RT-2e-c1 are COMPLETED / ACCEPTED. RT-2e-c2 is CURRENT / NOT_COMPLETED and NOT_STARTED; RT-2e-c3 remains BLOCKED pending RT-2e-c2 acceptance. RT-2e-c1 was docs/test-only and fixed the operator-only harness contract before any real permission request, microphone access, audio capture, Backend upload, or STT execution.
+Current v3 phase: RT-2e CURRENT / NOT_COMPLETED; RT-2e-a, RT-2e-b, RT-2e-c1, and RT-2e-c2 are COMPLETED / ACCEPTED. RT-2e-c3 is CURRENT / NOT_COMPLETED and NOT_STARTED under its explicit real-Android evidence authorization. RT-2e-c2 added a separate compile-time and in-app double-opt-in operator harness plus fake/widget tests. No real permission request, microphone access, audio capture, Backend upload, or STT execution occurred in RT-2e-c2.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -199,6 +200,33 @@ capture. Acceptance state: **COMPLETED / ACCEPTED** after compileall, the
 RT-2e-c1 gate, Backend 116 with one existing warning, `flutter analyze`, full
 Flutter 161, `git diff --check`, exact eight-file review, and explicit operator
 approval passed. RT-2e-c2 is now CURRENT / NOT_COMPLETED and NOT_STARTED.
+
+## v3.0.0 RT-2e-c2 operator capture harness
+
+RT-2e-c2 adds `app/lib/main_rt2ec_operator.dart` and the separate operator
+harness fixed by RT-2e-c1. The target fails closed unless
+`--dart-define=DRC_RT2EC_OPERATOR=true` is supplied. Even with that flag, the
+production-capable permission gateway, record engine, and controller are not
+constructed until an in-app acknowledgement and explicit activation action.
+
+Permission check, permission request, capture start, stop, and cancel remain
+separate explicit actions. Start is enabled only after a granted result and uses
+an exact 15-second maximum. Completed stop immediately calls
+`discardPrivateArtifact` with the internal opaque id, while UI evidence remains
+an allowlist of enum names, safe codes, durations, and booleans. Opaque ids,
+private paths, bytes, audio content, transcripts, and provider payloads are not
+rendered or copied.
+
+Acceptance state: **COMPLETED / ACCEPTED** after compileall, the RT-2e-c2
+gate, Backend 116 with one existing warning, `flutter analyze`, focused Flutter
+10, full Flutter 171, `git diff --check`, exact twelve-file review, and explicit
+operator approval passed. Verification used only fake permission, capture, and
+private-artifact dependencies in widget/unit tests. `app/lib/main.dart`,
+`HomeScreen`, dependencies, platform declarations, generated registration, and
+Backend remained unchanged. No real permission request, microphone access,
+audio capture, upload, or STT execution occurred. RT-2e-c3 is now CURRENT /
+NOT_COMPLETED and NOT_STARTED with authorization
+`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
 
 ## Current release and development status
 
