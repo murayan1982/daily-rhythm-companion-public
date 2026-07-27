@@ -20,7 +20,7 @@ PUBSPEC = ROOT / "app/pubspec.yaml"
 ANDROID_MANIFEST = ROOT / "app/android/app/src/main/AndroidManifest.xml"
 IOS_INFO = ROOT / "app/ios/Runner/Info.plist"
 
-ALLOWED_CHANGED_PATHS = {
+ACCEPTANCE_SYNC_DOC_PATHS = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
@@ -28,16 +28,17 @@ ALLOWED_CHANGED_PATHS = {
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_microphone_capture_lifecycle.md",
     "scripts/check_v300_microphone_capture_lifecycle.py",
+}
+
+IMPLEMENTATION_PATHS = {
     "app/lib/services/microphone_capture.dart",
     "app/test/microphone_capture_test.dart",
 }
 
-REQUIRED_CHANGED_PATHS = {
-    "docs/v300_microphone_capture_lifecycle.md",
-    "scripts/check_v300_microphone_capture_lifecycle.py",
-    "app/lib/services/microphone_capture.dart",
-    "app/test/microphone_capture_test.dart",
-}
+ACCEPTED_WORKTREE_PATH_SETS = (
+    ACCEPTANCE_SYNC_DOC_PATHS,
+    ACCEPTANCE_SYNC_DOC_PATHS | IMPLEMENTATION_PATHS,
+)
 
 PLANNING_PATHS = (
     "README.md",
@@ -85,18 +86,37 @@ def changed_paths() -> set[str]:
 
 def validate_changed_surface() -> None:
     changed = changed_paths()
-    unexpected = sorted(changed - ALLOWED_CHANGED_PATHS)
+    if not changed:
+        return
+
+    if any(changed == expected for expected in ACCEPTED_WORKTREE_PATH_SETS):
+        return
+
+    all_allowed = ACCEPTANCE_SYNC_DOC_PATHS | IMPLEMENTATION_PATHS
+    unexpected = sorted(changed - all_allowed)
+    missing_doc_paths = sorted(ACCEPTANCE_SYNC_DOC_PATHS - changed)
+    partial_implementation_paths = sorted(changed & IMPLEMENTATION_PATHS)
+
+    details: list[str] = []
     if unexpected:
-        raise AssertionError(
-            "RT-2d unexpected changed paths:\n" + "\n".join(unexpected)
+        details.append("unexpected changed paths:\n" + "\n".join(unexpected))
+    if missing_doc_paths:
+        details.append(
+            "missing acceptance-sync document paths:\n"
+            + "\n".join(missing_doc_paths)
         )
-
-    missing = sorted(REQUIRED_CHANGED_PATHS - changed)
-    if missing:
-        raise AssertionError(
-            "RT-2d expected changed paths are missing:\n" + "\n".join(missing)
+    if partial_implementation_paths and changed != all_allowed:
+        details.append(
+            "implementation paths must be either both present or both already committed:\n"
+            + "\n".join(partial_implementation_paths)
         )
-
+    details.append(
+        "accepted worktree forms are: clean tree, 7-file acceptance sync, "
+        "or 9-file implementation-plus-acceptance sync"
+    )
+    raise AssertionError(
+        "RT-2d accepted-state surface mismatch:\n" + "\n".join(details)
+    )
 
 def validate_capture_contract() -> None:
     source = CAPTURE.read_text(encoding="utf-8")
@@ -256,14 +276,15 @@ def validate_planning() -> None:
 
     combined = "\n".join(combined_parts)
     markers = (
-        "RT-2d IMPLEMENTED / NOT_ACCEPTED",
+        "RT-2d COMPLETED / ACCEPTED",
         "capture lifecycle",
         "fake capture engine",
         "single active capture",
         "bounded duration",
         "no microphone access",
-        "RT-2e",
-        "blocked-pending-rt2d-acceptance",
+        "RT-2e CURRENT / NOT_COMPLETED",
+        "NOT_STARTED",
+        "authorized-explicit-opt-in-bounded-real-capture-adapter-only",
     )
     for marker in markers:
         require(combined, marker, "RT-2d planning marker")
@@ -277,7 +298,7 @@ def main() -> None:
     validate_no_ui_or_platform_change()
     validate_planning()
 
-    print("v300_microphone_capture_lifecycle_status: implemented-not-accepted")
+    print("v300_microphone_capture_lifecycle_status: completed-accepted")
     print("v300_rt2d_capture_contract_added: True")
     print("v300_rt2d_controller_added: True")
     print("v300_rt2d_fake_engine_added: True")
@@ -290,8 +311,8 @@ def main() -> None:
     print("v300_rt2d_microphone_accessed: False")
     print("v300_rt2d_audio_captured: False")
     print("v300_rt2d_raw_audio_exposed: False")
-    print("v300_rt2_parent_status: current-pending-rt2d-acceptance")
-    print("v300_rt2e_authorization: blocked-pending-rt2d-acceptance")
+    print("v300_rt2_parent_status: current-pending-rt2e-implementation")
+    print("v300_rt2e_authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only")
 
 
 if __name__ == "__main__":

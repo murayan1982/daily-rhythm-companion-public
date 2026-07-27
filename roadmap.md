@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2d (**IMPLEMENTED / NOT_ACCEPTED**)
+Current small commit: RT-2e (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,9 +571,9 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2d IMPLEMENTED / NOT_ACCEPTED
-Completed small commit: RT-2c COMPLETED / ACCEPTED
-Current implementation: RT-2d capture lifecycle contract/controller and fake engine; IMPLEMENTED / NOT_ACCEPTED
+Current small commit: RT-2e CURRENT / NOT_COMPLETED
+Completed small commit: RT-2d COMPLETED / ACCEPTED
+Current implementation: RT-2e explicitly guarded bounded real capture adapter; NOT_STARTED
 
 Goal:
 
@@ -739,8 +739,8 @@ RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED      Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED         App-owned permission contract and fake gateway
   RT-2c  COMPLETED / ACCEPTED          Mobile platform permission wiring without capture
-  RT-2d  IMPLEMENTED / NOT_ACCEPTED        Capture lifecycle contract/controller and fake engine; acceptance pending
-  RT-2e  BLOCKED                   Explicitly guarded bounded microphone capture
+  RT-2d  COMPLETED / ACCEPTED          Capture lifecycle contract/controller and fake engine
+  RT-2e  CURRENT / NOT_COMPLETED         Explicitly guarded bounded microphone capture; NOT_STARTED
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -793,8 +793,10 @@ microphone access: false
 audio capture/persistence/upload: false
 Backend/Framework/provider/STT execution: false
 status: COMPLETED / ACCEPTED
-RT-2d authorization: AUTHORIZED for capture lifecycle contract/controller and fake engine only
-RT-2d implementation: IMPLEMENTED / NOT_ACCEPTED
+RT-2d authorization: COMPLETED / ACCEPTED
+RT-2d implementation: COMPLETED / ACCEPTED
+RT-2e authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
+RT-2e implementation: NOT_STARTED
 ```
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit
@@ -6916,13 +6918,13 @@ persistence, Backend change, Framework import, provider call, or STT execution.
 Acceptance state: `COMPLETED / ACCEPTED` after compileall, the RT-2b gate,
 focused Flutter 9, full Flutter 112, Backend 116 with one existing warning,
 `git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
-RT-2c is COMPLETED / ACCEPTED on 2026-07-27 at implementation commit `fe26c3c` after dependency resolution, exact Windows generated-plugin review, analyzer cleanup, focused Flutter 13, full Flutter 125, Backend 116 with one existing warning, the RT-2c gate, Android debug APK build, `git diff --check`, 16-file review, and operator acceptance evidence passed. The Android build emitted a Kotlin daemon incremental-cache warning in `audioplayers_android`, then completed through Gradle fallback and produced `app-debug.apk`. RT-2d is IMPLEMENTED / NOT_ACCEPTED; real microphone capture remains blocked until RT-2e.
+RT-2c is COMPLETED / ACCEPTED on 2026-07-27 at implementation commit `fe26c3c` after dependency resolution, exact Windows generated-plugin review, analyzer cleanup, focused Flutter 13, full Flutter 125, Backend 116 with one existing warning, the RT-2c gate, Android debug APK build, `git diff --check`, 16-file review, and operator acceptance evidence passed. The Android build emitted a Kotlin daemon incremental-cache warning in `audioplayers_android`, then completed through Gradle fallback and produced `app-debug.apk`. RT-2d is COMPLETED / ACCEPTED after fake-only lifecycle verification; RT-2e is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 
 ### RT-2d implementation checkpoint: capture lifecycle and fake engine
 
 ```text
-status: IMPLEMENTED / NOT_ACCEPTED
+status: COMPLETED / ACCEPTED
 changed surface: 9 files
 app-owned lifecycle/request/result/controller: added
 deterministic fake capture engine: added
@@ -6934,12 +6936,14 @@ UI/platform/Backend: unchanged
 microphone accessed: false
 audio captured/persisted/uploaded: false
 raw audio bytes/path/handle exposed: false
-RT-2e authorization: blocked-pending-rt2d-acceptance
+RT-2e authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
 ```
 
 RT-2d focused tests cover granted and blocked permission states, busy rejection,
 duration bounds, opaque fake completion, cancel, timeout, partial-start cleanup,
 stop-error cleanup, cleanup failure, exception redaction, close/dispose, and
-immutable metadata. Operator acceptance requires compileall, the RT-2d gate,
-`flutter analyze`, focused/full Flutter tests, Backend regression,
-`git diff --check`, nine-file review, and explicit approval.
+immutable metadata. Acceptance completed on 2026-07-27 after compileall, the
+RT-2d gate, `flutter analyze` with no issues, focused Flutter 17, full Flutter
+142, Backend 116 with one existing warning, `git diff --check`, nine-file review,
+and explicit operator approval passed. No permission request, microphone access,
+audio capture, raw-audio exposure, upload, provider call, or STT execution occurred.

@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2d (**IMPLEMENTED / NOT_ACCEPTED**)
+Current small commit: RT-2e (**CURRENT / NOT_COMPLETED**)
 
 Current phase state:
 
@@ -25,9 +25,9 @@ RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture pat
   RT-2a  COMPLETED / ACCEPTED        Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED           App-owned permission contract and fake gateway
   RT-2c  COMPLETED / ACCEPTED            Platform permission wiring without capture
-  RT-2d  IMPLEMENTED / NOT_ACCEPTED          Capture lifecycle contract/controller and fake engine
-          acceptance pending
-  RT-2e  BLOCKED                     Explicitly guarded bounded microphone capture
+  RT-2d  COMPLETED / ACCEPTED            Capture lifecycle contract/controller and fake engine
+  RT-2e  CURRENT / NOT_COMPLETED           Explicitly guarded bounded microphone capture
+          NOT_STARTED
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -42,7 +42,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2d IMPLEMENTED / NOT_ACCEPTED; capture lifecycle contract/controller and fake engine are present, while real microphone access, audio capture, and STT remain blocked
+Current v3 phase: RT-2e CURRENT / NOT_COMPLETED and NOT_STARTED; RT-2d capture lifecycle and fake engine are accepted, while real microphone access, audio capture, Backend upload, and STT have not started
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -100,7 +100,7 @@ runtime, or run STT. Acceptance state: **COMPLETED / ACCEPTED** after
 `flutter pub get`, `flutter analyze` with no issues, focused Flutter 13, full
 Flutter 125, Backend 116, Android debug APK build, exact generated-file review,
 the RT-2c gate, `git diff --check`, and operator acceptance evidence passed.
-RT-2d is now **IMPLEMENTED / NOT_ACCEPTED**; operator verification and explicit approval remain pending.
+RT-2d is **COMPLETED / ACCEPTED** after compileall, the RT-2d gate, `flutter analyze` with no issues, focused Flutter 17, full Flutter 142, Backend 116 with one existing warning, `git diff --check`, nine-file review, and explicit operator approval passed. RT-2e is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 ## v3.0.0 RT-2d microphone capture lifecycle and fake engine
 
@@ -116,7 +116,12 @@ The fake engine returns only an opaque fake identifier and metadata stating that
 no microphone was accessed, no audio was captured, and no raw audio was exposed.
 This checkpoint adds no recording dependency, UI wiring, platform change,
 Backend change, upload, Framework/provider call, or STT execution. Acceptance
-state: **IMPLEMENTED / NOT_ACCEPTED**.
+state: **COMPLETED / ACCEPTED** after compileall, the RT-2d source/surface
+gate, `flutter analyze` with no issues, focused Flutter 17, full Flutter 142,
+Backend 116 with one existing warning, `git diff --check`, nine-file review,
+and explicit operator approval passed. No permission request, real microphone
+access, audio capture, raw-audio exposure, Backend upload, Framework/provider
+call, or STT execution occurred. RT-2e is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 ## Current release and development status
 

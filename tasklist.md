@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2d IMPLEMENTED / NOT_ACCEPTED
-current implementation step: capture lifecycle contract/controller and deterministic fake engine only
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
-completed small commit: RT-2c COMPLETED / ACCEPTED
+current small commit: RT-2e CURRENT / NOT_COMPLETED
+current implementation step: explicitly guarded bounded real capture adapter only
+current implementation state: NOT_STARTED
+completed small commit: RT-2d COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1473,8 +1473,8 @@ RT-2cは2026-07-27にCOMPLETED / ACCEPTED。implementation commit `fe26c3c`、`f
 
 ### RT-2d capture lifecycle contract and fake engine
 
-status: IMPLEMENTED / NOT_ACCEPTED
-implementation: IMPLEMENTED / NOT_ACCEPTED
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
 
 - [x] app-owned capture lifecycle state/result/request contractを追加する。
 - [x] single-active-session、bounded duration、stop/cancel/error cleanupを型で固定する。
@@ -1485,7 +1485,20 @@ implementation: IMPLEMENTED / NOT_ACCEPTED
 - [x] permission checkだけを使用し、permission request/settings openを実行しない。
 - [x] resultからraw bytes、local path、platform handleを排除し、opaque fake idだけを返す。
 - [x] RT-2d source/surface gateとfocused testを追加する。
-- [ ] operator環境で`flutter analyze`、focused/full Flutter、Backend regression、`git diff --check`、9-file reviewを通す。
-- [ ] explicit operator approval後にRT-2dをCOMPLETED / ACCEPTEDへ同期する。
+- [x] operator環境で`flutter analyze`、focused/full Flutter、Backend regression、`git diff --check`、9-file reviewを通す。
+- [x] explicit operator approval後にRT-2dをCOMPLETED / ACCEPTEDへ同期する。
 
-RT-2dはIMPLEMENTED / NOT_ACCEPTED。RT-2e real captureはRT-2d acceptanceまでBLOCKED。
+RT-2dは2026-07-27にCOMPLETED / ACCEPTED。compileall、RT-2d gate、`flutter analyze` clean、focused Flutter 17件、full Flutter 142件、Backend 116件（既存warning 1件）、`git diff --check`、9-file review、explicit operator approvalが通過した。permission request、real microphone access、audio capture、raw audio exposure、Backend upload、Framework/provider/STT executionは行っていない。
+
+### RT-2e explicitly guarded bounded real capture adapter
+
+status: CURRENT / NOT_COMPLETED
+implementation: NOT_STARTED
+
+- [ ] 実装前に現行Flutter/platform/capture境界と依存候補を実コードで再確認する。
+- [ ] explicit opt-in以外ではpermission requestやmicrophone openを実行しない。
+- [ ] single-active、hard duration、stop/cancel/error/close cleanupをRT-2d controller契約へ接続する。
+- [ ] raw audioを既定で永続化・uploadせず、RT-3受け入れ前はSTTへ送らない。
+- [ ] fake-only regressionと明示的operator execution evidenceを分離する。
+
+RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。実装・実行はまだ開始していない。

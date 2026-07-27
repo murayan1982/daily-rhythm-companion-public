@@ -3,8 +3,8 @@
 Updated: 2026-07-27
 
 Parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2d IMPLEMENTED / NOT_ACCEPTED
-Next small commit: RT-2e BLOCKED pending RT-2d acceptance
+Completed small commit: RT-2d COMPLETED / ACCEPTED
+Current small commit: RT-2e CURRENT / NOT_COMPLETED; NOT_STARTED
 
 ## Purpose
 
@@ -144,7 +144,7 @@ real audio captured/persisted/uploaded: false
 raw audio bytes/path/handle exposed: false
 Backend changed: false
 Framework/provider/STT execution: false
-RT-2e authorization: blocked-pending-rt2d-acceptance
+RT-2e authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
 ```
 
 ## Focused tests
@@ -170,28 +170,31 @@ immutable public metadata
 
 ## Operator acceptance
 
-RT-2d remains `IMPLEMENTED / NOT_ACCEPTED` until all of the following pass:
+RT-2d is `COMPLETED / ACCEPTED`. The following evidence passed on 2026-07-27:
 
 ```text
 compileall
 RT-2d source/surface gate
-flutter analyze
-focused Flutter test
-full Flutter test
-full Backend regression
+flutter analyze: No issues found
+focused Flutter: 17 passed
+full Flutter: 142 passed
+full Backend regression: 116 passed with one existing warning
 git diff --check
 9-file declared changed-surface review
 explicit operator approval
 ```
 
+No permission request, real microphone access, audio capture, raw-audio
+exposure, Backend upload, Framework/provider call, or STT execution occurred.
+
 Android/iOS build execution is not required for RT-2d because it changes no
 plugin dependency, generated plugin registration, native manifest, or platform
 implementation. Tests must use only fake permission and capture components.
 
-Expected gate output before acceptance:
+Expected accepted gate output:
 
 ```text
-v300_microphone_capture_lifecycle_status: implemented-not-accepted
+v300_microphone_capture_lifecycle_status: completed-accepted
 v300_rt2d_capture_contract_added: True
 v300_rt2d_controller_added: True
 v300_rt2d_fake_engine_added: True
@@ -204,6 +207,6 @@ v300_rt2d_backend_changed: False
 v300_rt2d_microphone_accessed: False
 v300_rt2d_audio_captured: False
 v300_rt2d_raw_audio_exposed: False
-v300_rt2_parent_status: current-pending-rt2d-acceptance
-v300_rt2e_authorization: blocked-pending-rt2d-acceptance
+v300_rt2_parent_status: current-pending-rt2e-implementation
+v300_rt2e_authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
 ```
