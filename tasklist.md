@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-current small commit: RT-3b CURRENT / NOT_COMPLETED
-current implementation step: App-owned host-audio handoff lifecycle contract
+current small commit: RT-3c CURRENT / NOT_COMPLETED
+current implementation step: Private Backend staging and fake FW public-session handoff
 current implementation state: NOT_STARTED
-completed small commit: RT-3a COMPLETED / ACCEPTED
+completed small commit: RT-3b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -48,6 +48,8 @@ docs/v300_microphone_platform_permission_wiring.md
 scripts/check_v300_microphone_platform_permission_wiring.py
 docs/v300_framework_v530_stt_integration_inventory.md
 scripts/check_v300_framework_v530_stt_integration_inventory.py
+docs/v300_host_audio_handoff_lifecycle.md
+scripts/check_v300_host_audio_handoff_lifecycle.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1629,7 +1631,7 @@ Status: COMPLETED / ACCEPTED
 - [x] RT-3d real provider evidenceをFW real provider execution実装待ちとして維持した。
 - [x] operator環境でgate、Backend 116、Flutter 171、clean analyze、diff reviewを通した。
 - [x] RT-3aをCOMPLETED / ACCEPTEDへ同期した。
-- [ ] accepted stateをコミットする。
+- [x] accepted stateをコミットする。
 
 RT-3a acceptanceではBackend/Flutter runtime、existing tests、dependencies、platform、
 vendor、private env、version/release recordを変更しない。FW import、audio
@@ -1638,8 +1640,33 @@ read/upload、microphone access、provider execution、STT executionも行わな
 
 ## RT-3b app-owned host-audio handoff lifecycle contract
 
-Status: CURRENT / NOT_COMPLETED / NOT_STARTED
+Status: COMPLETED / ACCEPTED
 
 Authorization: `authorized-app-owned-host-audio-lifecycle-contract-fake-only`
 
 RT-3bはopaque capture artifactのretain/lease/consume/discard契約だけを追加する。network upload、private path公開、FW import、provider execution、STT execution、既存RT-2 operator pathのdefault変更は禁止する。
+
+- [x] completed captureだけをretained artifactとして受け付ける。
+- [x] 15秒上限、encoding、sample rate、channel countを検証する。
+- [x] single retained artifactを強制する。
+- [x] private pathをpublic resultへ含めず、consumer実行中だけscoped callbackを許可する。
+- [x] fake consumerを追加し、audio read/upload/FW/provider/STTを行わない。
+- [x] consume success/failure/exceptionでprivate artifactをdiscardする。
+- [x] cancel、explicit discard、closeでcleanupする。
+- [x] cleanup failure時はexplicit retry可能なleaseを維持する。
+- [x] public metadata allowlistでprivate path、opaque ID、credential-like fieldを除外する。
+- [x] existing RT-2 operator path、Backend、dependencies、platform、vendorを変更しない。
+- [x] operator環境でfocused Flutter 21、full Flutter 192、Backend 116、clean analyze、diff reviewを通す。
+- [x] cleanup-retry test order correctionを適用し、focused/full Flutterを再検証する。
+- [x] RT-3bをCOMPLETED / ACCEPTEDへ同期する。
+- [ ] accepted stateをコミットする。
+
+Acceptance evidence: source gate、Backend 116（既存warning 1件）、`flutter analyze`、focused Flutter 21、full Flutter 192、exact ten-file review、cleanup-retry test correction、`git diff --check`。
+
+## RT-3c private Backend staging and fake FW public-session handoff
+
+Status: CURRENT / NOT_COMPLETED / NOT_STARTED
+
+Authorization: `authorized-private-backend-staging-and-fake-fw-public-session-handoff-only`
+
+RT-3cはprivate Backend staging境界とfake FW public-session handoffだけを追加する。real provider execution、real STT acceptance、raw audio/public private path exposureは引き続き禁止する。

@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-Current small commit: RT-3b CURRENT / NOT_COMPLETED
-Current implementation step: App-owned host-audio handoff lifecycle contract
+Current small commit: RT-3c CURRENT / NOT_COMPLETED
+Current implementation step: Private Backend staging and fake FW public-session handoff
 Current implementation state: NOT_STARTED
-Completed small commit: RT-3a COMPLETED / ACCEPTED
-Next implementation action: implement RT-3b fake-only lifecycle contract without upload or FW import
+Completed small commit: RT-3b COMPLETED / ACCEPTED
+Next implementation action: implement RT-3c private staging and fake FW public-session handoff only
 ```
 
 ## Source of truth
@@ -1004,8 +1004,8 @@ session. RT-2 is now COMPLETED / ACCEPTED. RT-3 remains
 RT-3: CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 RT-3a: COMPLETED / ACCEPTED
 RT-3a implementation: COMPLETED / ACCEPTED
-RT-3b: CURRENT / NOT_COMPLETED
-RT-3c: BLOCKED_PENDING_RT3B_ACCEPTANCE
+RT-3b: COMPLETED / ACCEPTED
+RT-3c: CURRENT / NOT_COMPLETED
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
 
@@ -1048,3 +1048,34 @@ RT-3b must not upload audio or call FW/provider code. RT-3c may later add
 private backend staging and a fake FW public-session handoff. RT-3d real STT
 evidence remains blocked until FW implements and accepts concrete provider
 execution.
+
+
+## RT-3b app-owned host-audio handoff lifecycle acceptance
+
+```text
+RT-3b: COMPLETED / ACCEPTED
+RT-3b implementation: COMPLETED / ACCEPTED
+RT-3c: CURRENT / NOT_COMPLETED
+RT-3 real acceptance: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+```
+
+Added boundary:
+
+```text
+completed MicrophoneCaptureResult
+-> HostAudioHandoffController.retain
+-> HostAudioPrivateArtifactLease
+-> injected HostAudioHandoffConsumer
+-> cleanup on completion/failure/cancel/discard/close
+-> public path-free HostAudioHandoffResult
+```
+
+RT-3b is accepted as fake-only. No Backend route, upload, audio read, FW import, provider execution, STT, dependency, platform, vendor, or RT-2 operator-path change was added.
+
+Acceptance evidence: source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check` passed.
+
+RT-3c authorization:
+
+```text
+authorized-private-backend-staging-and-fake-fw-public-session-handoff-only
+```

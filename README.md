@@ -9,9 +9,9 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-3b (**CURRENT / NOT_COMPLETED**)
-Current implementation: App-owned host-audio handoff lifecycle contract (**NOT_STARTED**)
-Completed small commit: RT-3a (**COMPLETED / ACCEPTED**)
+Current small commit: RT-3c (**CURRENT / NOT_COMPLETED**)
+Current implementation: Private Backend staging and fake FW public-session handoff (**NOT_STARTED**)
+Completed small commit: RT-3b (**COMPLETED / ACCEPTED**)
 Next realtime phase: RT-3 (**CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED**)
 
 Current phase state:
@@ -40,8 +40,8 @@ RT-2  COMPLETED / ACCEPTED          Microphone permission and guarded capture pa
         RT-2e-c3b  COMPLETED / ACCEPTED                      Explicit real Android bounded capture and cleanup evidence
 RT-3  CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voice-input integration
   RT-3a  COMPLETED / ACCEPTED                                  Framework v5.3.0 STT integration inventory
-  RT-3b  CURRENT / NOT_COMPLETED                                App-owned host-audio handoff lifecycle contract
-  RT-3c  BLOCKED_PENDING_RT3B_ACCEPTANCE                        Private backend staging and fake FW public-session handoff
+  RT-3b  COMPLETED / ACCEPTED                                  App-owned host-audio handoff lifecycle contract
+  RT-3c  CURRENT / NOT_COMPLETED                                 Private backend staging and fake FW public-session handoff
   RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
@@ -57,7 +57,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3a is COMPLETED / ACCEPTED after the source-only FW v5.3.0 inventory gate, Backend 116, clean Flutter analysis, Flutter 171, exact seven-file review, and `git diff --check` passed. RT-3b is CURRENT / NOT_COMPLETED and may add only an app-owned host-audio lifecycle contract with fake dependencies. FW v5.3.0 still reports `real_stt_not_implemented`, never reads audio, and never executes a real provider, so real RT-3 acceptance remains blocked pending an FW release with actual provider execution.
+Current v3 phase: RT-3b is COMPLETED / ACCEPTED after the source gate, Backend 116, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check` passed. RT-3c is CURRENT / NOT_COMPLETED and may add only private Backend staging plus a fake FW public-session handoff. FW v5.3.0 still reports `real_stt_not_implemented`, never reads audio, and never executes a real provider, so real RT-3 acceptance remains blocked pending an FW release with actual provider execution.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4277,3 +4277,10 @@ read/upload audio, open a microphone, execute STT, or call a provider. Acceptanc
 state: **COMPLETED / ACCEPTED** after the source-only inventory gate, Backend 116,
 clean Flutter analysis, Flutter 171, exact seven-file review, and
 `git diff --check` passed.
+
+
+## v3.0.0 RT-3b app-owned host-audio handoff lifecycle
+
+RT-3b adds a Flutter-owned lifecycle between a completed microphone capture and a future private Backend staging consumer. It retains one opaque private artifact, validates WAV/16 kHz/mono metadata and the 15-second bound, allows only scoped app-internal private-path access during consumer execution, and discards the artifact on completion, failure, cancel, explicit discard, or close. Public results never contain the opaque capture ID or private path.
+
+This checkpoint is fake-only. It does not change the accepted RT-2 operator path, Backend runtime, routes, dependencies, platform files, or vendor FW. It performs no network upload, audio read, Framework import, provider execution, or STT. Acceptance state: **COMPLETED / ACCEPTED** after the source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check` passed. RT-3c is now CURRENT / NOT_COMPLETED and authorized only for private Backend staging plus a fake FW public-session handoff.

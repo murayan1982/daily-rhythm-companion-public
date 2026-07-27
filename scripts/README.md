@@ -5454,3 +5454,38 @@ exact changed surface: seven files
 ```
 
 RT-3a is COMPLETED / ACCEPTED. RT-3b is CURRENT / NOT_COMPLETED and is authorized only for the app-owned fake-only host-audio lifecycle contract. Real STT acceptance remains blocked because FW v5.3.0 has no concrete provider execution.
+
+
+## v3.0.0 RT-3b host-audio handoff lifecycle gate
+
+```powershell
+.\.venv\Scripts\python.exe scripts\check_v300_host_audio_handoff_lifecycle.py
+```
+
+Expected accepted-state markers:
+
+```text
+v300_host_audio_handoff_lifecycle_status: completed-accepted
+v300_rt3b_app_owned_contract_added: True
+v300_rt3b_opaque_artifact_retention_added: True
+v300_rt3b_scoped_private_path_access_added: True
+v300_rt3b_consume_cleanup_added: True
+v300_rt3b_cancel_cleanup_added: True
+v300_rt3b_close_cleanup_added: True
+v300_rt3b_public_result_path_free: True
+v300_rt3b_fake_consumer_tests_added: True
+v300_rt3b_backend_changed: False
+v300_rt3b_network_upload_added: False
+v300_rt3b_framework_imported: False
+v300_rt3b_provider_execution_executed: False
+v300_rt3b_stt_executed: False
+v300_rt3_parent_status: current-blocked-real-provider-execution-not-implemented
+v300_rt3b_status: completed-accepted
+v300_rt3c_status: current-not-completed
+v300_rt3c_authorization: authorized-private-backend-staging-and-fake-fw-public-session-handoff-only
+v300_rt3_real_acceptance: blocked-framework-real-provider-execution-not-implemented
+```
+
+The gate permits the exact RT-3b ten-file acceptance surface or a clean tree after commit. It does not execute Flutter, read audio, upload data, import the vendored Framework, call a provider, or perform STT.
+
+RT-3b acceptance evidence: source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check` passed.

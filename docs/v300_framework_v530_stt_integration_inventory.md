@@ -202,3 +202,16 @@ acceptance-state synchronization
 
 No Backend/Flutter runtime, dependency, platform, vendor, private environment,
 audio, microphone, provider, STT, version, or release surface changed.
+
+
+## RT-3b accepted checkpoint
+
+Status: `COMPLETED / ACCEPTED`
+
+RT-3b implements GAP-1 only: app-owned retain/lease/consume/discard ownership around the existing opaque mobile capture artifact. The scoped lease has no private-path getter; a future app-owned consumer may resolve the path only inside its active callback. Typed public results remain path-free and opaque-ID-free.
+
+Cleanup is attempted on consume success, consumer-declared failure, consumer exception, cancel, explicit discard, and close. Cleanup failure retains the lease for explicit retry. The existing RT-2 operator path is unchanged.
+
+GAP-2 through GAP-4 remain for RT-3c. GAP-5 still blocks real acceptance. RT-3b performs no audio read/upload, FW import, provider execution, or STT.
+
+RT-3b acceptance passed with the source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check`. RT-3c is now authorized only for private Backend staging plus a fake FW public-session handoff.
