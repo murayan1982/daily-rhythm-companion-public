@@ -4992,3 +4992,53 @@ Flutter 125, and Backend 116 passed; the RT-2c gate and `git diff --check`
 passed; the Android debug APK was produced. The build emitted a Kotlin daemon
 incremental-cache warning in `audioplayers_android`, then completed through
 Gradle fallback.
+
+
+## v3.0.0 RT-2d microphone capture lifecycle check
+
+Detailed contract: `docs/v300_microphone_capture_lifecycle.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_microphone_capture_lifecycle.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test test/microphone_capture_test.dart
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+Current implementation state: `IMPLEMENTED / NOT_ACCEPTED`.
+
+RT-2d adds the DRC-owned lifecycle/request/result/controller contracts, a hard
+duration deadline boundary, and a deterministic fake capture engine. It calls
+only the permission gateway check operation. It adds no real capture dependency,
+UI wiring, platform change, microphone access, audio persistence/upload, raw
+bytes/path/handle, Backend change, Framework/provider call, or STT execution.
+
+Expected pre-acceptance output:
+
+```text
+v300_microphone_capture_lifecycle_status: implemented-not-accepted
+v300_rt2d_capture_contract_added: True
+v300_rt2d_controller_added: True
+v300_rt2d_fake_engine_added: True
+v300_rt2d_single_active_capture_enforced: True
+v300_rt2d_bounded_duration_enforced: True
+v300_rt2d_permission_request_executed: False
+v300_rt2d_real_capture_dependency_added: False
+v300_rt2d_ui_changed: False
+v300_rt2d_backend_changed: False
+v300_rt2d_microphone_accessed: False
+v300_rt2d_audio_captured: False
+v300_rt2d_raw_audio_exposed: False
+v300_rt2_parent_status: current-pending-rt2d-acceptance
+v300_rt2e_authorization: blocked-pending-rt2d-acceptance
+```

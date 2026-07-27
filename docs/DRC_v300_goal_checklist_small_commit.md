@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2d CURRENT / NOT_COMPLETED
-Current implementation step: capture lifecycle contract/controller and fake engine only
-Current implementation state: NOT_STARTED
+Current small commit: RT-2d IMPLEMENTED / NOT_ACCEPTED
+Current implementation step: capture lifecycle contract/controller and deterministic fake engine only
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Completed small commit: RT-2c COMPLETED / ACCEPTED
-Next implementation action: implement RT-2d without microphone access or UI wiring
+Next implementation action: run RT-2d operator acceptance without microphone access or UI wiring
 ```
 
 ## Source of truth
@@ -628,8 +628,8 @@ RT-2b  COMPLETED / ACCEPTED
        DRC-owned permission state/result and gateway interface with fake gateway.
 RT-2c  COMPLETED / ACCEPTED
        Android/iOS permission adapter and declarations; no UI invocation or capture.
-RT-2d  CURRENT / NOT_COMPLETED
-       Capture lifecycle/controller and fake engine; NOT_STARTED; no microphone access.
+RT-2d  IMPLEMENTED / NOT_ACCEPTED
+       Capture lifecycle/controller and deterministic fake engine; acceptance pending; no microphone access.
 RT-2e  BLOCKED pending RT-2d acceptance
        Explicitly enabled bounded real capture and cleanup; no STT execution.
 ```
@@ -729,7 +729,7 @@ provider/STT called: false
 Acceptance completed on 2026-07-26 after compileall, the RT-2b source gate,
 focused Flutter 9, full Flutter 112, Backend 116 with one existing warning,
 `git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
-RT-2c is COMPLETED / ACCEPTED on 2026-07-27 at implementation commit `fe26c3c`. The mobile gateway, platform declarations, resolved lockfile, generated Windows registration, analyzer cleanup, tests, gate, Android debug APK build, and 16-file review were accepted. RT-2d is CURRENT / NOT_COMPLETED and NOT_STARTED.
+RT-2c is COMPLETED / ACCEPTED on 2026-07-27 at implementation commit `fe26c3c`. The mobile gateway, platform declarations, resolved lockfile, generated Windows registration, analyzer cleanup, tests, gate, Android debug APK build, and 16-file review were accepted. RT-2d is IMPLEMENTED / NOT_ACCEPTED; operator acceptance remains pending.
 
 
 ## RT-2c mobile platform permission wiring without capture
@@ -785,11 +785,35 @@ available on the Windows operator environment and is not claimed.
 
 ## RT-2d capture lifecycle contract and fake engine
 
-Implementation state: CURRENT / NOT_COMPLETED; NOT_STARTED
+Implementation state: IMPLEMENTED / NOT_ACCEPTED
 
-Authorized scope: DRC-owned lifecycle/request/result/controller contracts and a
-deterministic fake capture engine only. Single active capture, bounded duration,
-stop/cancel/error cleanup, and typed denied/restricted/unsupported/busy/timeout
-states must be fixed before any real capture adapter. UI wiring, platform capture
-packages, microphone access, raw audio, upload, Framework/provider calls, and STT
-remain forbidden.
+Implemented scope: DRC-owned lifecycle/request/result/controller contracts, a
+deadline scheduler boundary, and a deterministic fake capture engine. Single
+active capture, hard bounded duration, stop/cancel/timeout/error/close cleanup,
+and typed denied/permanently-denied/restricted/unsupported/busy/timeout states
+are fixed before any real adapter. UI wiring, platform capture packages,
+microphone access, raw audio, upload, Framework/provider calls, and STT remain
+forbidden.
+
+Changed runtime/test files:
+
+```text
+app/lib/services/microphone_capture.dart
+app/test/microphone_capture_test.dart
+```
+
+Protected evidence:
+
+```text
+permission request executed: false
+real capture dependency added: false
+UI/platform/Backend changed: false
+microphone accessed: false
+audio captured/persisted/uploaded: false
+raw audio bytes/path/handle exposed: false
+RT-2e authorization: blocked-pending-rt2d-acceptance
+```
+
+Operator acceptance requires compileall, the RT-2d source/surface gate,
+`flutter analyze`, focused/full Flutter tests, Backend regression,
+`git diff --check`, nine-file review, and explicit approval.

@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2d (**CURRENT / NOT_COMPLETED**)
+Current small commit: RT-2d (**IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -25,8 +25,8 @@ RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture pat
   RT-2a  COMPLETED / ACCEPTED        Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED           App-owned permission contract and fake gateway
   RT-2c  COMPLETED / ACCEPTED            Platform permission wiring without capture
-  RT-2d  CURRENT / NOT_COMPLETED            Capture lifecycle contract and fake engine
-          NOT_STARTED
+  RT-2d  IMPLEMENTED / NOT_ACCEPTED          Capture lifecycle contract/controller and fake engine
+          acceptance pending
   RT-2e  BLOCKED                     Explicitly guarded bounded microphone capture
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
@@ -42,7 +42,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2d CURRENT / NOT_COMPLETED; capture lifecycle contract and fake engine are authorized, while real microphone access, audio capture, and STT remain blocked
+Current v3 phase: RT-2d IMPLEMENTED / NOT_ACCEPTED; capture lifecycle contract/controller and fake engine are present, while real microphone access, audio capture, and STT remain blocked
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -100,7 +100,23 @@ runtime, or run STT. Acceptance state: **COMPLETED / ACCEPTED** after
 `flutter pub get`, `flutter analyze` with no issues, focused Flutter 13, full
 Flutter 125, Backend 116, Android debug APK build, exact generated-file review,
 the RT-2c gate, `git diff --check`, and operator acceptance evidence passed.
-RT-2d is now CURRENT / NOT_COMPLETED and remains NOT_STARTED.
+RT-2d is now **IMPLEMENTED / NOT_ACCEPTED**; operator verification and explicit approval remain pending.
+
+## v3.0.0 RT-2d microphone capture lifecycle and fake engine
+
+RT-2d adds DRC-owned capture request/state/result contracts, a bounded lifecycle
+controller, a deadline scheduler boundary, and a deterministic fake capture
+engine. It separates denied, permanently denied, restricted, unsupported, busy,
+timeout, cancel, cleanup failure, and no-active-capture outcomes. The controller
+checks permission without requesting it, enforces one active session and a hard
+duration maximum, and cleans up on stop, cancel, timeout, error, close, and
+dispose.
+
+The fake engine returns only an opaque fake identifier and metadata stating that
+no microphone was accessed, no audio was captured, and no raw audio was exposed.
+This checkpoint adds no recording dependency, UI wiring, platform change,
+Backend change, upload, Framework/provider call, or STT execution. Acceptance
+state: **IMPLEMENTED / NOT_ACCEPTED**.
 
 ## Current release and development status
 

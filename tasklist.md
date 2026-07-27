@@ -14,9 +14,9 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2d CURRENT / NOT_COMPLETED
-current implementation step: capture lifecycle contract/controller and fake engine only
-current implementation state: NOT_STARTED
+current small commit: RT-2d IMPLEMENTED / NOT_ACCEPTED
+current implementation step: capture lifecycle contract/controller and deterministic fake engine only
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed small commit: RT-2c COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -1473,11 +1473,19 @@ RT-2cは2026-07-27にCOMPLETED / ACCEPTED。implementation commit `fe26c3c`、`f
 
 ### RT-2d capture lifecycle contract and fake engine
 
-status: CURRENT / NOT_COMPLETED
-implementation: NOT_STARTED
+status: IMPLEMENTED / NOT_ACCEPTED
+implementation: IMPLEMENTED / NOT_ACCEPTED
 
-- [ ] app-owned capture lifecycle state/result/request contractを追加する。
-- [ ] single-active-session、bounded duration、stop/cancel/error cleanupを型で固定する。
-- [ ] microphoneへ触れないdeterministic fake capture engineを追加する。
-- [ ] permission denied/restricted/unsupported/busy/timeout/cancel/cleanup failureを分離する。
-- [ ] UI、platform capture plugin、real microphone、raw audio、Backend upload、STTを変更しない。
+- [x] app-owned capture lifecycle state/result/request contractを追加する。
+- [x] single-active-session、bounded duration、stop/cancel/error cleanupを型で固定する。
+- [x] microphoneへ触れないdeterministic fake capture engineを追加する。
+- [x] permission denied/restricted/unsupported/busy/timeout/cancel/cleanup failureを分離する。
+- [x] UI、platform capture plugin、real microphone、raw audio、Backend upload、STTを変更しない。
+
+- [x] permission checkだけを使用し、permission request/settings openを実行しない。
+- [x] resultからraw bytes、local path、platform handleを排除し、opaque fake idだけを返す。
+- [x] RT-2d source/surface gateとfocused testを追加する。
+- [ ] operator環境で`flutter analyze`、focused/full Flutter、Backend regression、`git diff --check`、9-file reviewを通す。
+- [ ] explicit operator approval後にRT-2dをCOMPLETED / ACCEPTEDへ同期する。
+
+RT-2dはIMPLEMENTED / NOT_ACCEPTED。RT-2e real captureはRT-2d acceptanceまでBLOCKED。
