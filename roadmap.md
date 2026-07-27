@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e-c (**CURRENT / NOT_COMPLETED**)
+Current small commit: none (RT-2e-c3b accepted; RT-3 blocked)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,12 +570,12 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-c3b CURRENT / NOT_COMPLETED
-Completed small commit: RT-2e-c3a COMPLETED / ACCEPTED
-Current implementation: RT-2e-c3b NOT_STARTED; explicit physical-Android permission/capture/cleanup evidence
-Next implementation authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
-Real-device evidence: RT-2e-c3b CURRENT / NOT_COMPLETED; NOT_STARTED
+Status: RT-2 COMPLETED / ACCEPTED
+Current small commit: none
+Completed small commit: RT-2e-c3b COMPLETED / ACCEPTED
+Current implementation: no authorized RT-3 implementation; real STT public runtime is not implemented
+Next implementation authorization: blocked-real-stt-not-implemented
+Real-device evidence: RT-2e-c3b COMPLETED / ACCEPTED; marker-only evidence recorded
 
 Goal:
 
@@ -737,20 +737,20 @@ RT-0   COMPLETED / ACCEPTED      Prerequisite, inventory, and public-contract re
 RT-1   COMPLETED / ACCEPTED     DRC realtime state, event, capability, and session model
   RT-1a  COMPLETED / ACCEPTED      Framework v5.2.0 public-contract adoption gate
   RT-1b  COMPLETED / ACCEPTED      Backend realtime model and normalization boundary
-RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
+RT-2   COMPLETED / ACCEPTED      Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED      Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED         App-owned permission contract and fake gateway
   RT-2c  COMPLETED / ACCEPTED          Mobile platform permission wiring without capture
   RT-2d  COMPLETED / ACCEPTED          Capture lifecycle contract/controller and fake engine
-  RT-2e  CURRENT / NOT_COMPLETED         Explicitly guarded bounded microphone capture
+  RT-2e  COMPLETED / ACCEPTED            Explicitly guarded bounded microphone capture
     RT-2e-a  COMPLETED / ACCEPTED            Exact-surface and package-readiness checkpoint
     RT-2e-b  COMPLETED / ACCEPTED              Injectable package adapter/private temporary artifact
-    RT-2e-c  CURRENT / NOT_COMPLETED            Explicit operator real-device capture evidence
+    RT-2e-c  COMPLETED / ACCEPTED               Explicit operator real-device capture evidence
       RT-2e-c1  COMPLETED / ACCEPTED                 Operator-only harness/readiness contract
       RT-2e-c2  COMPLETED / ACCEPTED                 Operator-only harness and fake/widget tests
-      RT-2e-c3  CURRENT / NOT_COMPLETED              Real Android bounded capture and cleanup evidence
+      RT-2e-c3  COMPLETED / ACCEPTED                 Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                    Real Android operator preflight and safe evidence contract
-        RT-2e-c3b  CURRENT / NOT_COMPLETED                 Explicit real Android bounded capture and cleanup evidence
+        RT-2e-c3b  COMPLETED / ACCEPTED                    Explicit real Android bounded capture and cleanup evidence
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -7067,3 +7067,28 @@ compilation, `git diff --check`, 19-file review, and explicit operator approval.
 The Kotlin incremental-cache daemon reported a cross-drive cache error before
 Gradle fallback produced the APK. No app launch, permission request, microphone
 access, or audio capture occurred.
+
+
+### RT-2e-c3b accepted real Android evidence
+
+RT-2e-c3b completed on 2026-07-27 from clean source commit
+`ddae21944ac0e251cd8194bf93982bd5dc7a4ae8`. A physical Android operator run
+used the separate target, compile-time opt-in, in-app acknowledgement, explicit
+permission request, and one 4820 ms acceptance capture. The safe evidence showed
+permission granted, completed capture, microphone/audio true, raw-audio exposure
+false, private artifact registered/discarded true, and cleanup succeeded true.
+Backend, upload, Framework/provider, STT, transcript persistence, and repository
+screenshot capture remained false. The post-run working tree was clean.
+
+The first operator session was a non-acceptance dry run because its duration
+marker was not retained; it is not the accepted evidence record. The later
+acceptance session contained one completed capture and supplied the marker-only
+record. RT-2, RT-2e, RT-2e-c, and RT-2e-c3 are COMPLETED / ACCEPTED. RT-3 stays
+`BLOCKED_REAL_STT_NOT_IMPLEMENTED`; no STT integration is authorized.
+
+Historical pre-acceptance markers retained for checkpoint gate compatibility:
+
+```text
+RT-2e-c3b CURRENT / NOT_COMPLETED
+RT-2e-c3b authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+```

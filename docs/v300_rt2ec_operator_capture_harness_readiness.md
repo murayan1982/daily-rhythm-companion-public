@@ -168,3 +168,23 @@ Backend 116 with the existing warning, `flutter analyze`, full Flutter 171,
 `git diff --check`, exact ten-file review, and explicit operator approval.
 RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under
 `authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`.
+
+
+## RT-2e-c3b acceptance follow-up
+
+RT-2e-c3b is COMPLETED / ACCEPTED from clean source commit
+`ddae21944ac0e251cd8194bf93982bd5dc7a4ae8`. The accepted physical-Android
+operator evidence recorded granted permission, an explicit request, one 4820 ms
+acceptance capture, completed outcome/code, microphone and audio true, raw-audio
+exposure false, private artifact registered and discarded, cleanup succeeded,
+and a clean post-run worktree. Backend, upload, Framework/provider, STT,
+transcript persistence, private path, opaque id, device identifier, raw audio,
+and committed screenshot remained absent.
+
+An earlier non-acceptance session confirmed stop-and-discard but is not used as
+the accepted marker because its duration value was not retained. RT-2e-c,
+RT-2e, and RT-2 are COMPLETED / ACCEPTED. RT-3 remains
+`BLOCKED_REAL_STT_NOT_IMPLEMENTED`.
+
+Historical pre-execution marker retained for checkpoint compatibility:
+`RT-2e-c3b CURRENT / NOT_COMPLETED and NOT_STARTED`.

@@ -9,9 +9,9 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e-c3b (**CURRENT / NOT_COMPLETED**)
-Current implementation: RT-2e-c3b (**NOT_STARTED**)
-Parent evidence scope: RT-2e-c3 (**CURRENT / NOT_COMPLETED**)
+Current small commit: none (RT-2e-c3b accepted)
+Current implementation: RT-2 microphone permission and guarded capture path (**COMPLETED / ACCEPTED**)
+Next realtime phase: RT-3 (**BLOCKED_REAL_STT_NOT_IMPLEMENTED**)
 
 Current phase state:
 
@@ -23,20 +23,21 @@ RT-0  COMPLETED / ACCEPTED
 RT-1  COMPLETED / ACCEPTED
   RT-1a  COMPLETED / ACCEPTED      Framework v5.2.0 mock-safe public-contract adoption gate
   RT-1b  COMPLETED / ACCEPTED      Backend realtime model and normalization boundary
-RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture path
+RT-2  COMPLETED / ACCEPTED          Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED        Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED           App-owned permission contract and fake gateway
   RT-2c  COMPLETED / ACCEPTED            Platform permission wiring without capture
   RT-2d  COMPLETED / ACCEPTED            Capture lifecycle contract/controller and fake engine
-  RT-2e  CURRENT / NOT_COMPLETED           Explicitly guarded bounded microphone capture
+  RT-2e  COMPLETED / ACCEPTED              Explicitly guarded bounded microphone capture
     RT-2e-a  COMPLETED / ACCEPTED              Exact-surface and recorder-package readiness decision
     RT-2e-b  COMPLETED / ACCEPTED                Injectable record adapter and private temporary artifact boundary
-    RT-2e-c  CURRENT / NOT_COMPLETED              Explicit operator real-device capture evidence
+    RT-2e-c  COMPLETED / ACCEPTED                Explicit operator real-device capture evidence
       RT-2e-c1  COMPLETED / ACCEPTED                   Operator-only harness/readiness contract
       RT-2e-c2  COMPLETED / ACCEPTED                   Operator-only harness and fake/widget tests
-      RT-2e-c3  CURRENT / NOT_COMPLETED                Real Android bounded capture and cleanup evidence
+      RT-2e-c3  COMPLETED / ACCEPTED                  Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                      Real Android operator preflight and safe evidence contract
-        RT-2e-c3b  CURRENT / NOT_COMPLETED                   Explicit real Android bounded capture and cleanup evidence
+        RT-2e-c3b  COMPLETED / ACCEPTED                      Explicit real Android bounded capture and cleanup evidence
+RT-3  BLOCKED_REAL_STT_NOT_IMPLEMENTED  Real STT / voice-input integration
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -51,7 +52,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2e CURRENT / NOT_COMPLETED; RT-2e-a, RT-2e-b, RT-2e-c1, RT-2e-c2, and RT-2e-c3a are COMPLETED / ACCEPTED. RT-2e-c3b is CURRENT / NOT_COMPLETED and NOT_STARTED under the explicit real-Android bounded-capture evidence authorization. RT-2e-c3a was docs/test-only; no real permission request, microphone access, audio capture, Backend upload, or STT execution occurred during its acceptance.
+Current v3 phase: RT-2 COMPLETED / ACCEPTED. RT-2e-c3b completed the explicitly opted-in physical-Android bounded-capture evidence at source commit `ddae21944ac0e251cd8194bf93982bd5dc7a4ae8`: permission granted, one 4820 ms acceptance capture, microphone/audio true, raw-audio exposure false, private artifact registered and discarded, cleanup succeeded, Backend/upload/STT false, and the post-run working tree clean. RT-3 remains BLOCKED_REAL_STT_NOT_IMPLEMENTED.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4217,4 +4218,41 @@ Detailed gate:
 ```text
 docs/v300_framework_v520_contract_adoption.md
 scripts/check_v300_framework_v520_contract_adoption.py
+```
+
+
+## v3.0.0 RT-2e-c3b real Android capture evidence
+
+RT-2e-c3b is **COMPLETED / ACCEPTED**. The accepted marker-only evidence was
+observed from the separate operator target on a physical Android device at clean
+source commit `ddae21944ac0e251cd8194bf93982bd5dc7a4ae8`. The acceptance run used the
+compile-time opt-in and in-app acknowledgement, explicitly requested microphone
+permission, completed one bounded 4820 ms capture, and immediately discarded the
+private artifact.
+
+The accepted public-safe result records `permission_status=granted`,
+`capture_outcome=completed`, `technical_code=capture_completed`,
+`microphone_accessed=true`, `audio_captured=true`, `raw_audio_exposed=false`,
+`private_artifact_registered=true`, `private_artifact_discarded=true`, and
+`cleanup_succeeded=true`. Backend was not started; no audio upload, Framework or
+provider call, STT, transcript persistence, private path, opaque id, device
+identifier, raw audio, or repository screenshot was recorded. The post-run
+working tree remained clean.
+
+An earlier operator session confirmed stop-and-discard but did not retain the
+captured-duration marker and is not used as acceptance evidence. The accepted
+marker represents the later session, which contained exactly one completed
+capture. RT-2, RT-2e, RT-2e-c, and RT-2e-c3 are now COMPLETED / ACCEPTED. RT-3
+remains blocked because a real STT public runtime is not implemented.
+
+Historical RT-2e-c2 gate compatibility marker:
+
+```text
+RT-2e-c3 (**CURRENT / NOT_COMPLETED**)
+```
+
+Historical RT-2e-c3a pre-execution marker:
+
+```text
+RT-2e-c3b CURRENT / NOT_COMPLETED
 ```

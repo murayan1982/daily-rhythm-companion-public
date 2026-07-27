@@ -5325,3 +5325,60 @@ v300_rt2ec3a_audio_captured: False
 v300_rt2ec_parent_status: current-pending-rt2ec3b-execution
 v300_rt2ec3b_authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
 ```
+
+
+## v3.0.0 RT-2e-c3b real Android capture evidence check
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_rt2ec_real_android_capture_evidence.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The gate validates the exact eleven-file acceptance surface or a clean tree, the
+accepted source commit ancestry, the unchanged double-opt-in operator runtime
+contract, and the marker-only evidence recorded in
+`docs/v300_rt2ec_real_android_capture_evidence.md`. It does not connect a device,
+request permission, access a microphone, replay audio, resolve private paths,
+upload audio, or execute STT.
+
+Expected output:
+
+```text
+v300_rt2ec_real_android_capture_evidence_status: completed-accepted
+v300_rt2ec3b_source_commit: ddae21944ac0e251cd8194bf93982bd5dc7a4ae8
+v300_rt2ec3b_target_class: physical-android
+v300_rt2ec3b_operator_target_enabled: True
+v300_rt2ec3b_acknowledgement_completed: True
+v300_rt2ec3b_permission_status: granted
+v300_rt2ec3b_permission_request_attempted: True
+v300_rt2ec3b_capture_outcome: completed
+v300_rt2ec3b_technical_code: capture_completed
+v300_rt2ec3b_requested_maximum_duration_milliseconds: 15000
+v300_rt2ec3b_captured_duration_milliseconds: 4820
+v300_rt2ec3b_microphone_accessed: True
+v300_rt2ec3b_audio_captured: True
+v300_rt2ec3b_raw_audio_exposed: False
+v300_rt2ec3b_private_artifact_registered: True
+v300_rt2ec3b_private_artifact_discarded: True
+v300_rt2ec3b_cleanup_succeeded: True
+v300_rt2ec3b_backend_started: False
+v300_rt2ec3b_audio_uploaded: False
+v300_rt2ec3b_stt_executed: False
+v300_rt2ec3b_post_run_working_tree_clean: True
+v300_rt2_status: completed-accepted
+v300_next_phase: blocked-real-stt-not-implemented
+```
+
+RT-2e-c3b is COMPLETED / ACCEPTED. RT-2 is closed as COMPLETED / ACCEPTED.
+No upload or STT is authorized; RT-3 remains BLOCKED_REAL_STT_NOT_IMPLEMENTED.

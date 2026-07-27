@@ -14,8 +14,8 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2e-c3b CURRENT / NOT_COMPLETED
-current implementation step: explicit real Android bounded capture and cleanup evidence
+current small commit: none (RT-2e-c3b COMPLETED / ACCEPTED)
+current implementation step: RT-3 blocked; real STT public runtime is not implemented
 current implementation state: NOT_STARTED
 completed small commit: RT-2e-c3a COMPLETED / ACCEPTED
 strategic target: v3.0.0
@@ -1575,15 +1575,39 @@ authorization: completed-docs-test-only-preflight
 
 ###### RT-2e-c3b explicit real Android bounded capture and cleanup evidence
 
-status: CURRENT / NOT_COMPLETED
-implementation: NOT_STARTED
-authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED; marker-only real Android evidence
+authorization: completed-accepted-explicit-real-android-bounded-capture-evidence
 
-- [ ] clean accepted RT-2e-c3a HEADからphysical Android operator targetを起動する。
-- [ ] permission request attempted=true、permission status=grantedをsafe evidenceで確認する。
-- [ ] 1回のbounded completed captureでduration 1..15000 ms、microphone/audio=true、raw audio exposed=falseを確認する。
-- [ ] private artifact registered/discarded=true、cleanup succeeded=trueを確認する。
-- [ ] Backendを起動せず、upload、Framework/provider、STT、transcript persistenceを実行しない。
-- [ ] raw audio、private path、opaque id、device serial/model、raw screenshot、private operator pathをcommitしない。
+- [x] clean accepted RT-2e-c3a HEAD `ddae21944ac0e251cd8194bf93982bd5dc7a4ae8`からphysical Android operator targetを起動した。
+- [x] permission request attempted=true、permission status=grantedをsafe evidenceで確認した。
+- [x] acceptance sessionの1回のbounded completed captureでduration=4820 ms、microphone/audio=true、raw audio exposed=falseを確認した。
+- [x] private artifact registered/discarded=true、cleanup succeeded=trueを確認した。
+- [x] Backendを起動せず、upload、Framework/provider、STT、transcript persistenceを実行しなかった。
+- [x] raw audio、private path、opaque id、device serial/model、raw screenshot、private operator pathをcommitしなかった。
+- [x] `flutter run`終了後のworking treeがcleanで、source commitが変わっていないことを確認した。
+
+最初のoperator sessionはduration markerを保持しなかったためacceptance evidenceには使用しない。後続のacceptance sessionは1回のcompleted captureだけを含み、marker-only evidenceを取得した。RT-2、RT-2e、RT-2e-c、RT-2e-c3はCOMPLETED / ACCEPTED。RT-3は`BLOCKED_REAL_STT_NOT_IMPLEMENTED`のまま。
 
 RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-bは2026-07-27にCOMPLETED / ACCEPTED。operator `flutter pub get`、generated plugin review、analyzer cleanup、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件（既存warning 1件）、RT-2e-b gate、Android debug APK build、`git diff --check`、19-file review、explicit operator approvalが通過した。Kotlin incremental-cache daemonはcross-drive cache errorを報告したが、Gradle fallback後にAPK生成は成功した。real permission request、microphone access、audio capture、public raw path/bytes exposure、upload、STT executionは行っていない。RT-2e-c1はcompileall、RT-2e-c1 gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 161件、`git diff --check`、exact 8-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。RT-2e-c2はcompileall、RT-2e-c2 gate、Backend 116件（既存warning 1件）、`flutter analyze`、focused Flutter 10件、full Flutter 171件、`git diff --check`、exact 12-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。separate entrypoint、compile-time flag、in-app acknowledgement後のlazy dependency construction、explicit permission/capture actions、15-second bound、opaque-id immediate discard、safe evidence allowlist、fake/widget testsを追加した。default app、dependencies、platform、Backendは変更せず、real permission request、microphone access、audio capture、upload、STT executionは行っていない。RT-2e-c3aはcompileall、RT-2e-c3a gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 171件、`git diff --check`、exact ten-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。docs/test-onlyであり、real permission request、microphone access、audio captureは行っていない。RT-2e-c3bは`authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only`でCURRENT / NOT_COMPLETED、NOT_STARTED。
+
+
+RT-2e-c3b acceptance evidence summary:
+
+```text
+source_commit: ddae21944ac0e251cd8194bf93982bd5dc7a4ae8
+target_class: physical-android
+permission_status: granted
+permission_request_attempted: true
+capture_outcome: completed
+captured_duration_milliseconds: 4820
+microphone_accessed: true
+audio_captured: true
+raw_audio_exposed: false
+private_artifact_discarded: true
+cleanup_succeeded: true
+backend_started: false
+audio_uploaded: false
+stt_executed: false
+post_run_working_tree_clean: true
+```

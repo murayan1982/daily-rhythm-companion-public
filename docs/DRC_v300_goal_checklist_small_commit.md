@@ -6,12 +6,12 @@ Updated: 2026-07-27
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-c3b CURRENT / NOT_COMPLETED
-Current implementation step: explicit physical-Android permission/capture/cleanup evidence
-Current implementation state: NOT_STARTED
-Completed small commit: RT-2e-c3a COMPLETED / ACCEPTED
-Next implementation action: run the accepted operator target only after clean-tree/device preflight; do not upload or execute STT
+Current parent phase: RT-2 COMPLETED / ACCEPTED
+Current small commit: none
+Current implementation step: RT-3 blocked; real STT public runtime is not implemented
+Current implementation state: BLOCKED_REAL_STT_NOT_IMPLEMENTED
+Completed small commit: RT-2e-c3b COMPLETED / ACCEPTED
+Next implementation action: no RT-3 implementation until an accepted real STT public boundary exists
 ```
 
 ## Source of truth
@@ -957,9 +957,9 @@ and explicit operator approval.
 
 ##### RT-2e-c3b explicit real Android bounded capture and cleanup evidence
 
-State: CURRENT / NOT_COMPLETED
-Implementation: NOT_STARTED
-Authorization: authorized-explicit-opt-in-real-android-bounded-capture-and-cleanup-evidence-only
+State: COMPLETED / ACCEPTED
+Implementation: COMPLETED / ACCEPTED; marker-only real Android evidence
+Authorization: completed-accepted-explicit-real-android-bounded-capture-evidence
 
 Run the explicit operator target from the clean accepted RT-2e-c3a commit on
 one physical Android device. Accept only granted permission,
@@ -967,3 +967,28 @@ request attempted, completed capture, duration 1..15000 ms, microphone/audio
 true, raw audio exposed false, private artifact registered/discarded true, and
 cleanup succeeded true. Keep all private evidence and audio outside commits. No
 Backend upload or STT execution.
+
+
+RT-2e-c3b accepted marker summary:
+
+```text
+source commit: ddae21944ac0e251cd8194bf93982bd5dc7a4ae8
+physical Android: true
+operator target enabled: true
+acknowledgement completed: true
+permission granted/request attempted: true/true
+capture completed: true
+requested/captured duration ms: 15000/4820
+microphone/audio: true/true
+raw audio exposed: false
+private artifact registered/discarded: true/true
+cleanup succeeded: true
+Backend/upload/STT: false/false/false
+private path/opaque id/device identifier/raw audio/raw screenshot committed: false
+post-run working tree clean: true
+```
+
+An earlier non-acceptance dry run confirmed cleanup but did not retain the
+duration marker. The accepted marker is from the later single-capture acceptance
+session. RT-2 is now COMPLETED / ACCEPTED. RT-3 remains
+`BLOCKED_REAL_STT_NOT_IMPLEMENTED`.
