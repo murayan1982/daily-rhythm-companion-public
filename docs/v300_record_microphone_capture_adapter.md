@@ -5,7 +5,7 @@ Date: 2026-07-27
 Parent small commit: RT-2e CURRENT / NOT_COMPLETED
 Current small commit: RT-2e-b COMPLETED / ACCEPTED
 Previous small commit: RT-2e-a COMPLETED / ACCEPTED
-Next small commit: RT-2e-c CURRENT / NOT_COMPLETED; NOT_STARTED
+Next small commit: RT-2e-c2 CURRENT / NOT_COMPLETED; NOT_STARTED
 
 ## Purpose
 
@@ -155,8 +155,9 @@ three analyzer warnings were converted into explicit failure-path tests. Backend
 116 passed with one existing warning. Android debug APK compilation succeeded;
 the Kotlin incremental-cache daemon reported a cross-drive cache error before
 Gradle fallback produced the APK. No app launch, permission request, microphone
-access, or audio capture occurred. RT-2e-c is CURRENT / NOT_COMPLETED and
-NOT_STARTED and requires separate explicit operator action.
+access, or audio capture occurred. RT-2e-c1 is COMPLETED / ACCEPTED and was
+docs/test-only. RT-2e-c2 is CURRENT / NOT_COMPLETED and NOT_STARTED under its
+fake/widget-only authorization. RT-2e-c3 remains blocked pending RT-2e-c2 acceptance.
 
 ## Expected gate
 
@@ -176,3 +177,30 @@ v300_rt2eb_raw_audio_exposed: False
 v300_rt2e_parent_status: current-pending-rt2ec-implementation
 v300_rt2ec_authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
 ```
+
+## RT-2e-c1 operator harness readiness decision
+
+The accepted RT-2e-b adapter remains unchanged. RT-2e-c1 records the next
+operator-only execution boundary before adding Flutter harness code:
+
+```text
+entrypoint: lib/main_rt2ec_operator.dart only
+compile-time opt-in: --dart-define=DRC_RT2EC_OPERATOR=true
+in-app opt-in: explicit acknowledgement required
+permission: check/request are separate user actions
+capture: granted-only, single-active, maximum 15 seconds
+format: WAV, 16 kHz, mono
+completion cleanup: discard private artifact immediately by opaque id
+safe evidence: status/code/booleans/duration/cleanup only
+default app wiring: unchanged
+Backend upload / Framework / provider / STT: forbidden
+```
+
+RT-2e-c1 was docs/test-only and is COMPLETED / ACCEPTED. No operator entrypoint, runtime harness, dependency,
+platform declaration, generated plugin change, permission request, microphone
+access, audio capture, or private artifact is added or executed in this
+checkpoint. Acceptance passed with compileall, the RT-2e-c1 gate,
+Backend 116 with one existing warning, `flutter analyze`, full Flutter 161,
+`git diff --check`, exact eight-file review, and explicit operator approval.
+RT-2e-c2 is authorized for the separate operator harness and fake/widget tests
+only.

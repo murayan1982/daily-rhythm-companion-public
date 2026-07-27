@@ -5161,3 +5161,55 @@ v300_rt2eb_raw_audio_exposed: False
 v300_rt2e_parent_status: current-pending-rt2ec-implementation
 v300_rt2ec_authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
 ```
+
+## v3.0.0 RT-2e-c1 operator capture harness readiness check
+
+Detailed contract: `docs/v300_rt2ec_operator_capture_harness_readiness.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_rt2ec_operator_capture_harness_readiness.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+RT-2e-c1 is `COMPLETED / ACCEPTED` and was docs/test-only. It rereads the
+accepted RT-2e-b source and fixes a later operator harness contract: separate
+entrypoint, compile-time and in-app double opt-in, explicit permission and
+capture actions, 15-second bound, automatic opaque-id cleanup, safe evidence
+allowlist, unchanged default app, and no upload/STT. This checkpoint does not
+add or run the harness and does not request permission, access a microphone, or
+capture audio. RT-2e-c2 is CURRENT / NOT_COMPLETED and NOT_STARTED with
+`authorized-separate-operator-harness-and-fake-widget-tests-only`; RT-2e-c3
+remains blocked pending RT-2e-c2 acceptance.
+
+Expected output:
+
+```text
+v300_rt2ec_operator_capture_harness_readiness_status: completed-accepted
+v300_rt2ec1_exact_current_surface_inspected: True
+v300_rt2ec1_separate_operator_entrypoint_planned: True
+v300_rt2ec1_compile_time_opt_in_required: True
+v300_rt2ec1_in_app_acknowledgement_required: True
+v300_rt2ec1_permission_actions_explicit_only: True
+v300_rt2ec1_maximum_capture_seconds: 15
+v300_rt2ec1_private_artifact_auto_discard_required: True
+v300_rt2ec1_safe_evidence_allowlist_required: True
+v300_rt2ec1_default_app_wiring_changed: False
+v300_rt2ec1_flutter_runtime_changed: False
+v300_rt2ec1_permission_request_executed: False
+v300_rt2ec1_microphone_accessed: False
+v300_rt2ec1_audio_captured: False
+v300_rt2ec_parent_status: current-pending-rt2ec2-implementation
+v300_rt2ec2_authorization: authorized-separate-operator-harness-and-fake-widget-tests-only
+v300_rt2ec3_authorization: blocked-pending-rt2ec2-acceptance
+```

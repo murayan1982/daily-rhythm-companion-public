@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-c CURRENT / NOT_COMPLETED
-Current implementation step: explicit opt-in real-device bounded capture evidence only
+Current small commit: RT-2e-c2 CURRENT / NOT_COMPLETED
+Current implementation step: separate operator harness and fake/widget tests only
 Current implementation state: NOT_STARTED
-Completed small commit: RT-2e-b COMPLETED / ACCEPTED
-Next implementation action: design the explicit opt-in operator-only real-device capture evidence flow; do not upload or run STT
+Completed small commit: RT-2e-c1 COMPLETED / ACCEPTED
+Next implementation action: add the separate double-opt-in operator harness with fake/widget tests; do not execute real permission or capture
 ```
 
 ## Source of truth
@@ -873,11 +873,53 @@ incremental-cache daemon reported a cross-drive cache error before Gradle
 fallback produced the APK. No app launch, permission request, microphone access,
 or audio capture occurred.
 
-### RT-2e-c planned operator evidence
+### RT-2e-c explicit operator real-device capture evidence
+
+State: CURRENT / NOT_COMPLETED
+Authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
+
+#### RT-2e-c1 operator-only harness/readiness contract
+
+State: COMPLETED / ACCEPTED
+Implementation: COMPLETED / ACCEPTED; docs/test-only
+
+The accepted `5a7f814` source surface was reread before implementation. The
+later operator harness must use a separate `lib/main_rt2ec_operator.dart`
+entrypoint, require `--dart-define=DRC_RT2EC_OPERATOR=true`, and require an
+in-app acknowledgement. The normal `lib/main.dart` and `HomeScreen` remain
+unchanged.
+
+Permission check, permission request, start, stop, and cancel are separate
+explicit user actions. Start requires granted permission. Capture remains
+single-active and is capped at 15 seconds using WAV 16 kHz mono file mode. Stop
+must immediately discard the private artifact through its opaque id. Safe
+evidence is allowlisted to status/code/booleans/duration/cleanup and must not
+contain private paths, raw bytes, audio content, transcript content, Backend
+payloads, Framework/provider payloads, or STT results.
+
+This checkpoint changed docs and a source/surface gate only. It added no Flutter
+runtime, dependency, generated plugin, platform, UI, or Backend change and did
+not execute permission request, microphone access, audio capture, upload, or
+STT. Acceptance followed compileall, the RT-2e-c1 gate, Backend 116 with one
+existing warning, `flutter analyze`, full Flutter 161, `git diff --check`, exact
+eight-file review, and explicit operator approval.
+
+#### RT-2e-c2 operator-only harness and fake/widget tests
 
 State: CURRENT / NOT_COMPLETED
 Implementation: NOT_STARTED
-Authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
+Authorization: authorized-separate-operator-harness-and-fake-widget-tests-only
 
-Explicit opt-in, bounded real-device capture and cleanup evidence. No upload or
-STT execution.
+After RT-2e-c1 acceptance, add the separate operator entrypoint, double opt-in
+harness, and fake/widget tests. This stage still performs no real permission
+request, microphone access, or audio capture.
+
+#### RT-2e-c3 real Android bounded capture and cleanup evidence
+
+State: BLOCKED
+Implementation: NOT_STARTED
+Authorization: blocked-pending-rt2ec2-acceptance
+
+After RT-2e-c2 acceptance, perform an explicit real Android
+permission/capture/cleanup run. Private evidence, paths, and audio stay outside
+commits. No upload or STT execution.

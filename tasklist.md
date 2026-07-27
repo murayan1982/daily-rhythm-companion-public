@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2e-c CURRENT / NOT_COMPLETED
-current implementation step: explicit opt-in real-device bounded capture evidence only
+current small commit: RT-2e-c2 CURRENT / NOT_COMPLETED
+current implementation step: separate operator harness and fake/widget tests only
 current implementation state: NOT_STARTED
-completed small commit: RT-2e-b COMPLETED / ACCEPTED
+completed small commit: RT-2e-c1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1525,9 +1525,42 @@ implementation: COMPLETED / ACCEPTED
 #### RT-2e-c explicit operator real-device capture evidence
 
 status: CURRENT / NOT_COMPLETED
+
+##### RT-2e-c1 operator-only harness/readiness contract
+
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED; docs/test-only
+
+- [x] accepted `5a7f814`のstartup、HomeScreen、permission、capture、record adapter、test surfaceをexact archiveから再確認する。
+- [x] normal `main.dart`/`HomeScreen`を変更せず、separate `main_rt2ec_operator.dart`だけを後続harness entrypointにする。
+- [x] `--dart-define=DRC_RT2EC_OPERATOR=true`とin-app acknowledgementの二重opt-inを必須にする。
+- [x] permission check/request/start/stop/cancelを自動実行せず、別々のexplicit user actionにする。
+- [x] granted後のみstart可能、maximum 15 seconds、WAV 16 kHz mono、single active captureを固定する。
+- [x] stop完了後はopaque id経由でprivate artifactを即時discardし、path/raw bytes/audio contentをUI/log/evidenceへ出さない。
+- [x] safe evidenceをstatus/code/booleans/duration/cleanupだけにallowlistし、Backend upload、Framework/provider、STTを禁止する。
+- [x] docs/test-only source/surface gateを追加し、runtime/dependency/platform/UI/Backend変更とreal executionがないことを検証する。
+- [x] operator verificationとexplicit approval後にRT-2e-c1をCOMPLETED / ACCEPTEDへ同期する。
+
+##### RT-2e-c2 operator-only harness and fake/widget tests
+
+status: CURRENT / NOT_COMPLETED
+implementation: NOT_STARTED
+authorization: authorized-separate-operator-harness-and-fake-widget-tests-only
+
+- [ ] RT-2e-c1 acceptance後にseparate operator entrypointとdouble opt-in harnessを追加する。
+- [ ] production-capable dependenciesはcompile-time flagとin-app acknowledgement後だけ構築する。
+- [ ] permission/check/request/start/stop/cancel、15-second bound、auto-discard、safe evidenceをfake/widget testsで検証する。
+- [ ] default main/HomeScreen、Backend、platform declarations、dependenciesを変更しない。
+- [ ] real permission request、microphone access、audio captureは実行しない。
+
+##### RT-2e-c3 real Android bounded capture and cleanup evidence
+
+status: BLOCKED
 implementation: NOT_STARTED
 
+- [ ] RT-2e-c2 acceptance後にexplicit operator targetをreal Android deviceで起動する。
 - [ ] explicit opt-in operator command/flow以外ではpermission requestやmicrophone openを実行しない。
-- [ ] bounded capture、cleanup、no upload/no STTをreal Android deviceで検証する。
+- [ ] bounded capture、automatic private-artifact cleanup、no upload/no STTをreal Android deviceで検証する。
+- [ ] raw audio、private path、transcript、provider payload、private operator pathをcommitしない。
 
-RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-bは2026-07-27にCOMPLETED / ACCEPTED。operator `flutter pub get`、generated plugin review、analyzer cleanup、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件（既存warning 1件）、RT-2e-b gate、Android debug APK build、`git diff --check`、19-file review、explicit operator approvalが通過した。Kotlin incremental-cache daemonはcross-drive cache errorを報告したが、Gradle fallback後にAPK生成は成功した。real permission request、microphone access、audio capture、public raw path/bytes exposure、upload、STT executionは行っていない。RT-2e-cはCURRENT / NOT_COMPLETED、NOT_STARTEDで、`authorized-explicit-opt-in-real-device-bounded-capture-evidence-only`。
+RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-bは2026-07-27にCOMPLETED / ACCEPTED。operator `flutter pub get`、generated plugin review、analyzer cleanup、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件（既存warning 1件）、RT-2e-b gate、Android debug APK build、`git diff --check`、19-file review、explicit operator approvalが通過した。Kotlin incremental-cache daemonはcross-drive cache errorを報告したが、Gradle fallback後にAPK生成は成功した。real permission request、microphone access、audio capture、public raw path/bytes exposure、upload、STT executionは行っていない。RT-2e-c1はcompileall、RT-2e-c1 gate、Backend 116件（既存warning 1件）、`flutter analyze`、full Flutter 161件、`git diff --check`、exact 8-file review、explicit operator approvalの通過後にCOMPLETED / ACCEPTEDとなった。RT-2e-c2は`authorized-separate-operator-harness-and-fake-widget-tests-only`でCURRENT / NOT_COMPLETED、NOT_STARTED。RT-2e-c3は`blocked-pending-rt2ec2-acceptance`。
