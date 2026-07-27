@@ -3,9 +3,10 @@
 Date: 2026-07-26
 
 Parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2c CURRENT / NOT_COMPLETED
+Current small commit: RT-2c IMPLEMENTED / NOT_ACCEPTED
 Implementation state: COMPLETED / ACCEPTED
-RT-2c authorization: AUTHORIZED for platform permission wiring without capture only; NOT_STARTED
+RT-2c authorization: AUTHORIZED for platform permission wiring without capture only
+RT-2c implementation: mobile gateway and Android/iOS declarations added; acceptance pending
 
 ## Purpose
 
@@ -173,3 +174,6 @@ v300_rt2c_authorization: authorized-platform-permission-wiring-without-capture-o
 ```
 
 Operator evidence: compileall passed; RT-2b gate passed after portable protected-surface fixes; focused Flutter 9 passed; full Flutter 112 passed; Backend 116 passed with one existing Starlette deprecation warning; `git diff --check` passed; changed files matched the declared nine-file surface; explicit approval was given.
+
+
+RT-2c follow-up state: IMPLEMENTED / NOT_ACCEPTED. The RT-2b app-owned contract remains unchanged; the new plugin adapter and the generated Windows plugin-registration review are documented separately in `docs/v300_microphone_platform_permission_wiring.md`.

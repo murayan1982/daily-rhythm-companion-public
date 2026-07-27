@@ -14,9 +14,9 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2c CURRENT / NOT_COMPLETED
-current implementation step: add explicit user-triggered platform permission wiring without capture
-current implementation state: NOT_STARTED
+current small commit: RT-2c IMPLEMENTED / NOT_ACCEPTED
+current implementation step: mobile platform permission gateway and Android/iOS declarations without capture
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed small commit: RT-2b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -44,6 +44,8 @@ docs/v300_microphone_permission_capture_inventory.md
 scripts/check_v300_microphone_permission_capture_inventory.py
 docs/v300_microphone_permission_contract.md
 scripts/check_v300_microphone_permission_contract.py
+docs/v300_microphone_platform_permission_wiring.md
+scripts/check_v300_microphone_platform_permission_wiring.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1447,10 +1449,24 @@ RT-2bは2026-07-26にCOMPLETED / ACCEPTED。compileall、RT-2b gate、focused Fl
 
 ### RT-2c platform permission wiring without capture
 
-status: CURRENT / NOT_COMPLETED
-implementation: NOT_STARTED
+status: IMPLEMENTED / NOT_ACCEPTED
+implementation: IMPLEMENTED / NOT_ACCEPTED
 
-- [ ] explicit user actionからのみplatform permission requestを開始する。
-- [ ] permission dependencyとAndroid/iOS declarationを最小追加する。
-- [ ] app-owned gateway interfaceの実装として閉じ込める。
-- [ ] microphone open、audio capture、raw audio、Backend upload、Framework/provider/STTを開始しない。
+- [x] `permission_handler` 12.0.3を`pubspec.yaml`へpinする。
+- [x] operator環境の`flutter pub get`で`pubspec.lock`を解決する。
+- [x] `permission_handler_windows`のgenerated registrant/CMake更新がplugin登録のみであることを確認する。
+- [x] Android main manifestへ`RECORD_AUDIO`を1件だけ追加する。
+- [x] iOS `Info.plist`へ日本語の`NSMicrophoneUsageDescription`を追加する。
+- [x] app-owned gateway interfaceのAndroid/iOS実装として閉じ込める。
+- [x] web/desktopはpluginを呼ばずtyped unsupportedへfail closedする。
+- [x] denied/granted/restricted/permanently-deniedをDRC contractへ正規化する。
+- [x] microphoneでは想定外のlimited/provisionalをfailedへ閉じる。
+- [x] MissingPlugin/Unsupported/generic errorからraw errorを公開しない。
+- [x] fake driver focused testsを追加し、real OS permission dialogを呼ばない。
+- [x] startup、`HomeScreen`、voice-input UIへgatewayを接続しない。
+- [x] microphone open、audio capture、raw audio、Backend upload、Framework/provider/STTを開始しない。
+- [x] operator環境でfocused Flutter 12件、full Flutter 124件、Backend 116件、Android debug APK buildを通す。
+- [ ] Windows generated plugin filesを許可・検証する修正版RT-2c gateと16-file diff reviewを通す。
+- [ ] explicit approval後にRT-2cをCOMPLETED / ACCEPTEDへ同期する。
+
+RT-2cは実装済みだが未受け入れ。permission requestはexplicit user actionから呼ぶ将来UIまで実行されず、RT-2d capture lifecycle/fake engineは`blocked-pending-rt2c-acceptance`。

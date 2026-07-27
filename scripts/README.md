@@ -4923,4 +4923,66 @@ v300_rt2_parent_status: current-pending-rt2c-implementation
 v300_rt2c_authorization: authorized-platform-permission-wiring-without-capture-only
 ```
 
-RT-2b was accepted on 2026-07-26 after compileall, the RT-2b gate, focused Flutter 9, full Flutter 112, Backend 116 with one existing warning, `git diff --check`, nine-file review, the portable protected-surface gate fixes, and explicit operator approval passed. RT-2c is CURRENT / NOT_COMPLETED and NOT_STARTED.
+RT-2b was accepted on 2026-07-26 after compileall, the RT-2b gate, focused Flutter 9, full Flutter 112, Backend 116 with one existing warning, `git diff --check`, nine-file review, the portable protected-surface gate fixes, and explicit operator approval passed. RT-2c is now IMPLEMENTED / NOT_ACCEPTED; operator verification remains pending.
+
+
+## v3.0.0 RT-2c microphone platform permission wiring check
+
+Detailed contract: `docs/v300_microphone_platform_permission_wiring.md`.
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter pub get
+flutter test test/permission_handler_microphone_permission_gateway_test.dart
+flutter test
+flutter build apk --debug
+cd ..
+
+.\.venv\Scripts\python.exe scripts\check_v300_microphone_platform_permission_wiring.py
+
+git diff --check
+git status --short
+```
+
+Current implementation state: `IMPLEMENTED / NOT_ACCEPTED`.
+
+RT-2c pins `permission_handler` 12.0.3, adds an Android/iOS-only adapter for the
+existing app-owned permission gateway, declares Android `RECORD_AUDIO`, and adds
+the iOS microphone usage description. The gateway is not referenced by startup
+or `HomeScreen`, and focused tests inject a fake driver. No permission dialog,
+microphone access, capture, raw audio, upload, Framework/provider call, or STT is
+executed by these tests.
+
+Expected pre-acceptance output:
+
+```text
+v300_microphone_platform_permission_wiring_status: implemented-not-accepted
+v300_rt2c_permission_dependency_added: True
+v300_rt2c_lock_resolved: True
+v300_rt2c_gateway_added: True
+v300_rt2c_android_record_audio_added: True
+v300_rt2c_ios_microphone_usage_added: True
+v300_rt2c_windows_generated_registration_added: True
+v300_rt2c_ui_changed: False
+v300_rt2c_backend_changed: False
+v300_rt2c_permission_request_executed: False
+v300_rt2c_microphone_accessed: False
+v300_rt2c_audio_captured: False
+v300_rt2_parent_status: current-pending-rt2c-acceptance
+v300_rt2d_authorization: blocked-pending-rt2c-acceptance
+```
+
+`flutter pub get` modifies `app/pubspec.lock` and, because the resolved package
+includes `permission_handler_windows`, also regenerates
+`app/windows/flutter/generated_plugin_registrant.cc` and
+`app/windows/flutter/generated_plugins.cmake`. The gate allows those two generated
+files only when each contains exactly one expected permission-handler registration
+marker. Include all three generated/resolved files in the 16-file RT-2c review and
+the eventual acceptance commit. The Android APK build verifies native plugin
+compilation without requesting the permission. iOS build execution remains
+unavailable on Windows and is not claimed.

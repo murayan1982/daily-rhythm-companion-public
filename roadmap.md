@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: RT-2c (**IMPLEMENTED / NOT_ACCEPTED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,8 +571,9 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2c CURRENT / NOT_COMPLETED; NOT_STARTED
+Current small commit: RT-2c IMPLEMENTED / NOT_ACCEPTED
 Completed small commit: RT-2b COMPLETED / ACCEPTED
+Current implementation: RT-2c mobile permission adapter/declarations; acceptance pending
 
 Goal:
 
@@ -737,7 +738,7 @@ RT-1   COMPLETED / ACCEPTED     DRC realtime state, event, capability, and sessi
 RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED      Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED         App-owned permission contract and fake gateway
-  RT-2c  CURRENT / NOT_COMPLETED     Platform permission wiring without capture; NOT_STARTED
+  RT-2c  IMPLEMENTED / NOT_ACCEPTED    Mobile platform permission wiring without capture; acceptance pending
   RT-2d  BLOCKED                   Capture lifecycle contract and fake engine
   RT-2e  BLOCKED                   Explicitly guarded bounded microphone capture
 RT-3   BLOCKED                   Real STT / voice-input integration
@@ -763,8 +764,8 @@ RT-2a  Inventory the current Flutter/platform surface and freeze the safety cont
        Docs/test-only; no dependency, permission, microphone, capture, or runtime change.
 RT-2b  Add DRC-owned permission states, result models, gateway interface, and fake gateway.
        No platform plugin, manifest permission, or microphone access.
-RT-2c  Wire explicit user-triggered platform permission requests and declarations.
-       No audio capture, STT call, upload, or persistence.
+RT-2c  Add mobile platform permission adapter and Android/iOS declarations.
+       Do not invoke from startup/UI; no audio capture, STT call, upload, or persistence.
 RT-2d  Add capture lifecycle models/controller and a fake capture engine.
        Enforce idle/requesting/ready/capturing/stopping/completed/denied/error cleanup states.
 RT-2e  Add an explicitly enabled bounded real capture adapter with hard duration and cleanup.
@@ -775,6 +776,25 @@ Cross-platform behavior must return typed unsupported/unavailable states rather 
 silently touching a microphone. Permission denial, permanent denial, restriction,
 unsupported platform, busy capture, timeout, cancellation, and cleanup failure remain
 distinct. Always-on/background recording is excluded.
+
+RT-2c implementation checkpoint:
+
+```text
+permission_handler: 12.0.3 pinned
+Android RECORD_AUDIO: declared once
+iOS NSMicrophoneUsageDescription: declared with user-facing Japanese purpose
+Windows generated plugin registration: resolved by flutter pub get and reviewed
+DRC-owned permission_handler gateway: added
+supported gateway platforms: Android / iOS only
+web/desktop gateway behavior: typed unsupported without plugin call
+startup/HomeScreen invocation: absent
+permission request execution: false
+microphone access: false
+audio capture/persistence/upload: false
+Backend/Framework/provider/STT execution: false
+status: IMPLEMENTED / NOT_ACCEPTED
+RT-2d authorization: BLOCKED pending RT-2c acceptance
+```
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit
 `6494da306015c4f714f869b43e773ba51a2478a2`. The released root package exports
@@ -6895,4 +6915,4 @@ persistence, Backend change, Framework import, provider call, or STT execution.
 Acceptance state: `COMPLETED / ACCEPTED` after compileall, the RT-2b gate,
 focused Flutter 9, full Flutter 112, Backend 116 with one existing warning,
 `git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
-RT-2c is CURRENT / NOT_COMPLETED, authorized for platform permission wiring without capture, and NOT_STARTED.
+RT-2c is IMPLEMENTED / NOT_ACCEPTED; operator dependency resolution, tests, Android build evidence, diff review, and explicit approval remain pending.

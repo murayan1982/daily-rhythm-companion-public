@@ -9,7 +9,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2c (**CURRENT / NOT_COMPLETED; NOT_STARTED**)
+Current small commit: RT-2c (**IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -24,8 +24,8 @@ RT-1  COMPLETED / ACCEPTED
 RT-2  CURRENT / NOT_COMPLETED      Microphone permission and guarded capture path
   RT-2a  COMPLETED / ACCEPTED        Permission/capture inventory and small-commit split
   RT-2b  COMPLETED / ACCEPTED           App-owned permission contract and fake gateway
-  RT-2c  CURRENT / NOT_COMPLETED       Platform permission wiring without capture
-          NOT_STARTED
+  RT-2c  IMPLEMENTED / NOT_ACCEPTED      Platform permission wiring without capture
+          acceptance pending
   RT-2d  BLOCKED                     Capture lifecycle contract and fake engine
   RT-2e  BLOCKED                     Explicitly guarded bounded microphone capture
 T-1  COMPLETED / ACCEPTED
@@ -42,7 +42,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-2c CURRENT / NOT_COMPLETED; platform permission wiring NOT_STARTED; microphone access, capture, and STT remain blocked
+Current v3 phase: RT-2c IMPLEMENTED / NOT_ACCEPTED; mobile permission wiring added; permission request execution, microphone access, capture, and STT remain blocked
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -81,7 +81,24 @@ manifest declaration, MethodChannel, UI integration, Backend change, Framework
 import, provider call, or STT execution. Acceptance state: **COMPLETED / ACCEPTED** after compileall,
 the RT-2b gate, focused Flutter 9, full Flutter 112, Backend 116,
 `git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
-RT-2c is now authorized for platform permission wiring without capture and remains NOT_STARTED.
+RT-2c was implemented as a mobile-only permission adapter checkpoint and is **IMPLEMENTED / NOT_ACCEPTED**. Acceptance remains pending operator verification.
+
+## v3.0.0 RT-2c microphone platform permission wiring
+
+RT-2c pins `permission_handler` 12.0.3, adds an Android/iOS-only implementation
+of the app-owned permission gateway, declares Android `RECORD_AUDIO`, and adds the
+iOS `NSMicrophoneUsageDescription` string. `flutter pub get` also resolves the
+transitive Windows implementation and updates Flutter's generated Windows plugin
+registrant/CMake list; those generated entries are reviewed but the DRC gateway
+still fails closed before calling the plugin on desktop. The gateway maps plugin
+states and errors into the existing DRC-owned result contract.
+
+No startup or `HomeScreen` wiring calls the gateway. Tests use an injected fake
+driver, so no operating-system prompt is shown. This checkpoint does not open a
+microphone, capture or persist audio, upload audio, call Backend/Framework/provider
+runtime, or run STT. Acceptance state: **IMPLEMENTED / NOT_ACCEPTED** pending
+`flutter pub get`, focused/full Flutter tests, Backend tests, Android debug APK
+build, diff review, and explicit operator approval.
 
 ## Current release and development status
 
