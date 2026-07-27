@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-2e-b (**CURRENT / NOT_COMPLETED**)
+Current small commit: RT-2e-c (**CURRENT / NOT_COMPLETED**)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,9 +571,9 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-b CURRENT / NOT_COMPLETED
-Completed small commit: RT-2e-a COMPLETED / ACCEPTED
-Current implementation: RT-2e-b NOT_STARTED; injectable recorder adapter and private temporary artifact boundary
+Current small commit: RT-2e-c CURRENT / NOT_COMPLETED
+Completed small commit: RT-2e-b COMPLETED / ACCEPTED
+Current implementation: RT-2e-c NOT_STARTED; explicit opt-in real-device bounded capture evidence only
 
 Goal:
 
@@ -742,8 +742,8 @@ RT-2   CURRENT / NOT_COMPLETED   Microphone permission and guarded capture path
   RT-2d  COMPLETED / ACCEPTED          Capture lifecycle contract/controller and fake engine
   RT-2e  CURRENT / NOT_COMPLETED         Explicitly guarded bounded microphone capture
     RT-2e-a  COMPLETED / ACCEPTED            Exact-surface and package-readiness checkpoint
-    RT-2e-b  CURRENT / NOT_COMPLETED          Injectable package adapter/private temporary artifact
-    RT-2e-c  BLOCKED                          Explicit operator real-device capture evidence
+    RT-2e-b  COMPLETED / ACCEPTED              Injectable package adapter/private temporary artifact
+    RT-2e-c  CURRENT / NOT_COMPLETED            Explicit operator real-device capture evidence
 RT-3   BLOCKED                   Real STT / voice-input integration
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -800,8 +800,8 @@ RT-2d authorization: COMPLETED / ACCEPTED
 RT-2d implementation: COMPLETED / ACCEPTED
 RT-2e authorization: authorized-explicit-opt-in-bounded-real-capture-adapter-only
 RT-2e-a implementation: COMPLETED / ACCEPTED; docs/test-only
-RT-2e-b authorization: authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only
-RT-2e-c authorization: blocked-pending-rt2eb-acceptance
+RT-2e-b implementation: COMPLETED / ACCEPTED; fake-only adapter boundary
+RT-2e-c authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
 ```
 
 RT-0b inspected AI Character Framework v5.0.0 public source commit
@@ -6987,7 +6987,7 @@ RT-2e split:
 
 ```text
 RT-2e-a  readiness/package decision; docs/test-only
-RT-2e-b  add pinned dependency, injectable adapter, private temporary artifact cleanup; no real execution
+RT-2e-b  pinned dependency, injectable adapter, private temporary artifact cleanup implemented; no real execution
 RT-2e-c  explicit operator real-device capture evidence and acceptance
 ```
 
@@ -6997,4 +6997,34 @@ or invoke Backend/Framework/provider/STT runtime. Acceptance completed on
 2026-07-27 after compileall, the RT-2e-a gate, `flutter analyze` with no
 issues, full Flutter 142, Backend 116 with one existing warning,
 `git diff --check`, seven-file review, and explicit operator approval passed.
-RT-2e-b is CURRENT / NOT_COMPLETED and NOT_STARTED.
+RT-2e-b is COMPLETED / ACCEPTED after `flutter pub get`, generated plugin review, analyzer cleanup, focused Flutter 18/18, full Flutter 161, Backend 116 with one existing warning, the RT-2e-b gate, Android debug APK compilation, `git diff --check`, 19-file review, and explicit operator approval. The Kotlin incremental-cache daemon reported a cross-drive cache error before Gradle fallback produced the APK. RT-2e-c is CURRENT / NOT_COMPLETED and NOT_STARTED.
+
+
+### RT-2e-b implementation checkpoint
+
+Implementation state: COMPLETED / ACCEPTED
+
+```text
+record: 6.2.1 exact direct dependency
+path_provider: 2.1.6 exact direct dependency
+file mode: WAV, 16 kHz, mono
+injectable record driver: added
+private temporary filesystem/artifact registry: added
+controller safe metadata propagation: added
+focused tests: fake-driver and fake filesystem only
+real permission request: not executed
+no real microphone access: true
+real audio capture: not executed
+raw byte stream: forbidden
+RT-2e-c: current-pending-rt2ec-implementation
+```
+
+The adapter compiles a real-capable production boundary, but no current UI,
+startup, route, Backend, Framework, provider, or STT code constructs it.
+Acceptance completed on 2026-07-27 after operator `flutter pub get`, generated
+plugin diff review, analyzer cleanup, focused Flutter 18/18, full Flutter 161,
+Backend 116 with one existing warning, the RT-2e-b gate, Android debug APK
+compilation, `git diff --check`, 19-file review, and explicit operator approval.
+The Kotlin incremental-cache daemon reported a cross-drive cache error before
+Gradle fallback produced the APK. No app launch, permission request, microphone
+access, or audio capture occurred.

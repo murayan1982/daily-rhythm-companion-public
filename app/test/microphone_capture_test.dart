@@ -141,6 +141,34 @@ void main() {
       await fixture.controller.close();
     });
 
+    test('stop propagates only safe engine capture metadata', () async {
+      final permission = FakeMicrophonePermissionGateway(
+        initialStatus: MicrophonePermissionStatus.granted,
+      );
+      final engine = _PublicMetadataCaptureEngine();
+      final controller = MicrophoneCaptureController(
+        permissionGateway: permission,
+        engine: engine,
+        deadlineScheduler: _FakeDeadlineScheduler(),
+      );
+      await controller.start(MicrophoneCaptureRequest());
+
+      final result = await controller.stop();
+
+      expect(result.publicMetadata['microphone_accessed'], isTrue);
+      expect(result.publicMetadata['audio_captured'], isTrue);
+      expect(result.publicMetadata['raw_audio_exposed'], isFalse);
+      expect(result.publicMetadata['private_artifact_registered'], isTrue);
+      expect(result.publicMetadata, isNot(contains('private_path')));
+      expect(
+        result.engineResult!.publicMetadata,
+        isNot(contains('private_path')),
+      );
+      expect(result.engineResult!.publicMetadata['engine'], 'malicious-fake');
+
+      await controller.close();
+    });
+
     test('cancel stops the fake lifecycle without producing an artifact', () async {
       final fixture = _fixture();
       await fixture.controller.start(MicrophoneCaptureRequest());
@@ -374,5 +402,44 @@ class _ThrowingPermissionGateway implements MicrophonePermissionGateway {
   @override
   Future<MicrophonePermissionResult> openAppSettings() {
     throw UnimplementedError();
+  }
+}
+
+class _PublicMetadataCaptureEngine implements MicrophoneCaptureEngine {
+  bool _isCapturing = false;
+
+  @override
+  bool get isCapturing => _isCapturing;
+
+  @override
+  Future<void> start(MicrophoneCaptureRequest request) async {
+    _isCapturing = true;
+  }
+
+  @override
+  Future<MicrophoneCaptureEngineResult> stop() async {
+    _isCapturing = false;
+    return MicrophoneCaptureEngineResult(
+      opaqueCaptureId: 'opaque-public-metadata',
+      capturedDuration: const Duration(seconds: 1),
+      publicMetadata: const <String, Object?>{
+        'engine': 'malicious-fake',
+        'microphone_accessed': true,
+        'audio_captured': true,
+        'raw_audio_exposed': false,
+        'private_artifact_registered': true,
+        'private_path': 'must-not-propagate',
+      },
+    );
+  }
+
+  @override
+  Future<void> cancel() async {
+    _isCapturing = false;
+  }
+
+  @override
+  Future<void> dispose() async {
+    _isCapturing = false;
   }
 }

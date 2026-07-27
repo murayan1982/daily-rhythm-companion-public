@@ -4,7 +4,8 @@ Date: 2026-07-27
 Parent phase: RT-2 CURRENT / NOT_COMPLETED
 Parent small commit: RT-2e CURRENT / NOT_COMPLETED
 Current small commit: RT-2e-a COMPLETED / ACCEPTED
-Next small commit: RT-2e-b CURRENT / NOT_COMPLETED; NOT_STARTED
+Completed small commit: RT-2e-b COMPLETED / ACCEPTED
+Next small commit: RT-2e-c CURRENT / NOT_COMPLETED; NOT_STARTED
 
 ## Purpose
 
@@ -114,3 +115,27 @@ v300_rt2ea_audio_captured: False
 v300_rt2e_parent_status: current-pending-rt2eb-implementation
 v300_rt2eb_authorization: authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only
 ```
+
+
+## RT-2e-b implementation update
+
+RT-2e-b now pins direct `record` 6.2.1 and `path_provider` 2.1.6 and adds
+an injectable recorder driver/private-filesystem adapter. The package driver
+uses file mode only with WAV, 16 kHz, mono. `startStream` remains forbidden.
+
+A private temporary path is allocated within the adapter boundary. Completed
+artifacts are addressable only through an opaque capture id and an app-internal
+resolver/discard interface; public results never include the private path or
+raw bytes. Start/cancel/error/dispose cleanup is fake-tested. The accepted
+RT-2d controller is updated to propagate only safe boolean capture metadata.
+
+The production recorder driver is compiled but is not wired to startup/UI and
+is not instantiated by RT-2e-b tests. No real permission request, no real
+microphone access, real audio capture, upload, Framework/provider call, or STT
+execution occurred during RT-2e-b. Acceptance passed after operator dependency
+resolution, generated plugin review, analyzer cleanup, focused Flutter 18/18,
+full Flutter 161, Backend 116 with one existing warning, the RT-2e-b gate,
+Android debug APK compilation, `git diff --check`, 19-file review, and explicit
+operator approval. The Kotlin incremental-cache daemon reported a cross-drive
+cache error before Gradle fallback produced the APK. RT-2e-c is CURRENT /
+NOT_COMPLETED and NOT_STARTED.

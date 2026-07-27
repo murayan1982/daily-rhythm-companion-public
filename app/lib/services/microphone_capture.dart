@@ -453,15 +453,21 @@ class MicrophoneCaptureController extends ChangeNotifier {
       if (!_isCurrent(operation)) {
         return _supersededResult();
       }
+      final safeEngineResult = _safePublicEngineResult(engineResult);
       final result = _result(
         MicrophoneCaptureOutcome.completed,
         '音声入力を停止しました。',
         'capture_completed',
-        engineResult: engineResult,
-        publicMetadata: const <String, Object?>{
-          'microphone_accessed': false,
-          'audio_captured': false,
-          'raw_audio_exposed': false,
+        engineResult: safeEngineResult,
+        publicMetadata: <String, Object?>{
+          'microphone_accessed':
+              safeEngineResult.publicMetadata['microphone_accessed'] == true,
+          'audio_captured':
+              safeEngineResult.publicMetadata['audio_captured'] == true,
+          'raw_audio_exposed':
+              safeEngineResult.publicMetadata['raw_audio_exposed'] == true,
+          'private_artifact_registered':
+              safeEngineResult.publicMetadata['private_artifact_registered'] == true,
         },
       );
       _setTerminalState(MicrophoneCapturePhase.completed, result);
@@ -658,6 +664,30 @@ class MicrophoneCaptureController extends ChangeNotifier {
     return error is MicrophoneCaptureEngineException ? error.code : fallback;
   }
 
+  MicrophoneCaptureEngineResult _safePublicEngineResult(
+    MicrophoneCaptureEngineResult source,
+  ) {
+    final metadata = source.publicMetadata;
+    return MicrophoneCaptureEngineResult(
+      opaqueCaptureId: source.opaqueCaptureId,
+      capturedDuration: source.capturedDuration,
+      publicMetadata: <String, Object?>{
+        if (metadata['engine'] is String) 'engine': metadata['engine'],
+        if (metadata['record_version'] is String)
+          'record_version': metadata['record_version'],
+        if (metadata['encoding'] is String) 'encoding': metadata['encoding'],
+        if (metadata['sample_rate_hz'] is int)
+          'sample_rate_hz': metadata['sample_rate_hz'],
+        if (metadata['channels'] is int) 'channels': metadata['channels'],
+        'microphone_accessed': metadata['microphone_accessed'] == true,
+        'audio_captured': metadata['audio_captured'] == true,
+        'raw_audio_exposed': metadata['raw_audio_exposed'] == true,
+        'private_artifact_registered':
+            metadata['private_artifact_registered'] == true,
+      },
+    );
+  }
+
   MicrophoneCaptureResult _supersededResult() {
     return _result(
       MicrophoneCaptureOutcome.cancelled,
@@ -680,9 +710,9 @@ class MicrophoneCaptureController extends ChangeNotifier {
       engineResult: engineResult,
       publicMetadata: <String, Object?>{
         ...publicMetadata,
-        'microphone_accessed': false,
-        'audio_captured': false,
-        'raw_audio_exposed': false,
+        'microphone_accessed': publicMetadata['microphone_accessed'] == true,
+        'audio_captured': publicMetadata['audio_captured'] == true,
+        'raw_audio_exposed': publicMetadata['raw_audio_exposed'] == true,
       },
     );
   }

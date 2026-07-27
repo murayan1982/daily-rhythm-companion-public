@@ -5009,6 +5009,7 @@ cd app
 flutter analyze
 flutter test test/microphone_capture_test.dart
 flutter test
+flutter build apk --debug
 cd ..
 
 git diff --check
@@ -5096,4 +5097,67 @@ v300_rt2ea_microphone_accessed: False
 v300_rt2ea_audio_captured: False
 v300_rt2e_parent_status: current-pending-rt2eb-implementation
 v300_rt2eb_authorization: authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only
+```
+
+
+## v3.0.0 RT-2e-b record microphone capture adapter check
+
+Detailed contract: `docs/v300_record_microphone_capture_adapter.md`.
+
+After applying the implementation patch, resolve the exact dependencies before
+running the gate:
+
+```powershell
+cd app
+flutter pub get
+cd ..
+
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_record_microphone_capture_adapter.py
+.\.venv\Scripts\python.exe -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test test/record_microphone_capture_engine_test.dart
+flutter test test/microphone_capture_test.dart
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+RT-2e-b pins `record` 6.2.1 and direct `path_provider` 2.1.6. It adds
+an injectable package driver, a private temporary path/artifact boundary, an
+opaque capture id, cleanup on start/cancel/error/dispose, safe controller
+metadata propagation, and fake-driver tests. File mode uses WAV, 16 kHz, mono.
+The Android debug APK build verifies native dependency/registration compilation
+without launching the app or accessing a microphone. `startStream` is forbidden. The production driver is compiled but not wired to
+startup/UI and is not used by tests. No real microphone access, real audio
+capture, permission request, upload, Framework/provider call, or STT execution
+is performed in this checkpoint. RT-2e-b is COMPLETED / ACCEPTED after
+operator dependency resolution, generated plugin review, analyzer cleanup,
+focused Flutter 18/18, full Flutter 161, Backend 116 with one existing warning,
+the RT-2e-b gate, Android debug APK compilation, `git diff --check`, 19-file
+review, and explicit operator approval. The Kotlin incremental-cache daemon
+reported a cross-drive cache error before Gradle fallback produced the APK.
+RT-2e-c is CURRENT / NOT_COMPLETED and NOT_STARTED.
+
+Expected accepted output:
+
+```text
+v300_record_microphone_capture_adapter_status: completed-accepted
+v300_rt2eb_record_dependency_resolved: True
+v300_rt2eb_path_provider_direct_dependency: True
+v300_rt2eb_injectable_driver_added: True
+v300_rt2eb_private_artifact_boundary_added: True
+v300_rt2eb_controller_safe_metadata_propagation_added: True
+v300_rt2eb_fake_driver_tests_added: True
+v300_rt2eb_generated_plugin_registration_review_ready: True
+v300_rt2eb_real_permission_request_executed: False
+v300_rt2eb_real_microphone_accessed: False
+v300_rt2eb_real_audio_captured: False
+v300_rt2eb_raw_audio_exposed: False
+v300_rt2e_parent_status: current-pending-rt2ec-implementation
+v300_rt2ec_authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
 ```

@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2e-b CURRENT / NOT_COMPLETED
-current implementation step: injectable recorder adapter and private temporary artifact boundary
+current small commit: RT-2e-c CURRENT / NOT_COMPLETED
+current implementation step: explicit opt-in real-device bounded capture evidence only
 current implementation state: NOT_STARTED
-completed small commit: RT-2e-a COMPLETED / ACCEPTED
+completed small commit: RT-2e-b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1510,19 +1510,24 @@ implementation: COMPLETED / ACCEPTED; docs/test-only
 
 #### RT-2e-b injectable recorder adapter and private temporary artifact
 
-status: CURRENT / NOT_COMPLETED
-implementation: NOT_STARTED
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
 
-- [ ] `record: 6.2.1`と必要なdirect path dependencyを追加・lock解決する。
-- [ ] injected driverでstart/stop/cancel/disposeをRT-2d engineへ接続する。
-- [ ] private temporary path/artifact registryとstop/cancel/error/close cleanupを実装する。
-- [ ] unit testsはfake driverのみを使い、permission requestやreal captureを実行しない。
+- [x] `record: 6.2.1`と`path_provider: 2.1.6`をexact direct dependencyとして追加する。
+- [x] operator `flutter pub get`でlockとgenerated plugin registrationを解決・reviewする。
+- [x] injected driverでstart/stop/cancel/disposeをRT-2d engineへ接続する。
+- [x] private temporary path/artifact registryとstop/cancel/error/dispose cleanupを実装する。
+- [x] controllerはengine completionからallowlisted safe metadataだけを伝播する。
+- [x] unit testsはfake driver/fake filesystemのみを使い、permission requestやreal captureを実行しない。
+- [x] analyzer warning 3件を失敗経路テストへ置き換え、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件、gate、Android debug APK build、diff reviewを通す。
+- [x] explicit operator approval後にRT-2e-bをCOMPLETED / ACCEPTEDへ同期する。
 
 #### RT-2e-c explicit operator real-device capture evidence
 
-status: BLOCKED pending RT-2e-b acceptance
+status: CURRENT / NOT_COMPLETED
+implementation: NOT_STARTED
 
 - [ ] explicit opt-in operator command/flow以外ではpermission requestやmicrophone openを実行しない。
 - [ ] bounded capture、cleanup、no upload/no STTをreal Android deviceで検証する。
 
-RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-aは2026-07-27にCOMPLETED / ACCEPTED。compileall、RT-2e-a gate、Backend 116件（既存warning 1件）、`flutter analyze` clean、Flutter 142件、`git diff --check`、7-file review、explicit operator approvalが通過した。RT-2e-bはCURRENT / NOT_COMPLETED、NOT_STARTEDで、`authorized-injectable-record-adapter-and-private-temporary-artifact-fake-tests-only`。dependency追加、permission request、microphone access、audio capture、raw path/bytes exposure、upload、STT executionはまだ行っていない。
+RT-2e authorization: `authorized-explicit-opt-in-bounded-real-capture-adapter-only`。RT-2e-bは2026-07-27にCOMPLETED / ACCEPTED。operator `flutter pub get`、generated plugin review、analyzer cleanup、focused Flutter 18件、lifecycle Flutter 18件、full Flutter 161件、Backend 116件（既存warning 1件）、RT-2e-b gate、Android debug APK build、`git diff --check`、19-file review、explicit operator approvalが通過した。Kotlin incremental-cache daemonはcross-drive cache errorを報告したが、Gradle fallback後にAPK生成は成功した。real permission request、microphone access、audio capture、public raw path/bytes exposure、upload、STT executionは行っていない。RT-2e-cはCURRENT / NOT_COMPLETED、NOT_STARTEDで、`authorized-explicit-opt-in-real-device-bounded-capture-evidence-only`。

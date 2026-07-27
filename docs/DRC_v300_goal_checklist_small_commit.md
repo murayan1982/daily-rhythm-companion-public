@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2e-b CURRENT / NOT_COMPLETED
-Current implementation step: injectable recorder adapter and private temporary artifact boundary
+Current small commit: RT-2e-c CURRENT / NOT_COMPLETED
+Current implementation step: explicit opt-in real-device bounded capture evidence only
 Current implementation state: NOT_STARTED
-Completed small commit: RT-2e-a COMPLETED / ACCEPTED
-Next implementation action: add pinned dependency, injectable adapter, private temporary artifact cleanup, and fake-driver tests only
+Completed small commit: RT-2e-b COMPLETED / ACCEPTED
+Next implementation action: design the explicit opt-in operator-only real-device capture evidence flow; do not upload or run STT
 ```
 
 ## Source of truth
@@ -633,10 +633,10 @@ RT-2d  COMPLETED / ACCEPTED
 RT-2e  CURRENT / NOT_COMPLETED
   RT-2e-a  COMPLETED / ACCEPTED
              Exact-surface and record 6.2.1 readiness; docs/test-only.
-  RT-2e-b  CURRENT / NOT_COMPLETED
-             NOT_STARTED; injectable adapter/private temporary artifact; fake tests only.
-  RT-2e-c  BLOCKED pending RT-2e-b acceptance
-             Explicit operator real-device bounded capture evidence.
+  RT-2e-b  COMPLETED / ACCEPTED
+             Pinned record adapter/private temporary artifact boundary; fake tests only.
+  RT-2e-c  CURRENT / NOT_COMPLETED
+             NOT_STARTED; explicit operator real-device bounded capture evidence.
 ```
 
 RT-2a inspected the actual source and confirmed:
@@ -852,17 +852,32 @@ Acceptance completed on 2026-07-27 after compileall, the RT-2e-a gate,
 warning, `git diff --check`, seven-file review, and explicit operator
 approval passed.
 
-### RT-2e-b planned boundary
+### RT-2e-b record adapter and private temporary artifact boundary
 
-State: CURRENT / NOT_COMPLETED
-Implementation: NOT_STARTED
+State: COMPLETED / ACCEPTED
+Implementation: COMPLETED / ACCEPTED; fake-only verification boundary added
 
-Pinned dependency, injectable recorder driver, private temporary artifact
-cleanup, and fake-driver tests only. Real capture execution remains separate.
+Pinned direct dependencies are `record` 6.2.1 and `path_provider` 2.1.6.
+The adapter uses injectable recorder/private-filesystem boundaries, WAV file
+mode at 16 kHz mono, an opaque capture id, and private temporary artifact
+cleanup. `startStream` and public raw bytes/path/handles are forbidden.
+
+The production package driver is compiled but not connected to startup/UI and
+is not instantiated by tests. Real permission request, no real microphone
+access, real audio capture, upload, provider execution, and STT remain absent.
+Acceptance completed on 2026-07-27 after operator dependency resolution, generated
+plugin review, analyzer cleanup, focused Flutter 18/18, full Flutter 161, Backend
+116 with one existing warning, the RT-2e-b gate, Android debug APK compilation,
+`git diff --check`, 19-file review, and explicit operator approval. The Kotlin
+incremental-cache daemon reported a cross-drive cache error before Gradle
+fallback produced the APK. No app launch, permission request, microphone access,
+or audio capture occurred.
 
 ### RT-2e-c planned operator evidence
 
-State: BLOCKED pending RT-2e-b acceptance
+State: CURRENT / NOT_COMPLETED
+Implementation: NOT_STARTED
+Authorization: authorized-explicit-opt-in-real-device-bounded-capture-evidence-only
 
 Explicit opt-in, bounded real-device capture and cleanup evidence. No upload or
 STT execution.
