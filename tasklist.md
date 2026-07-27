@@ -14,9 +14,9 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-current small commit: RT-3c CURRENT / NOT_COMPLETED
-current implementation step: Private Backend staging and fake FW public-session handoff
-current implementation state: NOT_STARTED
+current small commit: RT-3c2 CURRENT / NOT_COMPLETED
+current implementation step: Private staging and fake FW public-session handoff readiness inventory
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed small commit: RT-3b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -1670,3 +1670,47 @@ Status: CURRENT / NOT_COMPLETED / NOT_STARTED
 Authorization: `authorized-private-backend-staging-and-fake-fw-public-session-handoff-only`
 
 RT-3cはprivate Backend staging境界とfake FW public-session handoffだけを追加する。real provider execution、real STT acceptance、raw audio/public private path exposureは引き続き禁止する。
+
+
+## RT-3c1 private staging and fake FW handoff readiness
+
+```text
+RT-3c1: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
+RT-3c2: CURRENT / NOT_COMPLETED / NOT_STARTED
+RT-3c2 authorization: authorized-bounded-private-backend-staging-store-and-lifecycle-only
+runtime changed: no
+audio uploaded/staged/read: no
+Framework imported/executed: no
+provider/STT executed: no
+```
+
+RT-3c1 fixes the following implementation sequence before runtime changes:
+
+```text
+RT-3c2
+bounded private Backend staging store/config only
+
+RT-3c3
+guarded streamed audio/wav upload plus Flutter scoped staging consumer
+
+RT-3c4
+fake FW public VoiceInputSession handoff and single-use staged cleanup
+```
+
+Selected defaults for later implementation:
+
+```text
+content type: audio/wav or application/octet-stream
+multipart: not used
+maximum body: 1048576 bytes
+staging TTL: 300 seconds
+maximum staged artifacts: 8
+audio contract: WAV / 16000 Hz / mono / <=15000 ms
+public response: opaque server staging ID only; never a path
+storage: backend/local_data/voice_input/staging
+```
+
+Acceptance evidence: compileall、source-only gate、Backend 116（既存warning 1件）、`flutter analyze`、full Flutter 192、exact nine-file review、`git diff --check`。
+
+Next action: implement RT-3c2 only. Do not add a route, Flutter upload, FW import, provider execution, or STT in RT-3c2.

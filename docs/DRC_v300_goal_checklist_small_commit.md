@@ -1079,3 +1079,53 @@ RT-3c authorization:
 ```text
 authorized-private-backend-staging-and-fake-fw-public-session-handoff-only
 ```
+
+
+## RT-3c1 private staging and fake FW handoff readiness
+
+```text
+RT-3: CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+RT-3a: COMPLETED / ACCEPTED
+RT-3b: COMPLETED / ACCEPTED
+RT-3c: CURRENT / NOT_COMPLETED
+RT-3c1: COMPLETED / ACCEPTED
+RT-3c1 implementation: COMPLETED / ACCEPTED
+RT-3c2: CURRENT / NOT_COMPLETED
+RT-3c2 implementation: NOT_STARTED
+RT-3c2 authorization: authorized-bounded-private-backend-staging-store-and-lifecycle-only
+RT-3c3: BLOCKED_PENDING_RT3C2_ACCEPTANCE
+RT-3c4: BLOCKED_PENDING_RT3C3_ACCEPTANCE
+RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+```
+
+RT-3c1 exact findings:
+
+```text
+Flutter scoped private path lease: present
+Flutter http dependency: present
+Backend voice-input endpoint: metadata-only
+Backend voice-input staging store: absent
+Backend voice-input upload route: absent
+Backend staging TTL/count/body limits: absent
+Backend FW voice-input adapter: absent
+python-multipart dependency: absent
+FW public file-path audio source: present
+FW public fake adapter/session path: present
+FW real provider execution: absent
+```
+
+Selected future transport/lifecycle:
+
+```text
+streamed audio/wav body; no multipart
+1048576-byte maximum
+300-second TTL
+maximum 8 staged artifacts
+WAV / 16000 Hz / mono / <=15000 ms
+server-generated opaque staging ID
+backend/local_data ignored private root
+single-use consume and cleanup
+no private path in public result/log/evidence
+```
+
+RT-3c1 changes no Backend/Flutter runtime or tests, dependencies, routes, configuration, vendor, platform, version, or release surface and performs no audio read/upload/staging, FW import, provider execution, or STT. Acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is CURRENT / NOT_COMPLETED and NOT_STARTED; only the bounded private Backend staging store and lifecycle configuration are authorized.

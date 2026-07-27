@@ -215,3 +215,31 @@ Cleanup is attempted on consume success, consumer-declared failure, consumer exc
 GAP-2 through GAP-4 remain for RT-3c. GAP-5 still blocks real acceptance. RT-3b performs no audio read/upload, FW import, provider execution, or STT.
 
 RT-3b acceptance passed with the source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check`. RT-3c is now authorized only for private Backend staging plus a fake FW public-session handoff.
+
+
+## RT-3c1 exact readiness reassessment
+
+Status: COMPLETED / ACCEPTED
+
+The accepted RT-3b lifecycle solves GAP-1. RT-3c1 confirms that GAP-2 through
+GAP-4 still have no runtime implementation:
+
+```text
+GAP-2 private Backend staging store and bounded lifecycle: absent
+GAP-3 guarded phone-to-Backend audio transfer: absent
+GAP-4 Backend FW public host-audio/session adapter: absent
+GAP-5 concrete real provider execution: absent
+```
+
+The released FW v5.3.0 surface can accept
+`VoiceInputAudioSource.from_file_path(...)`, create a public voice-input session,
+and return a typed fake result through `FakeVoiceInputProviderAdapter`. That
+public-only path does not read audio and is appropriate for RT-3c4 verification,
+but it is not real STT.
+
+RT-3c1 selects a streamed binary WAV upload rather than multipart because the
+current Backend does not depend on `python-multipart`. The future staging
+boundary remains private, bounded, single-use, path-free in public responses,
+and rooted under ignored `backend/local_data`.
+
+RT-3c1 acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is now CURRENT / NOT_COMPLETED and NOT_STARTED with authorization limited to the bounded private Backend staging store and lifecycle configuration. RT-3c2 through RT-3c4 must be accepted separately. Real RT-3 acceptance remains blocked by GAP-5.

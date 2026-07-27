@@ -5489,3 +5489,49 @@ v300_rt3_real_acceptance: blocked-framework-real-provider-execution-not-implemen
 The gate permits the exact RT-3b ten-file acceptance surface or a clean tree after commit. It does not execute Flutter, read audio, upload data, import the vendored Framework, call a provider, or perform STT.
 
 RT-3b acceptance evidence: source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check` passed.
+
+
+## v3.0.0 RT-3c1 private staging and fake FW handoff readiness gate
+
+```powershell
+$env:FRAMEWORK_ROOT = (Resolve-Path `
+  ".\vendor\ai-character-framework-5.3.0").Path
+
+.\.venv\Scripts\python.exe `
+  scripts\check_v300_rt3c_private_staging_fw_handoff_readiness.py
+```
+
+Expected accepted-state markers:
+
+```text
+v300_rt3c_private_staging_fw_handoff_readiness_status: completed-accepted
+v300_rt3c1_exact_current_surface_inspected: True
+v300_rt3c1_flutter_scoped_private_path_lease_present: True
+v300_rt3c1_flutter_http_dependency_present: True
+v300_rt3c1_backend_voice_input_metadata_only: True
+v300_rt3c1_backend_private_staging_store_present: False
+v300_rt3c1_backend_audio_upload_route_present: False
+v300_rt3c1_backend_staging_lifecycle_config_present: False
+v300_rt3c1_python_multipart_dependency_present: False
+v300_rt3c1_bounded_streamed_wav_transport_selected: True
+v300_rt3c1_framework_public_fake_file_handoff_present: True
+v300_rt3c1_framework_real_provider_execution_present: False
+v300_rt3c1_runtime_changed: False
+v300_rt3c1_audio_read: False
+v300_rt3c1_audio_uploaded: False
+v300_rt3c1_framework_imported: False
+v300_rt3c1_stt_executed: False
+v300_rt3_parent_status: current-blocked-real-provider-execution-not-implemented
+v300_rt3c_parent_status: current-pending-rt3c2-implementation
+v300_rt3c1_status: completed-accepted
+v300_rt3c2_status: current-not-completed
+v300_rt3c2_implementation: not-started
+v300_rt3c2_authorization: authorized-bounded-private-backend-staging-store-and-lifecycle-only
+v300_rt3_real_acceptance: blocked-framework-real-provider-execution-not-implemented
+```
+
+RT-3c1 acceptance evidence: compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check` passed.
+
+The gate validates source only. It does not import the vendored FW, read audio,
+open a microphone, upload data, create staging files, start Backend/Flutter,
+create provider clients, or execute STT.

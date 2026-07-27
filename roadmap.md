@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-3c CURRENT / NOT_COMPLETED (private Backend staging and fake FW public-session handoff)
+Current small commit: RT-3c2 CURRENT / NOT_COMPLETED (bounded private Backend staging store and lifecycle; NOT_STARTED)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -756,6 +756,10 @@ RT-3   CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voi
   RT-3a  COMPLETED / ACCEPTED                                   Framework v5.3.0 STT integration inventory
   RT-3b  COMPLETED / ACCEPTED                                   App-owned host-audio handoff lifecycle contract
   RT-3c  CURRENT / NOT_COMPLETED                                  Private backend staging and fake FW public-session handoff
+    RT-3c1  COMPLETED / ACCEPTED                                  Exact staging/transport/FW fake-handoff readiness inventory
+    RT-3c2  CURRENT / NOT_COMPLETED                                Bounded private Backend staging store and lifecycle
+    RT-3c3  BLOCKED_PENDING_RT3C2_ACCEPTANCE                        Guarded binary upload and Flutter scoped staging consumer
+    RT-3c4  BLOCKED_PENDING_RT3C3_ACCEPTANCE                        Fake FW public-session handoff and single-use cleanup
   RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
 RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -7129,3 +7133,43 @@ RT-3b adds `HostAudioHandoffController`, a scoped `HostAudioPrivateArtifactLease
 The existing RT-2 operator path remains unchanged and continues to discard immediately. RT-3b adds no Backend route, upload, audio read, FW import, provider execution, or STT. Acceptance passed with the source gate, Backend 116 with one existing warning, clean Flutter analysis, focused Flutter 21, full Flutter 192, exact ten-file review, cleanup-retry test correction, and `git diff --check`.
 
 RT-3c is CURRENT / NOT_COMPLETED and authorized only for private Backend staging plus a fake FW public-session handoff. Real RT-3 acceptance remains blocked pending concrete FW provider execution.
+
+
+### RT-3c1 private staging and fake FW handoff readiness
+
+Status: COMPLETED / ACCEPTED
+
+RT-3c1 records the exact `cf734aa04990aa55ccfcd56b65052fbe206f74fb`
+DRC surface and the released FW v5.3.0 public voice-input surface. It confirms
+that Flutter can expose a private capture path only during an active
+`HostAudioHandoffConsumer`, while Backend still has only a metadata-only
+`/demo/voice-input` request and no audio staging/upload/session adapter.
+
+Selected later boundary:
+
+```text
+Flutter scoped private artifact
+-> bounded streamed audio/wav body
+-> Backend private single-use staging
+-> FW public VoiceInputAudioSource.from_file_path
+-> public VoiceInputSession with FakeVoiceInputProviderAdapter
+-> typed fake VoiceInputResult
+-> Backend staged artifact cleanup
+-> Flutter original private artifact cleanup
+```
+
+RT-3c split:
+
+```text
+RT-3c1  docs/test-only exact readiness inventory
+RT-3c2  private staging store/config, no route and no FW import
+RT-3c3  guarded binary upload plus scoped Flutter consumer, no FW import
+RT-3c4  fake FW public-session handoff plus single-use cleanup
+RT-3d   real provider evidence, blocked
+```
+
+The staging defaults selected for later implementation are 1 MiB maximum body,
+300-second TTL, maximum eight artifacts, WAV/16 kHz/mono, maximum 15000 ms, and
+generated opaque server IDs. Multipart is not selected and
+`python-multipart` is not added. RT-3c1 performs no runtime change, audio read,
+upload, staging, FW import, provider execution, or STT. Acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is CURRENT / NOT_COMPLETED and NOT_STARTED with authorization `authorized-bounded-private-backend-staging-store-and-lifecycle-only`.

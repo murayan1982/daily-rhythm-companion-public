@@ -160,3 +160,24 @@ RT-3c is CURRENT / NOT_COMPLETED with authorization
 `authorized-private-backend-staging-and-fake-fw-public-session-handoff-only`.
 Real RT-3 acceptance remains blocked because FW v5.3.0 has no concrete real STT
 provider execution.
+
+
+## RT-3c1 consumer boundary decision
+
+The accepted `HostAudioPrivateArtifactLease.withPrivateArtifactPath(...)`
+callback is the only Flutter-side place where RT-3c3 may read and stream the
+private WAV file. The lease must stay active until the Backend response is
+received. The existing controller then discards the original mobile artifact
+after consumer completion or failure.
+
+RT-3c1 is COMPLETED / ACCEPTED after compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is CURRENT / NOT_COMPLETED and NOT_STARTED; only the bounded private Backend staging store and lifecycle configuration are authorized.
+
+RT-3c1 does not add that consumer. It only fixes these future rules:
+
+- the consumer streams once to the configured Backend;
+- it never places the path in a URL, JSON body, result, log, or evidence;
+- it sends only safe audio metadata and bounded bytes;
+- it treats a Backend staging ID as opaque;
+- RT-3c3 does not import FW or execute STT;
+- cleanup failure remains explicit and retryable through the accepted RT-3b
+  controller.
