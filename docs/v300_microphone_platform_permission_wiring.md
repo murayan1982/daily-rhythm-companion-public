@@ -1,10 +1,11 @@
 # DRC v3.0.0 RT-2c microphone platform permission wiring
 
-Updated: 2026-07-26
+Updated: 2026-07-27
 
 Parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2c IMPLEMENTED / NOT_ACCEPTED
-Next small commit: RT-2d BLOCKED pending RT-2c acceptance
+Current small commit: RT-2d CURRENT / NOT_COMPLETED
+Completed small commit: RT-2c COMPLETED / ACCEPTED
+Next small commit: RT-2d CURRENT / NOT_COMPLETED; NOT_STARTED
 
 ## Purpose
 
@@ -169,8 +170,7 @@ Backend audio upload: false
 Framework/provider/STT execution: false
 ```
 
-RT-2d may add capture lifecycle models/controller and a fake capture engine only
-after RT-2c acceptance. Real microphone capture remains blocked until RT-2e.
+RT-2d is authorized to add capture lifecycle models/controller and a fake capture engine only. Real microphone capture remains blocked until RT-2e.
 
 ## Focused tests
 
@@ -191,30 +191,40 @@ no capture metadata
 
 The tests never invoke the real platform plugin implementation.
 
-## Acceptance requirements
+## Acceptance evidence
 
 ```text
-flutter pub get succeeds and updates app/pubspec.lock
-RT-2c source/platform gate passes
-focused Flutter tests pass
-full Flutter tests pass
-Backend tests remain green
-Android debug APK build passes
-Android/iOS declarations match the documented strings
-git diff --check passes
-changed files match the declared 16-file surface
-Windows generated registrant/CMake contain exactly one expected permission-handler entry
-operator confirms no permission prompt, microphone access, audio capture, or STT
-explicit approval is received
+implementation commit: fe26c3c
+flutter pub get: passed
+RT-2c source/platform gate: passed
+flutter analyze: No issues found
+focused Flutter: 13 passed
+full Flutter: 125 passed
+Backend: 116 passed with one existing Starlette deprecation warning
+Android debug APK: built successfully
+Android/iOS declaration review: passed
+git diff --check: passed
+changed surface: 16 files reviewed
+Windows generated registrant/CMake exact markers: passed
+permission prompt executed: false
+microphone accessed: false
+audio captured or persisted: false
+Backend/Framework/provider/STT execution: false
+operator acceptance evidence: passed
 ```
+
+The Android build log emitted a Kotlin daemon incremental-cache warning in
+`audioplayers_android`; Gradle fallback completed and produced
+`build/app/outputs/flutter-apk/app-debug.apk`. This is recorded as a successful
+build with a warning, not as a warning-free build.
 
 The iOS build itself cannot be verified on the Windows operator environment and
 must not be represented as executed.
 
-## Expected gate output before acceptance
+## Accepted gate output
 
 ```text
-v300_microphone_platform_permission_wiring_status: implemented-not-accepted
+v300_microphone_platform_permission_wiring_status: completed-accepted
 v300_rt2c_permission_dependency_added: True
 v300_rt2c_lock_resolved: True
 v300_rt2c_gateway_added: True
@@ -226,6 +236,6 @@ v300_rt2c_backend_changed: False
 v300_rt2c_permission_request_executed: False
 v300_rt2c_microphone_accessed: False
 v300_rt2c_audio_captured: False
-v300_rt2_parent_status: current-pending-rt2c-acceptance
-v300_rt2d_authorization: blocked-pending-rt2c-acceptance
+v300_rt2_parent_status: current-pending-rt2d-implementation
+v300_rt2d_authorization: authorized-capture-lifecycle-and-fake-engine-only
 ```

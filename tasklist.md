@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-26
+更新日: 2026-07-27
 
 ## 1. 現在地
 
@@ -14,10 +14,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-2 CURRENT / NOT_COMPLETED
-current small commit: RT-2c IMPLEMENTED / NOT_ACCEPTED
-current implementation step: mobile platform permission gateway and Android/iOS declarations without capture
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
-completed small commit: RT-2b COMPLETED / ACCEPTED
+current small commit: RT-2d CURRENT / NOT_COMPLETED
+current implementation step: capture lifecycle contract/controller and fake engine only
+current implementation state: NOT_STARTED
+completed small commit: RT-2c COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1449,8 +1449,8 @@ RT-2bは2026-07-26にCOMPLETED / ACCEPTED。compileall、RT-2b gate、focused Fl
 
 ### RT-2c platform permission wiring without capture
 
-status: IMPLEMENTED / NOT_ACCEPTED
-implementation: IMPLEMENTED / NOT_ACCEPTED
+status: COMPLETED / ACCEPTED
+implementation: COMPLETED / ACCEPTED
 
 - [x] `permission_handler` 12.0.3を`pubspec.yaml`へpinする。
 - [x] operator環境の`flutter pub get`で`pubspec.lock`を解決する。
@@ -1465,8 +1465,19 @@ implementation: IMPLEMENTED / NOT_ACCEPTED
 - [x] fake driver focused testsを追加し、real OS permission dialogを呼ばない。
 - [x] startup、`HomeScreen`、voice-input UIへgatewayを接続しない。
 - [x] microphone open、audio capture、raw audio、Backend upload、Framework/provider/STTを開始しない。
-- [x] operator環境でfocused Flutter 12件、full Flutter 124件、Backend 116件、Android debug APK buildを通す。
-- [ ] Windows generated plugin filesを許可・検証する修正版RT-2c gateと16-file diff reviewを通す。
-- [ ] explicit approval後にRT-2cをCOMPLETED / ACCEPTEDへ同期する。
+- [x] operator環境で`flutter analyze` clean、focused Flutter 13件、full Flutter 125件、Backend 116件、Android debug APK buildを通す。
+- [x] Windows generated plugin filesを許可・検証する修正版RT-2c gateと16-file diff reviewを通す。
+- [x] operator acceptance evidence後にRT-2cをCOMPLETED / ACCEPTEDへ同期する。
 
-RT-2cは実装済みだが未受け入れ。permission requestはexplicit user actionから呼ぶ将来UIまで実行されず、RT-2d capture lifecycle/fake engineは`blocked-pending-rt2c-acceptance`。
+RT-2cは2026-07-27にCOMPLETED / ACCEPTED。implementation commit `fe26c3c`、`flutter pub get`、Windows generated plugin exact-marker review、`flutter analyze` clean、focused Flutter 13件、full Flutter 125件、Backend 116件、RT-2c gate、Android debug APK build、`git diff --check`、16-file review、operator acceptance evidenceが通過した。permission request、microphone access、audio capture、Backend upload、Framework/provider/STTは実行していない。
+
+### RT-2d capture lifecycle contract and fake engine
+
+status: CURRENT / NOT_COMPLETED
+implementation: NOT_STARTED
+
+- [ ] app-owned capture lifecycle state/result/request contractを追加する。
+- [ ] single-active-session、bounded duration、stop/cancel/error cleanupを型で固定する。
+- [ ] microphoneへ触れないdeterministic fake capture engineを追加する。
+- [ ] permission denied/restricted/unsupported/busy/timeout/cancel/cleanup failureを分離する。
+- [ ] UI、platform capture plugin、real microphone、raw audio、Backend upload、STTを変更しない。

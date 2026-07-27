@@ -30,7 +30,7 @@ WINDOWS_PLUGINS_CMAKE = (
     ROOT / "app/windows/flutter/generated_plugins.cmake"
 )
 
-ALLOWED_CHANGED_PATHS = {
+ACCEPTANCE_SYNC_PATHS = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
@@ -39,14 +39,6 @@ ALLOWED_CHANGED_PATHS = {
     "docs/v300_microphone_permission_contract.md",
     "docs/v300_microphone_platform_permission_wiring.md",
     "scripts/check_v300_microphone_platform_permission_wiring.py",
-    "app/pubspec.yaml",
-    "app/pubspec.lock",
-    "app/android/app/src/main/AndroidManifest.xml",
-    "app/ios/Runner/Info.plist",
-    "app/windows/flutter/generated_plugin_registrant.cc",
-    "app/windows/flutter/generated_plugins.cmake",
-    "app/lib/services/permission_handler_microphone_permission_gateway.dart",
-    "app/test/permission_handler_microphone_permission_gateway_test.dart",
 }
 
 PLANNING_PATHS = (
@@ -94,29 +86,23 @@ def changed_paths() -> set[str]:
 
 def validate_changed_surface() -> None:
     changed = changed_paths()
-    unexpected = sorted(changed - ALLOWED_CHANGED_PATHS)
-    if unexpected:
-        raise AssertionError(
-            "RT-2c unexpected changed paths:\n" + "\n".join(unexpected)
-        )
+    if not changed:
+        return
 
-    required = {
-        "app/pubspec.yaml",
-        "app/pubspec.lock",
-        "app/android/app/src/main/AndroidManifest.xml",
-        "app/ios/Runner/Info.plist",
-        "app/windows/flutter/generated_plugin_registrant.cc",
-        "app/windows/flutter/generated_plugins.cmake",
-        "app/lib/services/permission_handler_microphone_permission_gateway.dart",
-        "app/test/permission_handler_microphone_permission_gateway_test.dart",
-        "docs/v300_microphone_platform_permission_wiring.md",
-        "scripts/check_v300_microphone_platform_permission_wiring.py",
-    }
-    missing = sorted(required - changed)
-    if missing:
+    unexpected = sorted(changed - ACCEPTANCE_SYNC_PATHS)
+    missing = sorted(ACCEPTANCE_SYNC_PATHS - changed)
+    if unexpected or missing:
+        details: list[str] = []
+        if unexpected:
+            details.append(
+                "unexpected changed paths:\n" + "\n".join(unexpected)
+            )
+        if missing:
+            details.append(
+                "missing acceptance-sync paths:\n" + "\n".join(missing)
+            )
         raise AssertionError(
-            "RT-2c expected changed paths are missing; run flutter pub get first:\n"
-            + "\n".join(missing)
+            "RT-2c accepted-state surface mismatch:\n" + "\n".join(details)
         )
 
 
@@ -270,25 +256,54 @@ def validate_no_ui_wiring() -> None:
 
 
 def validate_planning() -> None:
-    combined_parts: list[str] = []
+    planning_text: dict[str, str] = {}
     for relative in PLANNING_PATHS:
         path = ROOT / relative
         if not path.exists():
             raise AssertionError(f"RT-2c planning file missing: {relative}")
         text = path.read_text(encoding="utf-8")
         require(text, "RT-2c", f"{relative} RT-2c marker")
-        combined_parts.append(text)
+        planning_text[relative] = text
 
-    combined = "\n".join(combined_parts)
+    exact_markers = (
+        (
+            "README.md",
+            "Current small commit: RT-2d (**CURRENT / NOT_COMPLETED**)",
+        ),
+        (
+            "roadmap.md",
+            "Current small commit: RT-2d (**CURRENT / NOT_COMPLETED**)",
+        ),
+        (
+            "tasklist.md",
+            "current implementation state: NOT_STARTED",
+        ),
+        (
+            "tasklist.md",
+            "completed small commit: RT-2c COMPLETED / ACCEPTED",
+        ),
+        (
+            "docs/DRC_v300_goal_checklist_small_commit.md",
+            "Current implementation state: NOT_STARTED",
+        ),
+        (
+            "docs/v300_microphone_platform_permission_wiring.md",
+            "Completed small commit: RT-2c COMPLETED / ACCEPTED",
+        ),
+    )
+    for relative, marker in exact_markers:
+        require(planning_text[relative], marker, f"{relative} active-state marker")
+
+    combined = "\n".join(planning_text.values())
     planning_markers = (
-        "IMPLEMENTED / NOT_ACCEPTED",
+        "RT-2c COMPLETED / ACCEPTED",
+        "RT-2d CURRENT / NOT_COMPLETED",
         "permission_handler",
         "RECORD_AUDIO",
         "NSMicrophoneUsageDescription",
         "explicit user action",
         "no capture",
-        "RT-2d",
-        "blocked-pending-rt2c-acceptance",
+        "authorized-capture-lifecycle-and-fake-engine-only",
     )
     for marker in planning_markers:
         require(combined, marker, "RT-2c planning marker")
@@ -304,7 +319,7 @@ def main() -> None:
     validate_no_ui_wiring()
     validate_planning()
 
-    print("v300_microphone_platform_permission_wiring_status: implemented-not-accepted")
+    print("v300_microphone_platform_permission_wiring_status: completed-accepted")
     print("v300_rt2c_permission_dependency_added: True")
     print("v300_rt2c_lock_resolved: True")
     print("v300_rt2c_gateway_added: True")
@@ -316,8 +331,8 @@ def main() -> None:
     print("v300_rt2c_permission_request_executed: False")
     print("v300_rt2c_microphone_accessed: False")
     print("v300_rt2c_audio_captured: False")
-    print("v300_rt2_parent_status: current-pending-rt2c-acceptance")
-    print("v300_rt2d_authorization: blocked-pending-rt2c-acceptance")
+    print("v300_rt2_parent_status: current-pending-rt2d-implementation")
+    print("v300_rt2d_authorization: authorized-capture-lifecycle-and-fake-engine-only")
 
 
 if __name__ == "__main__":

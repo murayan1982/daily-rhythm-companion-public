@@ -1,17 +1,17 @@
 # Daily Rhythm Companion v3.0.0 goal checklist and small-commit plan
 
-Updated: 2026-07-26
+Updated: 2026-07-27
 
 ```text
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-2 CURRENT / NOT_COMPLETED
-Current small commit: RT-2c IMPLEMENTED / NOT_ACCEPTED
-Current implementation step: mobile platform permission gateway and Android/iOS declarations without capture
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
-Completed small commit: RT-2b COMPLETED / ACCEPTED
-Next implementation action: run operator acceptance verification for RT-2c
+Current small commit: RT-2d CURRENT / NOT_COMPLETED
+Current implementation step: capture lifecycle contract/controller and fake engine only
+Current implementation state: NOT_STARTED
+Completed small commit: RT-2c COMPLETED / ACCEPTED
+Next implementation action: implement RT-2d without microphone access or UI wiring
 ```
 
 ## Source of truth
@@ -626,10 +626,10 @@ RT-2a  COMPLETED / ACCEPTED
        Current Flutter/platform permission and capture inventory; docs/test-only.
 RT-2b  COMPLETED / ACCEPTED
        DRC-owned permission state/result and gateway interface with fake gateway.
-RT-2c  IMPLEMENTED / NOT_ACCEPTED
+RT-2c  COMPLETED / ACCEPTED
        Android/iOS permission adapter and declarations; no UI invocation or capture.
-RT-2d  BLOCKED pending RT-2c acceptance
-       Capture lifecycle/controller and fake engine; no microphone access.
+RT-2d  CURRENT / NOT_COMPLETED
+       Capture lifecycle/controller and fake engine; NOT_STARTED; no microphone access.
 RT-2e  BLOCKED pending RT-2d acceptance
        Explicitly enabled bounded real capture and cleanup; no STT execution.
 ```
@@ -729,12 +729,12 @@ provider/STT called: false
 Acceptance completed on 2026-07-26 after compileall, the RT-2b source gate,
 focused Flutter 9, full Flutter 112, Backend 116 with one existing warning,
 `git diff --check`, nine-file review, gate portability fixes, and explicit operator approval passed.
-RT-2c is IMPLEMENTED / NOT_ACCEPTED. The mobile gateway and platform declarations are present, but operator acceptance and explicit approval remain pending.
+RT-2c is COMPLETED / ACCEPTED on 2026-07-27 at implementation commit `fe26c3c`. The mobile gateway, platform declarations, resolved lockfile, generated Windows registration, analyzer cleanup, tests, gate, Android debug APK build, and 16-file review were accepted. RT-2d is CURRENT / NOT_COMPLETED and NOT_STARTED.
 
 
 ## RT-2c mobile platform permission wiring without capture
 
-Implementation state: IMPLEMENTED / NOT_ACCEPTED
+Implementation state: COMPLETED / ACCEPTED
 
 Changed runtime/test files:
 
@@ -771,12 +771,25 @@ audio captured/persisted/uploaded: false
 capture package added: false
 Backend changed: false
 Framework/provider/STT execution: false
-RT-2d authorization: blocked-pending-rt2c-acceptance
+RT-2d authorization: authorized-capture-lifecycle-and-fake-engine-only
 ```
 
-Operator acceptance requires `flutter pub get`, the RT-2c source/platform gate,
-focused and full Flutter tests, full Backend tests, an Android debug APK build,
-`git diff --check`, 16-file declared changed-surface review including generated
-Windows plugin registration, and explicit approval. iOS build
-execution is not available on the Windows operator environment and must remain
-recorded as not executed.
+Acceptance completed on 2026-07-27 after `flutter pub get`, exact generated
+Windows plugin-registration review, `flutter analyze` with no issues, focused
+Flutter 13, full Flutter 125, Backend 116 with one existing warning, the RT-2c
+source/platform gate, Android debug APK build, `git diff --check`, 16-file review,
+and operator acceptance evidence passed. The Android build emitted a Kotlin
+daemon incremental-cache warning in `audioplayers_android`, then completed via
+Gradle fallback and produced `app-debug.apk`. iOS build execution was not
+available on the Windows operator environment and is not claimed.
+
+## RT-2d capture lifecycle contract and fake engine
+
+Implementation state: CURRENT / NOT_COMPLETED; NOT_STARTED
+
+Authorized scope: DRC-owned lifecycle/request/result/controller contracts and a
+deterministic fake capture engine only. Single active capture, bounded duration,
+stop/cancel/error cleanup, and typed denied/restricted/unsupported/busy/timeout
+states must be fixed before any real capture adapter. UI wiring, platform capture
+packages, microphone access, raw audio, upload, Framework/provider calls, and STT
+remain forbidden.
