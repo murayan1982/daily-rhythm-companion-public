@@ -18,17 +18,25 @@ ALLOWED_CHANGED_PATHS = {
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
+    "backend/.env.example",
+    "backend/app/config.py",
+    "backend/app/services/voice_input_staging_store.py",
+    "backend/tests/test_temporary_lifecycle_config.py",
+    "backend/tests/test_voice_input_staging_store.py",
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_framework_v530_stt_integration_inventory.md",
     "docs/v300_host_audio_handoff_lifecycle.md",
+    "docs/v300_rt3c_private_staging_fw_handoff_readiness.md",
+    "docs/v300_rt3c2_private_backend_staging_store.md",
+    "scripts/check_v300_framework_v530_stt_integration_inventory.py",
     "scripts/check_v300_host_audio_handoff_lifecycle.py",
-    "app/lib/services/microphone_capture_host_audio_handoff.dart",
-    "app/test/microphone_capture_host_audio_handoff_test.dart",
+    "scripts/check_v300_rt3c_private_staging_fw_handoff_readiness.py",
+    "scripts/check_v300_rt3c2_private_backend_staging_store.py",
 }
 
 PROTECTED_TREE_HASHES = {
-    "backend/app": "e46df81c20a3843b249cb66757c75a2324ff05c54adf2549b65de22ce2efcec1",
-    "backend/tests": "c62f2351de017fd7812571c66232c6dbff293539e52b72a8bc06a8f5aa0044ae",
+    "backend/app": "52e3d4679272a5ca64bee91401a524d34fe0921858956f45e86afa1fbfa0a10e",
+    "backend/tests": "048c3125154a477d4ed6215d3ae49856157bdfcd97dd9d198a97114fe2430f48",
 }
 
 PROTECTED_FILE_HASHES = {
@@ -42,7 +50,7 @@ PROTECTED_FILE_HASHES = {
     "app/android/app/src/main/AndroidManifest.xml": "5fb1b832160c9dcfeb33d45fe3b0ea3355dced95caa5a675b4490caba2b0adcd",
     "app/ios/Runner/Info.plist": "0bed3e2d536b5160706c12bd99da7364562f1b9fd4ed84a6d3a0c9d64f743865",
     "backend/app/version.py": "dfbbca8efedb35151eea62bb9f719abea41b97b722d19abbefb1a7f176cb205e",
-    "backend/.env.example": "c6936adcf1af839f6b5ed3c596395baa2a16eca5104a3015f9a392787234d45a",
+    "backend/.env.example": "874ad09f8dd37370c9ba423fdc676133e447efeaeecd6eb44a1a2c1a2d46a76a",
 }
 
 SENSITIVE_PATTERNS = (
@@ -262,13 +270,13 @@ def validate_docs() -> None:
 
     require(
         sources["README"],
-        "Current small commit: RT-3c (**CURRENT / NOT_COMPLETED**)",
-        "README RT-3c current state",
+        "Current small commit: RT-3c3 (**CURRENT / NOT_COMPLETED**)",
+        "README RT-3c2 current state",
     )
     require(
         sources["checklist"],
         "Current implementation state: NOT_STARTED",
-        "checklist RT-3c state",
+        "checklist RT-3c2 state",
     )
     require(
         sources["tasklist"],
@@ -323,9 +331,14 @@ def main() -> None:
     )
     print("v300_rt3b_status: completed-accepted")
     print("v300_rt3c_status: current-not-completed")
+    print("v300_rt3c1_status: completed-accepted")
+    print("v300_rt3c2_status: completed-accepted")
+    print("v300_rt3c2_implementation: completed-accepted")
+    print("v300_rt3c3_status: current-not-completed")
+    print("v300_rt3c3_implementation: not-started")
     print(
-        "v300_rt3c_authorization: "
-        "authorized-private-backend-staging-and-fake-fw-public-session-handoff-only"
+        "v300_rt3c3_authorization: "
+        "authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only"
     )
     print(
         "v300_rt3_real_acceptance: "

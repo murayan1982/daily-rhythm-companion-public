@@ -23,16 +23,27 @@ ALLOWED_CHANGED_PATHS = {
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
+    "backend/.env.example",
+    "backend/app/config.py",
+    "backend/app/services/voice_input_staging_store.py",
+    "backend/tests/test_temporary_lifecycle_config.py",
+    "backend/tests/test_voice_input_staging_store.py",
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_framework_v530_stt_integration_inventory.md",
+    "docs/v300_host_audio_handoff_lifecycle.md",
+    "docs/v300_rt3c_private_staging_fw_handoff_readiness.md",
+    "docs/v300_rt3c2_private_backend_staging_store.md",
     "scripts/check_v300_framework_v530_stt_integration_inventory.py",
+    "scripts/check_v300_host_audio_handoff_lifecycle.py",
+    "scripts/check_v300_rt3c_private_staging_fw_handoff_readiness.py",
+    "scripts/check_v300_rt3c2_private_backend_staging_store.py",
 }
 
 PROTECTED_TREE_HASHES = {
-    "backend/app": "e46df81c20a3843b249cb66757c75a2324ff05c54adf2549b65de22ce2efcec1",
-    "backend/tests": "c62f2351de017fd7812571c66232c6dbff293539e52b72a8bc06a8f5aa0044ae",
-    "app/lib": "eea487551ce299a728aa25f4dbf1ef1cfbadf1e530d7e9cea5cd1249fe7dcde9",
-    "app/test": "969a89030060b8934f6a5a82e27fae0caae0fb2811507c4975cf33f0f7a2e836",
+    "backend/app": "52e3d4679272a5ca64bee91401a524d34fe0921858956f45e86afa1fbfa0a10e",
+    "backend/tests": "048c3125154a477d4ed6215d3ae49856157bdfcd97dd9d198a97114fe2430f48",
+    "app/lib": "15c81e30712b6980aca085ceed11f31e97da40c70223197a41396b0ff123a857",
+    "app/test": "1d9d3124880d918ff1f52ec0abc35b01b6a7417824bae16c159cb6efff2b75d2",
 }
 
 PROTECTED_FILE_HASHES = {
@@ -40,7 +51,7 @@ PROTECTED_FILE_HASHES = {
     "app/android/app/src/main/AndroidManifest.xml": "5fb1b832160c9dcfeb33d45fe3b0ea3355dced95caa5a675b4490caba2b0adcd",
     "app/ios/Runner/Info.plist": "0bed3e2d536b5160706c12bd99da7364562f1b9fd4ed84a6d3a0c9d64f743865",
     "backend/app/version.py": "dfbbca8efedb35151eea62bb9f719abea41b97b722d19abbefb1a7f176cb205e",
-    "backend/.env.example": "c6936adcf1af839f6b5ed3c596395baa2a16eca5104a3015f9a392787234d45a",
+    "backend/.env.example": "874ad09f8dd37370c9ba423fdc676133e447efeaeecd6eb44a1a2c1a2d46a76a",
 }
 
 FRAMEWORK_FILE_HASHES = {
@@ -224,12 +235,12 @@ def main() -> None:
     require(
         checklist,
         "Current implementation state: NOT_STARTED",
-        "checklist RT-3b state",
+        "checklist RT-3c2 state",
     )
     require(
         checklist,
-        "RT-3b: CURRENT / NOT_COMPLETED",
-        "RT-3b current marker",
+        "RT-3c2: COMPLETED / ACCEPTED",
+        "RT-3c2 current marker",
     )
     require(
         inventory,
@@ -358,10 +369,15 @@ def main() -> None:
         "current-blocked-real-provider-execution-not-implemented"
     )
     print("v300_rt3a_status: completed-accepted")
-    print("v300_rt3b_status: current-not-completed")
+    print("v300_rt3b_status: completed-accepted")
+    print("v300_rt3c1_status: completed-accepted")
+    print("v300_rt3c2_status: completed-accepted")
+    print("v300_rt3c2_implementation: completed-accepted")
+    print("v300_rt3c3_status: current-not-completed")
+    print("v300_rt3c3_implementation: not-started")
     print(
-        "v300_rt3b_authorization: "
-        "authorized-app-owned-host-audio-lifecycle-contract-fake-only"
+        "v300_rt3c3_authorization: "
+        "authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only"
     )
     print(
         "v300_rt3_real_acceptance: "

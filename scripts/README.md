@@ -5509,9 +5509,11 @@ v300_rt3c1_exact_current_surface_inspected: True
 v300_rt3c1_flutter_scoped_private_path_lease_present: True
 v300_rt3c1_flutter_http_dependency_present: True
 v300_rt3c1_backend_voice_input_metadata_only: True
-v300_rt3c1_backend_private_staging_store_present: False
+v300_rt3c1_backend_private_staging_store_present_at_inventory: False
 v300_rt3c1_backend_audio_upload_route_present: False
-v300_rt3c1_backend_staging_lifecycle_config_present: False
+v300_rt3c1_backend_staging_lifecycle_config_present_at_inventory: False
+v300_rt3c2_backend_private_staging_store_present: True
+v300_rt3c2_backend_staging_lifecycle_config_present: True
 v300_rt3c1_python_multipart_dependency_present: False
 v300_rt3c1_bounded_streamed_wav_transport_selected: True
 v300_rt3c1_framework_public_fake_file_handoff_present: True
@@ -5522,11 +5524,13 @@ v300_rt3c1_audio_uploaded: False
 v300_rt3c1_framework_imported: False
 v300_rt3c1_stt_executed: False
 v300_rt3_parent_status: current-blocked-real-provider-execution-not-implemented
-v300_rt3c_parent_status: current-pending-rt3c2-implementation
+v300_rt3c_parent_status: current-pending-rt3c3-implementation
 v300_rt3c1_status: completed-accepted
-v300_rt3c2_status: current-not-completed
-v300_rt3c2_implementation: not-started
-v300_rt3c2_authorization: authorized-bounded-private-backend-staging-store-and-lifecycle-only
+v300_rt3c2_status: completed-accepted
+v300_rt3c2_implementation: completed-accepted
+v300_rt3c3_status: current-not-completed
+v300_rt3c3_implementation: not-started
+v300_rt3c3_authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
 v300_rt3_real_acceptance: blocked-framework-real-provider-execution-not-implemented
 ```
 
@@ -5535,3 +5539,41 @@ RT-3c1 acceptance evidence: compileall, the source-only gate, Backend 116 with o
 The gate validates source only. It does not import the vendored FW, read audio,
 open a microphone, upload data, create staging files, start Backend/Flutter,
 create provider clients, or execute STT.
+
+
+## v3.0.0 RT-3c2 private Backend staging store gate
+
+Run from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_rt3c2_private_backend_staging_store.py
+.\.venv\Scripts\python.exe -m pytest -q backend\tests\test_temporary_lifecycle_config.py backend\tests\test_voice_input_staging_store.py
+.\.venv\Scripts\python.exe -m pytest -q backend\tests
+```
+
+Expected accepted-state markers:
+
+```text
+v300_rt3c2_private_backend_staging_store_status: completed-accepted
+v300_rt3c2_config_defaults_added: True
+v300_rt3c2_private_store_added: True
+v300_rt3c2_opaque_id_added: True
+v300_rt3c2_path_free_metadata: True
+v300_rt3c2_bounded_chunk_staging_added: True
+v300_rt3c2_single_use_consume_added: True
+v300_rt3c2_explicit_discard_added: True
+v300_rt3c2_cleanup_lifecycle_added: True
+v300_rt3c2_upload_route_added: False
+v300_rt3c2_flutter_changed: False
+v300_rt3c2_framework_imported: False
+v300_rt3c2_provider_execution_executed: False
+v300_rt3c2_stt_executed: False
+v300_rt3c_parent_status: current-pending-rt3c3-implementation
+v300_rt3c2_status: completed-accepted
+v300_rt3c3_status: current-not-completed
+v300_rt3c3_implementation: not-started
+v300_rt3c3_authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
+```
+
+RT-3c2 acceptance evidence: compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check` passed. RT-3c3 remains mock-safe and must not import Framework or execute STT.

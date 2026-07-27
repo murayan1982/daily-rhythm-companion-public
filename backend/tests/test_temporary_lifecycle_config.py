@@ -12,6 +12,9 @@ def test_temporary_lifecycle_defaults_are_bounded(monkeypatch) -> None:
         "POST_ADVICE_CHAT_MAX_TURNS",
         "VOICE_OUTPUT_ARTIFACT_TTL_SECONDS",
         "VOICE_OUTPUT_ARTIFACT_MAX_COUNT",
+        "VOICE_INPUT_STAGING_TTL_SECONDS",
+        "VOICE_INPUT_STAGING_MAX_COUNT",
+        "VOICE_INPUT_STAGING_MAX_BYTES",
     ):
         monkeypatch.delenv(name, raising=False)
 
@@ -22,6 +25,9 @@ def test_temporary_lifecycle_defaults_are_bounded(monkeypatch) -> None:
     assert config.post_advice_chat_max_turns == 8
     assert config.voice_output_artifact_ttl_seconds == 86400
     assert config.voice_output_artifact_max_count == 100
+    assert config.voice_input_staging_ttl_seconds == 300
+    assert config.voice_input_staging_max_count == 8
+    assert config.voice_input_staging_max_bytes == 1048576
 
 
 def test_temporary_lifecycle_values_can_be_overridden(monkeypatch) -> None:
@@ -30,6 +36,9 @@ def test_temporary_lifecycle_values_can_be_overridden(monkeypatch) -> None:
     monkeypatch.setenv("POST_ADVICE_CHAT_MAX_TURNS", "5")
     monkeypatch.setenv("VOICE_OUTPUT_ARTIFACT_TTL_SECONDS", "90")
     monkeypatch.setenv("VOICE_OUTPUT_ARTIFACT_MAX_COUNT", "9")
+    monkeypatch.setenv("VOICE_INPUT_STAGING_TTL_SECONDS", "30")
+    monkeypatch.setenv("VOICE_INPUT_STAGING_MAX_COUNT", "4")
+    monkeypatch.setenv("VOICE_INPUT_STAGING_MAX_BYTES", "2048")
 
     config = load_config()
 
@@ -38,6 +47,9 @@ def test_temporary_lifecycle_values_can_be_overridden(monkeypatch) -> None:
     assert config.post_advice_chat_max_turns == 5
     assert config.voice_output_artifact_ttl_seconds == 90
     assert config.voice_output_artifact_max_count == 9
+    assert config.voice_input_staging_ttl_seconds == 30
+    assert config.voice_input_staging_max_count == 4
+    assert config.voice_input_staging_max_bytes == 2048
 
 
 def test_invalid_temporary_lifecycle_values_use_safe_defaults(monkeypatch) -> None:
@@ -46,6 +58,9 @@ def test_invalid_temporary_lifecycle_values_use_safe_defaults(monkeypatch) -> No
     monkeypatch.setenv("POST_ADVICE_CHAT_MAX_TURNS", "invalid")
     monkeypatch.setenv("VOICE_OUTPUT_ARTIFACT_TTL_SECONDS", "invalid")
     monkeypatch.setenv("VOICE_OUTPUT_ARTIFACT_MAX_COUNT", "")
+    monkeypatch.setenv("VOICE_INPUT_STAGING_TTL_SECONDS", "0")
+    monkeypatch.setenv("VOICE_INPUT_STAGING_MAX_COUNT", "-1")
+    monkeypatch.setenv("VOICE_INPUT_STAGING_MAX_BYTES", "invalid")
 
     config = load_config()
 
@@ -54,3 +69,6 @@ def test_invalid_temporary_lifecycle_values_use_safe_defaults(monkeypatch) -> No
     assert config.post_advice_chat_max_turns == 8
     assert config.voice_output_artifact_ttl_seconds == 86400
     assert config.voice_output_artifact_max_count == 100
+    assert config.voice_input_staging_ttl_seconds == 300
+    assert config.voice_input_staging_max_count == 8
+    assert config.voice_input_staging_max_bytes == 1048576

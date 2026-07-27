@@ -9,9 +9,9 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-3c2 (**CURRENT / NOT_COMPLETED**)
-Current implementation: Bounded private Backend staging store and lifecycle (**NOT_STARTED**)
-Completed small commit: RT-3c1 (**COMPLETED / ACCEPTED**)
+Current small commit: RT-3c3 (**CURRENT / NOT_COMPLETED**)
+Current implementation: Guarded binary upload route and Flutter scoped staging consumer (**NOT_STARTED**)
+Completed small commit: RT-3c2 (**COMPLETED / ACCEPTED**)
 Next realtime phase: RT-3 (**CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED**)
 
 Current phase state:
@@ -43,8 +43,8 @@ RT-3  CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voic
   RT-3b  COMPLETED / ACCEPTED                                  App-owned host-audio handoff lifecycle contract
   RT-3c  CURRENT / NOT_COMPLETED                                 Private backend staging and fake FW public-session handoff
     RT-3c1  COMPLETED / ACCEPTED                                 Exact staging/transport/FW fake-handoff readiness inventory
-    RT-3c2  CURRENT / NOT_COMPLETED                                Bounded private Backend staging store and lifecycle
-    RT-3c3  BLOCKED_PENDING_RT3C2_ACCEPTANCE                       Guarded binary upload and Flutter scoped staging consumer
+    RT-3c2  COMPLETED / ACCEPTED                                 Bounded private Backend staging store and lifecycle
+    RT-3c3  CURRENT / NOT_COMPLETED                                Guarded binary upload and Flutter scoped staging consumer
     RT-3c4  BLOCKED_PENDING_RT3C3_ACCEPTANCE                       Fake FW public-session handoff and single-use cleanup
   RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
 T-1  COMPLETED / ACCEPTED
@@ -61,7 +61,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3c1 is COMPLETED / ACCEPTED after compileall, the source-only gate, Backend 116, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check` passed. RT-3c2 is CURRENT / NOT_COMPLETED and NOT_STARTED, authorized only for the bounded private Backend staging store and lifecycle configuration. No upload route, Flutter network code, FW import, provider execution, or STT is authorized in RT-3c2. FW v5.3.0 still reports `real_stt_not_implemented`, so real RT-3 acceptance remains blocked pending an FW release with actual provider execution.
+Current v3 phase: RT-3c2 is COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check` passed. RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED, authorized only for a guarded bounded binary WAV upload route and the Flutter scoped staging consumer. Framework import, VoiceInputSession handoff, provider execution, and STT remain forbidden. FW v5.3.0 still reports `real_stt_not_implemented`, so real RT-3 acceptance remains blocked pending an FW release with actual provider execution.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4305,4 +4305,32 @@ multipart. This avoids adding `python-multipart`; server-side staging will use a
 generated opaque ID under ignored `backend/local_data`, a 1 MiB body limit, a
 300-second TTL, a maximum of eight staged artifacts, and single-use cleanup.
 RT-3c1 only records that design and divides RT-3c into RT-3c2 through RT-3c4.
-Acceptance state: **COMPLETED / ACCEPTED** after compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check` passed. RT-3c2 is now CURRENT / NOT_COMPLETED and authorized only for the bounded private Backend staging store and lifecycle configuration; it must not add an upload route, Flutter transfer, FW import, provider execution, or STT.
+Acceptance state: **COMPLETED / ACCEPTED** after compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check` passed. RT-3c2 is also COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check` passed. RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED under authorization `authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only`.
+
+
+## v3.0.0 RT-3c2 private Backend voice-input staging store
+
+RT-3c2 adds the DRC Backend-owned private WAV staging store and safe lifecycle
+configuration only. The implementation accepts bounded chunk iterables, creates a
+server-generated opaque ID, returns path-free metadata, and cleans private files
+after rejection, expiry, capacity enforcement, scoped single-use consume, consumer
+exceptions, or explicit discard.
+
+```text
+VOICE_INPUT_STAGING_TTL_SECONDS=300
+VOICE_INPUT_STAGING_MAX_COUNT=8
+VOICE_INPUT_STAGING_MAX_BYTES=1048576
+private root: backend/local_data/voice_input/staging
+```
+
+The metadata-only voice-input route, Flutter tree, dependencies, Framework adapter,
+provider execution, and STT remain unchanged. Status: **COMPLETED / ACCEPTED** after
+compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing
+warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and
+`git diff --check` passed. RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED; only the
+guarded binary upload route and Flutter scoped staging consumer are authorized.
+
+
+## v3.0.0 RT-3c3 guarded upload and Flutter scoped staging consumer
+
+RT-3c3 is **CURRENT / NOT_COMPLETED** and **NOT_STARTED**. Authorization: `authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only`. It may connect a bounded streamed WAV request body to the accepted private Backend staging store and add the Flutter consumer that reads the private mobile artifact only inside the accepted scoped lease. It must not import Framework, create a VoiceInputSession, execute a provider, or execute STT.

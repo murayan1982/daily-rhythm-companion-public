@@ -242,4 +242,13 @@ current Backend does not depend on `python-multipart`. The future staging
 boundary remains private, bounded, single-use, path-free in public responses,
 and rooted under ignored `backend/local_data`.
 
-RT-3c1 acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is now CURRENT / NOT_COMPLETED and NOT_STARTED with authorization limited to the bounded private Backend staging store and lifecycle configuration. RT-3c2 through RT-3c4 must be accepted separately. Real RT-3 acceptance remains blocked by GAP-5.
+RT-3c1 acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check`. RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED with authorization `authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only`. RT-3c3 and RT-3c4 must be accepted separately. Real RT-3 acceptance remains blocked by GAP-5.
+
+
+## RT-3c2 DRC-side staging update
+
+DRC now has an accepted private Backend staging store. It does not import Framework
+or create a voice-input session. RT-3c3 may add only the guarded binary upload route
+and Flutter scoped staging consumer; fake FW public-session handoff remains reserved
+for RT-3c4. FW v5.3.0 real provider execution remains absent, so the real RT-3
+acceptance block is unchanged.

@@ -5,10 +5,11 @@ Status:
 ```text
 RT-3c1: COMPLETED / ACCEPTED
 RT-3c1 implementation: COMPLETED / ACCEPTED
-RT-3c2: CURRENT / NOT_COMPLETED
-RT-3c2 implementation: NOT_STARTED
-RT-3c2 authorization: authorized-bounded-private-backend-staging-store-and-lifecycle-only
-RT-3c3: BLOCKED_PENDING_RT3C2_ACCEPTANCE
+RT-3c2: COMPLETED / ACCEPTED
+RT-3c2 implementation: COMPLETED / ACCEPTED
+RT-3c3: CURRENT / NOT_COMPLETED
+RT-3c3 implementation: NOT_STARTED
+RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
 RT-3c4: BLOCKED_PENDING_RT3C3_ACCEPTANCE
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
@@ -186,10 +187,13 @@ RT-3c1 is COMPLETED / ACCEPTED after compileall, the source-only gate, Backend
 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact
 nine-file review, and `git diff --check` passed.
 
-RT-3c2 is CURRENT / NOT_COMPLETED and NOT_STARTED. Its authorization is limited
-to the bounded private Backend staging store and lifecycle configuration. It
-must not add a FastAPI upload route, Flutter transfer, Framework import, audio
-transcription, provider execution, or STT.
+RT-3c2 is COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused
+Backend 14, full Backend 127 with one existing warning, clean Flutter analysis,
+full Flutter 192, exact 18-file surface review, and `git diff --check` passed.
+RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED. Its authorization is limited
+to the guarded bounded binary upload route and Flutter scoped staging consumer.
+It must not import Framework, create a VoiceInputSession, execute a provider, or
+execute STT.
 
 ## Local validation
 
@@ -213,6 +217,20 @@ git status --short
 Expected existing regression counts:
 
 ```text
-Backend: 116 passed with one existing warning
+Backend: 127 passed with one existing warning
 Flutter: 192 passed
+```
+
+
+## RT-3c2 implementation update
+
+The selected private staging design is implemented and accepted. The Backend adds
+only configuration, the bounded private store, and mock-safe tests. The existing
+metadata-only route and all Flutter/FW/provider/STT surfaces remain unchanged.
+
+```text
+RT-3c2 implementation: COMPLETED / ACCEPTED
+RT-3c3: CURRENT / NOT_COMPLETED
+RT-3c3 implementation: NOT_STARTED
+RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
 ```

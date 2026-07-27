@@ -170,7 +170,7 @@ private WAV file. The lease must stay active until the Backend response is
 received. The existing controller then discards the original mobile artifact
 after consumer completion or failure.
 
-RT-3c1 is COMPLETED / ACCEPTED after compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is CURRENT / NOT_COMPLETED and NOT_STARTED; only the bounded private Backend staging store and lifecycle configuration are authorized.
+RT-3c1 is COMPLETED / ACCEPTED after compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check`. RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED; only the guarded binary upload route and Flutter scoped staging consumer are authorized.
 
 RT-3c1 does not add that consumer. It only fixes these future rules:
 
@@ -181,3 +181,11 @@ RT-3c1 does not add that consumer. It only fixes these future rules:
 - RT-3c3 does not import FW or execute STT;
 - cleanup failure remains explicit and retryable through the accepted RT-3b
   controller.
+
+
+## RT-3c2 downstream staging update
+
+The future consumer boundary prepared by RT-3b now has an accepted Backend-owned
+private staging store. RT-3c3 is authorized to connect the Flutter lease to a guarded
+bounded network request while preserving RT-3b ownership and cleanup behavior. It must
+not import Framework, create a VoiceInputSession, execute a provider, or execute STT.
