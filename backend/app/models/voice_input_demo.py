@@ -109,3 +109,38 @@ class VoiceInputFakeHandoffResponse(BaseModel):
     microphone_accessed: bool
     provider_execution_executed: bool
     stt_executed: bool
+
+class VoiceInputOpenAIFakeExecutorRequest(BaseModel):
+    """Safe metadata for one bounded FW OpenAI marked-fake execution."""
+
+    language: str | None = Field(default="ja", max_length=32)
+    duration_ms: int | None = Field(default=None, ge=1, le=15000)
+
+
+class VoiceInputOpenAIFakeExecutorResponse(BaseModel):
+    """Path-free result from one single-use bounded marked-fake execution."""
+
+    accepted: bool
+    request_state: str
+    outcome: str
+    transcript: str
+    language: str | None = None
+    duration_ms: int | None = Field(default=None, ge=0)
+    public_error_code: str
+    safe_message: str
+    retryable: bool
+    framework_api_name: str
+    adapter_name: str
+    executor_name: str
+    fake_transcription_completed: bool
+    fake_provider_protocol_call_executed: bool
+    staged_artifact_consumed: bool
+    audio_read: bool
+    audio_bytes_read: int = Field(ge=0)
+    microphone_accessed: bool
+    provider_sdk_imported: bool
+    provider_client_created: bool
+    credential_values_read: bool
+    real_provider_execution_executed: bool
+    fake_stt_executed: bool
+    real_stt_executed: bool

@@ -5664,3 +5664,22 @@ The gate verifies that the Voice Input session is data-only, the OpenAI adapter'
 RT-3d2a acceptance reports
 `v300_rt3d2a_executor_path_correction_status: completed-accepted` and
 `v300_rt3d2b_authorization: authorized-not-started`.
+
+## v3.0.0 RT-3d2b bounded marked-fake executor wiring
+
+```powershell
+$env:FRAMEWORK_ROOT = "E:\work\deverop\AI-Character-Framework\Development"
+python -m compileall -q backend scripts
+python scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
+python -m pytest -q backend/tests/test_framework_voice_input_openai_fake_executor.py backend/tests/test_voice_input_openai_fake_executor_api.py
+python -m pytest -q backend/tests
+cd app
+flutter analyze
+flutter test
+cd ..
+git diff --check
+```
+
+The dedicated gate verifies the separate bounded marked-fake runtime path,
+path-free normalization, single-use cleanup, and absence of credentials, OpenAI
+SDK/client creation, network execution, microphone access, and real STT.

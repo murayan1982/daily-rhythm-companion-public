@@ -7260,3 +7260,16 @@ RT-3d2c  Guarded real-executor assembly and operator handoff contract
 RT-3d remains `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
 
 RT-3d2a acceptance authorizes RT-3d2b only. Credential resolution, OpenAI SDK/client creation, real provider execution, and private transcript evidence remain blocked.
+
+### RT-3d2b bounded marked-fake executor wiring
+
+Status: `IMPLEMENTED / NOT_ACCEPTED`
+
+RT-3d2b adds a separate guarded Backend route from the accepted private staging
+store to FW v5.4.0 `OpenAIVoiceInputFakeExecutor`. It uses an explicit provider
+execution configuration, public OpenAI adapter, nominal fake client, bounded
+audio policy, provider-neutral result normalization, and single-use cleanup.
+
+The existing RT-3c4 session fake-handoff is preserved. Real credential
+resolution, OpenAI SDK/client creation, network execution, private operator
+evidence, and real STT remain reserved for later checkpoints.

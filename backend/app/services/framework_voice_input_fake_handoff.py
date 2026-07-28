@@ -75,6 +75,7 @@ class _FrameworkVoiceInputPublicApi:
     VoiceInputRequest: Any
     FakeVoiceInputProviderAdapter: Any
     create_voice_input_session: Callable[..., Any]
+    module: ModuleType | None = None
 
 
 _PublicApiContextFactory = Callable[[Path], Iterator[_FrameworkVoiceInputPublicApi]]
@@ -386,4 +387,5 @@ def _public_api_from_module(module: ModuleType) -> _FrameworkVoiceInputPublicApi
             module, "FakeVoiceInputProviderAdapter"
         ),
         create_voice_input_session=getattr(module, "create_voice_input_session"),
+        module=module,
     )

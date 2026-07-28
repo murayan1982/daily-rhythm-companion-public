@@ -6,11 +6,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-Current small commit: none (RT-3d2a accepted; RT-3d2b next)
-Current implementation step: FW v5.4.0 executor-path correction
-Current implementation state: COMPLETED / ACCEPTED
+Current small commit: RT-3d2b IMPLEMENTED / NOT_ACCEPTED
+Current implementation step: private staging to bounded marked-fake executor wiring
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Completed small commit: RT-3d2a COMPLETED / ACCEPTED
-Next implementation action: implement bounded marked-fake executor wiring in RT-3d2b
+Next implementation action: verify and accept RT-3d2b before authorizing RT-3d2c
 ```
 
 ## Source of truth
@@ -44,6 +44,8 @@ docs/v300_framework_v540_real_stt_adoption_inventory.md
 scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
 docs/v300_rt3d2a_framework_v540_executor_path_correction.md
 scripts/check_v300_rt3d2a_framework_v540_executor_path_correction.py
+docs/v300_rt3d2b_bounded_marked_fake_executor_wiring.md
+scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
 ```
 
 Historical release sources remain immutable:
@@ -1326,3 +1328,31 @@ RT-3d2a operator approval: ACCEPTED
 RT-3d2b authorization: AUTHORIZED / NOT_STARTED
 Additional Framework development requirement: False
 ```
+
+## RT-3d2b - bounded marked-fake executor wiring
+
+```text
+RT-3d2b  IMPLEMENTED / NOT_ACCEPTED
+RT-3d2   CURRENT / NOT_COMPLETED
+RT-3d    BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
+```
+
+Acceptance requirements:
+
+- [ ] accepted RT-3d2a baseline is pushed and clean
+- [ ] exact FW v5.4.0 HEAD/tag is verified
+- [ ] existing RT-3c4 fake-session route remains unchanged
+- [ ] separate guarded OpenAI marked-fake executor route exists
+- [ ] private staged WAV is read only inside single-use consume scope
+- [ ] marked fake client and bounded fake policy are explicit
+- [ ] provider-neutral path-free response is verified
+- [ ] success, guard, preflight, failure, unsafe-result, and reuse cleanup tests pass
+- [ ] FW accepted fake-execution smoke passes
+- [ ] compileall and dedicated RT-3d2b gate pass
+- [ ] focused Backend tests pass
+- [ ] Backend full pytest passes
+- [ ] Flutter analyze and full tests pass unchanged
+- [ ] exact thirteen-file review and `git diff --check` pass
+- [ ] no credential value, OpenAI SDK/client, network, microphone, or real STT
+- [ ] no new Framework development requirement
+- [ ] explicit operator approval

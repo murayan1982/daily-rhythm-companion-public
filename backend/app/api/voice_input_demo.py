@@ -11,6 +11,8 @@ from app.models.voice_input_demo import (
     VoiceInputDemoStatusResponse,
     VoiceInputFakeHandoffRequest,
     VoiceInputFakeHandoffResponse,
+    VoiceInputOpenAIFakeExecutorRequest,
+    VoiceInputOpenAIFakeExecutorResponse,
     VoiceInputStagingProblem,
     VoiceInputStagingUploadResponse,
 )
@@ -19,6 +21,11 @@ from app.services.framework_voice_input_fake_handoff import (
     FrameworkVoiceInputFakeHandoffAdapter,
     FrameworkVoiceInputFakeHandoffError,
     FrameworkVoiceInputFakeHandoffRequest as ServiceFakeHandoffRequest,
+)
+from app.services.framework_voice_input_openai_fake_executor import (
+    FrameworkVoiceInputOpenAIFakeExecutorAdapter,
+    FrameworkVoiceInputOpenAIFakeExecutorError,
+    FrameworkVoiceInputOpenAIFakeExecutorRequest as ServiceOpenAIFakeExecutorRequest,
 )
 from app.services.voice_input_staging_store import (
     VoiceInputStagingError,
@@ -206,6 +213,74 @@ def fake_transcribe_staged_voice_input(
     )
 
 
+@router.post(
+    "/demo/voice-input/staging/{staging_id}/openai-fake-executor",
+    response_model=VoiceInputOpenAIFakeExecutorResponse,
+)
+def execute_openai_fake_staged_voice_input(
+    staging_id: str,
+    request: VoiceInputOpenAIFakeExecutorRequest,
+) -> VoiceInputOpenAIFakeExecutorResponse:
+    """Consume one staged artifact through FW's bounded marked-fake executor.
+
+    The route imports only the configured Framework public package and injects a
+    nominally marked fake OpenAI client. It reads the private WAV only within the
+    single-use staging consume scope and performs no credential, SDK, real
+    provider, network, or microphone operation.
+    """
+
+    config = load_config()
+    _require_staging_upload_enabled(config)
+    store = _create_voice_input_staging_store(config)
+    adapter = _create_framework_voice_input_openai_fake_executor_adapter(
+        config,
+        store,
+    )
+
+    try:
+        result = adapter.transcribe_staged_artifact(
+            ServiceOpenAIFakeExecutorRequest(
+                staging_id=staging_id,
+                language=request.language,
+                duration_ms=request.duration_ms,
+                max_duration_ms=_MAX_CAPTURE_DURATION_MS,
+            )
+        )
+    except FrameworkVoiceInputOpenAIFakeExecutorError as exc:
+        _raise_openai_fake_executor_error(exc)
+
+    return VoiceInputOpenAIFakeExecutorResponse(
+        accepted=result.status == "completed",
+        request_state=result.request_state,
+        outcome=result.outcome,
+        transcript=result.transcript,
+        language=result.language,
+        duration_ms=result.duration_ms,
+        public_error_code=result.public_error_code,
+        safe_message=result.safe_message,
+        retryable=result.retryable,
+        framework_api_name=result.framework_api_name,
+        adapter_name=result.adapter_name,
+        executor_name=result.executor_name,
+        fake_transcription_completed=result.fake_transcription_completed,
+        fake_provider_protocol_call_executed=(
+            result.fake_provider_protocol_call_executed
+        ),
+        staged_artifact_consumed=result.staged_artifact_consumed,
+        audio_read=result.audio_read,
+        audio_bytes_read=result.audio_bytes_read,
+        microphone_accessed=result.microphone_accessed,
+        provider_sdk_imported=result.provider_sdk_imported,
+        provider_client_created=result.provider_client_created,
+        credential_values_read=result.credential_values_read,
+        real_provider_execution_executed=(
+            result.real_provider_execution_executed
+        ),
+        fake_stt_executed=result.fake_stt_executed,
+        real_stt_executed=result.real_stt_executed,
+    )
+
+
 def _create_voice_input_staging_store(config: AppConfig) -> VoiceInputStagingStore:
     return VoiceInputStagingStore(config=config)
 
@@ -215,6 +290,13 @@ def _create_framework_voice_input_fake_handoff_adapter(
     store: VoiceInputStagingStore,
 ) -> FrameworkVoiceInputFakeHandoffAdapter:
     return FrameworkVoiceInputFakeHandoffAdapter(config, store)
+
+
+def _create_framework_voice_input_openai_fake_executor_adapter(
+    config: AppConfig,
+    store: VoiceInputStagingStore,
+) -> FrameworkVoiceInputOpenAIFakeExecutorAdapter:
+    return FrameworkVoiceInputOpenAIFakeExecutorAdapter(config, store)
 
 
 def _require_staging_upload_enabled(config: AppConfig) -> None:
@@ -295,6 +377,26 @@ def _raise_fake_handoff_error(error: FrameworkVoiceInputFakeHandoffError) -> Non
         "artifact_not_found": status.HTTP_404_NOT_FOUND,
         "unexpected_fake_handoff_contract": status.HTTP_502_BAD_GATEWAY,
         "unsafe_fake_handoff_result": status.HTTP_502_BAD_GATEWAY,
+    }.get(error.code, status.HTTP_503_SERVICE_UNAVAILABLE)
+    _raise_staging_problem(
+        status_code,
+        error.code,
+        str(error),
+        retryable=error.retryable,
+    )
+
+
+def _raise_openai_fake_executor_error(
+    error: FrameworkVoiceInputOpenAIFakeExecutorError,
+) -> None:
+    status_code = {
+        "invalid_staging_id": status.HTTP_400_BAD_REQUEST,
+        "artifact_not_found": status.HTTP_404_NOT_FOUND,
+        "public_openai_fake_executor_contract_missing": (
+            status.HTTP_503_SERVICE_UNAVAILABLE
+        ),
+        "unexpected_openai_fake_executor_contract": status.HTTP_502_BAD_GATEWAY,
+        "unsafe_openai_fake_executor_result": status.HTTP_502_BAD_GATEWAY,
     }.get(error.code, status.HTTP_503_SERVICE_UNAVAILABLE)
     _raise_staging_problem(
         status_code,

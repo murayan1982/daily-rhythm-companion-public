@@ -13,9 +13,9 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-current small commit: none (RT-3d2a accepted; RT-3d2b next)
-current implementation step: FW v5.4.0 executor-path correction
-current implementation state: COMPLETED / ACCEPTED
+current small commit: RT-3d2b IMPLEMENTED / NOT_ACCEPTED
+current implementation step: private staging to bounded marked-fake executor wiring
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed small commit: RT-3d2a COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -55,6 +55,8 @@ docs/v300_framework_v540_real_stt_adoption_inventory.md
 scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
 docs/v300_rt3d2a_framework_v540_executor_path_correction.md
 scripts/check_v300_rt3d2a_framework_v540_executor_path_correction.py
+docs/v300_rt3d2b_bounded_marked_fake_executor_wiring.md
+scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1836,3 +1838,13 @@ Status: `COMPLETED / ACCEPTED`
 The released Voice Input session is data-only. RT-3d2b must use the public bounded marked-fake executor in normal tests. The public real-provider executor is reserved for guarded assembly and private operator acceptance. RT-3d remains `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
 
 RT-3d2a acceptance passed after FW executor distinction checks, safe FW smokes, Backend 145, Flutter analyze, Flutter 200, exact eight-file review, `git diff --check`, and explicit operator approval. RT-3d2b is `AUTHORIZED / NOT_STARTED`.
+
+## RT-3d2b bounded marked-fake executor wiring
+
+Status: `IMPLEMENTED / NOT_ACCEPTED`
+
+The Backend now has a separate guarded marked-fake executor path that performs
+bounded staged-WAV reading through FW v5.4.0 public contracts, returns a
+path-free typed result, and enforces single-use cleanup. It does not read
+credentials, import the OpenAI SDK, create a real provider client, access a
+microphone, or execute the network.
