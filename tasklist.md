@@ -12,11 +12,11 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-current small commit: none (RT-3d0 accepted; RT-3d blocked)
-current implementation step: Framework real STT requirement feedback handoff
+current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
+current small commit: none (RT-3d1 accepted; RT-3d2 next)
+current implementation step: Framework v5.4.0 real STT adoption inventory
 current implementation state: COMPLETED / ACCEPTED
-completed small commit: RT-3d0 COMPLETED / ACCEPTED
+completed small commit: RT-3d1 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -51,6 +51,8 @@ docs/v300_host_audio_handoff_lifecycle.md
 scripts/check_v300_host_audio_handoff_lifecycle.py
 docs/v300_framework_real_stt_requirement_feedback.md
 scripts/check_v300_framework_real_stt_requirement_feedback.py
+docs/v300_framework_v540_real_stt_adoption_inventory.md
+scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1813,3 +1815,13 @@ runtime, dependency, version, audio, provider, or release surface. Acceptance
 passed with the six clean-baseline RT-3 gates, the dedicated RT-3d0 gate,
 Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review,
 `git diff --check`, and explicit operator approval.
+
+
+## RT-3d1 Framework v5.4.0 real STT adoption inventory
+
+Status: `COMPLETED / ACCEPTED`
+
+The FW v5.4.0 released public real-STT surface is verified. RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+No DRC runtime, audio, credential, provider, network, or release execution
+occurs in RT-3d1. Acceptance passed with the dedicated source-only gate, Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review, `git diff --check`, and explicit operator approval.

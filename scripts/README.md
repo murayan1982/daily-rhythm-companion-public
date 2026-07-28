@@ -5632,3 +5632,19 @@ git diff --check
 This is source-only and does not select the next FW version or provider, import
 Framework, read audio, open a microphone, create a provider client, or execute
 STT.
+
+
+## v3.0.0 RT-3d1 Framework v5.4.0 adoption inventory check
+
+Status: **COMPLETED / ACCEPTED**.
+
+```powershell
+$env:FRAMEWORK_ROOT = "E:\work\deverop\AI-Character-Framework\Development"
+python -m compileall -q backend scripts
+python scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
+git diff --check
+```
+
+The source-only gate checks the exact v5.4.0 tag/HEAD, ZIP SHA-256, public
+exports, accepted safe FW gates, and seven-file DRC surface. RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.

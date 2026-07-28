@@ -5,12 +5,12 @@ Updated: 2026-07-28
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-Current small commit: none (RT-3d0 accepted; RT-3d blocked)
-Current implementation step: Framework real STT requirement feedback handoff
+Current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
+Current small commit: none (RT-3d1 accepted; RT-3d2 next)
+Current implementation step: Framework v5.4.0 real STT adoption inventory
 Current implementation state: COMPLETED / ACCEPTED
-Completed small commit: RT-3d0 COMPLETED / ACCEPTED
-Next implementation action: carry the accepted requirement to the FW development thread; RT-3d remains blocked
+Completed small commit: RT-3d1 COMPLETED / ACCEPTED
+Next implementation action: implement guarded FW v5.4.0 wiring in RT-3d2
 ```
 
 ## Source of truth
@@ -40,6 +40,8 @@ docs/v300_framework_v530_stt_integration_inventory.md
 scripts/check_v300_framework_v530_stt_integration_inventory.py
 docs/v300_framework_real_stt_requirement_feedback.md
 scripts/check_v300_framework_real_stt_requirement_feedback.py
+docs/v300_framework_v540_real_stt_adoption_inventory.md
+scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
 ```
 
 Historical release sources remain immutable:
@@ -1239,3 +1241,54 @@ Acceptance requirements:
 - [x] no next FW version/provider selection
 - [x] no release artifact, tag, or publication
 - [x] explicit operator approval
+
+
+## RT-3d1 - Framework v5.4.0 real STT adoption inventory
+
+```text
+RT-3d1  COMPLETED / ACCEPTED
+RT-3d   BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
+```
+
+Exact change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_framework_v540_real_stt_adoption_inventory.md
+scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
+```
+
+Acceptance requirements:
+
+- [x] RT-3d0 is pushed to `origin/main`
+- [x] FW v5.4.0 clean HEAD/tag and ZIP SHA-256 are verified
+- [x] required public exports/signatures pass
+- [x] accepted safe FW v5.4.0 gates pass
+- [x] compileall and dedicated gate pass
+- [x] Backend full pytest passes
+- [x] Flutter analyze and full tests pass
+- [x] exact seven-file review and `git diff --check` pass
+- [x] no runtime/dependency/version/platform/FW change
+- [x] no audio/microphone/credential/provider/network execution
+- [x] explicit operator approval
+
+
+Acceptance record:
+
+```text
+FW v5.4.0 identity/public surface/safe gates: PASS
+RT-3d1 dedicated source-only gate: PASS
+Backend tests: 145 passed, one existing warning
+Flutter analyze: No issues found
+Flutter tests: 200 passed
+exact seven-file surface: PASS
+git diff --check: PASS
+explicit operator approval: RECEIVED
+```
+
+RT-3d2 is authorized but not started. RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.

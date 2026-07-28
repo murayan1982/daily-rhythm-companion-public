@@ -9,10 +9,10 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3d0 accepted; RT-3d blocked)
-Current implementation: Framework real STT requirement feedback handoff (**COMPLETED / ACCEPTED**)
-Completed small commit: RT-3d0 (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3d (**BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED**)
+Current small commit: none (RT-3d1 accepted; RT-3d2 next)
+Current implementation: Framework v5.4.0 real STT adoption inventory (**COMPLETED / ACCEPTED**)
+Completed small commit: RT-3d1 (**COMPLETED / ACCEPTED**)
+Next realtime phase: RT-3d2 (**AUTHORIZED / NOT_STARTED**)
 
 Current phase state:
 
@@ -38,7 +38,7 @@ RT-2  COMPLETED / ACCEPTED          Microphone permission and guarded capture pa
       RT-2e-c3  COMPLETED / ACCEPTED                  Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                      Real Android operator preflight and safe evidence contract
         RT-2e-c3b  COMPLETED / ACCEPTED                      Explicit real Android bounded capture and cleanup evidence
-RT-3  CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voice-input integration
+RT-3  CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real STT / voice-input integration
   RT-3a  COMPLETED / ACCEPTED                                  Framework v5.3.0 STT integration inventory
   RT-3b  COMPLETED / ACCEPTED                                  App-owned host-audio handoff lifecycle contract
   RT-3c  COMPLETED / ACCEPTED                                  Private backend staging and fake FW public-session handoff
@@ -46,8 +46,10 @@ RT-3  CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voic
     RT-3c2  COMPLETED / ACCEPTED                                 Bounded private Backend staging store and lifecycle
     RT-3c3  COMPLETED / ACCEPTED                                 Guarded binary upload and Flutter scoped staging consumer
     RT-3c4  COMPLETED / ACCEPTED                                 Fake FW public-session handoff and single-use cleanup
-  RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
+  RT-3d  BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real provider execution evidence
     RT-3d0  COMPLETED / ACCEPTED                                  Framework real STT requirement feedback handoff
+    RT-3d1  COMPLETED / ACCEPTED                                  Framework v5.4.0 adoption inventory
+    RT-3d2  AUTHORIZED / NOT_STARTED                              Guarded DRC v5.4.0 real-STT wiring
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -62,7 +64,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3c is COMPLETED / ACCEPTED. RT-3c4 passed compileall, six RT-3 gates, focused Backend 8, full Backend 145 with one existing warning, clean Flutter analysis, full Flutter 200, exact 22-file surface review, and `git diff --check`. The accepted boundary imports FW v5.3.0 public Voice Input, uses `FakeVoiceInputProviderAdapter`, closes the public session, and single-use consumes the private staged artifact without exposing its path. No real microphone artifact, provider execution, real transcription, or real STT evidence is claimed. RT-3d remains BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED until an FW release provides accepted real provider execution.
+Current v3 phase: RT-3d1 is COMPLETED / ACCEPTED after FW v5.4.0 tag, published ZIP/sidecar, SHA-256, public OpenAI Voice Input adapter, safe runtime gates, Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review, `git diff --check`, and explicit operator approval passed. RT-3d2 is authorized to add guarded DRC wiring with injected fake-client tests. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING until DRC wiring and private operator acceptance complete.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4362,3 +4364,11 @@ The additional Framework development requirement is recorded for the dedicated
 FW development thread. The next FW version, provider, model, and implementation
 remain undecided. RT-3d stays
 `BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED`.
+
+
+## v3.0.0 RT-3d1 Framework v5.4.0 real STT adoption inventory
+
+RT-3d1 is **COMPLETED / ACCEPTED** and docs/test-only. FW v5.4.0
+provides the released public OpenAI real-STT adapter and explicit execution
+configuration required for DRC adoption. Acceptance passed with the dedicated FW/DRC source-only gate, Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review, `git diff --check`, and explicit operator approval. RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
