@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_DRC_HEAD = "daf4eb058fb1137f60e637ffe7c621abbe85f261"
+EXPECTED_DRC_HEAD = "12a9d35b161da303325097a58f3913fe0c3b5708"
 EXPECTED_FW_HEAD = "d313eb6acb643103fe25988720ebee5976a04f78"
 
 EXPECTED_CHANGED_PATHS = {
@@ -19,8 +19,6 @@ EXPECTED_CHANGED_PATHS = {
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_rt3d2c_guarded_real_executor_assembly_contract.md",
     "scripts/check_v300_rt3d2c_guarded_real_executor_assembly_contract.py",
-    "backend/app/services/framework_voice_input_openai_real_executor_assembly.py",
-    "backend/tests/test_framework_voice_input_openai_real_executor_assembly.py",
 }
 
 
@@ -179,23 +177,34 @@ def main() -> None:
 
     require(
         files["README"],
-        "Current small commit: RT-3d2c (**IMPLEMENTED / NOT_ACCEPTED**)",
+        "Current small commit: none (RT-3d2c accepted; RT-3d3 next)",
         "README implementation state",
     )
     require(
         files["checklist"],
-        "RT-3d2c  IMPLEMENTED / NOT_ACCEPTED",
+        "RT-3d2c  COMPLETED / ACCEPTED",
         "checklist implementation state",
     )
     require(
         files["RT-3d2c doc"],
-        "RT-3d2c: IMPLEMENTED / NOT_ACCEPTED",
+        "RT-3d2c: COMPLETED / ACCEPTED",
         "RT-3d2c document state",
     )
     require(
         files["RT-3d2c doc"],
         "Additional Framework development requirement discovered by RT-3d2c: False",
         "Framework requirement result",
+    )
+
+    require(
+        files["RT-3d2c doc"],
+        "explicit operator approval: ACCEPTED",
+        "RT-3d2c operator approval record",
+    )
+    require(
+        files["checklist"],
+        "RT-3d3 authorization: AUTHORIZED / NOT_STARTED",
+        "RT-3d3 authorization record",
     )
 
     service = files["service"]
@@ -278,7 +287,7 @@ def main() -> None:
     ):
         require(tests, marker, f"focused test contract {marker}")
 
-    print("v300_rt3d2c_guarded_real_executor_assembly_status: implemented-not-accepted")
+    print("v300_rt3d2c_guarded_real_executor_assembly_status: completed-accepted")
     print("v300_framework_release: v5.4.0")
     print(f"v300_framework_tag_commit: {EXPECTED_FW_HEAD}")
     print("v300_fw_root_public_exports_only: True")
@@ -300,9 +309,11 @@ def main() -> None:
     print("v300_transcript_exposed: False")
     print("v300_real_provider_execution_executed: False")
     print("v300_new_framework_requirement_identified: False")
-    print("v300_rt3d3_authorization: blocked-pending-rt3d2c-acceptance")
+    print("v300_rt3d2c_implementation_commit: 12a9d35b161da303325097a58f3913fe0c3b5708")
+    print("v300_rt3d2c_operator_approval: accepted")
+    print("v300_rt3d3_authorization: authorized-not-started")
     print("v300_rt3d_status: blocked-drc-v540-wiring-and-operator-acceptance-pending")
-    print("[OK] RT-3d2c guarded real-executor assembly contract is implementation-ready")
+    print("[OK] RT-3d2c guarded real-executor assembly contract is completed and accepted")
 
 
 if __name__ == "__main__":

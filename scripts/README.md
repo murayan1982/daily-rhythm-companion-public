@@ -5717,6 +5717,10 @@ clients, client-factory invocation, executor execution, staging/audio access,
 microphone access, private paths, raw audio, provider payloads, transcripts, and
 real STT claims.
 
-The implementation gate reports
-`v300_rt3d2c_guarded_real_executor_assembly_status: implemented-not-accepted`
-and keeps RT-3d3 blocked pending full validation and explicit approval.
+The accepted gate reports
+`v300_rt3d2c_guarded_real_executor_assembly_status: completed-accepted`,
+`v300_rt3d2c_operator_approval: accepted`, and
+`v300_rt3d3_authorization: authorized-not-started`.
+
+RT-3d2c acceptance is recorded in a separate acceptance-only seven-file change
+after implementation commit `12a9d35b161da303325097a58f3913fe0c3b5708`.

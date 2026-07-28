@@ -3,7 +3,7 @@
 Updated: 2026-07-28
 
 ```text
-RT-3d2c: IMPLEMENTED / NOT_ACCEPTED
+RT-3d2c: COMPLETED / ACCEPTED
 RT-3d2: CURRENT / NOT_COMPLETED
 RT-3d: BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
 Framework release: v5.4.0
@@ -129,9 +129,15 @@ Flutter analyze: No issues found
 Flutter full tests: 200 passed
 exact nine-file surface: PASS
 git diff --check: PASS
-explicit operator approval: PENDING
+explicit operator approval: ACCEPTED
 ```
 
-RT-3d2c remains **IMPLEMENTED / NOT_ACCEPTED**. RT-3d3 private credential use,
-OpenAI SDK/client creation, network execution, transcript evidence, and operator
-acceptance remain separate and blocked pending RT-3d2c acceptance.
+RT-3d2c is **COMPLETED / ACCEPTED**. Acceptance passed with implementation
+commit `12a9d35b161da303325097a58f3913fe0c3b5708`, the dedicated gate,
+focused Backend 5, full Backend 158 with one existing warning, clean Flutter
+analysis, Flutter 200, exact nine-file implementation review, acceptance-only
+seven-file review, `git diff --check`, and explicit operator approval.
+
+RT-3d3 is `AUTHORIZED / NOT_STARTED`. Private credential use, OpenAI SDK/client
+creation, network execution, provider payload, transcript evidence, and real STT
+operator acceptance remain separate explicit work.

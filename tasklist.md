@@ -13,10 +13,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-current small commit: RT-3d2c IMPLEMENTED / NOT_ACCEPTED
+current small commit: none (RT-3d2c accepted; RT-3d3 next)
 current implementation step: guarded FW v5.4.0 real-executor assembly contract
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
-completed small commit: RT-3d2b COMPLETED / ACCEPTED
+current implementation state: COMPLETED / ACCEPTED
+completed small commit: RT-3d2c COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1860,7 +1860,7 @@ RT-3d2c authorization: AUTHORIZED / NOT_STARTED.
 
 ## RT-3d2c guarded real-executor assembly contract
 
-Status: `IMPLEMENTED / NOT_ACCEPTED`
+Status: `COMPLETED / ACCEPTED`
 
 The Backend now has a separate assembly-only service for the released FW v5.4.0
 real OpenAI executor path. It requires complete explicit opt-in before Framework
@@ -1876,8 +1876,12 @@ OpenAI SDK was imported, no provider client or network request was created, and
 no staging artifact, audio, microphone, path, payload, transcript, or real STT
 was used.
 
-RT-3d2c local validation passed: dedicated gate, focused Backend 5, full
-Backend 158 with one existing warning, clean Flutter analysis, Flutter 200,
-exact nine-file surface validation, and `git diff --check`. It remains
-NOT_ACCEPTED pending explicit operator approval. RT-3d3 remains blocked.
-Additional Framework development requirement: `False`.
+RT-3d2c acceptance passed with implementation commit `12a9d35`, the dedicated
+gate, focused Backend 5, full Backend 158 with one existing warning, clean
+Flutter analysis, Flutter 200, exact nine-file implementation review,
+acceptance-only seven-file review, `git diff --check`, and explicit operator
+approval.
+
+RT-3d3 is `AUTHORIZED / NOT_STARTED`. Private credential use, provider client
+creation, network execution, transcript evidence, and real STT acceptance remain
+separate explicit work. Additional Framework development requirement: `False`.

@@ -6,11 +6,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-Current small commit: RT-3d2c IMPLEMENTED / NOT_ACCEPTED
+Current small commit: none (RT-3d2c accepted; RT-3d3 next)
 Current implementation step: guarded FW v5.4.0 real-executor assembly contract
-Current implementation state: IMPLEMENTED / NOT_ACCEPTED
-Completed small commit: RT-3d2b COMPLETED / ACCEPTED
-Next implementation action: validate and accept RT-3d2c before any RT-3d3 private execution
+Current implementation state: COMPLETED / ACCEPTED
+Completed small commit: RT-3d2c COMPLETED / ACCEPTED
+Next implementation action: start RT-3d3 private real-STT operator execution and acceptance under explicit opt-in
 ```
 
 ## Source of truth
@@ -1369,7 +1369,7 @@ Additional Framework development requirement: False
 ## RT-3d2c - guarded real-executor assembly contract
 
 ```text
-RT-3d2c  IMPLEMENTED / NOT_ACCEPTED
+RT-3d2c  COMPLETED / ACCEPTED
 RT-3d2   CURRENT / NOT_COMPLETED
 RT-3d    BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
 ```
@@ -1390,7 +1390,7 @@ Acceptance requirements:
 - [x] Backend full pytest passes
 - [x] Flutter analyze and full tests pass unchanged
 - [x] exact nine-file review and `git diff --check` pass
-- [ ] explicit operator approval
+- [x] explicit operator approval
 
 Current implementation result:
 
@@ -1411,6 +1411,7 @@ Audio read: False
 Microphone accessed: False
 Real provider execution: False
 Additional Framework development requirement: False
-Explicit operator approval: PENDING
-RT-3d3 authorization: BLOCKED pending RT-3d2c acceptance
+RT-3d2c implementation commit: 12a9d35b161da303325097a58f3913fe0c3b5708
+RT-3d2c operator approval: ACCEPTED
+RT-3d3 authorization: AUTHORIZED / NOT_STARTED
 ```

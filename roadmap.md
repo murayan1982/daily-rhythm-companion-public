@@ -7281,7 +7281,7 @@ separate explicit work.
 
 ### RT-3d2c guarded real-executor assembly contract
 
-Status: `IMPLEMENTED / NOT_ACCEPTED`
+Status: `COMPLETED / ACCEPTED`
 
 RT-3d2c adds an assembly-only DRC Backend boundary for FW v5.4.0 public
 `OpenAIVoiceInputPrivateCredential`, `OpenAIVoiceInputRealProviderPolicy`,
@@ -7294,10 +7294,11 @@ the executor is not executed. DRC reads no credential value and performs no
 OpenAI SDK import, real client creation, network request, audio read, microphone
 access, transcript handling, or real STT.
 
-Local validation passed with the dedicated gate, focused Backend 5, full
-Backend 158 with one existing warning, clean Flutter analysis, Flutter 200,
-exact nine-file surface validation, and `git diff --check`. RT-3d2c remains
-NOT_ACCEPTED pending explicit operator approval.
+RT-3d2c acceptance passed with implementation commit `12a9d35`, the dedicated
+gate, focused Backend 5, full Backend 158 with one existing warning, clean
+Flutter analysis, Flutter 200, exact nine-file implementation review,
+acceptance-only seven-file review, `git diff --check`, and explicit operator
+approval.
 
-RT-3d3 remains blocked pending RT-3d2c acceptance. No additional Framework
-development requirement was identified.
+RT-3d3 is `AUTHORIZED / NOT_STARTED`. No additional Framework development
+requirement was identified.
