@@ -1,12 +1,12 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-07-27
+Updated: 2026-07-28
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3c4 COMPLETED / ACCEPTED; RT-3d blocked pending real provider execution)
+Current small commit: none (RT-3d0 COMPLETED / ACCEPTED; RT-3d remains blocked)
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -7220,3 +7220,16 @@ RT-3c4 may consume one path-free Backend staging handle through the accepted pri
 ## RT-3c4 fake FW public-session handoff implementation
 
 RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED under `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`. The guarded Backend endpoint consumes one staged WAV through FW v5.3.0 public `VoiceInputAudioFormat`, `VoiceInputAudioSource`, `VoiceInputRequest`, `FakeVoiceInputProviderAdapter`, and `VoiceInputSession` contracts. The result is path-free, the session is closed, and the staged artifact is single-use after the consume callback begins. Framework preflight failure preserves the artifact for retry. Real provider execution, real transcription, and real STT remain blocked.
+
+
+## v3.0.0 RT-3d0 Framework real STT requirement feedback
+
+RT-3d0 is **COMPLETED / ACCEPTED** after the clean-baseline RT-3 gates, its dedicated source-only gate, Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review, `git diff --check`, and explicit operator approval passed.
+
+The released FW v5.3.0 remains the accepted public Voice Input baseline, but
+concrete real-provider execution is absent. DRC does not add provider-specific
+STT clients or import Framework internals to bypass this gap.
+
+The dedicated Framework development thread must define, implement, accept, and
+release the additional capability. RT-3d remains
+`BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED`.

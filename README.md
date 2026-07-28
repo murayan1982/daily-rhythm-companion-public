@@ -9,9 +9,9 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3c4 accepted)
-Current implementation: RT-3c private Backend staging and fake FW public-session handoff (**COMPLETED / ACCEPTED**)
-Completed small commit: RT-3c4 (**COMPLETED / ACCEPTED**)
+Current small commit: none (RT-3d0 accepted; RT-3d blocked)
+Current implementation: Framework real STT requirement feedback handoff (**COMPLETED / ACCEPTED**)
+Completed small commit: RT-3d0 (**COMPLETED / ACCEPTED**)
 Next realtime phase: RT-3d (**BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED**)
 
 Current phase state:
@@ -47,6 +47,7 @@ RT-3  CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real STT / voic
     RT-3c3  COMPLETED / ACCEPTED                                 Guarded binary upload and Flutter scoped staging consumer
     RT-3c4  COMPLETED / ACCEPTED                                 Fake FW public-session handoff and single-use cleanup
   RT-3d  BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED  Real provider execution evidence
+    RT-3d0  COMPLETED / ACCEPTED                                  Framework real STT requirement feedback handoff
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -4349,3 +4350,15 @@ Synthetic tests cover route guards, size/header validation, partial cleanup, str
 ## v3.0.0 RT-3c4 fake FW public-session handoff and staged cleanup
 
 RT-3c4 is **COMPLETED / ACCEPTED**. Authorization at implementation: `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`. The Backend exposes a guarded fake-handoff endpoint, consumes one accepted private staged artifact through FW v5.3.0 public `VoiceInputAudioSource` / `VoiceInputSession` objects, explicitly uses `FakeVoiceInputProviderAdapter`, closes the session, returns a typed path-free result, and guarantees single-use cleanup once consume begins. Preflight failure preserves the artifact for retry. Acceptance passed with compileall, six RT-3 gates, focused Backend 8, full Backend 145 with one existing warning, clean Flutter analysis, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval. Real provider execution, real transcription, and real STT remain absent; RT-3d remains blocked.
+
+
+## v3.0.0 RT-3d0 Framework real STT requirement feedback
+
+RT-3d0 is **COMPLETED / ACCEPTED** and docs/test-only. FW v5.3.0
+satisfies the accepted public host-audio/session and fake-handoff boundary but
+does not provide concrete real-provider execution.
+
+The additional Framework development requirement is recorded for the dedicated
+FW development thread. The next FW version, provider, model, and implementation
+remain undecided. RT-3d stays
+`BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED`.

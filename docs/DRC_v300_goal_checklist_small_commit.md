@@ -1,17 +1,16 @@
 # Daily Rhythm Companion v3.0.0 goal checklist and small-commit plan
 
-Updated: 2026-07-27
-
+Updated: 2026-07-28
 ```text
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-Current small commit: none (RT-3c4 accepted; RT-3d blocked)
-Current implementation step: RT-3c private Backend staging and fake FW public-session handoff
+Current small commit: none (RT-3d0 accepted; RT-3d blocked)
+Current implementation step: Framework real STT requirement feedback handoff
 Current implementation state: COMPLETED / ACCEPTED
-Completed small commit: RT-3c4 COMPLETED / ACCEPTED
-Next implementation action: wait for an FW release with accepted real provider execution before RT-3d
+Completed small commit: RT-3d0 COMPLETED / ACCEPTED
+Next implementation action: carry the accepted requirement to the FW development thread; RT-3d remains blocked
 ```
 
 ## Source of truth
@@ -39,6 +38,8 @@ docs/v300_microphone_platform_permission_wiring.md
 scripts/check_v300_microphone_platform_permission_wiring.py
 docs/v300_framework_v530_stt_integration_inventory.md
 scripts/check_v300_framework_v530_stt_integration_inventory.py
+docs/v300_framework_real_stt_requirement_feedback.md
+scripts/check_v300_framework_real_stt_requirement_feedback.py
 ```
 
 Historical release sources remain immutable:
@@ -1200,3 +1201,41 @@ authorization at implementation: authorized-fake-fw-public-session-handoff-and-s
 ```
 
 RT-3c4 may add only a Backend adapter that consumes one accepted private staged artifact, constructs FW v5.3.0 public host-audio/session objects with `FakeVoiceInputProviderAdapter`, returns a typed path-free result, and guarantees single-use consume/discard cleanup. Real provider execution, real transcription, and real STT remain forbidden.
+
+
+## RT-3d0 - Framework real STT requirement feedback handoff
+
+Status:
+
+```text
+RT-3d0  COMPLETED / ACCEPTED
+RT-3d   BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
+```
+
+Changed files:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_framework_real_stt_requirement_feedback.md
+scripts/check_v300_framework_real_stt_requirement_feedback.py
+```
+
+Acceptance requirements:
+
+- [x] six accepted RT-3 gates passed on clean `7cf980e` before RT-3d0
+- [x] `python -m compileall -q backend scripts`
+- [x] `python scripts/check_v300_framework_real_stt_requirement_feedback.py`
+- [x] `python -m pytest -q backend/tests`
+- [x] `cd app && flutter analyze && flutter test && cd ..`
+- [x] exact seven-file surface review
+- [x] `git diff --check`
+- [x] no Backend/Flutter/FW runtime change
+- [x] no dependency/platform/version change
+- [x] no private environment, audio, microphone, or provider execution
+- [x] no next FW version/provider selection
+- [x] no release artifact, tag, or publication
+- [x] explicit operator approval

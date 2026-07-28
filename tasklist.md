@@ -1,7 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-27
-
+更新日: 2026-07-28
 ## 1. 現在地
 
 ```text
@@ -14,10 +13,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-current small commit: none (RT-3c4 accepted; RT-3d blocked)
-current implementation step: RT-3c private Backend staging and fake FW public-session handoff
+current small commit: none (RT-3d0 accepted; RT-3d blocked)
+current implementation step: Framework real STT requirement feedback handoff
 current implementation state: COMPLETED / ACCEPTED
-completed small commit: RT-3c4 COMPLETED / ACCEPTED
+completed small commit: RT-3d0 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -50,6 +49,8 @@ docs/v300_framework_v530_stt_integration_inventory.md
 scripts/check_v300_framework_v530_stt_integration_inventory.py
 docs/v300_host_audio_handoff_lifecycle.md
 scripts/check_v300_host_audio_handoff_lifecycle.py
+docs/v300_framework_real_stt_requirement_feedback.md
+scripts/check_v300_framework_real_stt_requirement_feedback.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1795,3 +1796,20 @@ authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-a
 - [ ] Implement real provider execution; RT-3d remains blocked on a future accepted FW boundary.
 
 RT-3c4 acceptance evidence: compileall、six RT-3 gates、focused Backend 8、full Backend 145（既存warning 1件）、`flutter analyze`、full Flutter 200、exact 22-file surface review、`git diff --check`、explicit operator approval。No real microphone artifact、provider execution、real transcription、or real STT is claimed.
+
+
+## RT-3d0 Framework real STT requirement feedback
+
+Status: `COMPLETED / ACCEPTED`
+
+FW v5.3.0 remains the latest released and accepted DRC public Voice Input
+baseline. RT-3c4 proves only the fake public-session handoff. Concrete
+real-provider execution remains absent, so RT-3d stays
+`BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED`.
+
+The additional FW requirement must be handled in the FW development thread.
+This checkpoint does not select the next FW version or provider and changes no
+runtime, dependency, version, audio, provider, or release surface. Acceptance
+passed with the six clean-baseline RT-3 gates, the dedicated RT-3d0 gate,
+Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review,
+`git diff --check`, and explicit operator approval.

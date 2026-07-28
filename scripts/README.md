@@ -5609,3 +5609,26 @@ RT-3c3 acceptance evidence: compileall, five RT-3 gates, focused Backend 21, ful
 ```
 
 The gate uses generated WAV bytes in a temporary DRC staging root and the configured FW v5.3.0 public package. It verifies explicit fake-adapter selection, public file-source/session wiring, path-free normalization, session close, single-use cleanup, and zero audio read/provider/STT execution. It does not print `FRAMEWORK_ROOT`, use a real microphone artifact, or call a provider. Status: `COMPLETED / ACCEPTED`. Acceptance passed with compileall, six RT-3 gates, focused Backend 8, full Backend 145 with one existing warning, clean Flutter analysis, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval. Parent RT-3c is COMPLETED / ACCEPTED; RT-3d remains blocked pending real provider execution.
+
+
+## v3.0.0 RT-3d0 Framework real STT requirement feedback check
+
+Detailed feedback:
+`docs/v300_framework_real_stt_requirement_feedback.md`.
+
+Status: **COMPLETED / ACCEPTED**.
+
+FW v5.3.0 remains the released baseline. RT-3d remains
+`BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED`.
+
+Run after the six historical RT-3 gates pass on a clean baseline:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts/check_v300_framework_real_stt_requirement_feedback.py
+git diff --check
+```
+
+This is source-only and does not select the next FW version or provider, import
+Framework, read audio, open a microphone, create a provider client, or execute
+STT.
