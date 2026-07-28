@@ -57,3 +57,26 @@ class VoiceInputDemoRequestResponse(BaseModel):
     checks: list[VoiceInputDemoProbeCheck] = Field(default_factory=list)
     candidate_paths: list[str] = Field(default_factory=list)
     public_api_candidates: list[str] = Field(default_factory=list)
+
+
+class VoiceInputStagingUploadResponse(BaseModel):
+    """Path-free result for one guarded private Backend staging upload."""
+
+    accepted: bool
+    request_state: str
+    staging_id: str
+    audio_format: str
+    media_type: str
+    byte_count: int = Field(ge=1)
+    sample_rate_hz: int = Field(ge=1)
+    channel_count: int = Field(ge=1)
+    duration_ms: int = Field(ge=1)
+    expires_in_seconds: int = Field(ge=1)
+
+
+class VoiceInputStagingProblem(BaseModel):
+    """Public-safe error detail for the guarded staging upload boundary."""
+
+    code: str
+    message: str
+    retryable: bool = False

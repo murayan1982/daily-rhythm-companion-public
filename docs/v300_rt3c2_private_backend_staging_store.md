@@ -8,10 +8,12 @@ RT-3c: CURRENT / NOT_COMPLETED
 RT-3c1: COMPLETED / ACCEPTED
 RT-3c2: COMPLETED / ACCEPTED
 RT-3c2 implementation: COMPLETED / ACCEPTED
-RT-3c3: CURRENT / NOT_COMPLETED
-RT-3c3 implementation: NOT_STARTED
+RT-3c3: COMPLETED / ACCEPTED
+RT-3c3 implementation: COMPLETED / ACCEPTED
 RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
-RT-3c4: BLOCKED_PENDING_RT3C3_ACCEPTANCE
+RT-3c4: CURRENT / NOT_COMPLETED
+RT-3c4 implementation: NOT_STARTED
+RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
 
@@ -170,9 +172,7 @@ imported, and no provider or STT was executed.
 authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
 ```
 
-RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED. It may add only the guarded
-bounded binary WAV upload route and Flutter scoped staging consumer. Framework
-import, VoiceInputSession handoff, provider execution, and STT remain forbidden.
+RT-3c3 is COMPLETED / ACCEPTED. It connects the accepted store to a guarded bounded binary WAV upload route and adds the Flutter scoped staging consumer. Framework import, VoiceInputSession handoff, provider execution, and STT remain absent.
 
 ## Local validation
 

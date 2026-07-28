@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 from threading import RLock
 from time import time
-from typing import Callable, Iterable, TypeVar
+from typing import AsyncIterable, Callable, Iterable, TypeVar
 from uuid import uuid4
 
 from app.config import AppConfig, load_config
@@ -202,6 +202,109 @@ class VoiceInputStagingStore:
                 media_type=self._PUBLIC_MEDIA_TYPE,
                 byte_count=byte_count,
             )
+
+    async def stage_async_chunks(
+        self,
+        chunks: AsyncIterable[bytes],
+        *,
+        audio_format: str = "wav",
+        media_type: str = "audio/wav",
+    ) -> StagedVoiceInputArtifact:
+        """Stream one bounded WAV request body into private staging.
+
+        The request iterator is consumed incrementally. No complete request body,
+        private path, or raw audio payload is returned to the caller.
+        """
+
+        normalized_format = audio_format.strip().lower().lstrip(".")
+        normalized_media_type = media_type.strip().lower().split(";", 1)[0].strip()
+        if normalized_format != self._SUPPORTED_AUDIO_FORMAT:
+            raise VoiceInputStagingError(
+                "unsupported_audio_format",
+                "Voice-input staging accepts WAV audio only.",
+            )
+        if normalized_media_type not in self._SUPPORTED_MEDIA_TYPES:
+            raise VoiceInputStagingError(
+                "unsupported_media_type",
+                "Voice-input staging accepts audio/wav or application/octet-stream only.",
+            )
+
+        with _STAGING_STORE_LOCK:
+            self._staging_dir.mkdir(parents=True, exist_ok=True)
+            self._cleanup_locked(current_time=self._now(), max_count=self._max_artifacts)
+            staging_id = uuid4().hex
+            partial_path = self._staging_dir / f".{staging_id}.part"
+            final_path = self._staging_dir / f"{staging_id}.wav"
+
+        byte_count = 0
+        header = bytearray()
+        try:
+            with partial_path.open("xb") as handle:
+                async for chunk in chunks:
+                    if not isinstance(chunk, (bytes, bytearray, memoryview)):
+                        raise VoiceInputStagingError(
+                            "invalid_audio_chunk",
+                            "Voice-input staging chunks must be bytes-like values.",
+                        )
+                    payload = bytes(chunk)
+                    if not payload:
+                        continue
+
+                    next_size = byte_count + len(payload)
+                    if next_size > self._max_bytes:
+                        raise VoiceInputStagingError(
+                            "artifact_too_large",
+                            "Voice-input audio exceeded the configured staging byte limit.",
+                        )
+
+                    if len(header) < 12:
+                        header.extend(payload[: 12 - len(header)])
+                    handle.write(payload)
+                    byte_count = next_size
+
+            if byte_count == 0:
+                raise VoiceInputStagingError(
+                    "empty_audio",
+                    "Voice-input staging rejected an empty audio body.",
+                )
+            if len(header) < 12 or header[:4] != b"RIFF" or header[8:12] != b"WAVE":
+                raise VoiceInputStagingError(
+                    "invalid_wav_header",
+                    "Voice-input staging rejected a body without a RIFF/WAVE header.",
+                )
+
+            with _STAGING_STORE_LOCK:
+                partial_path.replace(final_path)
+                staged_at = self._now()
+                os.utime(final_path, (staged_at, staged_at))
+                self._cleanup_locked(
+                    current_time=staged_at,
+                    max_count=self._max_artifacts,
+                    protected_paths=(final_path,),
+                )
+                if not final_path.exists():
+                    raise VoiceInputStagingError(
+                        "staging_failed",
+                        "Voice-input staging could not retain the completed artifact.",
+                    )
+        except VoiceInputStagingError:
+            self._unlink(partial_path)
+            self._unlink(final_path)
+            raise
+        except Exception as exc:
+            self._unlink(partial_path)
+            self._unlink(final_path)
+            raise VoiceInputStagingError(
+                "staging_failed",
+                "Voice-input staging failed inside the private managed store.",
+            ) from exc
+
+        return StagedVoiceInputArtifact(
+            staging_id=staging_id,
+            audio_format=self._SUPPORTED_AUDIO_FORMAT,
+            media_type=self._PUBLIC_MEDIA_TYPE,
+            byte_count=byte_count,
+        )
 
     def consume(
         self,

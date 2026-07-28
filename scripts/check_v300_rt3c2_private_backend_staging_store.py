@@ -32,30 +32,30 @@ ALLOWED_CHANGED_PATHS = {
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
-    "backend/.env.example",
-    "backend/app/config.py",
+    "backend/app/api/voice_input_demo.py",
+    "backend/app/models/voice_input_demo.py",
     "backend/app/services/voice_input_staging_store.py",
-    "backend/tests/test_temporary_lifecycle_config.py",
-    "backend/tests/test_voice_input_staging_store.py",
+    "backend/tests/test_voice_input_staging_upload_api.py",
+    "app/lib/services/microphone_capture_host_audio_handoff.dart",
+    "app/lib/services/backend_voice_input_staging_consumer.dart",
+    "app/test/backend_voice_input_staging_consumer_test.dart",
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_framework_v530_stt_integration_inventory.md",
     "docs/v300_host_audio_handoff_lifecycle.md",
     "docs/v300_rt3c_private_staging_fw_handoff_readiness.md",
     "docs/v300_rt3c2_private_backend_staging_store.md",
+    "docs/v300_rt3c3_guarded_upload_flutter_staging_consumer.md",
     "scripts/check_v300_framework_v530_stt_integration_inventory.py",
     "scripts/check_v300_host_audio_handoff_lifecycle.py",
     "scripts/check_v300_rt3c_private_staging_fw_handoff_readiness.py",
     "scripts/check_v300_rt3c2_private_backend_staging_store.py",
+    "scripts/check_v300_rt3c3_guarded_upload_flutter_staging_consumer.py",
 }
 
-PROTECTED_TREE_HASHES = {
-    "app/lib": "15c81e30712b6980aca085ceed11f31e97da40c70223197a41396b0ff123a857",
-    "app/test": "1d9d3124880d918ff1f52ec0abc35b01b6a7417824bae16c159cb6efff2b75d2",
-}
+PROTECTED_TREE_HASHES = {}
 
 PROTECTED_FILE_HASHES = {
     "backend/app/main.py": "6ead9b1570b1453d7029496db3b554156b0e6752b1cb2369053e9341a81d3c27",
-    "backend/app/api/voice_input_demo.py": "3737e92544d2e3d53a98c7bef8f79f2b6894808168b6745a766573eb29a021d2",
     "backend/requirements.txt": "e93eaa60004f5fcf0433ab170341da5fa2b1fdbe399fd4f96114ea1f3d7bb5d2",
     "backend/requirements-dev.txt": "8636f9ab1a075be9f3039e2a6471837259c4f36b625bcaf7a3d9a1edd2419c6d",
     "app/pubspec.yaml": "5de06f3041d7f150b83638e1cd2cc913b286c107e3b58a37178f678a37e7a428",
@@ -317,8 +317,8 @@ def validate_docs() -> None:
         "VOICE_INPUT_STAGING_MAX_COUNT=8",
         "VOICE_INPUT_STAGING_MAX_BYTES=1048576",
         "backend/local_data/voice_input/staging",
-        "RT-3c3: CURRENT / NOT_COMPLETED",
-        "RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only",
+        "RT-3c3: COMPLETED / ACCEPTED",
+        "RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only",
         "127 passed",
         "192",
         "No FastAPI upload route",
@@ -389,8 +389,10 @@ def main() -> None:
     print("v300_rt3c2_synthetic_store_smoke_passed: True")
     print("v300_rt3c2_real_audio_read: False")
     print("v300_rt3c2_audio_uploaded: False")
-    print("v300_rt3c2_upload_route_added: False")
-    print("v300_rt3c2_flutter_changed: False")
+    print("v300_rt3c2_upload_route_added_at_acceptance: False")
+    print("v300_rt3c2_flutter_changed_at_acceptance: False")
+    print("v300_rt3c3_upload_route_added: True")
+    print("v300_rt3c3_flutter_scoped_consumer_added: True")
     print("v300_rt3c2_framework_imported: False")
     print("v300_rt3c2_provider_execution_executed: False")
     print("v300_rt3c2_stt_executed: False")
@@ -398,13 +400,14 @@ def main() -> None:
         "v300_rt3_parent_status: "
         "current-blocked-real-provider-execution-not-implemented"
     )
-    print("v300_rt3c_parent_status: current-pending-rt3c3-implementation")
+    print("v300_rt3c_parent_status: current-pending-rt3c4-implementation")
     print("v300_rt3c2_status: completed-accepted")
     print("v300_rt3c2_implementation: completed-accepted")
-    print("v300_rt3c3_status: current-not-completed")
-    print("v300_rt3c3_implementation: not-started")
-    print("v300_rt3c3_authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only")
-    print("v300_rt3c4_authorization: blocked-pending-rt3c3-acceptance")
+    print("v300_rt3c3_status: completed-accepted")
+    print("v300_rt3c3_implementation: completed-accepted")
+    print("v300_rt3c4_status: current-not-completed")
+    print("v300_rt3c4_implementation: not-started")
+    print("v300_rt3c4_authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only")
     print(
         "v300_rt3_real_acceptance: "
         "blocked-framework-real-provider-execution-not-implemented"

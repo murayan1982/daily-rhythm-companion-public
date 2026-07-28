@@ -5,8 +5,9 @@ import 'record_microphone_capture_engine.dart';
 
 /// App-owned lifecycle phases for a completed microphone artifact handoff.
 ///
-/// RT-3b is a fake-only contract. This file does not upload audio, import the
-/// Framework, execute a provider, or perform STT.
+/// RT-3b established this app-owned lifecycle contract. RT-3c3 may inject a
+/// guarded Backend staging consumer, while this controller itself still does
+/// not import Framework code, execute a provider, or perform STT.
 enum HostAudioHandoffPhase {
   idle,
   retained,
@@ -162,9 +163,9 @@ class HostAudioHandoffException implements Exception {
 /// Scoped app-internal access to one retained private capture artifact.
 ///
 /// The private path has no getter and is never copied into a public result,
-/// metadata, log, UI state, or API payload. A future app-owned staging consumer
-/// may use [withPrivateArtifactPath] only while [HostAudioHandoffConsumer.consume]
-/// is active. RT-3b fake tests do not read audio or perform network I/O.
+/// metadata, log, UI state, or API payload. An app-owned staging consumer may
+/// use [withPrivateArtifactPath] only while [HostAudioHandoffConsumer.consume]
+/// is active. The accepted fake consumer still performs no I/O.
 class HostAudioPrivateArtifactLease {
   HostAudioPrivateArtifactLease._({
     required String opaqueCaptureId,
@@ -322,6 +323,9 @@ class HostAudioHandoffController extends ChangeNotifier {
     'operator_target',
     'private_artifact_cleanup_required',
     'raw_audio_exposed',
+    'audio_uploaded',
+    'backend_staging_created',
+    'backend_staging_id_available',
   };
 
   final RecordMicrophoneCapturePrivateArtifactAccess _privateArtifactAccess;
@@ -481,6 +485,8 @@ class HostAudioHandoffController extends ChangeNotifier {
       lease._closeConsumerAccess();
     }
 
+    final safeConsumerMetadata =
+        _safePublicMetadata(consumerResult.publicMetadata);
     final discarded = await _discardLease(lease);
     _operationInFlight = false;
     if (!_isCurrent(operation)) {
@@ -497,10 +503,11 @@ class HostAudioHandoffController extends ChangeNotifier {
           privateArtifactDiscarded: false,
           cleanupSucceeded: false,
           retryable: true,
-          publicMetadata: const <String, Object?>{
+          publicMetadata: <String, Object?>{
+            ...safeConsumerMetadata,
             'private_path_exposed': false,
             'opaque_capture_id_exposed': false,
-            'audio_uploaded': false,
+            'audio_uploaded': safeConsumerMetadata['audio_uploaded'] == true,
             'stt_executed': false,
           },
         ),
@@ -523,10 +530,10 @@ class HostAudioHandoffController extends ChangeNotifier {
           cleanupSucceeded: true,
           retryable: consumerResult.retryable,
           publicMetadata: <String, Object?>{
-            ..._safePublicMetadata(consumerResult.publicMetadata),
+            ...safeConsumerMetadata,
             'private_path_exposed': false,
             'opaque_capture_id_exposed': false,
-            'audio_uploaded': false,
+            'audio_uploaded': safeConsumerMetadata['audio_uploaded'] == true,
             'stt_executed': false,
           },
         ),
@@ -547,10 +554,10 @@ class HostAudioHandoffController extends ChangeNotifier {
         privateArtifactDiscarded: true,
         cleanupSucceeded: true,
         publicMetadata: <String, Object?>{
-          ..._safePublicMetadata(consumerResult.publicMetadata),
+          ...safeConsumerMetadata,
           'private_path_exposed': false,
           'opaque_capture_id_exposed': false,
-          'audio_uploaded': false,
+          'audio_uploaded': safeConsumerMetadata['audio_uploaded'] == true,
           'stt_executed': false,
         },
       ),

@@ -7,11 +7,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-Current small commit: RT-3c3 CURRENT / NOT_COMPLETED
-Current implementation step: Bounded private Backend staging store and lifecycle
+Current small commit: RT-3c4 CURRENT / NOT_COMPLETED
+Current implementation step: Fake FW public-session handoff and single-use staged-artifact cleanup
 Current implementation state: NOT_STARTED
-Completed small commit: RT-3c1 COMPLETED / ACCEPTED
-Next implementation action: implement RT-3c3 guarded upload and Flutter scoped staging consumer
+Completed small commit: RT-3c3 COMPLETED / ACCEPTED
+Next implementation action: implement RT-3c4 fake FW public-session handoff and single-use staged-artifact cleanup
 ```
 
 ## Source of truth
@@ -1092,10 +1092,11 @@ RT-3c1: COMPLETED / ACCEPTED
 RT-3c1 implementation: COMPLETED / ACCEPTED
 RT-3c2: COMPLETED / ACCEPTED
 RT-3c2 implementation: COMPLETED / ACCEPTED
-RT-3c3: CURRENT / NOT_COMPLETED
-RT-3c3 implementation: NOT_STARTED
-RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
-RT-3c4: BLOCKED_PENDING_RT3C3_ACCEPTANCE
+RT-3c3: COMPLETED / ACCEPTED
+RT-3c3 implementation: COMPLETED / ACCEPTED
+RT-3c4: CURRENT / NOT_COMPLETED
+RT-3c4 implementation: NOT_STARTED
+RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
 
@@ -1129,7 +1130,7 @@ single-use consume and cleanup
 no private path in public result/log/evidence
 ```
 
-RT-3c1 changes no Backend/Flutter runtime or tests, dependencies, routes, configuration, vendor, platform, version, or release surface and performs no audio read/upload/staging, FW import, provider execution, or STT. Acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check`. RT-3c3 is CURRENT / NOT_COMPLETED and NOT_STARTED under authorization `authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only`.
+RT-3c1 changes no Backend/Flutter runtime or tests, dependencies, routes, configuration, vendor, platform, version, or release surface and performs no audio read/upload/staging, FW import, provider execution, or STT. Acceptance passed with compileall, the source-only gate, Backend 116 with one existing warning, clean Flutter analysis, full Flutter 192, exact nine-file review, and `git diff --check`. RT-3c2 is COMPLETED / ACCEPTED after compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check`. RT-3c3 is COMPLETED / ACCEPTED after compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, and `git diff --check`. RT-3c4 is CURRENT / NOT_COMPLETED and NOT_STARTED under authorization `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`.
 
 
 ## RT-3c2 private Backend staging store and lifecycle
@@ -1137,10 +1138,11 @@ RT-3c1 changes no Backend/Flutter runtime or tests, dependencies, routes, config
 ```text
 RT-3c2: COMPLETED / ACCEPTED
 implementation: COMPLETED / ACCEPTED
-RT-3c3: CURRENT / NOT_COMPLETED
-RT-3c3 implementation: NOT_STARTED
-RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
-RT-3c4: BLOCKED_PENDING_RT3C3_ACCEPTANCE
+RT-3c3: COMPLETED / ACCEPTED
+RT-3c3 implementation: COMPLETED / ACCEPTED
+RT-3c4: CURRENT / NOT_COMPLETED
+RT-3c4 implementation: NOT_STARTED
+RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 ```
 
 Implemented and awaiting local acceptance:
@@ -1168,9 +1170,32 @@ change, platform change, version change, or release change.
 
 ```text
 RT-3c3: CURRENT / NOT_COMPLETED
-implementation: NOT_STARTED
+implementation: IMPLEMENTED / NOT_ACCEPTED
 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
 RT-3c4: BLOCKED_PENDING_RT3C3_ACCEPTANCE
 ```
 
-RT-3c3 may add only the bounded streamed WAV upload route and Flutter scoped consumer. It must keep private paths out of requests, responses, logs, and evidence, and must not import Framework, create a VoiceInputSession, execute a provider, or execute STT.
+Implemented:
+
+- guarded `POST /demo/voice-input/staging`;
+- direct streamed `audio/wav` body into the bounded private Backend store;
+- safe metadata validation for WAV/16000 Hz/mono/maximum 15000 ms;
+- public-safe error codes and path-free opaque staging metadata;
+- Flutter `BackendVoiceInputStagingConsumer` using only the scoped private-path lease;
+- `http.StreamedRequest` transfer without `readAsBytes` or multipart;
+- local mobile artifact cleanup through the accepted RT-3b controller;
+- one path-free staged-artifact handle reserved for RT-3c4;
+- synthetic route and consumer tests.
+
+Not performed: real microphone artifact upload, Framework import, `VoiceInputSession` creation, provider execution, transcription, or STT. RT-3c3 acceptance passed with compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, and `git diff --check`.
+
+
+## RT-3c4 fake FW public-session handoff and single-use staged cleanup
+
+```text
+RT-3c4: CURRENT / NOT_COMPLETED
+implementation: NOT_STARTED
+authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
+```
+
+RT-3c4 may add only a Backend adapter that consumes one accepted private staged artifact, constructs FW v5.3.0 public host-audio/session objects with `FakeVoiceInputProviderAdapter`, returns a typed path-free result, and guarantees single-use consume/discard cleanup. Real provider execution, real transcription, and real STT remain forbidden.

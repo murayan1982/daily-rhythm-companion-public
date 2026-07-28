@@ -18,26 +18,27 @@ ALLOWED_CHANGED_PATHS = {
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
-    "backend/.env.example",
-    "backend/app/config.py",
+    "backend/app/api/voice_input_demo.py",
+    "backend/app/models/voice_input_demo.py",
     "backend/app/services/voice_input_staging_store.py",
-    "backend/tests/test_temporary_lifecycle_config.py",
-    "backend/tests/test_voice_input_staging_store.py",
+    "backend/tests/test_voice_input_staging_upload_api.py",
+    "app/lib/services/microphone_capture_host_audio_handoff.dart",
+    "app/lib/services/backend_voice_input_staging_consumer.dart",
+    "app/test/backend_voice_input_staging_consumer_test.dart",
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_framework_v530_stt_integration_inventory.md",
     "docs/v300_host_audio_handoff_lifecycle.md",
     "docs/v300_rt3c_private_staging_fw_handoff_readiness.md",
     "docs/v300_rt3c2_private_backend_staging_store.md",
+    "docs/v300_rt3c3_guarded_upload_flutter_staging_consumer.md",
     "scripts/check_v300_framework_v530_stt_integration_inventory.py",
     "scripts/check_v300_host_audio_handoff_lifecycle.py",
     "scripts/check_v300_rt3c_private_staging_fw_handoff_readiness.py",
     "scripts/check_v300_rt3c2_private_backend_staging_store.py",
+    "scripts/check_v300_rt3c3_guarded_upload_flutter_staging_consumer.py",
 }
 
-PROTECTED_TREE_HASHES = {
-    "backend/app": "52e3d4679272a5ca64bee91401a524d34fe0921858956f45e86afa1fbfa0a10e",
-    "backend/tests": "048c3125154a477d4ed6215d3ae49856157bdfcd97dd9d198a97114fe2430f48",
-}
+PROTECTED_TREE_HASHES = {}
 
 PROTECTED_FILE_HASHES = {
     "app/lib/services/microphone_capture.dart": "4edba11a1eed458d113aa441ee73d3289bed2e20650805e7685e5801b9c4cc58",
@@ -270,13 +271,13 @@ def validate_docs() -> None:
 
     require(
         sources["README"],
-        "Current small commit: RT-3c3 (**CURRENT / NOT_COMPLETED**)",
+        "Current small commit: RT-3c4 (**CURRENT / NOT_COMPLETED**)",
         "README RT-3c2 current state",
     )
     require(
         sources["checklist"],
         "Current implementation state: NOT_STARTED",
-        "checklist RT-3c2 state",
+        "checklist RT-3c3 state",
     )
     require(
         sources["tasklist"],
@@ -334,12 +335,11 @@ def main() -> None:
     print("v300_rt3c1_status: completed-accepted")
     print("v300_rt3c2_status: completed-accepted")
     print("v300_rt3c2_implementation: completed-accepted")
-    print("v300_rt3c3_status: current-not-completed")
-    print("v300_rt3c3_implementation: not-started")
-    print(
-        "v300_rt3c3_authorization: "
-        "authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only"
-    )
+    print("v300_rt3c3_status: completed-accepted")
+    print("v300_rt3c3_implementation: completed-accepted")
+    print("v300_rt3c4_status: current-not-completed")
+    print("v300_rt3c4_implementation: not-started")
+    print("v300_rt3c4_authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only")
     print(
         "v300_rt3_real_acceptance: "
         "blocked-framework-real-provider-execution-not-implemented"

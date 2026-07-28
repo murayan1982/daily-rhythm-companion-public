@@ -23,28 +23,27 @@ ALLOWED_CHANGED_PATHS = {
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
-    "backend/.env.example",
-    "backend/app/config.py",
+    "backend/app/api/voice_input_demo.py",
+    "backend/app/models/voice_input_demo.py",
     "backend/app/services/voice_input_staging_store.py",
-    "backend/tests/test_temporary_lifecycle_config.py",
-    "backend/tests/test_voice_input_staging_store.py",
+    "backend/tests/test_voice_input_staging_upload_api.py",
+    "app/lib/services/microphone_capture_host_audio_handoff.dart",
+    "app/lib/services/backend_voice_input_staging_consumer.dart",
+    "app/test/backend_voice_input_staging_consumer_test.dart",
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_framework_v530_stt_integration_inventory.md",
     "docs/v300_host_audio_handoff_lifecycle.md",
     "docs/v300_rt3c_private_staging_fw_handoff_readiness.md",
     "docs/v300_rt3c2_private_backend_staging_store.md",
+    "docs/v300_rt3c3_guarded_upload_flutter_staging_consumer.md",
     "scripts/check_v300_framework_v530_stt_integration_inventory.py",
     "scripts/check_v300_host_audio_handoff_lifecycle.py",
     "scripts/check_v300_rt3c_private_staging_fw_handoff_readiness.py",
     "scripts/check_v300_rt3c2_private_backend_staging_store.py",
+    "scripts/check_v300_rt3c3_guarded_upload_flutter_staging_consumer.py",
 }
 
-PROTECTED_TREE_HASHES = {
-    "backend/app": "52e3d4679272a5ca64bee91401a524d34fe0921858956f45e86afa1fbfa0a10e",
-    "backend/tests": "048c3125154a477d4ed6215d3ae49856157bdfcd97dd9d198a97114fe2430f48",
-    "app/lib": "15c81e30712b6980aca085ceed11f31e97da40c70223197a41396b0ff123a857",
-    "app/test": "1d9d3124880d918ff1f52ec0abc35b01b6a7417824bae16c159cb6efff2b75d2",
-}
+PROTECTED_TREE_HASHES = {}
 
 PROTECTED_FILE_HASHES = {
     "app/pubspec.yaml": "5de06f3041d7f150b83638e1cd2cc913b286c107e3b58a37178f678a37e7a428",
@@ -235,7 +234,7 @@ def main() -> None:
     require(
         checklist,
         "Current implementation state: NOT_STARTED",
-        "checklist RT-3c2 state",
+        "checklist RT-3c3 state",
     )
     require(
         checklist,
@@ -255,7 +254,12 @@ def main() -> None:
     require(
         inventory,
         "DRC voice-input audio upload/staging: absent",
-        "DRC upload/staging finding",
+        "historical DRC upload/staging finding",
+    )
+    require(
+        checklist,
+        "RT-3c3 implementation: COMPLETED / ACCEPTED",
+        "current RT-3c3 implementation marker",
     )
 
     fw_init = fw["framework/__init__.py"]
@@ -340,7 +344,9 @@ def main() -> None:
     model = read(ROOT, "backend/app/models/voice_input_demo.py")
     api = read(ROOT, "backend/app/api/voice_input_demo.py")
     require(model, "Metadata-only request", "DRC metadata-only request contract")
-    require(api, "process audio yet", "DRC audio processing block")
+    require(api, "process audio yet", "DRC metadata-only probe block")
+    require(api, '"/demo/voice-input/staging"', "DRC guarded staging route")
+    require(api, "request.stream()", "DRC streamed staging body")
     for forbidden in ("UploadFile", "File(", "multipart/form-data"):
         if forbidden in api or forbidden in model:
             raise AssertionError(f"Unexpected DRC voice-input upload boundary present: {forbidden}")
@@ -358,11 +364,12 @@ def main() -> None:
     print("v300_framework_guarded_adapter_available_after_guard: False")
     print("v300_drc_capture_private_artifact_boundary_present: True")
     print("v300_drc_operator_auto_discard_present: True")
-    print("v300_drc_backend_audio_upload_boundary_present: False")
-    print("v300_drc_voice_input_endpoint_metadata_only: True")
-    print("v300_drc_runtime_changed: False")
+    print("v300_drc_backend_audio_upload_boundary_present_at_rt3a: False")
+    print("v300_drc_metadata_only_probe_endpoint_present: True")
+    print("v300_drc_guarded_staging_endpoint_present: True")
+    print("v300_rt3a_runtime_changed_at_acceptance: False")
     print("v300_provider_execution_executed: False")
-    print("v300_audio_uploaded: False")
+    print("v300_rt3c3_operator_audio_uploaded: False")
     print("v300_stt_executed: False")
     print(
         "v300_rt3_parent_status: "
@@ -373,12 +380,11 @@ def main() -> None:
     print("v300_rt3c1_status: completed-accepted")
     print("v300_rt3c2_status: completed-accepted")
     print("v300_rt3c2_implementation: completed-accepted")
-    print("v300_rt3c3_status: current-not-completed")
-    print("v300_rt3c3_implementation: not-started")
-    print(
-        "v300_rt3c3_authorization: "
-        "authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only"
-    )
+    print("v300_rt3c3_status: completed-accepted")
+    print("v300_rt3c3_implementation: completed-accepted")
+    print("v300_rt3c4_status: current-not-completed")
+    print("v300_rt3c4_implementation: not-started")
+    print("v300_rt3c4_authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only")
     print(
         "v300_rt3_real_acceptance: "
         "blocked-framework-real-provider-execution-not-implemented"
