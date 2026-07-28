@@ -9,10 +9,10 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3d1 accepted; RT-3d2 next)
-Current implementation: Framework v5.4.0 real STT adoption inventory (**COMPLETED / ACCEPTED**)
-Completed small commit: RT-3d1 (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3d2 (**AUTHORIZED / NOT_STARTED**)
+Current small commit: none (RT-3d2a accepted; RT-3d2b next)
+Current implementation: FW v5.4.0 executor-path correction (**COMPLETED / ACCEPTED**)
+Completed small commit: RT-3d2a (**COMPLETED / ACCEPTED**)
+Next realtime phase: RT-3d2b (**AUTHORIZED / NOT_STARTED**)
 
 Current phase state:
 
@@ -49,7 +49,10 @@ RT-3  CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
   RT-3d  BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real provider execution evidence
     RT-3d0  COMPLETED / ACCEPTED                                  Framework real STT requirement feedback handoff
     RT-3d1  COMPLETED / ACCEPTED                                  Framework v5.4.0 adoption inventory
-    RT-3d2  AUTHORIZED / NOT_STARTED                              Guarded DRC v5.4.0 real-STT wiring
+    RT-3d2  CURRENT / NOT_COMPLETED                              Guarded DRC v5.4.0 real-STT wiring
+      RT-3d2a  COMPLETED / ACCEPTED                              FW v5.4.0 executor-path correction
+      RT-3d2b  AUTHORIZED / NOT_STARTED                            Bounded marked-fake executor wiring
+      RT-3d2c  PLANNED                                             Guarded real-executor assembly contract
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -64,7 +67,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d1 is COMPLETED / ACCEPTED after FW v5.4.0 tag, published ZIP/sidecar, SHA-256, public OpenAI Voice Input adapter, safe runtime gates, Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review, `git diff --check`, and explicit operator approval passed. RT-3d2 is authorized to add guarded DRC wiring with injected fake-client tests. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING until DRC wiring and private operator acceptance complete.
+Current v3 phase: RT-3d2a is COMPLETED / ACCEPTED after FW v5.4.0 session/adapter/executor distinction checks, safe fake/real runtime smokes, Backend 145, clean Flutter analysis, Flutter 200, exact eight-file review, `git diff --check`, and explicit operator approval. RT-3d2b is AUTHORIZED / NOT_STARTED. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4372,3 +4375,10 @@ RT-3d1 is **COMPLETED / ACCEPTED** and docs/test-only. FW v5.4.0
 provides the released public OpenAI real-STT adapter and explicit execution
 configuration required for DRC adoption. Acceptance passed with the dedicated FW/DRC source-only gate, Backend 145, clean Flutter analysis, Flutter 200, exact seven-file review, `git diff --check`, and explicit operator approval. RT-3d remains
 `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+
+## v3.0.0 RT-3d2a FW v5.4.0 executor-path correction
+
+RT-3d2a is **COMPLETED / ACCEPTED** and docs/test-only. It corrects the adoption plan before Backend wiring: the public Voice Input session delegates to `adapter.transcribe()` and does not execute the v5.4.0 real runtime. RT-3d2b will use the public bounded marked-fake executor; RT-3d2c/RT-3d3 will own guarded real-executor assembly and private acceptance.
+
+RT-3d2a acceptance passed with FW public-boundary checks, safe FW smokes, Backend 145, Flutter analyze, Flutter 200, exact eight-file review, `git diff --check`, and explicit operator approval. RT-3d2b is authorized but not started.

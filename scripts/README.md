@@ -5648,3 +5648,19 @@ git diff --check
 The source-only gate checks the exact v5.4.0 tag/HEAD, ZIP SHA-256, public
 exports, accepted safe FW gates, and seven-file DRC surface. RT-3d remains
 `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+
+## v3.0.0 RT-3d2a Framework v5.4.0 executor-path correction
+
+```powershell
+$env:FRAMEWORK_ROOT = "E:\\work\\deverop\\AI-Character-Framework\\Development"
+python -m compileall -q backend scripts
+python scripts/check_v300_rt3d2a_framework_v540_executor_path_correction.py
+git diff --check
+```
+
+The gate verifies that the Voice Input session is data-only, the OpenAI adapter's session-facing `transcribe()` is execution-free, and the public fake and real executor classes are the correct RT-3d2/RT-3d3 boundaries. It performs no DRC runtime or real-provider execution.
+
+RT-3d2a acceptance reports
+`v300_rt3d2a_executor_path_correction_status: completed-accepted` and
+`v300_rt3d2b_authorization: authorized-not-started`.

@@ -7243,3 +7243,20 @@ FW v5.4.0 tag, public adapter/configuration, accepted safe runtime gates,
 private real-provider acceptance, ZIP/sidecar, published assets, and SHA-256
 were verified. RT-3d remains
 `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+
+### RT-3d2a FW v5.4.0 executor-path correction
+
+Status: `COMPLETED / ACCEPTED`
+
+The v5.4.0 public Voice Input session is data-only and delegates to `adapter.transcribe()`. The OpenAI adapter's session-facing `transcribe()` does not execute a provider. RT-3d2 normal tests must therefore use `OpenAIVoiceInputFakeExecutor`, while guarded real execution uses `OpenAIVoiceInputRealProviderExecutor`.
+
+```text
+RT-3d2a  COMPLETED / ACCEPTED  FW v5.4.0 executor-path correction
+RT-3d2b  AUTHORIZED / NOT_STARTED  Backend private-staging to bounded marked-fake executor wiring
+RT-3d2c  Guarded real-executor assembly and operator handoff contract
+```
+
+RT-3d remains `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+RT-3d2a acceptance authorizes RT-3d2b only. Credential resolution, OpenAI SDK/client creation, real provider execution, and private transcript evidence remain blocked.

@@ -47,18 +47,33 @@ VoiceInputProviderExecutionConfig
 VoiceInputAudioSource
 VoiceInputSession
 create_voice_input_session
+OpenAIVoiceInputFakeExecutor
+OpenAIVoiceInputRealProviderExecutor
 ```
 
-The selected released execution path is:
+## Post-acceptance execution-path correction
+
+RT-3d2a found that the accepted inventory description above conflated the data-only session adapter path with the provider executor path.
+
+The corrected released boundaries are:
 
 ```text
-VoiceInputProviderExecutionConfig
--> OpenAIVoiceInputProviderAdapter
--> VoiceInputSession.transcribe_audio_result(..., adapter=adapter)
+VoiceInputSession.transcribe_audio_result(...)
+-> adapter.transcribe(...)
+-> typed unavailable result for OpenAIVoiceInputProviderAdapter
 ```
 
-The default Voice Input session adapter remains fake. DRC must explicitly
-inject the released OpenAI adapter for configured real execution.
+```text
+normal bounded tests:
+OpenAIVoiceInputFakeExecutor.execute(...)
+```
+
+```text
+guarded real operator execution:
+OpenAIVoiceInputRealProviderExecutor.execute(...)
+```
+
+The public classes were already present in the accepted v5.4.0 release, so this correction does not create a new Framework development requirement.
 
 ## Accepted FW v5.4.0 evidence
 
@@ -90,7 +105,8 @@ DRC private staged WAV
 -> VoiceInputAudioSource
 -> VoiceInputProviderExecutionConfig
 -> OpenAIVoiceInputProviderAdapter
--> VoiceInputSession
+-> OpenAIVoiceInputFakeExecutor (normal tests)
+   or OpenAIVoiceInputRealProviderExecutor (guarded operator path)
 -> typed provider-neutral result
 -> single-use cleanup
 ```
@@ -133,3 +149,9 @@ explicit operator approval: RECEIVED
 No new Framework development requirement was identified. RT-3d2 is authorized
 for guarded DRC wiring with injected fake-client tests. RT-3d remains
 `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+
+RT-3d2a records the post-acceptance correction without changing the accepted FW release identity or RT-3d1 evidence tuple.
+
+RT-3d2a later accepted the executor-path correction. The FW v5.4.0 release
+identity and RT-3d1 acceptance evidence remain unchanged.

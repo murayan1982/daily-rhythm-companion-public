@@ -6,11 +6,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-Current small commit: none (RT-3d1 accepted; RT-3d2 next)
-Current implementation step: Framework v5.4.0 real STT adoption inventory
+Current small commit: none (RT-3d2a accepted; RT-3d2b next)
+Current implementation step: FW v5.4.0 executor-path correction
 Current implementation state: COMPLETED / ACCEPTED
-Completed small commit: RT-3d1 COMPLETED / ACCEPTED
-Next implementation action: implement guarded FW v5.4.0 wiring in RT-3d2
+Completed small commit: RT-3d2a COMPLETED / ACCEPTED
+Next implementation action: implement bounded marked-fake executor wiring in RT-3d2b
 ```
 
 ## Source of truth
@@ -42,6 +42,8 @@ docs/v300_framework_real_stt_requirement_feedback.md
 scripts/check_v300_framework_real_stt_requirement_feedback.py
 docs/v300_framework_v540_real_stt_adoption_inventory.md
 scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
+docs/v300_rt3d2a_framework_v540_executor_path_correction.md
+scripts/check_v300_rt3d2a_framework_v540_executor_path_correction.py
 ```
 
 Historical release sources remain immutable:
@@ -1292,3 +1294,35 @@ explicit operator approval: RECEIVED
 
 RT-3d2 is authorized but not started. RT-3d remains
 `BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+
+## RT-3d2a - FW v5.4.0 executor-path correction
+
+```text
+RT-3d2a  COMPLETED / ACCEPTED
+RT-3d2   CURRENT / NOT_COMPLETED
+RT-3d    BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
+```
+
+Acceptance requirements:
+
+- [x] exact FW v5.4.0 HEAD/tag is verified
+- [x] Voice Input session data-only delegation is verified
+- [x] OpenAI adapter `transcribe()` execution-free behavior is verified
+- [x] public fake and real executor exports are verified
+- [x] FW fake-execution and real-runtime safe smokes pass
+- [x] compileall and dedicated RT-3d2a gate pass
+- [x] Backend full pytest passes
+- [x] Flutter analyze and full tests pass
+- [x] exact eight-file review and `git diff --check` pass
+- [x] no Backend/Flutter runtime or dependency change
+- [x] no private audio, credential, SDK/client, or real provider execution
+- [x] explicit operator approval
+
+Acceptance result:
+
+```text
+RT-3d2a operator approval: ACCEPTED
+RT-3d2b authorization: AUTHORIZED / NOT_STARTED
+Additional Framework development requirement: False
+```
