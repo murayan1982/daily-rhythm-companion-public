@@ -6,11 +6,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-Current small commit: none (RT-3d2b accepted; RT-3d2c next)
-Current implementation step: private staging to bounded marked-fake executor wiring
-Current implementation state: COMPLETED / ACCEPTED
+Current small commit: RT-3d2c IMPLEMENTED / NOT_ACCEPTED
+Current implementation step: guarded FW v5.4.0 real-executor assembly contract
+Current implementation state: IMPLEMENTED / NOT_ACCEPTED
 Completed small commit: RT-3d2b COMPLETED / ACCEPTED
-Next implementation action: implement guarded real-executor assembly contract in RT-3d2c
+Next implementation action: validate and accept RT-3d2c before any RT-3d3 private execution
 ```
 
 ## Source of truth
@@ -1364,4 +1364,53 @@ RT-3d2b implementation commit: 044f978240b1abda3d28206093e25c4ce285906d
 RT-3d2b operator approval: ACCEPTED
 RT-3d2c authorization: AUTHORIZED / NOT_STARTED
 Additional Framework development requirement: False
+```
+
+## RT-3d2c - guarded real-executor assembly contract
+
+```text
+RT-3d2c  IMPLEMENTED / NOT_ACCEPTED
+RT-3d2   CURRENT / NOT_COMPLETED
+RT-3d    BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
+```
+
+Acceptance requirements:
+
+- [x] accepted RT-3d2b baseline is pushed and clean
+- [x] exact FW v5.4.0 HEAD/tag is verified
+- [x] assembly service uses only released FW root public exports
+- [x] complete explicit operator/provider opt-in is required before Framework import
+- [x] credential-object builder runs only after public-contract validation
+- [x] DRC never reads the credential value
+- [x] real client factory is constructed but never invoked
+- [x] real provider executor is constructed but never executed
+- [x] no staging consume, audio read, microphone, path, payload, transcript, or real STT
+- [x] focused Backend assembly tests pass
+- [x] dedicated RT-3d2c gate passes
+- [x] Backend full pytest passes
+- [x] Flutter analyze and full tests pass unchanged
+- [x] exact nine-file review and `git diff --check` pass
+- [ ] explicit operator approval
+
+Current implementation result:
+
+```text
+compileall: PASS
+dedicated RT-3d2c gate: PASS
+focused Backend tests: 5 passed
+Backend full tests: 158 passed, one existing warning
+Flutter analyze: No issues found
+Flutter full tests: 200 passed
+exact nine-file surface: PASS
+git diff --check: PASS
+Credential value read by DRC: False
+OpenAI SDK imported: False
+Provider client created: False
+Network request executed: False
+Audio read: False
+Microphone accessed: False
+Real provider execution: False
+Additional Framework development requirement: False
+Explicit operator approval: PENDING
+RT-3d3 authorization: BLOCKED pending RT-3d2c acceptance
 ```

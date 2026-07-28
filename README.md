@@ -9,10 +9,10 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3d2b accepted; RT-3d2c next)
-Current implementation: private staging to bounded marked-fake executor wiring (**COMPLETED / ACCEPTED**)
+Current small commit: RT-3d2c (**IMPLEMENTED / NOT_ACCEPTED**)
+Current implementation: guarded FW v5.4.0 real-executor assembly contract (**IMPLEMENTED / NOT_ACCEPTED**)
 Completed small commit: RT-3d2b (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3d2c (**AUTHORIZED / NOT_STARTED**)
+Next realtime phase: RT-3d2c (**IMPLEMENTED / NOT_ACCEPTED**)
 
 Current phase state:
 
@@ -52,7 +52,7 @@ RT-3  CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
     RT-3d2  CURRENT / NOT_COMPLETED                              Guarded DRC v5.4.0 real-STT wiring
       RT-3d2a  COMPLETED / ACCEPTED                              FW v5.4.0 executor-path correction
       RT-3d2b  COMPLETED / ACCEPTED                              Bounded marked-fake executor wiring
-      RT-3d2c  AUTHORIZED / NOT_STARTED                            Guarded real-executor assembly contract
+      RT-3d2c  IMPLEMENTED / NOT_ACCEPTED                          Guarded real-executor assembly contract
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -67,7 +67,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d2b is COMPLETED / ACCEPTED after FW v5.4.0 marked-fake smoke, the dedicated RT-3d2b gate, focused Backend 8, full Backend 153, clean Flutter analysis, Flutter 200, exact thirteen-file implementation review, `git diff --check`, and explicit operator approval. RT-3d2c is AUTHORIZED / NOT_STARTED for guarded real-executor assembly. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING.
+Current v3 phase: RT-3d2b is COMPLETED / ACCEPTED. RT-3d2c is IMPLEMENTED / NOT_ACCEPTED after its dedicated gate, focused Backend 5, full Backend 158 with one existing warning, clean Flutter analysis, Flutter 200, exact nine-file surface validation, and `git diff --check` passed. No credential value, OpenAI SDK import, real client creation, network request, staging/audio read, microphone access, transcript, or real STT execution occurred. Explicit operator approval remains pending. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4397,3 +4397,33 @@ RT-3d2b operator approval: ACCEPTED. The accepted implementation commit is
 `044f978240b1abda3d28206093e25c4ce285906d`. RT-3d2c is authorized but not
 started. Credential values, OpenAI SDK/client creation, network execution,
 microphone access, and real STT remain absent.
+
+## v3.0.0 RT-3d2c guarded real-executor assembly contract
+
+RT-3d2c is **IMPLEMENTED / NOT_ACCEPTED**. It adds a separate assembly-only
+Backend service that uses only released FW v5.4.0 public exports:
+
+```text
+VoiceInputProviderExecutionConfig
+-> OpenAIVoiceInputPrivateCredential supplied by a private caller
+-> OpenAIVoiceInputRealProviderPolicy
+-> OpenAIVoiceInputRealClientFactory (constructed, not invoked)
+-> OpenAIVoiceInputProviderAdapter
+-> OpenAIVoiceInputRealProviderExecutor (constructed, not executed)
+```
+
+Every operator and provider execution gate must be true before Framework import
+or private credential-object construction. DRC does not read the credential
+value. Normal tests use a synthetic public contract and verify that the client
+factory and executor are never called.
+
+RT-3d2c adds no API route, AppConfig/environment credential flag, staging
+consume, audio source/read, microphone access, OpenAI dependency, provider
+client, network request, transcript, real STT evidence, Flutter change, version,
+release, tag, or publication change.
+
+Local validation passed with the dedicated gate, focused Backend 5, full Backend
+158 with one existing warning, clean Flutter analysis, Flutter 200, exact
+nine-file surface validation, and `git diff --check`. RT-3d2c remains
+NOT_ACCEPTED until explicit operator approval. RT-3d3 private execution and
+operator acceptance remain separate and unauthorized.

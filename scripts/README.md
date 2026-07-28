@@ -5692,3 +5692,31 @@ The accepted gate reports
 `v300_rt3d2b_bounded_marked_fake_executor_status: completed-accepted`,
 `v300_rt3d2b_operator_approval: accepted`, and
 `v300_rt3d2c_authorization: authorized-not-started`.
+
+## v3.0.0 RT-3d2c guarded real-executor assembly contract
+
+```powershell
+$env:FRAMEWORK_ROOT = "E:\work\deverop\AI-Character-Framework\Development"
+.\.venv\Scripts\python.exe -m compileall -q backend scripts
+.\.venv\Scripts\python.exe scripts\check_v300_rt3d2c_guarded_real_executor_assembly_contract.py
+.\.venv\Scripts\python.exe -m pytest -q backend\tests\test_framework_voice_input_openai_real_executor_assembly.py
+.\.venv\Scripts\python.exe -m pytest -q backend\tests
+cd app
+flutter analyze
+flutter test
+cd ..
+git diff --check
+```
+
+The dedicated gate verifies the exact nine-file RT-3d2c surface, exact FW
+v5.4.0 HEAD/tag, root-public real-executor exports, pre-import opt-in ordering,
+opaque private credential-object injection, and assembly-only behavior.
+
+It rejects OpenAI SDK imports, environment credential reads, direct provider
+clients, client-factory invocation, executor execution, staging/audio access,
+microphone access, private paths, raw audio, provider payloads, transcripts, and
+real STT claims.
+
+The implementation gate reports
+`v300_rt3d2c_guarded_real_executor_assembly_status: implemented-not-accepted`
+and keeps RT-3d3 blocked pending full validation and explicit approval.

@@ -13,9 +13,9 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-current small commit: none (RT-3d2b accepted; RT-3d2c next)
-current implementation step: private staging to bounded marked-fake executor wiring
-current implementation state: COMPLETED / ACCEPTED
+current small commit: RT-3d2c IMPLEMENTED / NOT_ACCEPTED
+current implementation step: guarded FW v5.4.0 real-executor assembly contract
+current implementation state: IMPLEMENTED / NOT_ACCEPTED
 completed small commit: RT-3d2b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
@@ -57,6 +57,8 @@ docs/v300_rt3d2a_framework_v540_executor_path_correction.md
 scripts/check_v300_rt3d2a_framework_v540_executor_path_correction.py
 docs/v300_rt3d2b_bounded_marked_fake_executor_wiring.md
 scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
+docs/v300_rt3d2c_guarded_real_executor_assembly_contract.md
+scripts/check_v300_rt3d2c_guarded_real_executor_assembly_contract.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1855,3 +1857,27 @@ Flutter 200, exact thirteen-file implementation review, `git diff --check`, and
 explicit operator approval.
 
 RT-3d2c authorization: AUTHORIZED / NOT_STARTED.
+
+## RT-3d2c guarded real-executor assembly contract
+
+Status: `IMPLEMENTED / NOT_ACCEPTED`
+
+The Backend now has a separate assembly-only service for the released FW v5.4.0
+real OpenAI executor path. It requires complete explicit opt-in before Framework
+public import or private credential-object preparation.
+
+The service constructs the public execution configuration, real policy, real
+client factory, OpenAI adapter, and real provider executor, then returns only a
+safe assembly snapshot plus an opaque private executor handle. It does not call
+the client factory or executor.
+
+Focused Backend result: `5 passed`. No credential value was read by DRC, no
+OpenAI SDK was imported, no provider client or network request was created, and
+no staging artifact, audio, microphone, path, payload, transcript, or real STT
+was used.
+
+RT-3d2c local validation passed: dedicated gate, focused Backend 5, full
+Backend 158 with one existing warning, clean Flutter analysis, Flutter 200,
+exact nine-file surface validation, and `git diff --check`. It remains
+NOT_ACCEPTED pending explicit operator approval. RT-3d3 remains blocked.
+Additional Framework development requirement: `False`.
