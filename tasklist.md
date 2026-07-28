@@ -13,10 +13,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-current small commit: RT-3d2b IMPLEMENTED / NOT_ACCEPTED
+current small commit: none (RT-3d2b accepted; RT-3d2c next)
 current implementation step: private staging to bounded marked-fake executor wiring
-current implementation state: IMPLEMENTED / NOT_ACCEPTED
-completed small commit: RT-3d2a COMPLETED / ACCEPTED
+current implementation state: COMPLETED / ACCEPTED
+completed small commit: RT-3d2b COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
@@ -1841,10 +1841,17 @@ RT-3d2a acceptance passed after FW executor distinction checks, safe FW smokes, 
 
 ## RT-3d2b bounded marked-fake executor wiring
 
-Status: `IMPLEMENTED / NOT_ACCEPTED`
+Status: `COMPLETED / ACCEPTED`
 
 The Backend now has a separate guarded marked-fake executor path that performs
 bounded staged-WAV reading through FW v5.4.0 public contracts, returns a
 path-free typed result, and enforces single-use cleanup. It does not read
 credentials, import the OpenAI SDK, create a real provider client, access a
 microphone, or execute the network.
+
+RT-3d2b acceptance passed with the implementation commit `044f978`, FW safe
+marked-fake verification, focused Backend 8, full Backend 153, Flutter analyze,
+Flutter 200, exact thirteen-file implementation review, `git diff --check`, and
+explicit operator approval.
+
+RT-3d2c authorization: AUTHORIZED / NOT_STARTED.

@@ -7263,7 +7263,7 @@ RT-3d2a acceptance authorizes RT-3d2b only. Credential resolution, OpenAI SDK/cl
 
 ### RT-3d2b bounded marked-fake executor wiring
 
-Status: `IMPLEMENTED / NOT_ACCEPTED`
+Status: `COMPLETED / ACCEPTED`
 
 RT-3d2b adds a separate guarded Backend route from the accepted private staging
 store to FW v5.4.0 `OpenAIVoiceInputFakeExecutor`. It uses an explicit provider
@@ -7273,3 +7273,8 @@ audio policy, provider-neutral result normalization, and single-use cleanup.
 The existing RT-3c4 session fake-handoff is preserved. Real credential
 resolution, OpenAI SDK/client creation, network execution, private operator
 evidence, and real STT remain reserved for later checkpoints.
+
+RT-3d2b acceptance authorizes RT-3d2c only. RT-3d2c may add guarded public
+real-executor assembly, but actual credential use, OpenAI SDK/client creation,
+network execution, transcript evidence, and private operator acceptance remain
+separate explicit work.

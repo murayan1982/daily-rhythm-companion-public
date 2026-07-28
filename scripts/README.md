@@ -5683,3 +5683,12 @@ git diff --check
 The dedicated gate verifies the separate bounded marked-fake runtime path,
 path-free normalization, single-use cleanup, and absence of credentials, OpenAI
 SDK/client creation, network execution, microphone access, and real STT.
+
+RT-3d2b acceptance is recorded in a follow-up acceptance-only commit because
+the thirteen-file implementation was already committed and pushed as
+`044f978240b1abda3d28206093e25c4ce285906d`.
+
+The accepted gate reports
+`v300_rt3d2b_bounded_marked_fake_executor_status: completed-accepted`,
+`v300_rt3d2b_operator_approval: accepted`, and
+`v300_rt3d2c_authorization: authorized-not-started`.

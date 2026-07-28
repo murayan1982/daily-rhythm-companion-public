@@ -3,7 +3,7 @@
 Updated: 2026-07-28
 
 ```text
-RT-3d2b: IMPLEMENTED / NOT_ACCEPTED
+RT-3d2b: COMPLETED / ACCEPTED
 RT-3d2: CURRENT / NOT_COMPLETED
 RT-3d: BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
 Framework release: v5.4.0
@@ -94,3 +94,26 @@ contracts are all released public FW v5.4.0 exports.
 RT-3d2b adds no Flutter runtime, dependency, platform declaration, environment
 credential setting, OpenAI dependency, real provider assembly, private operator
 evidence, version, release, tag, or publication change.
+
+## Acceptance record
+
+RT-3d2b is **COMPLETED / ACCEPTED** after:
+
+```text
+implementation commit: 044f978240b1abda3d28206093e25c4ce285906d
+FW v5.4.0 exact HEAD/tag: PASS
+FW accepted marked-fake execution smoke: PASS
+dedicated RT-3d2b gate: PASS
+focused Backend tests: 8 passed
+Backend full tests: 153 passed, one existing warning
+Flutter analyze: No issues found
+Flutter tests: 200 passed
+exact thirteen-file implementation surface: PASS
+acceptance-only seven-file surface: PASS
+git diff --check: PASS
+credential/OpenAI SDK/real client/network/microphone/real STT: NOT USED
+explicit operator approval: RECEIVED
+```
+
+No new Framework development requirement was identified. RT-3d2c is
+`AUTHORIZED / NOT_STARTED`. RT-3d remains blocked.

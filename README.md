@@ -9,10 +9,10 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-3d2b (**IMPLEMENTED / NOT_ACCEPTED**)
-Current implementation: private staging to bounded marked-fake executor wiring (**IMPLEMENTED / NOT_ACCEPTED**)
-Completed small commit: RT-3d2a (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3d2b (**IMPLEMENTED / NOT_ACCEPTED**)
+Current small commit: none (RT-3d2b accepted; RT-3d2c next)
+Current implementation: private staging to bounded marked-fake executor wiring (**COMPLETED / ACCEPTED**)
+Completed small commit: RT-3d2b (**COMPLETED / ACCEPTED**)
+Next realtime phase: RT-3d2c (**AUTHORIZED / NOT_STARTED**)
 
 Current phase state:
 
@@ -51,8 +51,8 @@ RT-3  CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
     RT-3d1  COMPLETED / ACCEPTED                                  Framework v5.4.0 adoption inventory
     RT-3d2  CURRENT / NOT_COMPLETED                              Guarded DRC v5.4.0 real-STT wiring
       RT-3d2a  COMPLETED / ACCEPTED                              FW v5.4.0 executor-path correction
-      RT-3d2b  IMPLEMENTED / NOT_ACCEPTED                          Bounded marked-fake executor wiring
-      RT-3d2c  PLANNED                                             Guarded real-executor assembly contract
+      RT-3d2b  COMPLETED / ACCEPTED                              Bounded marked-fake executor wiring
+      RT-3d2c  AUTHORIZED / NOT_STARTED                            Guarded real-executor assembly contract
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -67,7 +67,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d2a is COMPLETED / ACCEPTED. RT-3d2b is IMPLEMENTED / NOT_ACCEPTED and adds a separate guarded Backend path from private staging through FW v5.4.0 `OpenAIVoiceInputFakeExecutor`, with bounded audio read, a nominally marked fake client, provider-neutral result normalization, and single-use cleanup. No credential value, OpenAI SDK/client, network request, microphone access, or real provider execution is used. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING.
+Current v3 phase: RT-3d2b is COMPLETED / ACCEPTED after FW v5.4.0 marked-fake smoke, the dedicated RT-3d2b gate, focused Backend 8, full Backend 153, clean Flutter analysis, Flutter 200, exact thirteen-file implementation review, `git diff --check`, and explicit operator approval. RT-3d2c is AUTHORIZED / NOT_STARTED for guarded real-executor assembly. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4385,10 +4385,15 @@ RT-3d2a acceptance passed with FW public-boundary checks, safe FW smokes, Backen
 
 ## v3.0.0 RT-3d2b bounded marked-fake executor wiring
 
-RT-3d2b is **IMPLEMENTED / NOT_ACCEPTED**. It keeps the RT-3c4 session
+RT-3d2b is **COMPLETED / ACCEPTED**. It keeps the RT-3c4 session
 fake-handoff intact and adds a separate guarded
 `/openai-fake-executor` path. The new path consumes one private staged WAV,
 uses FW v5.4.0 public execution configuration, OpenAI adapter, nominal fake
 client, bounded fake executor, typed path-free result, and single-use cleanup.
 Real credentials, SDK/client creation, network execution, and real STT remain
 absent.
+
+RT-3d2b operator approval: ACCEPTED. The accepted implementation commit is
+`044f978240b1abda3d28206093e25c4ce285906d`. RT-3d2c is authorized but not
+started. Credential values, OpenAI SDK/client creation, network execution,
+microphone access, and real STT remain absent.

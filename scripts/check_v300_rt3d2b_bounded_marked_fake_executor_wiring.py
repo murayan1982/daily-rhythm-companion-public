@@ -7,7 +7,7 @@ import os
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_DRC_HEAD = "335ba7b56c3fe968931931b4798228bac82d337b"
+EXPECTED_DRC_HEAD = "044f978240b1abda3d28206093e25c4ce285906d"
 EXPECTED_FW_HEAD = "d313eb6acb643103fe25988720ebee5976a04f78"
 
 EXPECTED_CHANGED_PATHS = {
@@ -18,12 +18,6 @@ EXPECTED_CHANGED_PATHS = {
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_rt3d2b_bounded_marked_fake_executor_wiring.md",
     "scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py",
-    "backend/app/api/voice_input_demo.py",
-    "backend/app/models/voice_input_demo.py",
-    "backend/app/services/framework_voice_input_fake_handoff.py",
-    "backend/app/services/framework_voice_input_openai_fake_executor.py",
-    "backend/tests/test_framework_voice_input_openai_fake_executor.py",
-    "backend/tests/test_voice_input_openai_fake_executor_api.py",
 }
 
 
@@ -183,7 +177,28 @@ def main() -> None:
         "FW requirement result",
     )
 
-    print("v300_rt3d2b_bounded_marked_fake_executor_status: implemented-not-accepted")
+    require(
+        files["README"],
+        "Current small commit: none (RT-3d2b accepted; RT-3d2c next)",
+        "README accepted current small commit",
+    )
+    require(
+        files["checklist"],
+        "RT-3d2b  COMPLETED / ACCEPTED",
+        "checklist accepted RT-3d2b state",
+    )
+    require(
+        files["RT-3d2b doc"],
+        "RT-3d2b: COMPLETED / ACCEPTED",
+        "RT-3d2b document accepted state",
+    )
+    require(
+        files["RT-3d2b doc"],
+        "explicit operator approval: RECEIVED",
+        "operator approval record",
+    )
+
+    print("v300_rt3d2b_bounded_marked_fake_executor_status: completed-accepted")
     print("v300_framework_release: v5.4.0")
     print(f"v300_framework_tag_commit: {EXPECTED_FW_HEAD}")
     print("v300_private_staging_consumed: True")
@@ -200,9 +215,11 @@ def main() -> None:
     print("v300_provider_payload_exposed: False")
     print("v300_single_use_cleanup_required: True")
     print("v300_new_framework_requirement_identified: False")
-    print("v300_rt3d2c_authorization: pending-rt3d2b-acceptance")
+    print("v300_rt3d2b_implementation_commit: 044f978240b1abda3d28206093e25c4ce285906d")
+    print("v300_rt3d2b_operator_approval: accepted")
+    print("v300_rt3d2c_authorization: authorized-not-started")
     print("v300_rt3d_status: blocked-drc-v540-wiring-and-operator-acceptance-pending")
-    print("[OK] RT-3d2b bounded marked-fake executor wiring is safe")
+    print("[OK] RT-3d2b bounded marked-fake executor wiring is completed and accepted")
 
 
 if __name__ == "__main__":
