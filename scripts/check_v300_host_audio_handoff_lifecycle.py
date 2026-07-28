@@ -20,22 +20,22 @@ ALLOWED_CHANGED_PATHS = {
     "scripts/README.md",
     "backend/app/api/voice_input_demo.py",
     "backend/app/models/voice_input_demo.py",
-    "backend/app/services/voice_input_staging_store.py",
-    "backend/tests/test_voice_input_staging_upload_api.py",
-    "app/lib/services/microphone_capture_host_audio_handoff.dart",
-    "app/lib/services/backend_voice_input_staging_consumer.dart",
-    "app/test/backend_voice_input_staging_consumer_test.dart",
+    "backend/app/services/framework_voice_input_fake_handoff.py",
+    "backend/tests/test_framework_voice_input_fake_handoff.py",
+    "backend/tests/test_voice_input_fake_handoff_api.py",
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_framework_v530_stt_integration_inventory.md",
     "docs/v300_host_audio_handoff_lifecycle.md",
     "docs/v300_rt3c_private_staging_fw_handoff_readiness.md",
     "docs/v300_rt3c2_private_backend_staging_store.md",
     "docs/v300_rt3c3_guarded_upload_flutter_staging_consumer.md",
+    "docs/v300_rt3c4_fake_fw_public_session_handoff.md",
     "scripts/check_v300_framework_v530_stt_integration_inventory.py",
     "scripts/check_v300_host_audio_handoff_lifecycle.py",
     "scripts/check_v300_rt3c_private_staging_fw_handoff_readiness.py",
     "scripts/check_v300_rt3c2_private_backend_staging_store.py",
     "scripts/check_v300_rt3c3_guarded_upload_flutter_staging_consumer.py",
+    "scripts/check_v300_rt3c4_fake_fw_public_session_handoff.py",
 }
 
 PROTECTED_TREE_HASHES = {}
@@ -271,12 +271,12 @@ def validate_docs() -> None:
 
     require(
         sources["README"],
-        "Current small commit: RT-3c4 (**CURRENT / NOT_COMPLETED**)",
+        "Current small commit: none (RT-3c4 accepted)",
         "README RT-3c2 current state",
     )
     require(
         sources["checklist"],
-        "Current implementation state: NOT_STARTED",
+        "Current implementation state: COMPLETED / ACCEPTED",
         "checklist RT-3c3 state",
     )
     require(
@@ -331,14 +331,14 @@ def main() -> None:
         "current-blocked-real-provider-execution-not-implemented"
     )
     print("v300_rt3b_status: completed-accepted")
-    print("v300_rt3c_status: current-not-completed")
+    print("v300_rt3c_status: completed-accepted")
     print("v300_rt3c1_status: completed-accepted")
     print("v300_rt3c2_status: completed-accepted")
     print("v300_rt3c2_implementation: completed-accepted")
     print("v300_rt3c3_status: completed-accepted")
     print("v300_rt3c3_implementation: completed-accepted")
-    print("v300_rt3c4_status: current-not-completed")
-    print("v300_rt3c4_implementation: not-started")
+    print("v300_rt3c4_status: completed-accepted")
+    print("v300_rt3c4_implementation: completed-accepted")
     print("v300_rt3c4_authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only")
     print(
         "v300_rt3_real_acceptance: "

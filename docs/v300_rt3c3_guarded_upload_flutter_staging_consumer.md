@@ -6,8 +6,8 @@ Source archive SHA-256: 93DC227CEACF640709695F758A0E73DEBDF63749FE4418F071CDBEC6
 RT-3c3: COMPLETED / ACCEPTED
 RT-3c3 implementation: COMPLETED / ACCEPTED
 Authorization at implementation: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
-RT-3c4: CURRENT / NOT_COMPLETED
-RT-3c4 implementation: NOT_STARTED
+RT-3c4: COMPLETED / ACCEPTED
+RT-3c4 implementation: COMPLETED / ACCEPTED
 RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
@@ -113,4 +113,8 @@ raw audio committed: no
 
 ## Acceptance boundary
 
-RT-3c3 is `COMPLETED / ACCEPTED`. Acceptance passed with compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval. No real microphone artifact was read or uploaded; Framework was not imported, no `VoiceInputSession` was created, and no provider or STT execution occurred. RT-3c4 is CURRENT / NOT_COMPLETED and NOT_STARTED under authorization `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`. Real RT-3 acceptance remains blocked because FW v5.3.0 has no concrete real STT provider execution.
+RT-3c3 is `COMPLETED / ACCEPTED`. Acceptance passed with compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval. No real microphone artifact was read or uploaded; Framework was not imported, no `VoiceInputSession` was created, and no provider or STT execution occurred. RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED under authorization `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`. Real RT-3 acceptance remains blocked because FW v5.3.0 has no concrete real STT provider execution.
+
+## RT-3c4 implementation update
+
+RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED after compileall, six RT-3 gates, focused Backend 8, full Backend 145 with one existing warning, clean Flutter analysis, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval. The path-free handle produced by RT-3c3 can now be submitted to the guarded Backend fake-handoff endpoint. The Backend consumes the private staged artifact once, constructs FW v5.3.0 public file-source/request/session objects, injects `FakeVoiceInputProviderAdapter`, closes the session, and returns a path-free fake transcript result. The Flutter RT-3c3 implementation is unchanged. Real microphone operator upload, provider execution, and real STT remain absent.

@@ -7,7 +7,7 @@ RT-3: CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 RT-3a: COMPLETED / ACCEPTED
 RT-3b: COMPLETED / ACCEPTED
 RT-3b implementation: COMPLETED / ACCEPTED
-RT-3c: CURRENT / NOT_COMPLETED
+RT-3c: COMPLETED / ACCEPTED
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
 
@@ -156,7 +156,7 @@ No Backend route, network upload, audio read, FW import, provider execution, STT
 dependency, platform, vendor, private environment, version, or release surface
 changed.
 
-RT-3c is CURRENT / NOT_COMPLETED with authorization
+RT-3c is COMPLETED / ACCEPTED. Its implementation authorization was
 `authorized-private-backend-staging-and-fake-fw-public-session-handoff-only`.
 Real RT-3 acceptance remains blocked because FW v5.3.0 has no concrete real STT
 provider execution.
@@ -185,4 +185,8 @@ RT-3c1 does not add that consumer. It only fixes these future rules:
 
 ## RT-3c2 downstream staging update
 
-The consumer boundary prepared by RT-3b now connects the Flutter lease to the accepted Backend-owned private staging store through a guarded bounded request. `BackendVoiceInputStagingConsumer` opens the file only inside `withPrivateArtifactPath(...)`; after success or failure, `HostAudioHandoffController` still performs the local discard. The consumer exposes only safe booleans in the public handoff result and retains the opaque, path-free Backend staging handle separately for RT-3c4. RT-3c3 did not import Framework, create a VoiceInputSession, execute a provider, or execute STT, and is COMPLETED / ACCEPTED after the full local validation set. RT-3c4 is CURRENT / NOT_COMPLETED and NOT_STARTED.
+The consumer boundary prepared by RT-3b now connects the Flutter lease to the accepted Backend-owned private staging store through a guarded bounded request. `BackendVoiceInputStagingConsumer` opens the file only inside `withPrivateArtifactPath(...)`; after success or failure, `HostAudioHandoffController` still performs the local discard. The consumer exposes only safe booleans in the public handoff result and retains the opaque, path-free Backend staging handle separately for RT-3c4. RT-3c3 did not import Framework, create a VoiceInputSession, execute a provider, or execute STT, and is COMPLETED / ACCEPTED after the full local validation set. RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED after compileall, six RT-3 gates, focused Backend 8, full Backend 145 with one existing warning, clean Flutter analysis, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval.
+
+## RT-3c4 downstream fake-session update
+
+The accepted Flutter lifecycle remains unchanged. RT-3c4 operates only after the mobile artifact has been uploaded and represented by a path-free Backend staging handle. The Backend resolves the private server path solely inside `VoiceInputStagingStore.consume(...)`, passes it into FW's data-only public file-source contract, closes the fake session, and removes the staged artifact. No private path returns to Flutter or enters the public handoff result. RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED; real STT remains blocked.

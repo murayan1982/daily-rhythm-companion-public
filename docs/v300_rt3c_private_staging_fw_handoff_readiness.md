@@ -10,8 +10,8 @@ RT-3c2 implementation: COMPLETED / ACCEPTED
 RT-3c3: COMPLETED / ACCEPTED
 RT-3c3 implementation: COMPLETED / ACCEPTED
 RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
-RT-3c4: CURRENT / NOT_COMPLETED
-RT-3c4 implementation: NOT_STARTED
+RT-3c4: COMPLETED / ACCEPTED
+RT-3c4 implementation: COMPLETED / ACCEPTED
 RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
@@ -233,3 +233,7 @@ RT-3c3: COMPLETED / ACCEPTED
 RT-3c3 implementation: COMPLETED / ACCEPTED
 RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
 ```
+
+## RT-3c4 implementation update
+
+The selected RT-3c4 design is COMPLETED / ACCEPTED. A guarded Backend endpoint consumes one opaque staging ID through the private store, creates FW v5.3.0 public WAV/file-source/request/session objects, explicitly selects `FakeVoiceInputProviderAdapter`, normalizes a path-free result, closes the session, and relies on single-use store cleanup. Preflight/import/contract failure occurs before consume and preserves the artifact. No provider client, provider execution, real transcription, or real STT is performed.

@@ -248,3 +248,7 @@ RT-3c1 acceptance passed with compileall, the source-only gate, Backend 116 with
 ## RT-3c2 DRC-side staging update
 
 DRC now has an accepted private Backend staging store and an accepted guarded upload/Flutter consumer boundary. The new route streams bounded WAV request chunks into DRC-owned private staging, and the Flutter consumer accesses the mobile path only inside the accepted lease. Neither side imports Framework or creates a voice-input session. Fake FW public-session handoff remains reserved for RT-3c4. FW v5.3.0 real provider execution remains absent, so the real RT-3 acceptance block is unchanged.
+
+## RT-3c4 DRC public fake-session update
+
+DRC now has an IMPLEMENTED / NOT_ACCEPTED Backend adapter that consumes one private staged WAV through the released FW v5.3.0 public file-source/session contract and explicitly injects `FakeVoiceInputProviderAdapter`. The session is closed and the staged artifact is single-use after callback entry. The normalized API result omits the private path, staging ID, FW audio ID, and raw metadata. This proves GAP-4 only with a synthetic fake result. GAP-5 remains unchanged: FW v5.3.0 still performs no concrete provider execution or real STT.

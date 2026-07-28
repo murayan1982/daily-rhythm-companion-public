@@ -5569,16 +5569,16 @@ v300_rt3c2_flutter_changed: False
 v300_rt3c2_framework_imported: False
 v300_rt3c2_provider_execution_executed: False
 v300_rt3c2_stt_executed: False
-v300_rt3c_parent_status: current-pending-rt3c4-implementation
+v300_rt3c_parent_status: completed-accepted
 v300_rt3c2_status: completed-accepted
 v300_rt3c3_status: completed-accepted
 v300_rt3c3_implementation: completed-accepted
-v300_rt3c4_status: current-not-completed
-v300_rt3c4_implementation: not-started
+v300_rt3c4_status: completed-accepted
+v300_rt3c4_implementation: completed-accepted
 v300_rt3c4_authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 ```
 
-RT-3c2 acceptance evidence: compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check` passed. RT-3c3 is also COMPLETED / ACCEPTED after compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, and `git diff --check`. RT-3c4 is CURRENT / NOT_COMPLETED and NOT_STARTED; real provider execution and real STT remain forbidden.
+RT-3c2 acceptance evidence: compileall, four RT-3 gates, focused Backend 14, full Backend 127 with one existing warning, clean Flutter analysis, full Flutter 192, exact 18-file surface review, and `git diff --check` passed. RT-3c3 is also COMPLETED / ACCEPTED after compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, and `git diff --check`. RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED; real provider execution and real STT remain forbidden.
 
 ## v3.0.0 RT-3c3 guarded upload and Flutter scoped staging consumer gate
 
@@ -5586,7 +5586,7 @@ RT-3c2 acceptance evidence: compileall, four RT-3 gates, focused Backend 14, ful
 .\.venv\Scripts\python.exe scripts\check_v300_rt3c3_guarded_upload_flutter_staging_consumer.py
 ```
 
-This source-and-synthetic gate validates the exact accepted RT-3c3 surface: the guarded streamed `audio/wav` route, async bounded store input, path-free response models, Flutter scoped staging consumer, and tests. It creates only generated WAV bytes in a temporary directory. It does not read a real microphone artifact, contact a running Backend over the network, import Framework, create a `VoiceInputSession`, call a provider, or execute STT. Current state: `COMPLETED / ACCEPTED`; RT-3c4 is CURRENT / NOT_COMPLETED and NOT_STARTED under authorization `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`.
+This source-and-synthetic gate validates the exact accepted RT-3c3 surface: the guarded streamed `audio/wav` route, async bounded store input, path-free response models, Flutter scoped staging consumer, and tests. It creates only generated WAV bytes in a temporary directory. It does not read a real microphone artifact, contact a running Backend over the network, import Framework, create a `VoiceInputSession`, call a provider, or execute STT. Current state: `COMPLETED / ACCEPTED`; RT-3c4 and parent RT-3c are COMPLETED / ACCEPTED under authorization `authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only`.
 
 Expected accepted-state markers:
 
@@ -5594,9 +5594,18 @@ Expected accepted-state markers:
 v300_rt3c3_guarded_upload_flutter_staging_consumer_status: completed-accepted
 v300_rt3c3_status: completed-accepted
 v300_rt3c3_implementation: completed-accepted
-v300_rt3c4_status: current-not-completed
-v300_rt3c4_implementation: not-started
+v300_rt3c4_status: completed-accepted
+v300_rt3c4_implementation: completed-accepted
 v300_rt3c4_authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 ```
 
 RT-3c3 acceptance evidence: compileall, five RT-3 gates, focused Backend 21, full Backend 137 with one existing warning, clean Flutter analysis, focused Flutter 29, full Flutter 200, exact 22-file surface review, and `git diff --check` passed.
+
+## RT-3c4 fake FW public-session handoff gate
+
+```powershell
+.\.venv\Scripts\python.exe `
+  scripts\check_v300_rt3c4_fake_fw_public_session_handoff.py
+```
+
+The gate uses generated WAV bytes in a temporary DRC staging root and the configured FW v5.3.0 public package. It verifies explicit fake-adapter selection, public file-source/session wiring, path-free normalization, session close, single-use cleanup, and zero audio read/provider/STT execution. It does not print `FRAMEWORK_ROOT`, use a real microphone artifact, or call a provider. Status: `COMPLETED / ACCEPTED`. Acceptance passed with compileall, six RT-3 gates, focused Backend 8, full Backend 145 with one existing warning, clean Flutter analysis, full Flutter 200, exact 22-file surface review, `git diff --check`, and explicit operator approval. Parent RT-3c is COMPLETED / ACCEPTED; RT-3d remains blocked pending real provider execution.

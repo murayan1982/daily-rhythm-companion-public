@@ -9,10 +9,17 @@ from app.models.voice_input_demo import (
     VoiceInputDemoRequest,
     VoiceInputDemoRequestResponse,
     VoiceInputDemoStatusResponse,
+    VoiceInputFakeHandoffRequest,
+    VoiceInputFakeHandoffResponse,
     VoiceInputStagingProblem,
     VoiceInputStagingUploadResponse,
 )
 from app.services.voice_input_demo_service import VoiceInputDemoService
+from app.services.framework_voice_input_fake_handoff import (
+    FrameworkVoiceInputFakeHandoffAdapter,
+    FrameworkVoiceInputFakeHandoffError,
+    FrameworkVoiceInputFakeHandoffRequest as ServiceFakeHandoffRequest,
+)
 from app.services.voice_input_staging_store import (
     VoiceInputStagingError,
     VoiceInputStagingStore,
@@ -144,8 +151,70 @@ async def stage_voice_input_demo_audio(
     )
 
 
+@router.post(
+    "/demo/voice-input/staging/{staging_id}/fake-handoff",
+    response_model=VoiceInputFakeHandoffResponse,
+)
+def fake_transcribe_staged_voice_input(
+    staging_id: str,
+    request: VoiceInputFakeHandoffRequest,
+) -> VoiceInputFakeHandoffResponse:
+    """Consume one staged artifact through FW's public fake STT session.
+
+    This route explicitly selects ``FakeVoiceInputProviderAdapter``. It passes
+    the private Backend path only inside the single-use staging consume scope,
+    returns no path or staging ID, closes the FW session, and performs no real
+    provider execution or real STT.
+    """
+
+    config = load_config()
+    _require_staging_upload_enabled(config)
+    store = _create_voice_input_staging_store(config)
+    adapter = _create_framework_voice_input_fake_handoff_adapter(config, store)
+
+    try:
+        result = adapter.transcribe_staged_artifact(
+            ServiceFakeHandoffRequest(
+                staging_id=staging_id,
+                language=request.language,
+                duration_ms=request.duration_ms,
+                max_duration_ms=_MAX_CAPTURE_DURATION_MS,
+            )
+        )
+    except FrameworkVoiceInputFakeHandoffError as exc:
+        _raise_fake_handoff_error(exc)
+
+    return VoiceInputFakeHandoffResponse(
+        accepted=result.status == "completed",
+        request_state=result.request_state,
+        outcome=result.outcome,
+        transcript=result.transcript,
+        language=result.language,
+        duration_ms=result.duration_ms,
+        public_error_code=result.public_error_code,
+        safe_message=result.safe_message,
+        retryable=result.retryable,
+        framework_api_name=result.framework_api_name,
+        adapter_name=result.adapter_name,
+        fake_transcription_completed=result.fake_transcription_completed,
+        staged_artifact_consumed=result.staged_artifact_consumed,
+        session_closed=result.session_closed,
+        audio_read=result.audio_read,
+        microphone_accessed=result.microphone_accessed,
+        provider_execution_executed=result.provider_execution_executed,
+        stt_executed=result.stt_executed,
+    )
+
+
 def _create_voice_input_staging_store(config: AppConfig) -> VoiceInputStagingStore:
     return VoiceInputStagingStore(config=config)
+
+
+def _create_framework_voice_input_fake_handoff_adapter(
+    config: AppConfig,
+    store: VoiceInputStagingStore,
+) -> FrameworkVoiceInputFakeHandoffAdapter:
+    return FrameworkVoiceInputFakeHandoffAdapter(config, store)
 
 
 def _require_staging_upload_enabled(config: AppConfig) -> None:
@@ -218,6 +287,21 @@ def _optional_content_length(request: Request) -> int | None:
             "Voice-input staging received an invalid Content-Length header.",
         )
     return parsed
+
+
+def _raise_fake_handoff_error(error: FrameworkVoiceInputFakeHandoffError) -> None:
+    status_code = {
+        "invalid_staging_id": status.HTTP_400_BAD_REQUEST,
+        "artifact_not_found": status.HTTP_404_NOT_FOUND,
+        "unexpected_fake_handoff_contract": status.HTTP_502_BAD_GATEWAY,
+        "unsafe_fake_handoff_result": status.HTTP_502_BAD_GATEWAY,
+    }.get(error.code, status.HTTP_503_SERVICE_UNAVAILABLE)
+    _raise_staging_problem(
+        status_code,
+        error.code,
+        str(error),
+        retryable=error.retryable,
+    )
 
 
 def _raise_store_error(error: VoiceInputStagingError) -> None:

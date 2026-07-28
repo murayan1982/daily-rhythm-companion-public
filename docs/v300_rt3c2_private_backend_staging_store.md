@@ -4,15 +4,15 @@ Updated: 2026-07-27
 
 ```text
 RT-3: CURRENT / BLOCKED_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
-RT-3c: CURRENT / NOT_COMPLETED
+RT-3c: COMPLETED / ACCEPTED
 RT-3c1: COMPLETED / ACCEPTED
 RT-3c2: COMPLETED / ACCEPTED
 RT-3c2 implementation: COMPLETED / ACCEPTED
 RT-3c3: COMPLETED / ACCEPTED
 RT-3c3 implementation: COMPLETED / ACCEPTED
 RT-3c3 authorization: authorized-guarded-binary-upload-route-and-flutter-scoped-staging-consumer-only
-RT-3c4: CURRENT / NOT_COMPLETED
-RT-3c4 implementation: NOT_STARTED
+RT-3c4: COMPLETED / ACCEPTED
+RT-3c4 implementation: COMPLETED / ACCEPTED
 RT-3c4 authorization: authorized-fake-fw-public-session-handoff-and-single-use-staged-artifact-cleanup-only
 RT-3d: BLOCKED_FRAMEWORK_REAL_PROVIDER_EXECUTION_NOT_IMPLEMENTED
 ```
@@ -196,3 +196,7 @@ cd ..
 git diff --check
 git status --short
 ```
+
+## RT-3c4 consumer update
+
+The accepted store is now used by a COMPLETED / ACCEPTED fake FW public-session adapter. `consume(...)` remains the only place where the private server path exists outside the store internals. Successful fake handoff, fake-session failure, and unsafe-result rejection remove the artifact; Framework preflight failure occurs before consume and preserves it for retry. Public results contain neither path nor staging ID.

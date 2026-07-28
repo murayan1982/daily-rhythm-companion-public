@@ -80,3 +80,32 @@ class VoiceInputStagingProblem(BaseModel):
     code: str
     message: str
     retryable: bool = False
+
+class VoiceInputFakeHandoffRequest(BaseModel):
+    """Safe metadata for one fake FW public-session handoff."""
+
+    language: str | None = Field(default="ja-JP", max_length=32)
+    duration_ms: int | None = Field(default=None, ge=1, le=15000)
+
+
+class VoiceInputFakeHandoffResponse(BaseModel):
+    """Path-free result from one single-use fake FW handoff."""
+
+    accepted: bool
+    request_state: str
+    outcome: str
+    transcript: str
+    language: str | None = None
+    duration_ms: int | None = Field(default=None, ge=0)
+    public_error_code: str
+    safe_message: str
+    retryable: bool
+    framework_api_name: str
+    adapter_name: str
+    fake_transcription_completed: bool
+    staged_artifact_consumed: bool
+    session_closed: bool
+    audio_read: bool
+    microphone_accessed: bool
+    provider_execution_executed: bool
+    stt_executed: bool
