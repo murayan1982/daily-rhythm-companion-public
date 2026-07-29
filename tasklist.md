@@ -13,16 +13,16 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-4 CURRENT / NOT_COMPLETED
-current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
-current implementation step: streaming/cancel current behavior inventory and small-commit split
+current small commit: RT-4b IMPLEMENTED / AWAITING_ACCEPTANCE
+current implementation step: Backend provider-neutral text stream lifecycle and fake-only tests
 current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
-completed small commit: RT-3d3 COMPLETED / ACCEPTED
+completed small commit: RT-4a COMPLETED / ACCEPTED / PUSHED
 strategic target: v3.0.0
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
-その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。現在はRT-4aのdocs/test-only棚卸し候補を検証中であり、RT-4b以降のruntime実装はまだ開始しない。
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。現在はRT-4bのBackend provider-neutral stream lifecycleとfake-only testsを検証中で、RT-4cのSSE transportはまだ開始しない。
 
 
 ## 2. Source of truth
@@ -63,6 +63,8 @@ docs/v300_rt3d2c_guarded_real_executor_assembly_contract.md
 scripts/check_v300_rt3d2c_guarded_real_executor_assembly_contract.py
 docs/v300_rt4_streaming_cancel_current_behavior_inventory.md
 scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py
+docs/v300_rt4_backend_stream_contract.md
+scripts/check_v300_rt4_backend_stream_contract.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1941,8 +1943,8 @@ execution. Only fixed public-safe markers are synchronized here.
 Status: CURRENT / NOT_COMPLETED
 
 ```text
-RT-4a  IMPLEMENTED / AWAITING_ACCEPTANCE  Current behavior inventory and small-commit split
-RT-4b  NOT_STARTED  Backend provider-neutral stream lifecycle and fake-only tests
+RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
+RT-4b  IMPLEMENTED / AWAITING_ACCEPTANCE  Backend provider-neutral stream lifecycle and fake-only tests
 RT-4c  NOT_STARTED  Bounded Backend SSE transport and cancel request boundary
 RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
 RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
@@ -1987,18 +1989,61 @@ docs/v300_rt4_streaming_cancel_current_behavior_inventory.md
 scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py
 ```
 
-Acceptance checklist:
+Acceptance result:
 
 - [x] actual DRC source read before planning
 - [x] exact FW v5.4.0 root-public surface identified
 - [x] RT-4 small-commit split fixed
 - [x] docs/test-only implementation prepared
+- [x] compileall passed
+- [x] dedicated RT-4a gate passed against clean FW v5.4.0
+- [x] Backend 163 passed
+- [x] Flutter analyze and Flutter 200 passed
+- [x] exact seven-file diff review and changed-content private scan passed
+- [x] `git diff --check` passed
+- [x] explicit operator approval, commit, and push completed
+
+RT-4a implementation commit: `235654e470f8c0cac17644ddf216ac7e6e223514`.
+
+### RT-4b — Backend provider-neutral stream lifecycle and fake-only tests
+
+Purpose:
+
+```text
+- Add DRC-owned stream session, turn, chunk, event, and terminal models.
+- Enforce monotonic event sequence and bounded chunk/aggregate text.
+- Represent completed, cancelled, failed, and closed terminal outcomes.
+- Record cooperative cancellation without claiming provider-level hard cancel.
+- Reject active-turn replacement, late chunks, stale turns, and post-close callbacks.
+- Use deterministic fake callbacks only.
+```
+
+Exact RT-4b change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+backend/app/models/realtime_text_stream.py
+backend/app/services/realtime_text_stream_service.py
+backend/tests/test_realtime_text_stream_service.py
+docs/v300_rt4_backend_stream_contract.md
+scripts/check_v300_rt4_backend_stream_contract.py
+```
+
+Candidate acceptance:
+
+- [x] models/service/focused tests implemented
+- [x] no route, Framework import, provider execution, dependency, or Flutter change
 - [ ] compileall passes
-- [ ] dedicated RT-4a gate passes against DRC `eecf13d7...` and clean FW v5.4.0
+- [ ] dedicated RT-4b gate passes
+- [ ] focused Backend tests pass
 - [ ] full Backend tests pass
 - [ ] Flutter analyze and full Flutter tests pass
-- [ ] exact seven-file diff review and changed-content private scan pass
+- [ ] exact ten-file review and changed-content private scan pass
 - [ ] `git diff --check` passes
 - [ ] explicit operator approval received
 
-RT-4b remains `NOT_STARTED` until every pending RT-4a acceptance item passes.
+RT-4c remains `NOT_STARTED` until every pending RT-4b acceptance item passes.

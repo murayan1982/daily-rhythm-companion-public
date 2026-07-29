@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4b IMPLEMENTED / AWAITING_ACCEPTANCE
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,10 +571,10 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
-Completed small commit: RT-3d3 COMPLETED / ACCEPTED
-Current implementation: streaming/cancel current behavior inventory and small-commit split
-Current implementation boundary: RT-4a docs/test-only; RT-4b through RT-4f NOT_STARTED
+Current small commit: RT-4b IMPLEMENTED / AWAITING_ACCEPTANCE
+Completed small commit: RT-4a COMPLETED / ACCEPTED / PUSHED at 235654e470f8c0cac17644ddf216ac7e6e223514
+Current implementation: Backend provider-neutral text stream lifecycle and fake-only tests
+Current implementation boundary: RT-4b Backend-only; RT-4c through RT-4f NOT_STARTED
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -766,8 +766,8 @@ RT-3   COMPLETED / ACCEPTED  Real STT / voice-input integration
     RT-3d2  COMPLETED / ACCEPTED  Guarded DRC v5.4.0 real-STT wiring
     RT-3d3  COMPLETED / ACCEPTED  Private real-STT operator execution and acceptance
 RT-4   CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooperative cancellation
-  RT-4a  IMPLEMENTED / AWAITING_ACCEPTANCE  Current behavior inventory and small-commit split
-  RT-4b  NOT_STARTED  Backend provider-neutral stream lifecycle and fake-only tests
+  RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
+  RT-4b  IMPLEMENTED / AWAITING_ACCEPTANCE  Backend provider-neutral stream lifecycle and fake-only tests
   RT-4c  NOT_STARTED  Bounded Backend SSE transport and cancel request boundary
   RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
   RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
@@ -7350,7 +7350,7 @@ execution. Only fixed public-safe markers are synchronized here.
 
 ## RT-4a streaming/cancel current behavior inventory
 
-Status: `IMPLEMENTED / AWAITING_ACCEPTANCE`
+Status: `COMPLETED / ACCEPTED / PUSHED`
 
 RT-4a reads the accepted DRC RT-3 source and clean FW v5.4.0 public surface
 before any streaming runtime is added. The current DRC post-advice chat is a
@@ -7375,10 +7375,32 @@ RT-4e  Flutter stream client/controller and deterministic fake transport tests.
 RT-4f  UI integration plus configured incremental streaming and cancel acceptance.
 ```
 
-RT-4a changes exactly seven planning/gate files. Backend/Flutter runtime,
+RT-4a changed exactly seven planning/gate files. Backend/Flutter runtime,
 existing tests, dependencies, API routes, provider execution, private data,
-versions, and release records remain unchanged. RT-4b remains blocked until
-RT-4a verification, exact-surface review, and explicit operator approval.
+versions, and release records remained unchanged. It was accepted and pushed
+at `235654e470f8c0cac17644ddf216ac7e6e223514` after the dedicated gate,
+Backend 163, Flutter analyze/200, diff review, and explicit approval passed.
 
 Detailed contract:
 `docs/v300_rt4_streaming_cancel_current_behavior_inventory.md`.
+
+## RT-4b Backend provider-neutral text stream lifecycle
+
+Status: `IMPLEMENTED / AWAITING_ACCEPTANCE`
+
+RT-4b adds independent DRC-owned models and a deterministic fake-only Backend
+service. Candidate behavior is limited to:
+
+```text
+- session and turn snapshots;
+- monotonic per-session lifecycle/chunk/terminal sequence;
+- 512-character chunk and 4096-character aggregate defaults;
+- completed, cancelled, failed, and closed terminals;
+- cooperative cancel-request state with hard_cancel_supported=false;
+- rejection of active-turn replacement, late chunks, stale turns, and callbacks after close;
+- no route, transport, Framework import, provider execution, or Flutter change.
+```
+
+Detailed contract: `docs/v300_rt4_backend_stream_contract.md`.
+RT-4c remains blocked pending RT-4b verification, exact ten-file review, and
+explicit operator approval.

@@ -5801,3 +5801,48 @@ v300_rt4a_provider_execution: False
 v300_rt4a_hard_cancel_claimed: False
 v300_rt4b_authorization: blocked-pending-rt4a-acceptance
 ```
+
+## v3.0.0 RT-4b Backend provider-neutral text stream gate
+
+Detailed contract: `docs/v300_rt4_backend_stream_contract.md`.
+
+Run from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4_backend_stream_contract.py
+python -m pytest -q backend\tests\test_realtime_text_stream_service.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The gate imports only DRC-owned Backend models/service and uses deterministic
+fake callbacks. It verifies monotonic sequence, bounded text, cooperative cancel
+state, cancel/completion race handling, stale callback rejection, and protected
+non-change hashes. It does not import Framework, create a provider session, add
+a route, open SSE/WebSocket transport, use credentials, process audio or a
+transcript, or change Flutter.
+
+Expected candidate markers:
+
+```text
+v300_rt4_backend_stream_status: implemented-awaiting-acceptance
+v300_rt4b_backend_models_added: True
+v300_rt4b_fake_only_service_added: True
+v300_rt4b_monotonic_sequence_enforced: True
+v300_rt4b_bounded_text_enforced: True
+v300_rt4b_stale_callback_rejected: True
+v300_rt4b_backend_route_added: False
+v300_rt4b_framework_imported: False
+v300_rt4b_provider_execution: False
+v300_rt4b_hard_cancel_claimed: False
+v300_rt4b_flutter_changed: False
+v300_rt4c_authorization: blocked-pending-rt4b-acceptance
+```
