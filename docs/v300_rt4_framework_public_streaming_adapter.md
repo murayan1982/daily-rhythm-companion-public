@@ -6,8 +6,9 @@ Updated: 2026-07-29
 RT-4: CURRENT / NOT_COMPLETED
 RT-4a: COMPLETED / ACCEPTED / PUSHED
 RT-4b: COMPLETED / ACCEPTED / PUSHED
-RT-4c: IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE
-RT-4d: IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
+RT-4c: COMPLETED / ACCEPTED / PUSHED
+RT-4d: COMPLETED / ACCEPTED / PUSHED
+RT-4e: AUTHORIZED / NOT_STARTED
 RT-4d implementation commit: f713f515eef723a1d51cfbe35c1dfe16e3547420
 DRC RT-4c baseline HEAD: 72622cab2e73699adaff4b628cfbc4b14323a23a
 DRC RT-4d implementation HEAD: f713f515eef723a1d51cfbe35c1dfe16e3547420
@@ -16,7 +17,7 @@ FW v5.4.0 tag: d313eb6acb643103fe25988720ebee5976a04f78
 
 ## Purpose
 
-RT-4d connects the accepted RT-4b lifecycle and the committed, not-yet-accepted RT-4c Backend SSE transport to the FW
+RT-4d connects the accepted RT-4b lifecycle and accepted RT-4c Backend SSE transport to the FW
 v5.4.0 text-chat root public surface. The adapter starts one FW text-chat
 session, consumes `ask_stream()` chunks, publishes bounded DRC stream events,
 requests public `interrupt()` on cancel, and closes/disposes the public session.
@@ -102,4 +103,4 @@ config gate default-off and explicit-on
 existing RT-4b/c stream and transport regressions
 ```
 
-Implementation is committed at `f713f515eef723a1d51cfbe35c1dfe16e3547420`. Candidate acceptance remains pending Flutter regression, exact committed-diff review, changed-content private scan, and explicit operator approval. RT-4e remains NOT_STARTED until RT-4c and RT-4d acceptance.
+Implementation commit `f713f515eef723a1d51cfbe35c1dfe16e3547420` is COMPLETED / ACCEPTED / PUSHED. Acceptance passed after commit-scoped reconstruction, the dedicated fake-root Framework gate, 32 focused Backend tests, 192 full Backend tests, Flutter analyze, 200 Flutter tests, exact fourteen-file review, changed-content private scan, `git diff --check`, and explicit operator approval. RT-4e is AUTHORIZED / NOT_STARTED. Provider-level hard cancel remains unclaimed.

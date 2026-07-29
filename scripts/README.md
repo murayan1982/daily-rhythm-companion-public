@@ -5893,12 +5893,14 @@ v300_rt4c_flutter_changed: False
 v300_rt4d_authorization: blocked-pending-rt4c-acceptance
 ```
 
+RT-4c is now COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a`. The marker above is retained as the historical output of the RT-4c candidate gate.
+
 ## v3.0.0 RT-4d FW root-public streaming adapter gate
 
 Detailed contract:
 `docs/v300_rt4_framework_public_streaming_adapter.md`.
 
-Implementation commit: `f713f515eef723a1d51cfbe35c1dfe16e3547420`. The gate status remains `implemented-awaiting-acceptance` until the remaining acceptance checks pass.
+Implementation commit: `f713f515eef723a1d51cfbe35c1dfe16e3547420`. RT-4d is COMPLETED / ACCEPTED / PUSHED after commit-scoped reconstruction, the dedicated gate, 32 focused Backend tests, full Backend/Flutter regression, exact diff review, changed-content private scan, `git diff --check`, and explicit operator approval. The script continues to print its historical candidate marker.
 
 Run from the repository root:
 

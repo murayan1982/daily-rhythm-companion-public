@@ -9,13 +9,13 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4d (**IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE**)
-Current implementation: FW v5.4.0 root-public streaming adapter and cooperative interrupt request (**IMPLEMENTED / COMMITTED**)
-Current implementation commit: `f713f515eef723a1d51cfbe35c1dfe16e3547420`
-Last accepted small commit: RT-4b (**COMPLETED / ACCEPTED / PUSHED**)
-Latest pushed implementation: RT-4c (**IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE**) at `72622cab2e73699adaff4b628cfbc4b14323a23a`
+Current small commit: RT-4e (**AUTHORIZED / NOT_STARTED**)
+Current implementation: Flutter stream client/controller without HomeScreen integration (**AUTHORIZED / NOT_STARTED**)
+Current implementation commit: none
+Last accepted small commit: RT-4d (**COMPLETED / ACCEPTED / PUSHED**) at `f713f515eef723a1d51cfbe35c1dfe16e3547420`
+Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-4 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: verify the committed RT-4d adapter; RT-4e remains blocked until RT-4c and RT-4d acceptance
+Current realtime action: begin RT-4e only; keep HomeScreen integration and configured real acceptance in RT-4f
 
 Current phase state:
 
@@ -60,9 +60,9 @@ RT-3  COMPLETED / ACCEPTED  Real STT / voice-input integration
 RT-4  CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooperative cancellation
   RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
   RT-4b  COMPLETED / ACCEPTED  Backend provider-neutral stream lifecycle and fake-only tests
-  RT-4c  IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE  Bounded Backend SSE transport and cancel request boundary
-  RT-4d  IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE  FW v5.4.0 root-public streaming adapter and cooperative cancel
-  RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
+  RT-4c  COMPLETED / ACCEPTED / PUSHED  Bounded Backend SSE transport and cancel request boundary
+  RT-4d  COMPLETED / ACCEPTED / PUSHED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+  RT-4e  AUTHORIZED / NOT_STARTED  Flutter stream client/controller without HomeScreen integration
   RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
@@ -78,7 +78,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and provider execution remains false. RT-4d is IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with a default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e remains NOT_STARTED until RT-4c and RT-4d acceptance.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is AUTHORIZED / NOT_STARTED; HomeScreen integration and configured real acceptance remain RT-4f work.
 
 ## v3.0.0 RT-4a streaming/cancel current behavior inventory
 
@@ -115,7 +115,7 @@ control, version, or release record. RT-4b acceptance passed with the dedicated 
 
 ## v3.0.0 RT-4c bounded Backend SSE transport
 
-RT-4c is **IMPLEMENTED / AWAITING_ACCEPTANCE**. It exposes RT-4b normalized
+RT-4c is **COMPLETED / ACCEPTED / PUSHED** at `72622cab2e73699adaff4b628cfbc4b14323a23a`. It exposes RT-4b normalized
 events through bounded `text/event-stream` delivery and adds session creation,
 a separate cooperative cancel endpoint, one-consumer ownership, active capacity,
 idle/max-duration limits, event-buffer/byte limits, and disconnect cleanup.
@@ -125,13 +125,11 @@ Dedicated gate: `scripts/check_v300_rt4_backend_sse_transport.py`.
 
 RT-4c imports no Framework code and performs no provider execution. It does not
 change Flutter, dependencies, versions, TTS queue control, hard-cancel claims,
-release records, or private evidence. RT-4c acceptance remains pending; RT-4d was implemented and committed on top of the committed RT-4c transport. RT-4e remains blocked until compileall,
-the dedicated gate, 16 focused Backend tests, full Backend/Flutter regression,
-exact fifteen-file review, `git diff --check`, and explicit approval pass.
+release records, or private evidence. RT-4c acceptance passed after commit-scoped reconstruction, the dedicated gate, 16 focused Backend tests, 192 full Backend tests, Flutter analyze, 200 Flutter tests, exact fifteen-file review, changed-content private scan, `git diff --check`, explicit operator approval, commit, and push.
 
 ## v3.0.0 RT-4d FW root-public streaming adapter
 
-RT-4d is **IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE** at `f713f515eef723a1d51cfbe35c1dfe16e3547420`. It adds a default-off Backend
+RT-4d is **COMPLETED / ACCEPTED / PUSHED** at `f713f515eef723a1d51cfbe35c1dfe16e3547420`. It adds a default-off Backend
 adapter from the RT-4c transport to FW v5.4.0 root-public text chat:
 `create_text_chat_session()`, `TextChatSession.ask_stream()`,
 `TextChatSession.interrupt()`, and close/dispose only.
@@ -142,6 +140,8 @@ continues to report `hard_cancel_supported=false`.
 
 Detailed contract:
 `docs/v300_rt4_framework_public_streaming_adapter.md`.
+
+RT-4d acceptance passed after commit-scoped reconstruction, the dedicated fake-root Framework gate, 32 focused Backend tests, 192 full Backend tests, Flutter analyze, 200 Flutter tests, exact fourteen-file review, changed-content private scan, `git diff --check`, explicit operator approval, commit, and push. Provider-level hard cancel remains unclaimed.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 

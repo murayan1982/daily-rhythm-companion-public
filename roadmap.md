@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4d IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4e AUTHORIZED / NOT_STARTED
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,12 +571,12 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4d IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
-Last accepted small commit: RT-4b COMPLETED / ACCEPTED / PUSHED at 7e1e10e2ca33dd76ee963fcda31c2c5f800b4901
-Latest pushed implementation: RT-4c IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE at 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: FW v5.4.0 root-public streaming adapter and cooperative interrupt request
-Current implementation commit: f713f515eef723a1d51cfbe35c1dfe16e3547420
-Current implementation boundary: RT-4d default-off FW ask_stream adapter committed at `f713f515eef723a1d51cfbe35c1dfe16e3547420`; RT-4e through RT-4f NOT_STARTED
+Current small commit: RT-4e AUTHORIZED / NOT_STARTED
+Last accepted small commit: RT-4d COMPLETED / ACCEPTED / PUSHED at f713f515eef723a1d51cfbe35c1dfe16e3547420
+Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
+Current implementation: Flutter stream client/controller without HomeScreen integration
+Current implementation commit: none
+Current implementation boundary: RT-4c and RT-4d accepted; RT-4e is authorized but not started; RT-4f remains NOT_STARTED
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -770,9 +770,9 @@ RT-3   COMPLETED / ACCEPTED  Real STT / voice-input integration
 RT-4   CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooperative cancellation
   RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
   RT-4b  COMPLETED / ACCEPTED  Backend provider-neutral stream lifecycle and fake-only tests
-  RT-4c  IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE  Bounded Backend SSE transport and cancel request boundary
-  RT-4d  IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE  FW v5.4.0 root-public streaming adapter and cooperative cancel
-  RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
+  RT-4c  COMPLETED / ACCEPTED / PUSHED  Bounded Backend SSE transport and cancel request boundary
+  RT-4d  COMPLETED / ACCEPTED / PUSHED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+  RT-4e  AUTHORIZED / NOT_STARTED  Flutter stream client/controller without HomeScreen integration
   RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping

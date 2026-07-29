@@ -6,9 +6,12 @@ Updated: 2026-07-29
 RT-4: CURRENT / NOT_COMPLETED
 RT-4a: COMPLETED / ACCEPTED / PUSHED
 RT-4b: COMPLETED / ACCEPTED / PUSHED
-RT-4c: IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4d: NOT_STARTED
-DRC baseline HEAD/origin: 7e1e10e2ca33dd76ee963fcda31c2c5f800b4901
+RT-4c: COMPLETED / ACCEPTED / PUSHED
+RT-4c implementation commit: 72622cab2e73699adaff4b628cfbc4b14323a23a
+RT-4d: COMPLETED / ACCEPTED / PUSHED
+RT-4d implementation commit: f713f515eef723a1d51cfbe35c1dfe16e3547420
+RT-4e: AUTHORIZED / NOT_STARTED
+DRC RT-4b baseline HEAD: 7e1e10e2ca33dd76ee963fcda31c2c5f800b4901
 FW v5.4.0 HEAD/tag: d313eb6acb643103fe25988720ebee5976a04f78
 ```
 
@@ -148,17 +151,22 @@ events, event-byte overflow replacement, disconnect cleanup, compact UTF-8
 serialization, whitespace-only input rejection, and configuration defaults,
 overrides, and invalid-value fallback.
 
-## Candidate acceptance
+## Acceptance result
 
 ```text
-compileall: pending operator execution
-dedicated RT-4c gate: pending operator execution
-focused Backend tests: pending operator execution
-full Backend tests: pending operator execution
-Flutter analyze/full tests: pending operator execution
-exact fifteen-file review: pending
-changed-content private scan: pending
-git diff --check: pending
-explicit operator approval: pending
-RT-4d authorization: blocked pending RT-4c acceptance
+implementation commit: 72622cab2e73699adaff4b628cfbc4b14323a23a
+implementation pushed: true
+compileall: passed
+dedicated RT-4c gate: passed in commit-scoped reconstructed candidate
+focused Backend tests: 16 passed
+full Backend tests: 192 passed
+Flutter analyze: passed
+Flutter tests: 200 passed
+exact fifteen-file review: passed
+changed-content private scan: passed
+git diff --check: passed
+explicit operator approval: accepted
+RT-4c status: COMPLETED / ACCEPTED / PUSHED
+RT-4d status: COMPLETED / ACCEPTED / PUSHED
+RT-4e authorization: AUTHORIZED / NOT_STARTED
 ```

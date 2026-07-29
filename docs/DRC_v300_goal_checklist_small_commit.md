@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4d IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
-Current implementation step: FW v5.4.0 root-public streaming adapter and cooperative interrupt request
-Current implementation state: IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
-Current implementation commit: f713f515eef723a1d51cfbe35c1dfe16e3547420
-Last accepted small commit: RT-4b COMPLETED / ACCEPTED / PUSHED
-Latest pushed implementation: RT-4c IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE at 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify committed RT-4d and finish RT-4c/RT-4d acceptance; RT-4e remains NOT_STARTED
+Current small commit: RT-4e AUTHORIZED / NOT_STARTED
+Current implementation step: Flutter stream client/controller without HomeScreen integration
+Current implementation state: AUTHORIZED / NOT_STARTED
+Current implementation commit: none
+Last accepted small commit: RT-4d COMPLETED / ACCEPTED / PUSHED at f713f515eef723a1d51cfbe35c1dfe16e3547420
+Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
+Next implementation action: inventory and implement RT-4e only; keep HomeScreen integration and configured real acceptance in RT-4f
 ```
 
 ## Source of truth
@@ -1491,9 +1491,9 @@ LAN address, and operator evidence must stay outside the repository.
 RT-4   CURRENT / NOT_COMPLETED
 RT-4a  COMPLETED / ACCEPTED
 RT-4b  COMPLETED / ACCEPTED
-RT-4c  IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE
-RT-4d  IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
-RT-4e  NOT_STARTED
+RT-4c  COMPLETED / ACCEPTED / PUSHED
+RT-4d  COMPLETED / ACCEPTED / PUSHED
+RT-4e  AUTHORIZED / NOT_STARTED
 RT-4f  NOT_STARTED
 ```
 
@@ -1617,18 +1617,19 @@ Implementation contract:
 
 Exact change surface: fifteen files listed in `docs/v300_rt4_backend_sse_transport.md`.
 
-RT-4c candidate verification:
+RT-4c acceptance result:
 
 - [x] implementation and 16 focused/config test cases prepared
-- [ ] compileall passes
-- [ ] dedicated RT-4c gate passes
-- [ ] focused Backend tests pass
-- [ ] Backend full tests pass
-- [ ] Flutter analyze and full tests pass
-- [ ] exact fifteen-file review passes
-- [ ] changed-content private scan passes
-- [ ] `git diff --check` passes
-- [ ] explicit operator approval received
+- [x] implementation committed and pushed at `72622cab2e73699adaff4b628cfbc4b14323a23a`
+- [x] compileall passed
+- [x] dedicated RT-4c gate passed in a commit-scoped reconstructed candidate
+- [x] focused Backend 16 passed
+- [x] Backend full 192 passed
+- [x] Flutter analyze and Flutter 200 passed
+- [x] exact fifteen-file review passed
+- [x] changed-content private scan passed
+- [x] `git diff --check` passed
+- [x] explicit operator approval and acceptance completed
 
 Stop rule: do not import Framework, call `ask_stream()`, execute a provider, change Flutter, claim provider-level hard cancel, add TTS queue control, or start RT-4d in RT-4c. Provider execution remains false.
 
@@ -1648,23 +1649,23 @@ Implementation contract:
 - [x] keep normal tests fake-public-session-only;
 - [x] keep Flutter unchanged.
 
-RT-4d candidate verification:
+RT-4d acceptance result:
 
 - [x] implementation and focused fake public-session tests prepared
-- [x] implementation committed at `f713f515eef723a1d51cfbe35c1dfe16e3547420`
-- [x] compileall passes
-- [x] dedicated RT-4d gate passes
-- [x] focused Backend tests pass
-- [x] Backend full tests pass
-- [ ] Flutter analyze and full tests pass (analyze timed out locally after 300 seconds; Flutter files unchanged)
-- [ ] exact RT-4d diff review passes
-- [ ] changed-content private scan passes
-- [x] git diff --check passes
-- [ ] explicit operator approval received
+- [x] implementation committed and pushed at `f713f515eef723a1d51cfbe35c1dfe16e3547420`
+- [x] compileall passed
+- [x] dedicated RT-4d gate passed in a commit-scoped reconstructed candidate
+- [x] focused Backend 32 passed
+- [x] Backend full 192 passed
+- [x] Flutter analyze and Flutter 200 passed
+- [x] exact fourteen-file review passed
+- [x] changed-content private scan passed
+- [x] `git diff --check` passed
+- [x] explicit operator approval and acceptance completed
 
 Detailed contract:
 `docs/v300_rt4_framework_public_streaming_adapter.md`.
 
 Stop rule: do not import Framework internals, add a DRC provider client, claim
 provider-level hard cancel, read/display transcript text, change Flutter, or add
-TTS queue control. RT-4e remains blocked until RT-4c and RT-4d acceptance.
+TTS queue control. RT-4c and RT-4d are accepted; RT-4e is authorized but not started.
