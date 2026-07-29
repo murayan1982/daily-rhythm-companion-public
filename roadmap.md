@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4d IMPLEMENTED / AWAITING_ACCEPTANCE
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,10 +571,10 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4d IMPLEMENTED / AWAITING_ACCEPTANCE
 Completed small commit: RT-4a COMPLETED / ACCEPTED / PUSHED at 235654e470f8c0cac17644ddf216ac7e6e223514
-Current implementation: Backend provider-neutral text stream lifecycle and fake-only tests
-Current implementation boundary: RT-4c bounded SSE/cancel transport; RT-4d through RT-4f NOT_STARTED
+Current implementation: FW v5.4.0 root-public streaming adapter and cooperative interrupt request
+Current implementation boundary: RT-4d default-off FW ask_stream adapter; RT-4e through RT-4f NOT_STARTED
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -769,7 +769,7 @@ RT-4   CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooper
   RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
   RT-4b  COMPLETED / ACCEPTED  Backend provider-neutral stream lifecycle and fake-only tests
   RT-4c  IMPLEMENTED / AWAITING_ACCEPTANCE  Bounded Backend SSE transport and cancel request boundary
-  RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+  RT-4d  IMPLEMENTED / AWAITING_ACCEPTANCE  FW v5.4.0 root-public streaming adapter and cooperative cancel
   RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
   RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
@@ -7402,4 +7402,4 @@ service. Candidate behavior is limited to:
 ```
 
 Detailed contract: `docs/v300_rt4_backend_stream_contract.md`.
-RT-4b was accepted and pushed at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c now owns bounded SSE/cancel transport, one-consumer ownership, capacity/time/event limits, and disconnect cleanup. Provider execution remains false and RT-4d remains blocked pending RT-4c acceptance.
+RT-4b was accepted and pushed at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c owns bounded SSE/cancel transport, one-consumer ownership, capacity/time/event limits, and disconnect cleanup. RT-4d is IMPLEMENTED / AWAITING_ACCEPTANCE with a default-off FW v5.4.0 root-public `ask_stream()` adapter, cooperative `interrupt()` request, fake public-session tests, no Framework internal import, no DRC provider client, no Flutter change, and no provider-level hard-cancel claim.

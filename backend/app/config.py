@@ -42,6 +42,7 @@ class AppConfig:
     realtime_text_stream_max_sessions: int = 8
     realtime_text_stream_max_pending_events: int = 32
     realtime_text_stream_max_event_bytes: int = 32768
+    realtime_text_stream_framework_enabled: bool = False
     voice_input_demo_enabled: bool = False
     voice_input_adapter_mode: str = "disabled"
     voice_input_staging_ttl_seconds: int = 300
@@ -240,6 +241,9 @@ def load_config() -> AppConfig:
         realtime_text_stream_max_event_bytes=_env_positive_int(
             "REALTIME_TEXT_STREAM_MAX_EVENT_BYTES",
             32768,
+        ),
+        realtime_text_stream_framework_enabled=_env_flag(
+            "DRC_RT4_ENABLE_FRAMEWORK_TEXT_STREAM"
         ),
         voice_input_demo_enabled=_env_flag("VOICE_INPUT_DEMO_ENABLED"),
         voice_input_adapter_mode=os.getenv(

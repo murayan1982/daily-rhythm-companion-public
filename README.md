@@ -9,11 +9,11 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4c (**IMPLEMENTED / AWAITING_ACCEPTANCE**)
-Current implementation: Bounded Backend SSE transport and cooperative cancel boundary (**IMPLEMENTED**)
-Completed small commit: RT-4b (**COMPLETED / ACCEPTED / PUSHED**)
+Current small commit: RT-4d (**IMPLEMENTED / AWAITING_ACCEPTANCE**)
+Current implementation: FW v5.4.0 root-public streaming adapter and cooperative interrupt request (**IMPLEMENTED**)
+Completed small commit: RT-4c (**IMPLEMENTED / AWAITING_ACCEPTANCE**)
 Current realtime phase: RT-4 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: verify the RT-4c bounded SSE/cancel transport and exact fifteen-file surface before RT-4d
+Current realtime action: verify the RT-4d root-public streaming adapter before RT-4e
 
 Current phase state:
 
@@ -59,7 +59,7 @@ RT-4  CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and coopera
   RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
   RT-4b  COMPLETED / ACCEPTED  Backend provider-neutral stream lifecycle and fake-only tests
   RT-4c  IMPLEMENTED / AWAITING_ACCEPTANCE  Bounded Backend SSE transport and cancel request boundary
-  RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+  RT-4d  IMPLEMENTED / AWAITING_ACCEPTANCE  FW v5.4.0 root-public streaming adapter and cooperative cancel
   RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
   RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 T-1  COMPLETED / ACCEPTED
@@ -76,7 +76,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is IMPLEMENTED / AWAITING_ACCEPTANCE with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and provider execution remains false.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is IMPLEMENTED / AWAITING_ACCEPTANCE with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and provider execution remains false. RT-4d is IMPLEMENTED / AWAITING_ACCEPTANCE with a default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request.
 
 ## v3.0.0 RT-4a streaming/cancel current behavior inventory
 
@@ -126,6 +126,20 @@ change Flutter, dependencies, versions, TTS queue control, hard-cancel claims,
 release records, or private evidence. RT-4d remains blocked until compileall,
 the dedicated gate, 16 focused Backend tests, full Backend/Flutter regression,
 exact fifteen-file review, `git diff --check`, and explicit approval pass.
+
+## v3.0.0 RT-4d FW root-public streaming adapter
+
+RT-4d is **IMPLEMENTED / AWAITING_ACCEPTANCE**. It adds a default-off Backend
+adapter from the RT-4c transport to FW v5.4.0 root-public text chat:
+`create_text_chat_session()`, `TextChatSession.ask_stream()`,
+`TextChatSession.interrupt()`, and close/dispose only.
+
+The adapter uses no Framework internal-module import, no DRC provider client,
+and no Flutter code. Cancellation remains cooperative and the public capability
+continues to report `hard_cancel_supported=false`.
+
+Detailed contract:
+`docs/v300_rt4_framework_public_streaming_adapter.md`.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 

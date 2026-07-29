@@ -13,16 +13,16 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-4 CURRENT / NOT_COMPLETED
-current small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
-current implementation step: bounded Backend SSE transport and cooperative cancel boundary
+current small commit: RT-4d IMPLEMENTED / AWAITING_ACCEPTANCE
+current implementation step: FW v5.4.0 root-public streaming adapter and cooperative interrupt request
 current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
-completed small commit: RT-4b COMPLETED / ACCEPTED / PUSHED
+completed small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
 strategic target: v3.0.0
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
-その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。現在はRT-4cのbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを検証中で、provider execution remains false、RT-4dはまだ開始しない。
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cはbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装済み。現在はRT-4dのdefault-off FW root-public `ask_stream()` adapterを検証中で、provider-level hard cancelは主張しない。
 
 
 ## 2. Source of truth
@@ -1948,7 +1948,7 @@ Status: CURRENT / NOT_COMPLETED
 RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
 RT-4b  COMPLETED / ACCEPTED  Backend provider-neutral stream lifecycle and fake-only tests
 RT-4c  IMPLEMENTED / AWAITING_ACCEPTANCE  Bounded Backend SSE transport and cancel request boundary
-RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+RT-4d  IMPLEMENTED / AWAITING_ACCEPTANCE  FW v5.4.0 root-public streaming adapter and cooperative cancel
 RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
 RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 ```
@@ -2048,4 +2048,4 @@ Candidate acceptance:
 - [ ] `git diff --check` passes
 - [ ] explicit operator approval received
 
-RT-4b acceptance passed and was pushed. RT-4c is IMPLEMENTED / AWAITING_ACCEPTANCE; RT-4d remains NOT_STARTED until every RT-4c acceptance item passes.
+RT-4b acceptance passed and was pushed. RT-4c is IMPLEMENTED / AWAITING_ACCEPTANCE. RT-4d is IMPLEMENTED / AWAITING_ACCEPTANCE with root-public FW `ask_stream()` wiring and remains pending verification before RT-4e.

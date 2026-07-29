@@ -10,6 +10,10 @@ from app.models.realtime_text_stream_transport import (
     RealtimeTextStreamCreateRequest,
     RealtimeTextStreamCreateResponse,
 )
+from app.config import load_config
+from app.services.framework_realtime_text_stream_adapter import (
+    FrameworkRealtimeTextStreamAdapter,
+)
 from app.services.realtime_text_stream_transport import (
     RealtimeTextStreamTransportError,
     RealtimeTextStreamTransportRegistry,
@@ -17,7 +21,18 @@ from app.services.realtime_text_stream_transport import (
 
 router = APIRouter(prefix="/realtime/text", tags=["realtime-text"])
 
-_stream_registry = RealtimeTextStreamTransportRegistry()
+
+def _create_stream_registry() -> RealtimeTextStreamTransportRegistry:
+    config = load_config()
+    producer = (
+        FrameworkRealtimeTextStreamAdapter(config)
+        if config.realtime_text_stream_framework_enabled
+        else None
+    )
+    return RealtimeTextStreamTransportRegistry(config=config, producer=producer)
+
+
+_stream_registry = _create_stream_registry()
 
 
 @router.post(

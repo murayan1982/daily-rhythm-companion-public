@@ -6,11 +6,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation step: bounded Backend SSE transport and cooperative cancel boundary
+Current small commit: RT-4d IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: FW v5.4.0 root-public streaming adapter and cooperative interrupt request
 Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
-Completed small commit: RT-4b COMPLETED / ACCEPTED / PUSHED
-Next implementation action: verify RT-4c; RT-4d remains NOT_STARTED pending acceptance
+Completed small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
+Next implementation action: verify RT-4d; RT-4e remains NOT_STARTED pending acceptance
 ```
 
 ## Source of truth
@@ -1490,7 +1490,7 @@ RT-4   CURRENT / NOT_COMPLETED
 RT-4a  COMPLETED / ACCEPTED
 RT-4b  COMPLETED / ACCEPTED
 RT-4c  IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4d  NOT_STARTED
+RT-4d  IMPLEMENTED / AWAITING_ACCEPTANCE
 RT-4e  NOT_STARTED
 RT-4f  NOT_STARTED
 ```
@@ -1628,4 +1628,40 @@ RT-4c candidate verification:
 - [ ] `git diff --check` passes
 - [ ] explicit operator approval received
 
-Stop rule: do not import Framework, call `ask_stream()`, execute a provider, change Flutter, claim provider-level hard cancel, add TTS queue control, or start RT-4d in RT-4c. Provider execution remains false. RT-4d remains blocked until RT-4c acceptance.
+Stop rule: do not import Framework, call `ask_stream()`, execute a provider, change Flutter, claim provider-level hard cancel, add TTS queue control, or start RT-4d in RT-4c. Provider execution remains false.
+
+### RT-4d — FW root-public streaming adapter and cooperative cancel
+
+RT-4d connects RT-4c transport sessions to FW v5.4.0 root-public text streaming
+behind an explicit default-off gate.
+
+Implementation contract:
+
+- [x] use only `framework.create_text_chat_session()`;
+- [x] consume public `TextChatSession.ask_stream()` chunks;
+- [x] request public `TextChatSession.interrupt()` on Backend cancel;
+- [x] close/dispose the public text session when the stream ends;
+- [x] keep `cancel_mode=cooperative` and `hard_cancel_supported=false`;
+- [x] avoid Framework internal imports and DRC provider clients;
+- [x] keep normal tests fake-public-session-only;
+- [x] keep Flutter unchanged.
+
+RT-4d candidate verification:
+
+- [x] implementation and focused fake public-session tests prepared
+- [x] compileall passes
+- [x] dedicated RT-4d gate passes
+- [x] focused Backend tests pass
+- [x] Backend full tests pass
+- [ ] Flutter analyze and full tests pass (analyze timed out locally after 300 seconds; Flutter files unchanged)
+- [ ] exact RT-4d diff review passes
+- [ ] changed-content private scan passes
+- [x] git diff --check passes
+- [ ] explicit operator approval received
+
+Detailed contract:
+`docs/v300_rt4_framework_public_streaming_adapter.md`.
+
+Stop rule: do not import Framework internals, add a DRC provider client, claim
+provider-level hard cancel, read/display transcript text, change Flutter, or add
+TTS queue control. RT-4e remains blocked until RT-4d acceptance.

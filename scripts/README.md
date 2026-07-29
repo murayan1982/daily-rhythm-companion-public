@@ -5892,3 +5892,34 @@ v300_rt4c_hard_cancel_claimed: False
 v300_rt4c_flutter_changed: False
 v300_rt4d_authorization: blocked-pending-rt4c-acceptance
 ```
+
+## v3.0.0 RT-4d FW root-public streaming adapter gate
+
+Detailed contract:
+`docs/v300_rt4_framework_public_streaming_adapter.md`.
+
+Run from the repository root:
+
+```powershell
+python scripts\check_v300_rt4_framework_public_streaming_adapter.py
+```
+
+This gate builds a fake root `framework` package and verifies the DRC adapter
+uses only root-public text-chat APIs: `create_text_chat_session()`,
+`ask_stream()`, `interrupt()`, and close/dispose. It checks fake stream chunks,
+cooperative interrupt request handling, no public input echo, no Framework
+internal import, no DRC provider client, no provider-level hard-cancel claim,
+and no Flutter change.
+
+Expected candidate markers:
+
+```text
+v300_rt4_framework_public_streaming_adapter_status: implemented-awaiting-acceptance
+v300_rt4d_framework_root_public_api_only: True
+v300_rt4d_fake_public_ask_stream_chunks: True
+v300_rt4d_cooperative_interrupt_requested: True
+v300_rt4d_framework_internal_import: False
+v300_rt4d_drc_provider_client: False
+v300_rt4d_provider_level_hard_cancel_claimed: False
+v300_rt4d_flutter_changed: False
+```

@@ -6,7 +6,7 @@ import json
 from queue import Empty, Full, Queue
 from threading import RLock
 from time import monotonic
-from typing import Callable
+from typing import Any, Callable, Protocol
 
 from app.config import AppConfig, load_config
 from app.models.realtime_text_stream import (
@@ -69,6 +69,23 @@ class RealtimeTextStreamCancelOperation:
         return self.terminal_result or self.request_result
 
 
+class RealtimeTextStreamProducerHandle(Protocol):
+    def request_interrupt(self) -> bool:
+        """Request cooperative upstream interruption without hard-cancel claims."""
+
+
+class RealtimeTextStreamProducer(Protocol):
+    def start_stream(
+        self,
+        *,
+        session_id: str,
+        turn_id: str,
+        input_text: str,
+        callbacks: Any,
+    ) -> tuple[Any, RealtimeTextStreamProducerHandle | None]:
+        """Start producing normalized stream callbacks for one DRC turn."""
+
+
 class RealtimeTextStreamTransportRegistry:
     """Bounded in-memory registry and SSE event buffer for RT-4c.
 
@@ -84,6 +101,7 @@ class RealtimeTextStreamTransportRegistry:
         config: AppConfig | None = None,
         now: Callable[[], float] | None = None,
         service_factory: Callable[[], RealtimeTextStreamService] | None = None,
+        producer: RealtimeTextStreamProducer | None = None,
     ) -> None:
         resolved = config or load_config()
         self.settings = RealtimeTextStreamTransportSettings(
@@ -95,6 +113,8 @@ class RealtimeTextStreamTransportRegistry:
         )
         self._now = now or monotonic
         self._service_factory = service_factory or RealtimeTextStreamService
+        self._producer = producer
+        self._producer_handles: dict[str, RealtimeTextStreamProducerHandle] = {}
         self._entries: dict[str, _TransportEntry] = {}
         self._removed: dict[str, RealtimeTextStreamProblem] = {}
         self._removed_order: list[str] = []
@@ -134,6 +154,7 @@ class RealtimeTextStreamTransportRegistry:
             self._entries[started.session.session_id] = entry
             self._removed.pop(started.session.session_id, None)
             self._queue_result_locked(entry, started)
+            self._start_producer_locked(entry, started)
             return started
 
     def input_text_for_session(self, session_id: str) -> str:
@@ -258,6 +279,9 @@ class RealtimeTextStreamTransportRegistry:
         with self._lock:
             entry = self._entry_locked(session_id)
             turn_id = self._active_turn_id(entry)
+            handle = self._producer_handles.get(session_id)
+            if handle is not None:
+                handle.request_interrupt()
             requested = entry.service.request_cancel(turn_id=turn_id)
             self._queue_result_locked(entry, requested)
             terminal: RealtimeTextStreamCallbackResult | None = None
@@ -460,6 +484,7 @@ class RealtimeTextStreamTransportRegistry:
         if entry is not None:
             entry.input_text = ""
         self._removed[session_id] = problem
+        self._producer_handles.pop(session_id, None)
         self._removed_order.append(session_id)
         while len(self._removed_order) > self.settings.max_sessions:
             oldest = self._removed_order.pop(0)
@@ -481,3 +506,36 @@ class RealtimeTextStreamTransportRegistry:
                 retryable=retryable,
             ),
         )
+
+    def _start_producer_locked(
+        self,
+        entry: _TransportEntry,
+        started: RealtimeTextStreamCallbackResult,
+    ) -> None:
+        if self._producer is None or started.turn is None:
+            return
+        session_id = started.session.session_id
+        producer_start, handle = self._producer.start_stream(
+            session_id=session_id,
+            turn_id=started.turn.turn_id,
+            input_text=entry.input_text,
+            callbacks=self,
+        )
+        if handle is not None:
+            self._producer_handles[session_id] = handle
+        if not getattr(producer_start, "accepted", False):
+            result = entry.service.fail(
+                turn_id=started.turn.turn_id,
+                public_error_code=str(
+                    getattr(producer_start, "status", "framework_text_stream_unavailable")
+                ),
+                safe_message=str(
+                    getattr(
+                        producer_start,
+                        "safe_message",
+                        "The framework text stream is unavailable.",
+                    )
+                ),
+                retryable=True,
+            )
+            self._queue_result_locked(entry, result)
