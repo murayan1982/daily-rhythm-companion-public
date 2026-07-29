@@ -9,10 +9,11 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3d2c accepted; RT-3d3 next)
-Current implementation: guarded FW v5.4.0 real-executor assembly contract (**COMPLETED / ACCEPTED**)
+Current small commit: RT-3d3 (**REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE**)
+Current implementation: private FW v5.4.0 real-STT execution boundary (**REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE**)
 Completed small commit: RT-3d2c (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3d3 (**AUTHORIZED / NOT_STARTED**)
+Next realtime phase: RT-3d3 (**EXPLICIT_OPERATOR_APPROVAL / COMMIT_PENDING**)
+Next realtime action: explicit private real-provider execution and operator acceptance (**PENDING OPERATOR OPT-IN**)
 
 Current phase state:
 
@@ -38,7 +39,7 @@ RT-2  COMPLETED / ACCEPTED          Microphone permission and guarded capture pa
       RT-2e-c3  COMPLETED / ACCEPTED                  Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                      Real Android operator preflight and safe evidence contract
         RT-2e-c3b  COMPLETED / ACCEPTED                      Explicit real Android bounded capture and cleanup evidence
-RT-3  CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real STT / voice-input integration
+RT-3  CURRENT / REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL  Real STT / voice-input integration
   RT-3a  COMPLETED / ACCEPTED                                  Framework v5.3.0 STT integration inventory
   RT-3b  COMPLETED / ACCEPTED                                  App-owned host-audio handoff lifecycle contract
   RT-3c  COMPLETED / ACCEPTED                                  Private backend staging and fake FW public-session handoff
@@ -46,14 +47,14 @@ RT-3  CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
     RT-3c2  COMPLETED / ACCEPTED                                 Bounded private Backend staging store and lifecycle
     RT-3c3  COMPLETED / ACCEPTED                                 Guarded binary upload and Flutter scoped staging consumer
     RT-3c4  COMPLETED / ACCEPTED                                 Fake FW public-session handoff and single-use cleanup
-  RT-3d  BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real provider execution evidence
+  RT-3d  REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE  Real provider execution evidence
     RT-3d0  COMPLETED / ACCEPTED                                  Framework real STT requirement feedback handoff
     RT-3d1  COMPLETED / ACCEPTED                                  Framework v5.4.0 adoption inventory
-    RT-3d2  CURRENT / NOT_COMPLETED                              Guarded DRC v5.4.0 real-STT wiring
+    RT-3d2  IMPLEMENTED / ACCEPTANCE_CANDIDATE                    Guarded DRC v5.4.0 real-STT wiring
       RT-3d2a  COMPLETED / ACCEPTED                              FW v5.4.0 executor-path correction
       RT-3d2b  COMPLETED / ACCEPTED                              Bounded marked-fake executor wiring
       RT-3d2c  COMPLETED / ACCEPTED                              Guarded real-executor assembly contract
-      RT-3d3  AUTHORIZED / NOT_STARTED                            Private real-STT operator execution and acceptance
+      RT-3d3  REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE  Private real-STT operator execution and acceptance
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -68,7 +69,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d2c is COMPLETED / ACCEPTED after the dedicated gate, focused Backend 5, full Backend 158 with one existing warning, clean Flutter analysis, Flutter 200, exact nine-file implementation review, acceptance-only seven-file review, `git diff --check`, and explicit operator approval passed. No credential value, OpenAI SDK import, real client creation, network request, staging/audio read, microphone access, transcript, or real STT execution occurred. RT-3d3 is AUTHORIZED / NOT_STARTED for private real-STT operator execution and acceptance. RT-3d remains BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING.
+Current v3 phase: RT-3d3 real-provider execution completed on clean FW v5.4.0 with the official OpenAI audio-transcriptions endpoint, HTTP 200, a nonempty transcript, fixed-phrase match, and complete staged-artifact cleanup. No private credential, path, raw audio, transcript text, provider payload, response body, screenshot, or operator evidence was committed. RT-3d3 and parent RT-3d are public-safe ACCEPTANCE_CANDIDATE states pending explicit operator approval and the implementation commit.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4429,6 +4430,61 @@ focused Backend 5, full Backend 158 with one existing warning, clean Flutter
 analysis, Flutter 200, exact nine-file implementation review, acceptance-only
 seven-file review, `git diff --check`, and explicit operator approval.
 
-RT-3d3 is `AUTHORIZED / NOT_STARTED`. Private credential use, OpenAI SDK/client
-creation, network execution, provider payload, transcript evidence, and real STT
-operator acceptance remain separate explicit work.
+RT-3d3 is now `IMPLEMENTED / REAL_OPERATOR_EXECUTION_PENDING`. Its committed
+candidate boundary does not include credential values, a DRC custom provider
+client, an API route, transcript logging, provider payload logging, private
+paths, raw audio, screenshots, LAN addresses, or operator evidence. Actual
+OpenAI SDK/client creation, network execution, real transcription, and operator
+acceptance remain separate and require explicit private operator opt-in.
+
+## v3.0.0 RT-3d3 private real-STT operator boundary
+
+RT-3d3 is **IMPLEMENTED / REAL_OPERATOR_EXECUTION_PENDING**. It adds a
+private Backend service that requires every explicit operator/provider gate
+before it resolves the Framework root or consumes a staged artifact. Inside one
+`VoiceInputStagingStore.consume()` scope, it reuses the accepted RT-3d2c
+assembler, creates FW v5.4.0 public WAV/audio/request objects, and calls
+`OpenAIVoiceInputRealProviderExecutor.execute()`.
+
+The staged path remains private and single-use. Success and failure both remove
+the artifact after consume begins. The transcript is retained only for the
+private in-memory operator caller, is excluded from dataclass `repr`, and must
+not be printed, persisted, committed, or included in operator evidence.
+
+The implementation adds no API route, AppConfig credential field, provider
+dependency, custom provider client, Flutter change, version, release, tag, or
+publication change. Synthetic tests and non-provider regression checks do not
+read a credential, import the OpenAI SDK, create a real client, use the network,
+or perform real STT.
+
+RT-3d3 is not accepted yet. The next action is a separately authorized private
+operator execution using a non-repository credential handoff and non-repository
+audio input. Private paths, raw audio, provider payloads, transcripts,
+screenshots, LAN addresses, and operator evidence must remain outside commits.
+RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+## v3.0.0 RT-3d3 real operator execution checkpoint
+
+```text
+RT-3d3: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
+RT-3d2: IMPLEMENTED / ACCEPTANCE_CANDIDATE
+RT-3d: REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+FW baseline: clean v5.4.0
+Transport response status: 200
+Transcript nonempty: True
+Expected phrase match: True
+Staged artifact cleanup complete: True
+Provider payload exposed: False
+Private path exposed: False
+Raw audio exposed: False
+Transcript exposed: False
+Private operator evidence committed: False
+Explicit operator approval: PENDING
+Implementation commit: PENDING
+```
+
+The candidate used `gpt-4o-mini-transcribe`, `language=ja`, a deterministic
+temporary local Japanese WAV, and the released FW v5.4.0 root public execution
+boundary. The temporary WAV was removed after execution. This record contains
+public-safe booleans and fixed classifications only.

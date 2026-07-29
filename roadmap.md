@@ -7302,3 +7302,38 @@ approval.
 
 RT-3d3 is `AUTHORIZED / NOT_STARTED`. No additional Framework development
 requirement was identified.
+
+## RT-3d3 private real-STT operator boundary
+
+Status: **IMPLEMENTED / REAL_OPERATOR_EXECUTION_PENDING**.
+
+The DRC Backend now has a private, explicitly gated FW v5.4.0 real-STT
+execution boundary over one single-use staged WAV. Synthetic and non-provider
+regression verification passed. Actual credentials, OpenAI SDK/client creation,
+network execution, real transcription, and operator acceptance have not run.
+RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+## RT-3d3 real operator execution checkpoint
+
+```text
+RT-3d3: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
+RT-3d2: IMPLEMENTED / ACCEPTANCE_CANDIDATE
+RT-3d: REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+FW baseline: clean v5.4.0
+Transport response status: 200
+Transcript nonempty: True
+Expected phrase match: True
+Staged artifact cleanup complete: True
+Provider payload exposed: False
+Private path exposed: False
+Raw audio exposed: False
+Transcript exposed: False
+Private operator evidence committed: False
+Explicit operator approval: PENDING
+Implementation commit: PENDING
+```
+
+The deterministic private operator run used the released FW v5.4.0 public
+real-STT boundary and completed without changing the repository during
+execution. Only fixed public-safe markers are synchronized here.

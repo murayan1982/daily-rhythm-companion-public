@@ -5724,3 +5724,39 @@ The accepted gate reports
 
 RT-3d2c acceptance is recorded in a separate acceptance-only seven-file change
 after implementation commit `12a9d35b161da303325097a58f3913fe0c3b5708`.
+
+### `check_v300_rt3d3_private_real_stt_operator_boundary.py`
+
+Validates the RT-3d3 nine-file implementation candidate against the accepted
+DRC baseline and exact FW v5.4.0 tag. It checks the explicit-gate ordering,
+single-use staging consume, FW root-public execution call, private transcript
+repr boundary, synthetic focused tests, and documentation state.
+
+Set `FRAMEWORK_ROOT` to the local FW v5.4.0 checkout before running. The gate
+does not read credentials, import the OpenAI SDK, create a real provider client,
+use the network, read operator audio, or perform real STT. RT-3d remains
+`BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING`.
+
+## RT-3d3 real operator execution checkpoint
+
+```text
+RT-3d3: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
+RT-3d2: IMPLEMENTED / ACCEPTANCE_CANDIDATE
+RT-3d: REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+FW baseline: clean v5.4.0
+Transport response status: 200
+Transcript nonempty: True
+Expected phrase match: True
+Staged artifact cleanup complete: True
+Provider payload exposed: False
+Private path exposed: False
+Raw audio exposed: False
+Transcript exposed: False
+Private operator evidence committed: False
+Explicit operator approval: PENDING
+Implementation commit: PENDING
+```
+
+The deterministic private operator run used the released FW v5.4.0 public
+real-STT boundary and completed without changing the repository during
+execution. Only fixed public-safe markers are synchronized here.

@@ -1,16 +1,16 @@
 # Daily Rhythm Companion v3.0.0 goal checklist and small-commit plan
 
-Updated: 2026-07-28
+Updated: 2026-07-29
 ```text
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-Current small commit: none (RT-3d2c accepted; RT-3d3 next)
-Current implementation step: guarded FW v5.4.0 real-executor assembly contract
-Current implementation state: COMPLETED / ACCEPTED
+Current parent phase: RT-3 CURRENT / REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+Current small commit: RT-3d3 private real-STT operator boundary
+Current implementation step: public-safe synchronization after successful private FW v5.4.0 real-STT execution
+Current implementation state: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
 Completed small commit: RT-3d2c COMPLETED / ACCEPTED
-Next implementation action: start RT-3d3 private real-STT operator execution and acceptance under explicit opt-in
+Next implementation action: run canonical non-provider validation, review the exact nine-file candidate, then request explicit operator approval before commit
 ```
 
 ## Source of truth
@@ -1415,3 +1415,66 @@ RT-3d2c implementation commit: 12a9d35b161da303325097a58f3913fe0c3b5708
 RT-3d2c operator approval: ACCEPTED
 RT-3d3 authorization: AUTHORIZED / NOT_STARTED
 ```
+
+## RT-3d3 - private real-STT operator boundary
+
+```text
+RT-3d3  REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
+RT-3d2  IMPLEMENTED / ACCEPTANCE_CANDIDATE
+RT-3d   REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+```
+
+Implementation requirements:
+
+- [x] accepted RT-3d2c baseline is pushed and clean
+- [x] exact FW v5.4.0 HEAD/tag is verified
+- [x] all six explicit operator/provider gates are required before Framework resolution or staging consume
+- [x] accepted RT-3d2c assembler is reused
+- [x] only released FW root public exports are used
+- [x] one staged private WAV is consumed through `VoiceInputStagingStore.consume()`
+- [x] private path exists only inside the scoped consumer
+- [x] success and failure both perform single-use artifact cleanup
+- [x] transcript is excluded from public `repr` and committed evidence
+- [x] unsafe public path/audio/payload/transcript metadata is rejected
+- [x] no API route, AppConfig credential field, provider dependency, or DRC custom provider client
+- [x] focused synthetic Backend tests pass
+- [x] non-provider static audit, Backend full tests, and Flutter full tests pass
+- [x] dedicated RT-3d3 implementation gate passes after docs/gate application
+- [x] exact nine-file review and `git diff --check` pass
+- [ ] explicit private real-provider execution opt-in
+- [ ] actual real-STT operator execution
+- [ ] private operator acceptance
+- [ ] explicit commit approval
+- [ ] explicit push approval
+
+Current implementation result:
+
+```text
+RT-3d3 core synthetic tests: 5 passed
+Backend full tests before docs/gate: 163 passed, one existing warning
+Flutter full tests before docs/gate: 200 passed
+Credential value read by current verification: False
+OpenAI SDK imported by current verification: False
+Provider client created by current verification: False
+Network request executed by current verification: False
+Real provider execution performed: False
+Private operator evidence committed: False
+Implementation commit: PENDING
+Real provider execution: COMPLETED
+Transport response status: 200
+Transcript nonempty: True
+Expected phrase match: True
+Staged artifact cleanup complete: True
+Provider payload exposed: False
+Private path exposed: False
+Raw audio exposed: False
+Transcript exposed: False
+Private operator evidence committed: False
+RT-3d3 acceptance candidate: True
+Explicit operator approval: PENDING
+```
+
+Actual provider execution is intentionally outside this implementation
+checkpoint until the operator explicitly opts in. Any private credential
+handoff, private audio location, provider payload, transcript, screenshot,
+LAN address, and operator evidence must stay outside the repository.
