@@ -5927,3 +5927,37 @@ v300_rt4d_drc_provider_client: False
 v300_rt4d_provider_level_hard_cancel_claimed: False
 v300_rt4d_flutter_changed: False
 ```
+
+## v3.0.0 RT-4e Flutter stream client/controller gate
+
+Detailed contract:
+`docs/v300_rt4_flutter_stream_client_controller.md`.
+
+Run from the repository root:
+
+```powershell
+python scripts\check_v300_rt4_flutter_stream_client_controller.py
+```
+
+This source-tree gate enforces the exact twelve-file RT-4e change surface,
+checks the Flutter stream model/client/controller/test markers, verifies
+HomeScreen, main.dart, backend_api_client.dart, pubspec.yaml, Backend files,
+release notes, and Framework files remain unchanged, scans added content for
+private or unsafe evidence, and prints fixed public-safe candidate markers.
+
+Expected candidate markers:
+
+```text
+v300_rt4_flutter_stream_client_controller_status: implemented-awaiting-acceptance
+v300_rt4e_exact_change_surface: True
+v300_rt4e_flutter_models_added: True
+v300_rt4e_sse_client_added: True
+v300_rt4e_controller_added: True
+v300_rt4e_fake_transport_tests_added: True
+v300_rt4e_home_screen_changed: False
+v300_rt4e_backend_changed: False
+v300_rt4e_real_network_execution: False
+v300_rt4e_framework_imported: False
+v300_rt4e_provider_level_hard_cancel_claimed: False
+v300_rt4f_authorization: blocked-pending-rt4e-acceptance
+```

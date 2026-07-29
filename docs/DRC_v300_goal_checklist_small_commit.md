@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4e AUTHORIZED / NOT_STARTED
+Current small commit: RT-4e IMPLEMENTED / AWAITING_ACCEPTANCE
 Current implementation step: Flutter stream client/controller without HomeScreen integration
-Current implementation state: AUTHORIZED / NOT_STARTED
+Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
 Current implementation commit: none
 Last accepted small commit: RT-4d COMPLETED / ACCEPTED / PUSHED at f713f515eef723a1d51cfbe35c1dfe16e3547420
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: inventory and implement RT-4e only; keep HomeScreen integration and configured real acceptance in RT-4f
+Next implementation action: verify RT-4e only; keep HomeScreen integration and configured real acceptance in RT-4f
 ```
 
 ## Source of truth
@@ -1493,7 +1493,7 @@ RT-4a  COMPLETED / ACCEPTED
 RT-4b  COMPLETED / ACCEPTED
 RT-4c  COMPLETED / ACCEPTED / PUSHED
 RT-4d  COMPLETED / ACCEPTED / PUSHED
-RT-4e  AUTHORIZED / NOT_STARTED
+RT-4e  IMPLEMENTED / AWAITING_ACCEPTANCE
 RT-4f  NOT_STARTED
 ```
 
@@ -1667,5 +1667,48 @@ Detailed contract:
 `docs/v300_rt4_framework_public_streaming_adapter.md`.
 
 Stop rule: do not import Framework internals, add a DRC provider client, claim
-provider-level hard cancel, read/display transcript text, change Flutter, or add
-TTS queue control. RT-4c and RT-4d are accepted; RT-4e is authorized but not started.
+provider-level hard cancel, read/display transcript text, change Flutter UI, or
+add TTS queue control. RT-4c and RT-4d are accepted.
+
+### RT-4e — Flutter stream client/controller without HomeScreen integration
+
+RT-4e adds Flutter-only primitives for consuming the accepted Backend text
+stream contract.
+
+Implementation contract:
+
+- [x] add immutable Flutter stream models;
+- [x] preserve 512-character chunk and 4096-character accumulated output bounds;
+- [x] preserve `cancel_mode=cooperative` and `hard_cancel_supported=false`;
+- [x] add injectable HTTP/SSE client with fake `http.BaseClient` tests;
+- [x] parse UTF-8 SSE incrementally by blank-line frame boundaries;
+- [x] validate `id`, `event`, and normalized DRC JSON `data`;
+- [x] reject malformed, mismatched, stale, duplicate, out-of-order, and oversized events;
+- [x] add ChangeNotifier controller with immutable exposed state;
+- [x] reject active-stream replacement and ignore obsolete callbacks;
+- [x] support safe idempotent cooperative cancel;
+- [x] close local event subscription after terminal events;
+- [x] avoid HomeScreen integration, real network execution, Framework imports, provider clients, reconnect/resume, WebSocket, dependencies, versions, and TTS queue control.
+
+RT-4e candidate verification:
+
+- [x] implementation and fake transport tests prepared
+- [ ] compileall passes
+- [ ] dedicated RT-4e gate passes
+- [ ] Backend full tests pass
+- [ ] Flutter analyze passes
+- [ ] focused Flutter RT-4e tests pass
+- [ ] Flutter full tests pass
+- [ ] exact twelve-file review passes
+- [ ] changed-content private scan passes
+- [ ] `git -c core.whitespace=cr-at-eol diff --check` passes
+- [ ] explicit operator approval received
+
+Detailed contract:
+`docs/v300_rt4_flutter_stream_client_controller.md`.
+
+Stop rule: do not edit HomeScreen, integrate the controller into UI, connect STT
+transcripts, execute a real Backend/Framework/provider, import Framework, add a
+DRC provider client, claim provider-level hard cancel, add reconnect/resume,
+add WebSocket, add dependencies, change versions, or implement TTS
+queue/flush/barge-in. RT-4f remains NOT_STARTED until RT-4e acceptance.
