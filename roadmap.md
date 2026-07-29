@@ -1,12 +1,12 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-07-28
+Updated: 2026-07-29
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3d0 COMPLETED / ACCEPTED; RT-3d remains blocked)
+Current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,13 +570,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-Current small commit: none (RT-3d1 accepted; RT-3d2 next)
-Completed small commit: RT-3d1 COMPLETED / ACCEPTED
-Current implementation: Framework v5.4.0 real STT adoption inventory COMPLETED / ACCEPTED
-Current implementation boundary: RT-3d1 COMPLETED / ACCEPTED; RT-3d2 AUTHORIZED / NOT_STARTED; RT-3d blocked pending DRC wiring and operator acceptance
-Real-device evidence: RT-2e-c3b COMPLETED / ACCEPTED; marker-only evidence recorded
-Checkpoint gate state: c2/c3a historical non-execution facts retained; current parent output synchronized to RT-2 COMPLETED / ACCEPTED
+Status: RT-4 CURRENT / NOT_COMPLETED
+Current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
+Completed small commit: RT-3d3 COMPLETED / ACCEPTED
+Current implementation: streaming/cancel current behavior inventory and small-commit split
+Current implementation boundary: RT-4a docs/test-only; RT-4b through RT-4f NOT_STARTED
+Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
+Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
 Goal:
 
@@ -752,7 +752,7 @@ RT-2   COMPLETED / ACCEPTED      Microphone permission and guarded capture path
       RT-2e-c3  COMPLETED / ACCEPTED                 Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                    Real Android operator preflight and safe evidence contract
         RT-2e-c3b  COMPLETED / ACCEPTED                    Explicit real Android bounded capture and cleanup evidence
-RT-3   CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real STT / voice-input integration
+RT-3   COMPLETED / ACCEPTED  Real STT / voice-input integration
   RT-3a  COMPLETED / ACCEPTED                                   Framework v5.3.0 STT integration inventory
   RT-3b  COMPLETED / ACCEPTED                                   App-owned host-audio handoff lifecycle contract
   RT-3c  COMPLETED / ACCEPTED                                   Private backend staging and fake FW public-session handoff
@@ -760,8 +760,18 @@ RT-3   CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDIN
     RT-3c2  COMPLETED / ACCEPTED                                 Bounded private Backend staging store and lifecycle
     RT-3c3  COMPLETED / ACCEPTED                                 Guarded binary upload and Flutter scoped staging consumer
     RT-3c4  COMPLETED / ACCEPTED                                  Fake FW public-session handoff and single-use cleanup
-  RT-3d  BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING  Real provider execution evidence
-RT-4   BLOCKED                   Streaming LLM, event consumption, and cancellation
+  RT-3d  COMPLETED / ACCEPTED  Real provider execution evidence
+    RT-3d0  COMPLETED / ACCEPTED  Framework real STT requirement feedback
+    RT-3d1  COMPLETED / ACCEPTED  Framework v5.4.0 adoption inventory
+    RT-3d2  COMPLETED / ACCEPTED  Guarded DRC v5.4.0 real-STT wiring
+    RT-3d3  COMPLETED / ACCEPTED  Private real-STT operator execution and acceptance
+RT-4   CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooperative cancellation
+  RT-4a  IMPLEMENTED / AWAITING_ACCEPTANCE  Current behavior inventory and small-commit split
+  RT-4b  NOT_STARTED  Backend provider-neutral stream lifecycle and fake-only tests
+  RT-4c  NOT_STARTED  Bounded Backend SSE transport and cancel request boundary
+  RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+  RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
+  RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -7337,3 +7347,38 @@ Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 The deterministic private operator run used the released FW v5.4.0 public
 real-STT boundary and completed without changing the repository during
 execution. Only fixed public-safe markers are synchronized here.
+
+## RT-4a streaming/cancel current behavior inventory
+
+Status: `IMPLEMENTED / AWAITING_ACCEPTANCE`
+
+RT-4a reads the accepted DRC RT-3 source and clean FW v5.4.0 public surface
+before any streaming runtime is added. The current DRC post-advice chat is a
+normal HTTP request/response path and calls FW `session.ask()`. DRC has no
+stream chunk/terminal model, SSE/WebSocket route, active-stream registry,
+transport disconnect cleanup, or Flutter stream client/controller.
+
+FW v5.4.0 root-public `TextChatSession` exposes `ask_stream()`, app-facing
+events, and `interrupt()`. The interrupt is cooperative: it records a flag and
+stops at a later chunk boundary. It is not provider-level hard cancellation.
+The root-public `RealtimeSession` remains mock-safe for orchestration and
+reports hard cancel and TTS queue flush as unsupported.
+
+Accepted RT-4 split:
+
+```text
+RT-4a  Current behavior inventory and small-commit split; docs/test-only.
+RT-4b  Backend provider-neutral stream lifecycle, sequence, terminal outcome, and fake tests.
+RT-4c  Bounded SSE transport, cancel request endpoint, disconnect cleanup, and limits.
+RT-4d  FW v5.4.0 root-public ask_stream/event/interrupt adapter; cooperative cancel only.
+RT-4e  Flutter stream client/controller and deterministic fake transport tests.
+RT-4f  UI integration plus configured incremental streaming and cancel acceptance.
+```
+
+RT-4a changes exactly seven planning/gate files. Backend/Flutter runtime,
+existing tests, dependencies, API routes, provider execution, private data,
+versions, and release records remain unchanged. RT-4b remains blocked until
+RT-4a verification, exact-surface review, and explicit operator approval.
+
+Detailed contract:
+`docs/v300_rt4_streaming_cancel_current_behavior_inventory.md`.

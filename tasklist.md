@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-28
+更新日: 2026-07-29
 ## 1. 現在地
 
 ```text
@@ -12,15 +12,17 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current parent phase: RT-3 CURRENT / BLOCKED_DRC_V540_REAL_STT_WIRING_AND_OPERATOR_ACCEPTANCE_PENDING
-current small commit: none (RT-3d2c accepted; RT-3d3 next)
-current implementation step: guarded FW v5.4.0 real-executor assembly contract
-current implementation state: COMPLETED / ACCEPTED
-completed small commit: RT-3d2c COMPLETED / ACCEPTED
+current parent phase: RT-4 CURRENT / NOT_COMPLETED
+current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
+current implementation step: streaming/cancel current behavior inventory and small-commit split
+current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
+completed small commit: RT-3d3 COMPLETED / ACCEPTED
 strategic target: v3.0.0
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
+
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。現在はRT-4aのdocs/test-only棚卸し候補を検証中であり、RT-4b以降のruntime実装はまだ開始しない。
 
 
 ## 2. Source of truth
@@ -59,6 +61,8 @@ docs/v300_rt3d2b_bounded_marked_fake_executor_wiring.md
 scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
 docs/v300_rt3d2c_guarded_real_executor_assembly_contract.md
 scripts/check_v300_rt3d2c_guarded_real_executor_assembly_contract.py
+docs/v300_rt4_streaming_cancel_current_behavior_inventory.md
+scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:
@@ -1929,3 +1933,72 @@ Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 The deterministic private operator run used the released FW v5.4.0 public
 real-STT boundary and completed without changing the repository during
 execution. Only fixed public-safe markers are synchronized here.
+
+# 5. Current RT-4 phase
+
+## RT-4 — Streaming LLM, DRC event consumption, and cooperative cancellation
+
+Status: CURRENT / NOT_COMPLETED
+
+```text
+RT-4a  IMPLEMENTED / AWAITING_ACCEPTANCE  Current behavior inventory and small-commit split
+RT-4b  NOT_STARTED  Backend provider-neutral stream lifecycle and fake-only tests
+RT-4c  NOT_STARTED  Bounded Backend SSE transport and cancel request boundary
+RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
+RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
+```
+
+### RT-4a — Current behavior inventory and small-commit split
+
+Purpose:
+
+```text
+- Read the accepted RT-3 DRC implementation and clean FW v5.4.0 public surface.
+- Separate existing full-response chat from new incremental streaming work.
+- Freeze cooperative cancel versus provider-level hard cancel semantics.
+- Fix the RT-4b through RT-4f responsibility split before runtime changes.
+- Keep RT-5 TTS queue/flush/barge-in work out of RT-4.
+```
+
+Current source facts:
+
+```text
+- DRC configured chat calls TextChatSession.ask() and returns one full response.
+- POST /chat/sessions/{session_id}/messages is a normal response-model route.
+- DRC realtime models have lifecycle/event normalization but no text chunk model.
+- Backend has no StreamingResponse, text/event-stream route, or WebSocket route.
+- Flutter has no EventSource/WebSocket stream client or stream controller.
+- RT-3 real STT returns one completed transcript; it is not yet connected to LLM streaming.
+- FW v5.4.0 ask_stream()/events/interrupt() are root-public.
+- FW interrupt is cooperative soft cancel, not provider-level hard cancel.
+- FW root RealtimeSession real orchestration and TTS queue flush remain unsupported.
+```
+
+Exact RT-4a change surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt4_streaming_cancel_current_behavior_inventory.md
+scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py
+```
+
+Acceptance checklist:
+
+- [x] actual DRC source read before planning
+- [x] exact FW v5.4.0 root-public surface identified
+- [x] RT-4 small-commit split fixed
+- [x] docs/test-only implementation prepared
+- [ ] compileall passes
+- [ ] dedicated RT-4a gate passes against DRC `eecf13d7...` and clean FW v5.4.0
+- [ ] full Backend tests pass
+- [ ] Flutter analyze and full Flutter tests pass
+- [ ] exact seven-file diff review and changed-content private scan pass
+- [ ] `git diff --check` passes
+- [ ] explicit operator approval received
+
+RT-4b remains `NOT_STARTED` until every pending RT-4a acceptance item passes.

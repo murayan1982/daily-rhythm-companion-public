@@ -9,11 +9,11 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none (RT-3d3 accepted; RT-4 next)
-Current implementation: real STT / voice-input integration (**COMPLETED / ACCEPTED**)
+Current small commit: RT-4a (**IMPLEMENTED / AWAITING_ACCEPTANCE**)
+Current implementation: streaming/cancel current behavior inventory and small-commit split (**IMPLEMENTED**)
 Completed small commit: RT-3d3 (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-4 (**NEXT / NOT_STARTED**)
-Next realtime action: define the RT-4 streaming/cancel small-commit boundary (**NOT_STARTED**)
+Current realtime phase: RT-4 (**CURRENT / NOT_COMPLETED**)
+Current realtime action: verify the RT-4a docs/test-only inventory and exact seven-file surface before RT-4b
 
 Current phase state:
 
@@ -55,6 +55,13 @@ RT-3  COMPLETED / ACCEPTED  Real STT / voice-input integration
       RT-3d2b  COMPLETED / ACCEPTED                              Bounded marked-fake executor wiring
       RT-3d2c  COMPLETED / ACCEPTED                              Guarded real-executor assembly contract
       RT-3d3  COMPLETED / ACCEPTED  Private real-STT operator execution and acceptance
+RT-4  CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooperative cancellation
+  RT-4a  IMPLEMENTED / AWAITING_ACCEPTANCE  Current behavior inventory and small-commit split
+  RT-4b  NOT_STARTED  Backend provider-neutral stream lifecycle and fake-only tests
+  RT-4c  NOT_STARTED  Bounded Backend SSE transport and cancel request boundary
+  RT-4d  NOT_STARTED  FW v5.4.0 root-public streaming adapter and cooperative cancel
+  RT-4e  NOT_STARTED  Flutter stream client/controller without HomeScreen integration
+  RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -69,7 +76,26 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c`, the public-safe private real-provider operator run on clean FW v5.4.0, HTTP 200, a nonempty transcript, fixed-phrase match, complete staged-artifact cleanup, the dedicated gate, focused Backend 5, full Backend 163 with one existing warning, clean Flutter analysis, Flutter 200, exact nine-file review, changed-content private scan, `git diff --check`, and explicit operator approval. No credential value, private path, raw audio, transcript text, provider payload, response body, screenshot, or private operator evidence was committed. RT-4 is NEXT / NOT_STARTED.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is now IMPLEMENTED / AWAITING_ACCEPTANCE as a docs/test-only inventory. It records that DRC still uses full-response `session.ask()`, has no LLM chunk model, SSE/WebSocket transport, active-stream cancel registry, or Flutter stream controller, while FW v5.4.0 exposes root-public `ask_stream()` and cooperative `interrupt()` but not provider-level hard cancel. RT-4b remains NOT_STARTED.
+
+## v3.0.0 RT-4a streaming/cancel current behavior inventory
+
+RT-4a is **IMPLEMENTED / AWAITING_ACCEPTANCE** and remains docs/test-only.
+It freezes the accepted RT-3 baseline, the current synchronous DRC text-chat
+path, the existing DRC realtime normalization vocabulary, the absence of a
+streaming transport/client, and the exact FW v5.4.0 public soft-cancel
+boundary before any RT-4 runtime code is added.
+
+Detailed inventory:
+`docs/v300_rt4_streaming_cancel_current_behavior_inventory.md`.
+Dedicated gate:
+`scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py`.
+
+RT-4a changes no Backend or Flutter runtime, existing tests, dependency, API
+route, version, provider execution, private audio/transcript handling, or
+release record. RT-4b is blocked until compileall, the dedicated gate, full
+Backend/Flutter tests, exact seven-file review, `git diff --check`, and
+explicit operator approval pass.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 

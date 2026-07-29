@@ -5,12 +5,12 @@ Updated: 2026-07-29
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-3 COMPLETED / ACCEPTED; RT-4 NEXT / NOT_STARTED
-Current small commit: none (RT-3d3 accepted; RT-4 next)
-Current implementation step: RT-3 real STT / voice-input integration accepted
-Current implementation state: COMPLETED / ACCEPTED
+Current parent phase: RT-4 CURRENT / NOT_COMPLETED
+Current small commit: RT-4a IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: streaming/cancel current behavior inventory and small-commit split
+Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
 Completed small commit: RT-3d3 COMPLETED / ACCEPTED
-Next implementation action: define the RT-4 streaming/cancel small-commit boundary; implementation is NOT_STARTED
+Next implementation action: verify RT-4a; RT-4b remains NOT_STARTED pending acceptance
 ```
 
 ## Source of truth
@@ -46,6 +46,8 @@ docs/v300_rt3d2a_framework_v540_executor_path_correction.md
 scripts/check_v300_rt3d2a_framework_v540_executor_path_correction.py
 docs/v300_rt3d2b_bounded_marked_fake_executor_wiring.md
 scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
+docs/v300_rt4_streaming_cancel_current_behavior_inventory.md
+scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py
 ```
 
 Historical release sources remain immutable:
@@ -1478,3 +1480,68 @@ Actual provider execution is intentionally outside this implementation
 checkpoint until the operator explicitly opts in. Any private credential
 handoff, private audio location, provider payload, transcript, screenshot,
 LAN address, and operator evidence must stay outside the repository.
+
+## RT-4 — Streaming LLM, DRC event consumption, and cooperative cancellation
+
+```text
+RT-4   CURRENT / NOT_COMPLETED
+RT-4a  IMPLEMENTED / AWAITING_ACCEPTANCE
+RT-4b  NOT_STARTED
+RT-4c  NOT_STARTED
+RT-4d  NOT_STARTED
+RT-4e  NOT_STARTED
+RT-4f  NOT_STARTED
+```
+
+### RT-4a — Current behavior inventory and small-commit split
+
+RT-4a is docs/test-only. It freezes the exact accepted RT-3 DRC source and FW
+v5.4.0 public streaming/cancel boundary before any runtime implementation.
+
+Verified current boundary:
+
+- [x] DRC configured Framework chat uses `session.ask()` and full-response HTTP.
+- [x] DRC has no text stream chunk/terminal model or active stream registry.
+- [x] Backend has no SSE/WebSocket streaming route or cancel endpoint.
+- [x] Flutter has no streaming client/controller or incremental response UI.
+- [x] RT-3 real STT output is not connected to an LLM streaming path.
+- [x] FW v5.4.0 root exports `TextChatSession`, `create_text_chat_session`, and streaming/events/interrupt methods.
+- [x] FW `interrupt()` is cooperative and does not prove provider-level hard cancel.
+- [x] FW public `RealtimeSession` still does not provide real unified orchestration or TTS queue flush.
+
+Accepted small-commit responsibility split:
+
+```text
+RT-4a  Inventory/split only; no runtime, tests, dependency, transport, or provider execution.
+RT-4b  Backend stream state/event/chunk/terminal contract and fake-only service tests.
+RT-4c  Bounded SSE transport, cancel request boundary, disconnect cleanup, and limits.
+RT-4d  FW root-public ask_stream/event/interrupt adapter; cooperative cancel semantics.
+RT-4e  Flutter streaming client/controller and fake transport tests; no HomeScreen integration.
+RT-4f  UI integration, transcript-to-stream handoff, configured streaming, and cancel acceptance.
+```
+
+RT-4 parent acceptance minimum:
+
+```text
+real incremental LLM streaming: required by RT-4f
+DRC normalized event consumption: required
+cooperative cancel: required
+disconnect cleanup and bounded lifecycle: required
+provider-level hard cancel: not claimed unless a later released FW contract proves it
+TTS queue/flush/barge-in: RT-5 only
+```
+
+RT-4a candidate verification:
+
+- [x] exact seven-file implementation prepared
+- [ ] compileall passes
+- [ ] dedicated RT-4a gate passes
+- [ ] Backend full tests pass
+- [ ] Flutter analyze and full tests pass
+- [ ] exact seven-file review passes
+- [ ] changed-content private scan passes
+- [ ] `git diff --check` passes
+- [ ] explicit operator approval received
+
+Stop rule: do not add Backend/Flutter runtime, streaming routes, provider calls,
+or cancellation execution in RT-4a. Do not begin RT-4b before acceptance.

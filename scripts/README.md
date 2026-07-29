@@ -5760,3 +5760,44 @@ Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 The deterministic private operator run used the released FW v5.4.0 public
 real-STT boundary and completed without changing the repository during
 execution. Only fixed public-safe markers are synchronized here.
+
+## v3.0.0 RT-4a streaming/cancel current behavior inventory gate
+
+Detailed inventory:
+`docs/v300_rt4_streaming_cancel_current_behavior_inventory.md`.
+
+Run from the DRC repository root with `FRAMEWORK_ROOT` pointing to the clean
+FW v5.4.0 checkout:
+
+```powershell
+$env:FRAMEWORK_ROOT = "<FW_V540_ROOT>"
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4_streaming_cancel_current_behavior_inventory.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The gate requires DRC HEAD and `origin/main` at the accepted RT-3 acceptance
+commit, exact seven-file working-tree changes, and a clean FW v5.4.0 HEAD/tag.
+It inspects only public FW exports/source and current DRC source. It does not
+create a Framework session, call a provider, read credentials, open audio,
+use a transcript, start a streaming transport, or request cancellation.
+
+Expected candidate markers:
+
+```text
+v300_rt4_streaming_cancel_inventory_status: implemented-awaiting-acceptance
+v300_rt4a_backend_runtime_changed: False
+v300_rt4a_flutter_runtime_changed: False
+v300_rt4a_streaming_transport_added: False
+v300_rt4a_provider_execution: False
+v300_rt4a_hard_cancel_claimed: False
+v300_rt4b_authorization: blocked-pending-rt4a-acceptance
+```
