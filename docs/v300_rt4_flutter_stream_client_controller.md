@@ -1,13 +1,13 @@
 # DRC v3.0.0 RT-4e Flutter stream client/controller
 
-Updated: 2026-07-29
+Updated: 2026-07-30
 
 ```text
 RT-4: CURRENT / NOT_COMPLETED
 RT-4c: COMPLETED / ACCEPTED / PUSHED
 RT-4d: COMPLETED / ACCEPTED / PUSHED
-RT-4e: IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4f: NOT_STARTED
+RT-4e: COMPLETED / ACCEPTED / PUSHED
+RT-4f: AUTHORIZED / NOT_STARTED
 ```
 
 ## Purpose
@@ -37,14 +37,20 @@ hard_cancel_supported=false
 ```
 
 The client accepts an injected `http.Client`, creates stream sessions, consumes
-SSE by UTF-8 blank-line frame boundaries, parses `id`, `event`, and `data`
-fields, and deserializes only normalized DRC JSON event payloads.
+SSE by incremental UTF-8 blank-line frame boundaries, safely handles CRLF/LF
+HTTP chunk boundaries, parses `id`, `event`, and `data` fields, deserializes
+only normalized DRC JSON event payloads, and enforces same-origin
+`events_path` and `cancel_path` values.
 
 The controller is a `ChangeNotifier` with immutable state. It exposes idle,
 connecting, streaming, cancelRequested, completed, cancelled, failed, and closed
 phases, rejects active-stream replacement, appends chunks incrementally, handles
-cooperative cancel, closes local subscriptions after terminal events, and ignores
-obsolete callbacks.
+cooperative cancel, validates monotonic sequence/session/turn values, validates
+event type/state/payload/terminal consistency, enforces Unicode code-point
+chunk/output/safe-message bounds, closes local subscriptions after failed,
+terminal, and dispose paths, rejects simultaneous `start()` calls, preserves
+local `cancelRequested` when a delayed `streamStarted` event arrives, and
+ignores obsolete callbacks.
 
 ## Non-Actions
 
@@ -98,4 +104,50 @@ late event ignored after terminal/dispose
 no input echo in public state/errors
 ```
 
-Candidate acceptance is pending local verification and explicit operator review.
+## Acceptance
+
+RT-4e is accepted and pushed at
+`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`.
+
+Accepted RT-4e behavior:
+
+```text
+Flutter normalized realtime stream models added
+injectable HTTP/SSE client added
+ChangeNotifier stream controller added
+incremental UTF-8 SSE parsing accepted
+CRLF/LF HTTP chunk-boundary handling accepted
+same-origin events_path and cancel_path enforcement accepted
+monotonic sequence/session/turn validation accepted
+event type/state/payload/terminal validation accepted
+Unicode code-point chunk/output/safe-message bounds accepted
+cooperative cancel only
+hard_cancel_supported=false
+failed/terminal/dispose subscription cleanup accepted
+active-stream replacement and simultaneous start rejection accepted
+local cancel remains cancelRequested when a delayed streamStarted event arrives
+fake/in-memory transport only in normal tests
+HomeScreen integration remains absent
+STT transcript handoff remains absent
+real Backend/Framework/provider execution was not performed by RT-4e
+TTS queue/flush/barge-in remains RT-5 work
+```
+
+Verification record:
+
+```text
+implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
+implementation pushed: true
+compileall: passed
+dedicated RT-4e gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter RT-4e tests: 33 passed
+Flutter full tests: 233 passed
+exact twelve-file review: passed
+changed-content private scan: passed
+git diff --check: passed
+explicit operator approval: accepted
+RT-4e status: COMPLETED / ACCEPTED / PUSHED
+RT-4f authorization: AUTHORIZED / NOT_STARTED
+```

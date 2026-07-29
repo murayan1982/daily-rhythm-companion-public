@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-07-29
+更新日: 2026-07-30
 ## 1. 現在地
 
 ```text
@@ -13,18 +13,18 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-4 CURRENT / NOT_COMPLETED
-current small commit: RT-4e IMPLEMENTED / AWAITING_ACCEPTANCE
-current implementation step: Flutter stream client/controller without HomeScreen integration
-current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
+current small commit: RT-4f AUTHORIZED / NOT_STARTED
+current implementation step: RT-4f UI integration, transcript-to-stream handoff, configured streaming, and cooperative cancel acceptance
+current implementation state: AUTHORIZED / NOT_STARTED
 current implementation commit: none
-last accepted small commit: RT-4d COMPLETED / ACCEPTED / PUSHED at f713f515eef723a1d51cfbe35c1dfe16e3547420
+last accepted small commit: RT-4e COMPLETED / ACCEPTED / PUSHED at 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
-その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eはFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、IMPLEMENTED / AWAITING_ACCEPTANCE。
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはAUTHORIZED / NOT_STARTED。
 
 
 ## 2. Source of truth
@@ -1953,8 +1953,8 @@ RT-4a  COMPLETED / ACCEPTED  Current behavior inventory and small-commit split
 RT-4b  COMPLETED / ACCEPTED  Backend provider-neutral stream lifecycle and fake-only tests
 RT-4c  COMPLETED / ACCEPTED / PUSHED  Bounded Backend SSE transport and cancel request boundary
 RT-4d  COMPLETED / ACCEPTED / PUSHED  FW v5.4.0 root-public streaming adapter and cooperative cancel
-RT-4e  IMPLEMENTED / AWAITING_ACCEPTANCE  Flutter stream client/controller without HomeScreen integration
-RT-4f  NOT_STARTED  UI integration and configured streaming/cancel acceptance
+RT-4e  COMPLETED / ACCEPTED / PUSHED  Flutter stream client/controller without HomeScreen integration
+RT-4f  AUTHORIZED / NOT_STARTED  UI integration and configured streaming/cancel acceptance
 ```
 
 ### RT-4a — Current behavior inventory and small-commit split
@@ -2052,4 +2052,4 @@ Candidate acceptance:
 - [ ] `git diff --check` passes
 - [ ] explicit operator approval received
 
-RT-4b acceptance passed and was pushed. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a`. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with root-public FW `ask_stream()` wiring and cooperative interrupt semantics. Commit-scoped reconstruction, exact change-surface review, changed-content private scans, Backend 192, Flutter analyze, Flutter 200, `git diff --check`, and explicit operator approval passed. RT-4e is IMPLEMENTED / AWAITING_ACCEPTANCE with Flutter-only stream client/controller primitives and no HomeScreen integration.
+RT-4b acceptance passed and was pushed. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a`. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with root-public FW `ask_stream()` wiring and cooperative interrupt semantics. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter-only stream client/controller primitives, incremental UTF-8 SSE parsing, CRLF/LF chunk-boundary handling, same-origin path enforcement, monotonic sequence/session/turn validation, event type/state/payload/terminal validation, Unicode code-point bounds, cooperative cancel only, `hard_cancel_supported=false`, subscription cleanup, active-stream replacement and simultaneous start rejection, delayed `streamStarted` preserving local `cancelRequested`, fake/in-memory tests only, no HomeScreen integration, no STT transcript handoff, no real Backend/Framework/provider execution, and no TTS queue/flush/barge-in work. Verification passed: compileall, dedicated RT-4e gate, Backend 192 with one existing warning, Flutter analyze, focused Flutter RT-4e 33, Flutter full 233, exact twelve-file review, changed-content private scan, `git diff --check`, explicit operator approval, commit, and push. RT-4f is AUTHORIZED / NOT_STARTED.

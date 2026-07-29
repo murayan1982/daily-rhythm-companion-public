@@ -1,18 +1,18 @@
 # Daily Rhythm Companion v3.0.0 goal checklist and small-commit plan
 
-Updated: 2026-07-29
+Updated: 2026-07-30
 ```text
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4e IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation step: Flutter stream client/controller without HomeScreen integration
-Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4f AUTHORIZED / NOT_STARTED
+Current implementation step: RT-4f UI integration, transcript-to-stream handoff, configured streaming, and cooperative cancel acceptance
+Current implementation state: AUTHORIZED / NOT_STARTED
 Current implementation commit: none
-Last accepted small commit: RT-4d COMPLETED / ACCEPTED / PUSHED at f713f515eef723a1d51cfbe35c1dfe16e3547420
+Last accepted small commit: RT-4e COMPLETED / ACCEPTED / PUSHED at 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify RT-4e only; keep HomeScreen integration and configured real acceptance in RT-4f
+Next implementation action: inspect and begin RT-4f only; preserve RT-5 TTS queue/flush/barge-in exclusion
 ```
 
 ## Source of truth
@@ -1493,8 +1493,8 @@ RT-4a  COMPLETED / ACCEPTED
 RT-4b  COMPLETED / ACCEPTED
 RT-4c  COMPLETED / ACCEPTED / PUSHED
 RT-4d  COMPLETED / ACCEPTED / PUSHED
-RT-4e  IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4f  NOT_STARTED
+RT-4e  COMPLETED / ACCEPTED / PUSHED
+RT-4f  AUTHORIZED / NOT_STARTED
 ```
 
 ### RT-4a — Current behavior inventory and small-commit split
@@ -1690,19 +1690,38 @@ Implementation contract:
 - [x] close local event subscription after terminal events;
 - [x] avoid HomeScreen integration, real network execution, Framework imports, provider clients, reconnect/resume, WebSocket, dependencies, versions, and TTS queue control.
 
-RT-4e candidate verification:
+RT-4e acceptance result:
 
 - [x] implementation and fake transport tests prepared
-- [ ] compileall passes
-- [ ] dedicated RT-4e gate passes
-- [ ] Backend full tests pass
-- [ ] Flutter analyze passes
-- [ ] focused Flutter RT-4e tests pass
-- [ ] Flutter full tests pass
-- [ ] exact twelve-file review passes
-- [ ] changed-content private scan passes
-- [ ] `git -c core.whitespace=cr-at-eol diff --check` passes
-- [ ] explicit operator approval received
+- [x] Flutter normalized realtime stream models added
+- [x] injectable HTTP/SSE client added
+- [x] ChangeNotifier stream controller added
+- [x] incremental UTF-8 SSE parsing accepted
+- [x] CRLF/LF HTTP chunk-boundary handling accepted
+- [x] same-origin `events_path` and `cancel_path` enforcement accepted
+- [x] monotonic sequence/session/turn validation accepted
+- [x] event type/state/payload/terminal validation accepted
+- [x] Unicode code-point chunk/output/safe-message bounds accepted
+- [x] cooperative cancel only with `hard_cancel_supported=false`
+- [x] failed/terminal/dispose subscription cleanup accepted
+- [x] active-stream replacement and simultaneous start rejection accepted
+- [x] local cancel remains `cancelRequested` when a delayed `streamStarted` event arrives
+- [x] fake/in-memory transport only in normal tests
+- [x] HomeScreen integration remains absent
+- [x] STT transcript handoff remains absent
+- [x] real Backend/Framework/provider execution was not performed by RT-4e
+- [x] TTS queue/flush/barge-in remains RT-5 work
+- [x] compileall passed
+- [x] dedicated RT-4e gate passed
+- [x] Backend full tests passed: 192 passed, 1 existing warning
+- [x] Flutter analyze passed
+- [x] focused Flutter RT-4e tests passed: 33 passed
+- [x] Flutter full tests passed: 233 passed
+- [x] exact twelve-file review passed
+- [x] changed-content private scan passed
+- [x] `git diff --check` passed
+- [x] explicit operator approval received
+- [x] implementation committed and pushed
 
 Detailed contract:
 `docs/v300_rt4_flutter_stream_client_controller.md`.
@@ -1711,4 +1730,23 @@ Stop rule: do not edit HomeScreen, integrate the controller into UI, connect STT
 transcripts, execute a real Backend/Framework/provider, import Framework, add a
 DRC provider client, claim provider-level hard cancel, add reconnect/resume,
 add WebSocket, add dependencies, change versions, or implement TTS
-queue/flush/barge-in. RT-4f remains NOT_STARTED until RT-4e acceptance.
+queue/flush/barge-in. RT-4f is AUTHORIZED / NOT_STARTED after RT-4e acceptance.
+
+RT-4e verification record:
+
+```text
+implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
+implementation pushed: true
+compileall: passed
+dedicated RT-4e gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter RT-4e tests: 33 passed
+Flutter full tests: 233 passed
+exact twelve-file review: passed
+changed-content private scan: passed
+git diff --check: passed
+explicit operator approval: accepted
+RT-4e status: COMPLETED / ACCEPTED / PUSHED
+RT-4f authorization: AUTHORIZED / NOT_STARTED
+```

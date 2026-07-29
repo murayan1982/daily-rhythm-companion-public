@@ -5945,7 +5945,20 @@ HomeScreen, main.dart, backend_api_client.dart, pubspec.yaml, Backend files,
 release notes, and Framework files remain unchanged, scans added content for
 private or unsafe evidence, and prints fixed public-safe candidate markers.
 
-Expected candidate markers:
+RT-4e is now COMPLETED / ACCEPTED / PUSHED at
+`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`. Acceptance covered Flutter
+normalized realtime stream models, an injectable HTTP/SSE client, a
+ChangeNotifier stream controller, incremental UTF-8 SSE parsing, CRLF/LF HTTP
+chunk-boundary handling, same-origin events_path and cancel_path enforcement,
+monotonic sequence/session/turn validation, event type/state/payload/terminal
+validation, Unicode code-point chunk/output/safe-message bounds, cooperative
+cancel only, hard_cancel_supported=false, failed/terminal/dispose subscription
+cleanup, active-stream replacement and simultaneous start rejection, delayed
+streamStarted preserving local cancelRequested, fake/in-memory normal tests, no
+HomeScreen integration, no STT transcript handoff, no real
+Backend/Framework/provider execution, and no TTS queue/flush/barge-in work.
+
+Historical RT-4e implementation-candidate gate markers:
 
 ```text
 v300_rt4_flutter_stream_client_controller_status: implemented-awaiting-acceptance
@@ -5961,3 +5974,9 @@ v300_rt4e_framework_imported: False
 v300_rt4e_provider_level_hard_cancel_claimed: False
 v300_rt4f_authorization: blocked-pending-rt4e-acceptance
 ```
+
+These markers describe the uncommitted twelve-file RT-4e implementation
+candidate that the source-tree gate validates. The gate is not expected to pass
+against the later six-file acceptance documentation sync. The active accepted
+state is RT-4e COMPLETED / ACCEPTED / PUSHED, and RT-4f is AUTHORIZED /
+NOT_STARTED.
