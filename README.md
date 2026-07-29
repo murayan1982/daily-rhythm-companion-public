@@ -9,11 +9,11 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-3d3 (**REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE**)
-Current implementation: private FW v5.4.0 real-STT execution boundary (**REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE**)
-Completed small commit: RT-3d2c (**COMPLETED / ACCEPTED**)
-Next realtime phase: RT-3d3 (**EXPLICIT_OPERATOR_APPROVAL / COMMIT_PENDING**)
-Next realtime action: explicit private real-provider execution and operator acceptance (**PENDING OPERATOR OPT-IN**)
+Current small commit: none (RT-3d3 accepted; RT-4 next)
+Current implementation: real STT / voice-input integration (**COMPLETED / ACCEPTED**)
+Completed small commit: RT-3d3 (**COMPLETED / ACCEPTED**)
+Next realtime phase: RT-4 (**NEXT / NOT_STARTED**)
+Next realtime action: define the RT-4 streaming/cancel small-commit boundary (**NOT_STARTED**)
 
 Current phase state:
 
@@ -39,7 +39,7 @@ RT-2  COMPLETED / ACCEPTED          Microphone permission and guarded capture pa
       RT-2e-c3  COMPLETED / ACCEPTED                  Real Android bounded capture and cleanup evidence
         RT-2e-c3a  COMPLETED / ACCEPTED                      Real Android operator preflight and safe evidence contract
         RT-2e-c3b  COMPLETED / ACCEPTED                      Explicit real Android bounded capture and cleanup evidence
-RT-3  CURRENT / REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL  Real STT / voice-input integration
+RT-3  COMPLETED / ACCEPTED  Real STT / voice-input integration
   RT-3a  COMPLETED / ACCEPTED                                  Framework v5.3.0 STT integration inventory
   RT-3b  COMPLETED / ACCEPTED                                  App-owned host-audio handoff lifecycle contract
   RT-3c  COMPLETED / ACCEPTED                                  Private backend staging and fake FW public-session handoff
@@ -47,14 +47,14 @@ RT-3  CURRENT / REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL  Real STT / voice
     RT-3c2  COMPLETED / ACCEPTED                                 Bounded private Backend staging store and lifecycle
     RT-3c3  COMPLETED / ACCEPTED                                 Guarded binary upload and Flutter scoped staging consumer
     RT-3c4  COMPLETED / ACCEPTED                                 Fake FW public-session handoff and single-use cleanup
-  RT-3d  REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE  Real provider execution evidence
+  RT-3d  COMPLETED / ACCEPTED  Real provider execution evidence
     RT-3d0  COMPLETED / ACCEPTED                                  Framework real STT requirement feedback handoff
     RT-3d1  COMPLETED / ACCEPTED                                  Framework v5.4.0 adoption inventory
-    RT-3d2  IMPLEMENTED / ACCEPTANCE_CANDIDATE                    Guarded DRC v5.4.0 real-STT wiring
+    RT-3d2  COMPLETED / ACCEPTED  Guarded DRC v5.4.0 real-STT wiring
       RT-3d2a  COMPLETED / ACCEPTED                              FW v5.4.0 executor-path correction
       RT-3d2b  COMPLETED / ACCEPTED                              Bounded marked-fake executor wiring
       RT-3d2c  COMPLETED / ACCEPTED                              Guarded real-executor assembly contract
-      RT-3d3  REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE  Private real-STT operator execution and acceptance
+      RT-3d3  COMPLETED / ACCEPTED  Private real-STT operator execution and acceptance
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -69,7 +69,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3 real-provider execution completed on clean FW v5.4.0 with the official OpenAI audio-transcriptions endpoint, HTTP 200, a nonempty transcript, fixed-phrase match, and complete staged-artifact cleanup. No private credential, path, raw audio, transcript text, provider payload, response body, screenshot, or operator evidence was committed. RT-3d3 and parent RT-3d are public-safe ACCEPTANCE_CANDIDATE states pending explicit operator approval and the implementation commit.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c`, the public-safe private real-provider operator run on clean FW v5.4.0, HTTP 200, a nonempty transcript, fixed-phrase match, complete staged-artifact cleanup, the dedicated gate, focused Backend 5, full Backend 163 with one existing warning, clean Flutter analysis, Flutter 200, exact nine-file review, changed-content private scan, `git diff --check`, and explicit operator approval. No credential value, private path, raw audio, transcript text, provider payload, response body, screenshot, or private operator evidence was committed. RT-4 is NEXT / NOT_STARTED.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 
@@ -4467,9 +4467,9 @@ RT-3d remains
 ## v3.0.0 RT-3d3 real operator execution checkpoint
 
 ```text
-RT-3d3: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
-RT-3d2: IMPLEMENTED / ACCEPTANCE_CANDIDATE
-RT-3d: REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+RT-3d3: COMPLETED / ACCEPTED
+RT-3d2: COMPLETED / ACCEPTED
+RT-3d: COMPLETED / ACCEPTED
 FW baseline: clean v5.4.0
 Transport response status: 200
 Transcript nonempty: True
@@ -4480,11 +4480,11 @@ Private path exposed: False
 Raw audio exposed: False
 Transcript exposed: False
 Private operator evidence committed: False
-Explicit operator approval: PENDING
-Implementation commit: PENDING
+Explicit operator approval: ACCEPTED
+Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 ```
 
-The candidate used `gpt-4o-mini-transcribe`, `language=ja`, a deterministic
+The accepted run used `gpt-4o-mini-transcribe`, `language=ja`, a deterministic
 temporary local Japanese WAV, and the released FW v5.4.0 root public execution
 boundary. The temporary WAV was removed after execution. This record contains
 public-safe booleans and fixed classifications only.

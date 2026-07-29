@@ -3,14 +3,14 @@
 Updated: 2026-07-29
 
 ```text
-RT-3d3: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
-RT-3d2: IMPLEMENTED / ACCEPTANCE_CANDIDATE
-RT-3d: REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+RT-3d3: COMPLETED / ACCEPTED
+RT-3d2: COMPLETED / ACCEPTED
+RT-3d: COMPLETED / ACCEPTED
 DRC baseline HEAD: cc5a970ed22e372fd41f08470d9526f7ee589f73
 FW release: v5.4.0
 FW tag commit: d313eb6acb643103fe25988720ebee5976a04f78
 Real provider execution performed by the private operator checkpoint: True
-Private operator acceptance candidate: True
+Private operator acceptance: ACCEPTED
 Transport response status: 200
 Transcript nonempty: True
 Expected phrase match: True
@@ -20,8 +20,8 @@ Private path exposed: False
 Raw audio exposed: False
 Transcript exposed: False
 Private operator evidence committed: False
-Explicit operator approval: PENDING
-Implementation commit: PENDING
+Explicit operator approval: ACCEPTED
+Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 ```
 
 ## Purpose

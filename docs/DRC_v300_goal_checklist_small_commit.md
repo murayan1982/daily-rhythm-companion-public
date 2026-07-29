@@ -5,12 +5,12 @@ Updated: 2026-07-29
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-3 CURRENT / REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
-Current small commit: RT-3d3 private real-STT operator boundary
-Current implementation step: public-safe synchronization after successful private FW v5.4.0 real-STT execution
-Current implementation state: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
-Completed small commit: RT-3d2c COMPLETED / ACCEPTED
-Next implementation action: run canonical non-provider validation, review the exact nine-file candidate, then request explicit operator approval before commit
+Current parent phase: RT-3 COMPLETED / ACCEPTED; RT-4 NEXT / NOT_STARTED
+Current small commit: none (RT-3d3 accepted; RT-4 next)
+Current implementation step: RT-3 real STT / voice-input integration accepted
+Current implementation state: COMPLETED / ACCEPTED
+Completed small commit: RT-3d3 COMPLETED / ACCEPTED
+Next implementation action: define the RT-4 streaming/cancel small-commit boundary; implementation is NOT_STARTED
 ```
 
 ## Source of truth
@@ -1419,9 +1419,9 @@ RT-3d3 authorization: AUTHORIZED / NOT_STARTED
 ## RT-3d3 - private real-STT operator boundary
 
 ```text
-RT-3d3  REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
-RT-3d2  IMPLEMENTED / ACCEPTANCE_CANDIDATE
-RT-3d   REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+RT-3d3  COMPLETED / ACCEPTED
+RT-3d2  COMPLETED / ACCEPTED
+RT-3d   COMPLETED / ACCEPTED
 ```
 
 Implementation requirements:
@@ -1459,7 +1459,7 @@ Provider client created by current verification: False
 Network request executed by current verification: False
 Real provider execution performed: False
 Private operator evidence committed: False
-Implementation commit: PENDING
+Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 Real provider execution: COMPLETED
 Transport response status: 200
 Transcript nonempty: True
@@ -1470,8 +1470,8 @@ Private path exposed: False
 Raw audio exposed: False
 Transcript exposed: False
 Private operator evidence committed: False
-RT-3d3 acceptance candidate: True
-Explicit operator approval: PENDING
+RT-3d3 accepted: True
+Explicit operator approval: ACCEPTED
 ```
 
 Actual provider execution is intentionally outside this implementation

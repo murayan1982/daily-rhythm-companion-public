@@ -5740,9 +5740,9 @@ use the network, read operator audio, or perform real STT. RT-3d remains
 ## RT-3d3 real operator execution checkpoint
 
 ```text
-RT-3d3: REAL_OPERATOR_EXECUTION_COMPLETED / ACCEPTANCE_CANDIDATE
-RT-3d2: IMPLEMENTED / ACCEPTANCE_CANDIDATE
-RT-3d: REAL_STT_ACCEPTANCE_CANDIDATE_PENDING_APPROVAL
+RT-3d3: COMPLETED / ACCEPTED
+RT-3d2: COMPLETED / ACCEPTED
+RT-3d: COMPLETED / ACCEPTED
 FW baseline: clean v5.4.0
 Transport response status: 200
 Transcript nonempty: True
@@ -5753,8 +5753,8 @@ Private path exposed: False
 Raw audio exposed: False
 Transcript exposed: False
 Private operator evidence committed: False
-Explicit operator approval: PENDING
-Implementation commit: PENDING
+Explicit operator approval: ACCEPTED
+Implementation commit: 5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c
 ```
 
 The deterministic private operator run used the released FW v5.4.0 public
