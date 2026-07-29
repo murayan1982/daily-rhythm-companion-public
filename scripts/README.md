@@ -5898,6 +5898,8 @@ v300_rt4d_authorization: blocked-pending-rt4c-acceptance
 Detailed contract:
 `docs/v300_rt4_framework_public_streaming_adapter.md`.
 
+Implementation commit: `f713f515eef723a1d51cfbe35c1dfe16e3547420`. The gate status remains `implemented-awaiting-acceptance` until the remaining acceptance checks pass.
+
 Run from the repository root:
 
 ```powershell

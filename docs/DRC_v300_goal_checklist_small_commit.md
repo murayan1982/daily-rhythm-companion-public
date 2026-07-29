@@ -6,11 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4d IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4d IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
 Current implementation step: FW v5.4.0 root-public streaming adapter and cooperative interrupt request
-Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
-Completed small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
-Next implementation action: verify RT-4d; RT-4e remains NOT_STARTED pending acceptance
+Current implementation state: IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
+Current implementation commit: f713f515eef723a1d51cfbe35c1dfe16e3547420
+Last accepted small commit: RT-4b COMPLETED / ACCEPTED / PUSHED
+Latest pushed implementation: RT-4c IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE at 72622cab2e73699adaff4b628cfbc4b14323a23a
+Next implementation action: verify committed RT-4d and finish RT-4c/RT-4d acceptance; RT-4e remains NOT_STARTED
 ```
 
 ## Source of truth
@@ -1489,8 +1491,8 @@ LAN address, and operator evidence must stay outside the repository.
 RT-4   CURRENT / NOT_COMPLETED
 RT-4a  COMPLETED / ACCEPTED
 RT-4b  COMPLETED / ACCEPTED
-RT-4c  IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4d  IMPLEMENTED / AWAITING_ACCEPTANCE
+RT-4c  IMPLEMENTED / COMMITTED / PUSHED / AWAITING_ACCEPTANCE
+RT-4d  IMPLEMENTED / COMMITTED / AWAITING_ACCEPTANCE
 RT-4e  NOT_STARTED
 RT-4f  NOT_STARTED
 ```
@@ -1649,6 +1651,7 @@ Implementation contract:
 RT-4d candidate verification:
 
 - [x] implementation and focused fake public-session tests prepared
+- [x] implementation committed at `f713f515eef723a1d51cfbe35c1dfe16e3547420`
 - [x] compileall passes
 - [x] dedicated RT-4d gate passes
 - [x] focused Backend tests pass
@@ -1664,4 +1667,4 @@ Detailed contract:
 
 Stop rule: do not import Framework internals, add a DRC provider client, claim
 provider-level hard cancel, read/display transcript text, change Flutter, or add
-TTS queue control. RT-4e remains blocked until RT-4d acceptance.
+TTS queue control. RT-4e remains blocked until RT-4c and RT-4d acceptance.
