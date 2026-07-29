@@ -5846,3 +5846,49 @@ v300_rt4b_hard_cancel_claimed: False
 v300_rt4b_flutter_changed: False
 v300_rt4c_authorization: blocked-pending-rt4b-acceptance
 ```
+
+
+## v3.0.0 RT-4c bounded Backend SSE transport gate
+
+Detailed contract: `docs/v300_rt4_backend_sse_transport.md`.
+
+Run from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4_backend_sse_transport.py
+python -m pytest -q backend\tests\test_realtime_text_stream_transport.py backend\tests\test_temporary_lifecycle_config.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git diff --check
+git status --short
+```
+
+The gate verifies the exact fifteen-file surface, bounded SSE frames, separate
+cooperative cancel endpoint, one-consumer ownership, active capacity, idle and
+maximum-duration terminals, pending-event and event-byte limits, disconnect
+cleanup, no public input echo, protected Flutter/RT-4b hashes, and public-safe
+errors. Framework import and provider execution remain false.
+
+Expected candidate markers:
+
+```text
+v300_rt4_backend_sse_status: implemented-awaiting-acceptance
+v300_rt4c_sse_transport_added: True
+v300_rt4c_cancel_endpoint_added: True
+v300_rt4c_single_consumer_enforced: True
+v300_rt4c_capacity_and_time_limits_enforced: True
+v300_rt4c_disconnect_cleanup_enforced: True
+v300_rt4c_event_buffer_and_byte_limits_enforced: True
+v300_rt4c_input_echoed_publicly: False
+v300_rt4c_framework_imported: False
+v300_rt4c_provider_execution: False
+v300_rt4c_hard_cancel_claimed: False
+v300_rt4c_flutter_changed: False
+v300_rt4d_authorization: blocked-pending-rt4c-acceptance
+```

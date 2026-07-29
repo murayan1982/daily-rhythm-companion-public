@@ -37,6 +37,11 @@ class AppConfig:
     post_advice_chat_ttl_seconds: int = 1800
     post_advice_chat_max_sessions: int = 100
     post_advice_chat_max_turns: int = 8
+    realtime_text_stream_idle_ttl_seconds: int = 120
+    realtime_text_stream_max_duration_seconds: int = 60
+    realtime_text_stream_max_sessions: int = 8
+    realtime_text_stream_max_pending_events: int = 32
+    realtime_text_stream_max_event_bytes: int = 32768
     voice_input_demo_enabled: bool = False
     voice_input_adapter_mode: str = "disabled"
     voice_input_staging_ttl_seconds: int = 300
@@ -215,6 +220,26 @@ def load_config() -> AppConfig:
         post_advice_chat_max_turns=_env_positive_int(
             "POST_ADVICE_CHAT_MAX_TURNS",
             8,
+        ),
+        realtime_text_stream_idle_ttl_seconds=_env_positive_int(
+            "REALTIME_TEXT_STREAM_IDLE_TTL_SECONDS",
+            120,
+        ),
+        realtime_text_stream_max_duration_seconds=_env_positive_int(
+            "REALTIME_TEXT_STREAM_MAX_DURATION_SECONDS",
+            60,
+        ),
+        realtime_text_stream_max_sessions=_env_positive_int(
+            "REALTIME_TEXT_STREAM_MAX_SESSIONS",
+            8,
+        ),
+        realtime_text_stream_max_pending_events=_env_positive_int(
+            "REALTIME_TEXT_STREAM_MAX_PENDING_EVENTS",
+            32,
+        ),
+        realtime_text_stream_max_event_bytes=_env_positive_int(
+            "REALTIME_TEXT_STREAM_MAX_EVENT_BYTES",
+            32768,
         ),
         voice_input_demo_enabled=_env_flag("VOICE_INPUT_DEMO_ENABLED"),
         voice_input_adapter_mode=os.getenv(

@@ -6,11 +6,11 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4b IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation step: Backend provider-neutral text stream lifecycle and fake-only tests
+Current small commit: RT-4c IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: bounded Backend SSE transport and cooperative cancel boundary
 Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
-Completed small commit: RT-4a COMPLETED / ACCEPTED / PUSHED
-Next implementation action: verify RT-4b; RT-4c remains NOT_STARTED pending acceptance
+Completed small commit: RT-4b COMPLETED / ACCEPTED / PUSHED
+Next implementation action: verify RT-4c; RT-4d remains NOT_STARTED pending acceptance
 ```
 
 ## Source of truth
@@ -1488,8 +1488,8 @@ LAN address, and operator evidence must stay outside the repository.
 ```text
 RT-4   CURRENT / NOT_COMPLETED
 RT-4a  COMPLETED / ACCEPTED
-RT-4b  IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4c  NOT_STARTED
+RT-4b  COMPLETED / ACCEPTED
+RT-4c  IMPLEMENTED / AWAITING_ACCEPTANCE
 RT-4d  NOT_STARTED
 RT-4e  NOT_STARTED
 RT-4f  NOT_STARTED
@@ -1579,19 +1579,53 @@ docs/v300_rt4_backend_stream_contract.md
 scripts/check_v300_rt4_backend_stream_contract.py
 ```
 
-RT-4b candidate verification:
+RT-4b acceptance result:
 
 - [x] implementation and 13 focused test cases prepared
+- [x] compileall passed
+- [x] dedicated RT-4b gate passed
+- [x] focused Backend 13 passed
+- [x] Backend full 176 passed
+- [x] Flutter analyze and Flutter 200 passed
+- [x] exact ten-file review passed
+- [x] changed-content private scan passed
+- [x] `git diff --check` passed
+- [x] explicit operator approval, commit, and push completed
+
+Implementation commit: `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`.
+
+Stop rule satisfied: RT-4b added no routes, SSE/WebSocket, Framework imports, provider calls, Flutter code, hard-cancel claims, or TTS queue control.
+
+### RT-4c — Bounded Backend SSE transport and cancel request
+
+RT-4c adds a provider-free transport over the accepted RT-4b state machine.
+
+Implementation contract:
+
+- [x] add `POST /realtime/text/sessions`;
+- [x] add one-consumer `GET .../events` using `text/event-stream`;
+- [x] add separate cooperative `POST .../cancel`;
+- [x] add active capacity, idle TTL, maximum duration, pending-event, and event-byte bounds;
+- [x] preserve RT-4b 512-character chunk and 4096-character aggregate bounds;
+- [x] remove consumed/disconnected sessions and clear retained input;
+- [x] return bounded public-safe 404/409/410/429 problems;
+- [x] do not echo input text in responses or SSE;
+- [x] keep `hard_cancel_supported=false`;
+- [x] keep Framework import, provider execution, Flutter, dependencies, and versions unchanged.
+
+Exact change surface: fifteen files listed in `docs/v300_rt4_backend_sse_transport.md`.
+
+RT-4c candidate verification:
+
+- [x] implementation and 16 focused/config test cases prepared
 - [ ] compileall passes
-- [ ] dedicated RT-4b gate passes
+- [ ] dedicated RT-4c gate passes
 - [ ] focused Backend tests pass
 - [ ] Backend full tests pass
 - [ ] Flutter analyze and full tests pass
-- [ ] exact ten-file review passes
+- [ ] exact fifteen-file review passes
 - [ ] changed-content private scan passes
 - [ ] `git diff --check` passes
 - [ ] explicit operator approval received
 
-Stop rule: do not add routes, SSE/WebSocket, Framework imports, provider calls,
-Flutter code, hard-cancel claims, TTS queue control, or RT-4c behavior in RT-4b.
-RT-4c remains blocked until RT-4b acceptance.
+Stop rule: do not import Framework, call `ask_stream()`, execute a provider, change Flutter, claim provider-level hard cancel, add TTS queue control, or start RT-4d in RT-4c. Provider execution remains false. RT-4d remains blocked until RT-4c acceptance.

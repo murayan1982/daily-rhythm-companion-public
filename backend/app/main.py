@@ -14,6 +14,7 @@ from app.api import (
     google_health,
     health,
     motion_demo,
+    realtime_text,
     sleep,
     sleep_provider_selection,
     voice_input_demo,
@@ -45,6 +46,7 @@ app.include_router(chat.router)
 app.include_router(daily_records.router)
 app.include_router(demo_status.router)
 app.include_router(motion_demo.router)
+app.include_router(realtime_text.router)
 app.include_router(voice_input_demo.router)
 app.include_router(voice_output_demo.router)
 app.include_router(fitbit.router)
