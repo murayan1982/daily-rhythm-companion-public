@@ -5,14 +5,14 @@ Updated: 2026-07-30
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-4 COMPLETED / ACCEPTED
-Current small commit: none
-Current implementation step: RT-4f4 configured local Backend/FW stream completion and cooperative cancel operator acceptance passed; RT-4f and RT-4 are complete. RT-5 is NOT_STARTED / NOT_AUTHORIZED.
-Current implementation state: COMPLETED / ACCEPTED
+Current parent phase: RT-5 CURRENT / NOT_COMPLETED
+Current small commit: RT-5a IMPLEMENTED / AWAITING_REVIEW
+Current implementation step: RT-5a docs/test-only TTS output-control current behavior inventory, readiness classification, and exact RT-5 split candidate.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 Current implementation commit: none
-Last accepted small commit: RT-4f4 COMPLETED / ACCEPTED / PUSHED at 9b19e379634a718df2ab3ed5eb49bb20bfe7e240
+Last accepted small commit: RT-4f4 acceptance docs COMPLETED / ACCEPTED / PUSHED at 2b4364f8777cd95a686104dd1868ebcfe72064c9
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: none for RT-4; do not begin RT-5 TTS queue/flush/barge-in without separate authorization
+Next implementation action: review RT-5a inventory only; RT-5b remains blocked pending RT-5a acceptance
 ```
 
 ## Source of truth
@@ -52,6 +52,8 @@ docs/v300_rt4_streaming_cancel_current_behavior_inventory.md
 scripts/check_v300_rt4_streaming_cancel_current_behavior_inventory.py
 docs/v300_rt4_backend_stream_contract.md
 scripts/check_v300_rt4_backend_stream_contract.py
+docs/v300_rt5_tts_output_control_current_behavior_inventory.md
+scripts/check_v300_rt5_tts_output_control_current_behavior_inventory.py
 ```
 
 Historical release sources remain immutable:
@@ -66,6 +68,35 @@ release_notes/v2.0.1.md
 release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
+
+## Current RT-5a candidate
+
+```text
+RT-5 CURRENT / NOT_COMPLETED
+RT-5a IMPLEMENTED / AWAITING_REVIEW
+RT-5b NOT_STARTED / BLOCKED_PENDING_RT5A_ACCEPTANCE
+RT-5c NOT_STARTED
+RT-5d NOT_STARTED
+RT-5e NOT_STARTED
+RT-5f NOT_STARTED / BLOCKED_READINESS
+```
+
+RT-5a is docs/test-only. It inventories current DRC Backend voice-output
+request behavior, current Flutter local playback behavior, the current absence
+of app-owned queue/flush/cancel/barge-in runtime, released FW v5.4.0
+root-public output-control data contracts, readiness classification, exact
+seven-file change surface, explicit non-change surface, credential-free
+verification, and the stop rule.
+
+RT-5 readiness classification:
+
+```text
+PARTIAL_READY_FOR_DRC_APP_OWNED_QUEUE_AND_LOCAL_PLAYBACK_FLUSH
+```
+
+RT-5a does not authorize RT-5b runtime. RT-5b remains blocked pending RT-5a
+acceptance, and RT-5f remains blocked on a separately reviewed app-visible real
+input source plus sufficient public FW execution capability.
 
 ## v3.0.0 goal
 

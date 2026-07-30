@@ -6231,3 +6231,36 @@ phase confirmed, cancelled terminal confirmed, `hard_cancel_supported=false`,
 real-STT-to-stream not executed or accepted, provider-level hard cancel not
 claimed, automatic TTS not started, and RT-5 TTS queue/flush/barge-in not
 started. Operator evidence is not committed or pushed.
+
+## v3.0.0 RT-5a TTS output-control current behavior inventory
+
+This credential-free docs/test-only gate validates the accepted DRC baseline,
+the clean released FW v5.4.0 public output-control surface, the current
+one-shot voice-output and single-source local playback behavior, the absence
+of DRC queue/flush/automatic-TTS runtime, and the exact seven-file RT-5a
+candidate.
+
+Run from the DRC repository root:
+
+```powershell
+$env:FRAMEWORK_ROOT = "LOCAL_CLEAN_FW_V540_CHECKOUT"
+python scripts\check_v300_rt5_tts_output_control_current_behavior_inventory.py
+```
+
+The placeholder must be replaced only in the private local shell. Do not write
+a private absolute Framework path into repository files.
+
+The gate performs no network request, credential read, provider execution,
+voice-output session creation, synthesis call, audio generation/playback,
+microphone access, or real barge-in execution.
+
+Historical RT-0 through RT-4 implementation, authorization, and acceptance
+markers remain historical. The current RT-5a status must not rewrite those
+checkpoint-local records.
+
+Expected status marker:
+
+```text
+v300_rt5_tts_output_control_inventory_status: implemented-awaiting-acceptance
+v300_rt5b_authorization: blocked-pending-rt5a-acceptance
+```

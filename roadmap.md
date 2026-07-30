@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none
+Current small commit: RT-5a IMPLEMENTED / AWAITING_REVIEW
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,14 +570,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-4 COMPLETED / ACCEPTED
-Current small commit: none
-Last accepted small commit: RT-4f4 COMPLETED / ACCEPTED / PUSHED at 9b19e379634a718df2ab3ed5eb49bb20bfe7e240
+Status: RT-5 CURRENT / NOT_COMPLETED
+Current small commit: RT-5a IMPLEMENTED / AWAITING_REVIEW
+Last accepted small commit: RT-4f4 acceptance docs COMPLETED / ACCEPTED / PUSHED at 2b4364f8777cd95a686104dd1868ebcfe72064c9
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-4f4 configured local Backend/FW stream completion and cooperative cancel operator acceptance passed; RT-4f and RT-4 are complete.
-Current implementation state: COMPLETED / ACCEPTED
+Current implementation: RT-5a docs/test-only TTS output-control inventory, readiness classification, and exact RT-5 split candidate.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 Current implementation commit: none
-Current implementation boundary: RT-4 is complete; real-STT-to-stream was not executed or accepted, provider-level hard cancel is not claimed, and RT-5 TTS queue/flush/barge-in is NOT_STARTED / NOT_AUTHORIZED
+Current implementation boundary: RT-5a changes docs/gate only; real TTS, audio playback, automatic TTS, provider hard cancel, speech-triggered barge-in, and RT-5b runtime remain not started.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -779,12 +779,52 @@ RT-4   COMPLETED / ACCEPTED  Streaming LLM, DRC event consumption, and cooperati
     RT-4f2  COMPLETED / ACCEPTED / PUSHED  HomeScreen stream presentation and fake controller lifecycle wiring
     RT-4f3  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral transcript handoff boundary
     RT-4f4  COMPLETED / ACCEPTED / PUSHED  Configured local Backend/FW streaming and cancel acceptance
-RT-5   NOT_STARTED / NOT_AUTHORIZED  TTS queue, interruption, and barge-in
+RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
+  RT-5a  IMPLEMENTED / AWAITING_REVIEW  Current behavior inventory, readiness classification, and exact split
+  RT-5b  NOT_STARTED / BLOCKED_PENDING_RT5A_ACCEPTANCE  App-owned bounded TTS utterance queue and local playback-flush lifecycle
+  RT-5c  NOT_STARTED  Injectable orchestration boundary from realtime terminal to voice-output request and local player
+  RT-5d  NOT_STARTED  HomeScreen explicit opt-in enqueue/play/flush controls
+  RT-5e  NOT_STARTED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
+  RT-5f  NOT_STARTED / BLOCKED_READINESS  Speech-triggered real barge-in and real-STT-to-TTS acceptance
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
 ```
+
+### RT-5a - TTS output-control current behavior inventory
+
+Purpose:
+
+```text
+- Freeze the current DRC Backend one-shot voice-output request and opaque audio handoff.
+- Freeze the current Flutter single-source local playback stop behavior.
+- Separate local playback stop, app-owned queue clear, Backend synthesis cancel,
+  FW queue flush, provider hard cancel, LLM stream cooperative cancel, and barge-in.
+- Classify FW v5.4.0 root-public output-control readiness without using FW internals.
+- Resolve RT-5b through RT-5f before runtime changes begin.
+```
+
+Readiness classification:
+
+```text
+RT-5 readiness:
+PARTIAL_READY_FOR_DRC_APP_OWNED_QUEUE_AND_LOCAL_PLAYBACK_FLUSH
+```
+
+Ready without FW modification: app-owned bounded utterance queue, serial
+one-shot synthesis requests through existing public DRC/FW boundary,
+late-result rejection by app-owned operation IDs, pending app-queue clear,
+Flutter local playback stop, explicit manual flush UI, and fake-only lifecycle
+tests.
+
+Not ready or not claimable: provider synthesis hard cancel, FW-backed active
+TTS queue cancellation, FW real output flush, full unified realtime session
+orchestration, speech-triggered real barge-in, and real-STT-to-TTS handoff.
+
+Stop rule: RT-5b remains blocked pending RT-5a acceptance. RT-5a does not
+authorize queue runtime, automatic TTS, real TTS, provider execution, audio
+playback, HomeScreen runtime change, or speech-triggered barge-in.
 
 RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is COMPLETED / ACCEPTED and used only released, verifiable public Framework APIs. RT-0c is also COMPLETED / ACCEPTED after the v5.1.0 reassessment, local gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval.
 
