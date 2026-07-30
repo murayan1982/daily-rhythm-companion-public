@@ -7,15 +7,15 @@ RT-4: CURRENT / NOT_COMPLETED
 RT-4e: COMPLETED / ACCEPTED / PUSHED
 RT-4f: CURRENT / NOT_COMPLETED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
-RT-4f2: IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4f3: NOT_STARTED
+RT-4f2: COMPLETED / ACCEPTED / PUSHED
+RT-4f3: AUTHORIZED / NOT_STARTED
 RT-4f4: NOT_STARTED
-Current small commit: RT-4f2 IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation step: HomeScreen fake streaming presentation and controller lifecycle wiring with bounded manual input
-Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4f3 AUTHORIZED / NOT_STARTED
+Current implementation step: Define and implement the missing app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake stream dependencies
+Current implementation state: AUTHORIZED / NOT_STARTED
 Current implementation commit: none
-Last accepted small commit: RT-4f1 COMPLETED / ACCEPTED / PUSHED at f54e8638f0255b28e015702bc64b624a6d4a36af
-Next action: verify and accept RT-4f2 only; do not begin RT-4f3 transcript handoff
+Last accepted small commit: RT-4f2 COMPLETED / ACCEPTED / PUSHED at 1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
+Next action: inspect and begin RT-4f3 only; do not begin configured RT-4f4 execution
 RT-4e implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 RT-4e acceptance docs commit: 964cbae19728618e85cef0917f747f21ae5c5e4e
 RT-4f1 implementation commit: f54e8638f0255b28e015702bc64b624a6d4a36af
@@ -263,7 +263,7 @@ factual transcript inventory correction: accepted
 explicit operator approval: accepted
 RT-4f1 status: COMPLETED / ACCEPTED / PUSHED
 RT-4f2 authorization: AUTHORIZED / NOT_STARTED
-RT-4f2 status: IMPLEMENTED / AWAITING_ACCEPTANCE
+RT-4f2 status: COMPLETED / ACCEPTED / PUSHED
 ```
 
 ## RT-4f2 Implementation Candidate Record
@@ -277,6 +277,39 @@ TTS execution.
 RT-4f2 keeps accepted real-STT transcript handoff absent. RT-4f3 remains
 responsible for the missing app-owned transcript-to-stream handoff boundary.
 RT-5 TTS queue/flush/barge-in remains excluded.
+
+RT-4f2 acceptance record:
+
+```text
+implementation commit: 1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
+implementation pushed: true
+compileall: passed
+dedicated RT-4f2 gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused RT-4f2 widget tests: 9 passed
+Flutter full tests: 242 passed
+exact ten-file implementation review: passed
+git diff --check: passed
+HomeScreen unrelated formatting removal: accepted
+HomeScreen implementation numstat: 239 additions / 0 deletions
+bounded safe problem display: 240 Unicode code points
+input echo assertion correction: accepted
+fake/in-memory HTTP only: true
+real network execution: false
+STT transcript handoff added: false
+automatic TTS start: false
+hard cancel supported: false
+explicit operator approval: accepted
+RT-4f2 status: COMPLETED / ACCEPTED / PUSHED
+RT-4f3 authorization: AUTHORIZED / NOT_STARTED
+```
+
+RT-4f2 did not connect a transcript to streaming. The current source still has
+no app-visible accepted real-STT transcript. RT-4f3 must define and implement
+the missing app-owned, provider-neutral transcript-to-stream handoff boundary
+using injected/fake transcript and fake stream dependencies. It must not claim
+that the private real-STT operator transcript already reaches Flutter.
 
 Detailed contract:
 `docs/v300_rt4f2_home_screen_stream_ui.md`.

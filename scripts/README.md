@@ -6068,7 +6068,7 @@ widget coverage, protected unchanged files, and added-content private scan. It
 does not import Backend/FW runtime, run Flutter, execute network requests,
 claim provider-level hard cancel, or start RT-4f3 transcript handoff.
 
-Expected public-safe markers:
+Historical RT-4f2 implementation-candidate gate markers:
 
 ```text
 v300_rt4f2_home_screen_stream_ui_status: implemented-awaiting-acceptance
@@ -6083,3 +6083,12 @@ v300_rt4f2_tts_auto_start: False
 v300_rt4f3_status: not-started
 v300_rt4f4_status: not-started
 ```
+
+The dedicated gate validates the historical uncommitted ten-file RT-4f2
+implementation candidate.
+
+It is not expected to pass against the later seven-file acceptance
+documentation sync.
+
+The active accepted state is RT-4f2 COMPLETED / ACCEPTED / PUSHED, and RT-4f3
+is AUTHORIZED / NOT_STARTED.

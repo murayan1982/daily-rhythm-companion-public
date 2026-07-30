@@ -7,14 +7,14 @@ RT-4: CURRENT / NOT_COMPLETED
 RT-4e: COMPLETED / ACCEPTED / PUSHED
 RT-4f: CURRENT / NOT_COMPLETED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
-RT-4f2: IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4f3: NOT_STARTED
+RT-4f2: COMPLETED / ACCEPTED / PUSHED
+RT-4f3: AUTHORIZED / NOT_STARTED
 RT-4f4: NOT_STARTED
-Current small commit: RT-4f2 IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation: HomeScreen fake streaming presentation and controller lifecycle wiring with bounded manual input
+Current small commit: RT-4f3 AUTHORIZED / NOT_STARTED
+Current implementation: Define and implement the missing app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake stream dependencies
 Current implementation commit: none
-Last accepted small commit: RT-4f1 COMPLETED / ACCEPTED / PUSHED at f54e8638f0255b28e015702bc64b624a6d4a36af
-Next action: verify and accept RT-4f2 only; do not begin RT-4f3 transcript handoff
+Last accepted small commit: RT-4f2 COMPLETED / ACCEPTED / PUSHED at 1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
+Next action: inspect and begin RT-4f3 only; do not begin configured RT-4f4 execution
 ```
 
 ## Scope
@@ -143,3 +143,71 @@ docs/v300_rt4f_ui_streaming_acceptance_inventory.md
 docs/v300_rt4f2_home_screen_stream_ui.md
 scripts/check_v300_rt4f2_home_screen_stream_ui.py
 ```
+
+This is the historical ten-file RT-4f2 implementation surface. The later
+acceptance documentation sync changes seven documentation files only and does
+not modify HomeScreen, widget tests, or the dedicated gate script.
+
+## Acceptance Record
+
+```text
+implementation commit:
+1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
+
+implementation pushed: true
+
+compileall: passed
+
+dedicated RT-4f2 gate: passed
+
+focused RT-4f2 widget tests: 9 passed
+
+Backend full tests: 192 passed, 1 existing warning
+
+Flutter analyze: passed
+
+Flutter full tests: 242 passed
+
+exact ten-file implementation review: passed
+
+git diff --check: passed
+
+HomeScreen unrelated formatting removal: accepted
+
+HomeScreen implementation numstat:
+239 additions / 0 deletions
+
+bounded safe problem display:
+240 Unicode code points
+
+input echo assertion correction: accepted
+
+fake/in-memory HTTP only: true
+
+real network execution: false
+
+STT transcript handoff added: false
+
+automatic TTS start: false
+
+hard cancel supported: false
+
+explicit operator approval: accepted
+
+RT-4f2 status:
+COMPLETED / ACCEPTED / PUSHED
+
+RT-4f3 authorization:
+AUTHORIZED / NOT_STARTED
+```
+
+RT-4f2 did not connect a transcript to streaming.
+
+The current source still has no app-visible accepted real-STT transcript.
+
+RT-4f3 is responsible for defining and implementing the missing app-owned,
+provider-neutral transcript-to-stream handoff boundary.
+
+RT-4f3 must use injected/fake transcript and fake stream dependencies for its
+implementation acceptance and must not claim that the private real-STT operator
+transcript already reaches Flutter.
