@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f2 AUTHORIZED / NOT_STARTED
-Current implementation step: HomeScreen stream presentation and controller lifecycle wiring with injected fake stream client/controller and bounded manual input
-Current implementation state: AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f2 IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: HomeScreen fake streaming presentation and controller lifecycle wiring with bounded manual input
+Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
 Current implementation commit: none
 Last accepted small commit: RT-4f1 COMPLETED / ACCEPTED / PUSHED at f54e8638f0255b28e015702bc64b624a6d4a36af
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: inspect and begin RT-4f2 only; do not begin RT-4f3 transcript handoff
+Next implementation action: verify and accept RT-4f2 only; do not begin RT-4f3 transcript handoff
 ```
 
 ## Source of truth
@@ -1496,7 +1496,7 @@ RT-4d  COMPLETED / ACCEPTED / PUSHED
 RT-4e  COMPLETED / ACCEPTED / PUSHED
 RT-4f  CURRENT / NOT_COMPLETED
   RT-4f1  COMPLETED / ACCEPTED / PUSHED
-  RT-4f2  AUTHORIZED / NOT_STARTED
+  RT-4f2  IMPLEMENTED / AWAITING_ACCEPTANCE
   RT-4f3  NOT_STARTED
   RT-4f4  NOT_STARTED
 ```
@@ -1789,7 +1789,7 @@ Resolved RT-4f split:
 RT-4f1  COMPLETED / ACCEPTED / PUSHED
         Current behavior inventory and exact small-commit split.
         Docs/test-only. No runtime change.
-RT-4f2  AUTHORIZED / NOT_STARTED
+RT-4f2  IMPLEMENTED / AWAITING_ACCEPTANCE
         Flutter HomeScreen stream presentation and controller lifecycle wiring
         with injected fake stream client/controller and bounded manual test
         input. No real Backend, Framework, provider, or STT handoff.
@@ -1845,3 +1845,26 @@ explicit operator approval: accepted
 RT-4f1 status: COMPLETED / ACCEPTED / PUSHED
 RT-4f2 authorization: AUTHORIZED / NOT_STARTED
 ```
+
+### RT-4f2 — HomeScreen fake streaming presentation and lifecycle wiring
+
+RT-4f2 is implemented and awaiting acceptance. It adds HomeScreen ownership of
+an optional `RealtimeTextStreamController` factory, controller listener
+registration/removal, owned controller and manual input controller disposal,
+bounded manual input validation, visible `idle`, `connecting`, `streaming`,
+`cancel_requested`, `completed`, `cancelled`, `failed`, `closed`, and
+`unconfigured` presentation, incremental output display, cooperative cancel UI,
+and bounded public-safe error display.
+
+Normal `const HomeScreen()` remains unconfigured because `main.dart` is
+unchanged. Focused tests use fake BackendApiClient and fake/in-memory HTTP with
+the accepted RT-4e client/controller. RT-4f2 adds no STT transcript handoff, no
+real Backend/FW/provider execution, no automatic TTS start, no
+TTS queue/flush/barge-in, no provider-level hard cancel, no reconnect/resume,
+and no WebSocket.
+
+Detailed contract:
+`docs/v300_rt4f2_home_screen_stream_ui.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt4f2_home_screen_stream_ui.py`.

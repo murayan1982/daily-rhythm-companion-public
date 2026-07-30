@@ -12,6 +12,7 @@ import '../models/google_health_connection_ux.dart';
 import '../models/google_health_diagnostics.dart';
 import '../models/google_health_preflight.dart';
 import '../models/google_health_self_check.dart';
+import '../models/realtime_text_stream.dart';
 import '../models/sleep_provider_selection.dart';
 import '../models/sleep_summary.dart';
 import '../models/report_handoff_context.dart';
@@ -20,6 +21,7 @@ import '../models/voice_output_demo.dart';
 import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
+import '../services/realtime_text_stream_controller.dart';
 import '../services/voice_output_audio_player.dart';
 import '../ui/character_asset_catalog.dart';
 import '../widgets/character_display_card.dart';
@@ -32,10 +34,13 @@ class HomeScreen extends StatefulWidget {
     super.key,
     this.apiClient = const BackendApiClient(),
     this.voiceOutputAudioEngine,
+    this.realtimeTextStreamControllerFactory,
   });
 
   final BackendApiClient apiClient;
   final VoiceOutputAudioEngine? voiceOutputAudioEngine;
+  final RealtimeTextStreamController Function()?
+      realtimeTextStreamControllerFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -173,8 +178,12 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _healthDataConnectUrl;
   final TextEditingController _postAdviceChatMessageController =
       TextEditingController();
+  final TextEditingController _realtimeTextStreamInputController =
+      TextEditingController();
   late final VoiceOutputAudioPlayerController
       _voiceOutputAudioPlayerController;
+  RealtimeTextStreamController? _realtimeTextStreamController;
+  String? _realtimeTextStreamStartError;
 
   void _handleVoiceOutputPlaybackStateChanged() {
     if (mounted) {
@@ -182,8 +191,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleRealtimeTextStreamControllerChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
+    _realtimeTextStreamController?.removeListener(
+      _handleRealtimeTextStreamControllerChanged,
+    );
+    _realtimeTextStreamController?.dispose();
+    _realtimeTextStreamInputController.dispose();
     _voiceOutputAudioPlayerController.removeListener(
       _handleVoiceOutputPlaybackStateChanged,
     );
@@ -650,6 +670,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     _voiceOutputAudioPlayerController.addListener(
       _handleVoiceOutputPlaybackStateChanged,
+    );
+    final realtimeTextStreamController =
+        widget.realtimeTextStreamControllerFactory?.call();
+    _realtimeTextStreamController = realtimeTextStreamController;
+    realtimeTextStreamController?.addListener(
+      _handleRealtimeTextStreamControllerChanged,
     );
     _loadInitialData();
     _refreshDemoStatus();
@@ -1164,6 +1190,216 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  bool get _canStartRealtimeTextStream {
+    final controller = _realtimeTextStreamController;
+    if (controller == null) {
+      return false;
+    }
+    return !controller.state.isActive;
+  }
+
+  bool get _canCancelRealtimeTextStream {
+    final state = _realtimeTextStreamController?.state;
+    if (state == null) {
+      return false;
+    }
+    return state.createResponse != null &&
+        state.phase == RealtimeTextStreamControllerPhase.streaming &&
+        !state.isTerminal;
+  }
+
+  Future<void> _startRealtimeTextStream() async {
+    final controller = _realtimeTextStreamController;
+    if (controller == null || controller.state.isActive) {
+      return;
+    }
+
+    final inputText = _realtimeTextStreamInputController.text.trim();
+    setState(() {
+      _realtimeTextStreamStartError = null;
+    });
+
+    if (inputText.isEmpty) {
+      setState(() {
+        _realtimeTextStreamStartError =
+            'Enter a bounded message before starting the text stream.';
+      });
+      return;
+    }
+
+    if (inputText.runes.length > realtimeTextStreamMaxOutputChars) {
+      setState(() {
+        _realtimeTextStreamStartError =
+            'The text stream input must be 4096 characters or fewer.';
+      });
+      return;
+    }
+
+    try {
+      await controller.start(inputText: inputText);
+    } on RealtimeTextStreamProblemException catch (error) {
+      if (mounted) {
+        setState(() {
+          _realtimeTextStreamStartError = _formatRealtimeTextStreamProblem(
+            error.problem,
+          );
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _realtimeTextStreamStartError =
+              'The text stream could not be started safely.';
+        });
+      }
+    }
+  }
+
+  Future<void> _cancelRealtimeTextStream() async {
+    final controller = _realtimeTextStreamController;
+    if (controller == null || !_canCancelRealtimeTextStream) {
+      return;
+    }
+    await controller.cancel();
+  }
+
+  String _formatRealtimeTextStreamPhase(
+    RealtimeTextStreamControllerState? state,
+  ) {
+    if (state == null) {
+      return 'unconfigured';
+    }
+    switch (state.phase) {
+      case RealtimeTextStreamControllerPhase.idle:
+        return 'idle';
+      case RealtimeTextStreamControllerPhase.connecting:
+        return 'connecting';
+      case RealtimeTextStreamControllerPhase.streaming:
+        return 'streaming';
+      case RealtimeTextStreamControllerPhase.cancelRequested:
+        return 'cancel_requested';
+      case RealtimeTextStreamControllerPhase.completed:
+        return 'completed';
+      case RealtimeTextStreamControllerPhase.cancelled:
+        return 'cancelled';
+      case RealtimeTextStreamControllerPhase.failed:
+        return 'failed';
+      case RealtimeTextStreamControllerPhase.closed:
+        return 'closed';
+    }
+  }
+
+  String _formatRealtimeTextStreamProblem(
+    RealtimeTextStreamProblem problem,
+  ) {
+    final compact = problem.message
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .join(' ');
+
+    if (compact.isEmpty) {
+      return 'The text stream reported a safe problem.';
+    }
+
+    if (compact.runes.length <= realtimeTextStreamMaxProblemMessageChars) {
+      return compact;
+    }
+
+    return String.fromCharCodes(
+      compact.runes.take(realtimeTextStreamMaxProblemMessageChars),
+    );
+  }
+
+  Widget _buildRealtimeTextStreamSection(BuildContext context) {
+    final controllerState = _realtimeTextStreamController?.state;
+    final outputText = controllerState?.outputText ?? '';
+    final problemMessage =
+        _realtimeTextStreamStartError ??
+        (controllerState?.problem == null
+            ? null
+            : _formatRealtimeTextStreamProblem(controllerState!.problem!));
+
+    return Column(
+      key: const ValueKey('realtime-text-stream-section'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Realtime Text Stream',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        if (_realtimeTextStreamController == null) ...[
+          const Text(
+            'unconfigured',
+            key: ValueKey('realtime-text-stream-unconfigured'),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (_realtimeTextStreamController != null) ...[
+          TextField(
+            key: const ValueKey('realtime-text-stream-input'),
+            controller: _realtimeTextStreamInputController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              helperText: '4096 characters max',
+              labelText: 'Manual stream input',
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        Wrap(
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            ElevatedButton(
+              key: const ValueKey('realtime-text-stream-start-button'),
+              onPressed: _canStartRealtimeTextStream
+                  ? _startRealtimeTextStream
+                  : null,
+              child: const Text('Start stream'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('realtime-text-stream-cancel-button'),
+              onPressed: _canCancelRealtimeTextStream
+                  ? _cancelRealtimeTextStream
+                  : null,
+              child: const Text('Cancel cooperatively'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Phase: ${_formatRealtimeTextStreamPhase(controllerState)}',
+          key: const ValueKey('realtime-text-stream-phase'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Cancel mode: ${controllerState?.cancelMode ?? 'cooperative'}',
+          key: const ValueKey('realtime-text-stream-cancel-mode'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Hard cancel supported: ${controllerState?.hardCancelSupported ?? false}',
+          key: const ValueKey('realtime-text-stream-hard-cancel-supported'),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          outputText.isEmpty ? 'No streamed output yet.' : outputText,
+          key: const ValueKey('realtime-text-stream-output'),
+        ),
+        if (problemMessage != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            problemMessage,
+            key: const ValueKey('realtime-text-stream-error'),
+          ),
+        ],
       ],
     );
   }
@@ -4122,6 +4358,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 24),
                     _buildDemoStatusSection(context),
+
+                    const SizedBox(height: 24),
+                    _buildRealtimeTextStreamSection(context),
 
                     const SizedBox(height: 24),
                     _buildVoiceInputDemoSection(context),

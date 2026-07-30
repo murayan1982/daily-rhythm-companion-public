@@ -6036,3 +6036,50 @@ The gate validates the historical uncommitted seven-file RT-4f1 candidate.
 It is not expected to pass against the later six-file acceptance documentation
 sync. The active accepted state is RT-4f1 COMPLETED / ACCEPTED / PUSHED, and
 RT-4f2 is AUTHORIZED / NOT_STARTED.
+
+## v3.0.0 RT-4f2 HomeScreen stream UI gate
+
+Detailed contract:
+`docs/v300_rt4f2_home_screen_stream_ui.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4f2_home_screen_stream_ui.py
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+flutter analyze
+flutter test test\realtime_text_stream_home_screen_widget_test.dart
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
+```
+
+The RT-4f2 gate is source-tree-only. It verifies the exact ten-file candidate
+surface, HomeScreen optional factory ownership, controller listener/dispose
+lifecycle, bounded manual input, visible stream state keys, fake/in-memory
+widget coverage, protected unchanged files, and added-content private scan. It
+does not import Backend/FW runtime, run Flutter, execute network requests,
+claim provider-level hard cancel, or start RT-4f3 transcript handoff.
+
+Expected public-safe markers:
+
+```text
+v300_rt4f2_home_screen_stream_ui_status: implemented-awaiting-acceptance
+v300_rt4f2_exact_change_surface: True
+v300_rt4f2_home_screen_factory_owned_controller: True
+v300_rt4f2_real_network_execution: False
+v300_rt4f2_stt_handoff_added: False
+v300_rt4f2_incremental_output_ui: True
+v300_rt4f2_cooperative_cancel_ui: True
+v300_rt4f2_hard_cancel_supported: False
+v300_rt4f2_tts_auto_start: False
+v300_rt4f3_status: not-started
+v300_rt4f4_status: not-started
+```
