@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f1 IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation step: RT-4f current behavior inventory and exact small-commit split
-Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
+Current small commit: RT-4f2 AUTHORIZED / NOT_STARTED
+Current implementation step: HomeScreen stream presentation and controller lifecycle wiring with injected fake stream client/controller and bounded manual input
+Current implementation state: AUTHORIZED / NOT_STARTED
 Current implementation commit: none
-Last accepted small commit: RT-4e COMPLETED / ACCEPTED / PUSHED at 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
+Last accepted small commit: RT-4f1 COMPLETED / ACCEPTED / PUSHED at f54e8638f0255b28e015702bc64b624a6d4a36af
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify and accept RT-4f1 only; do not begin RT-4f2 before acceptance
+Next implementation action: inspect and begin RT-4f2 only; do not begin RT-4f3 transcript handoff
 ```
 
 ## Source of truth
@@ -1495,8 +1495,8 @@ RT-4c  COMPLETED / ACCEPTED / PUSHED
 RT-4d  COMPLETED / ACCEPTED / PUSHED
 RT-4e  COMPLETED / ACCEPTED / PUSHED
 RT-4f  CURRENT / NOT_COMPLETED
-  RT-4f1  IMPLEMENTED / AWAITING_ACCEPTANCE
-  RT-4f2  NOT_STARTED
+  RT-4f1  COMPLETED / ACCEPTED / PUSHED
+  RT-4f2  AUTHORIZED / NOT_STARTED
   RT-4f3  NOT_STARTED
   RT-4f4  NOT_STARTED
 ```
@@ -1786,10 +1786,10 @@ Current factual inventory:
 Resolved RT-4f split:
 
 ```text
-RT-4f1  IMPLEMENTED / AWAITING_ACCEPTANCE
+RT-4f1  COMPLETED / ACCEPTED / PUSHED
         Current behavior inventory and exact small-commit split.
         Docs/test-only. No runtime change.
-RT-4f2  NOT_STARTED
+RT-4f2  AUTHORIZED / NOT_STARTED
         Flutter HomeScreen stream presentation and controller lifecycle wiring
         with injected fake stream client/controller and bounded manual test
         input. No real Backend, Framework, provider, or STT handoff.
@@ -1827,3 +1827,21 @@ Detailed inventory:
 
 Dedicated gate:
 `scripts/check_v300_rt4f_ui_streaming_acceptance_inventory.py`.
+
+RT-4f1 acceptance record:
+
+```text
+implementation commit: f54e8638f0255b28e015702bc64b624a6d4a36af
+implementation pushed: true
+compileall: passed
+dedicated RT-4f1 gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 233 passed
+exact seven-file review: passed
+git diff --check: passed
+factual transcript inventory correction: accepted
+explicit operator approval: accepted
+RT-4f1 status: COMPLETED / ACCEPTED / PUSHED
+RT-4f2 authorization: AUTHORIZED / NOT_STARTED
+```

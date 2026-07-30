@@ -6013,7 +6013,7 @@ checks protected runtime/test/dependency/release surfaces are unchanged, scans
 added content only for private material, and does not import Backend/FW runtime
 or execute network requests.
 
-Expected public-safe markers:
+Historical RT-4f1 implementation-candidate gate markers:
 
 ```text
 v300_rt4f_ui_streaming_acceptance_inventory_status: implemented-awaiting-acceptance
@@ -6031,3 +6031,8 @@ v300_rt4f2_status: not-started
 v300_rt4f3_status: not-started
 v300_rt4f4_status: not-started
 ```
+
+The gate validates the historical uncommitted seven-file RT-4f1 candidate.
+It is not expected to pass against the later six-file acceptance documentation
+sync. The active accepted state is RT-4f1 COMPLETED / ACCEPTED / PUSHED, and
+RT-4f2 is AUTHORIZED / NOT_STARTED.
