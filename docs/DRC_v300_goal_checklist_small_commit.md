@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: none
-Current implementation step: RT-5a docs/test-only TTS output-control inventory and exact split completed and accepted at 1cf77774dca75b9875099c2b6c6c03992456d80f; RT-5b remains NOT_STARTED / NOT_AUTHORIZED.
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation commit: 1cf77774dca75b9875099c2b6c6c03992456d80f
+Current small commit: RT-5b IMPLEMENTED / AWAITING_REVIEW
+Current implementation step: RT-5b Flutter-only app-owned bounded TTS utterance queue and local playback-flush lifecycle candidate.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation commit: none
 Last accepted small commit: RT-5a implementation COMPLETED / ACCEPTED / PUSHED at 1cf77774dca75b9875099c2b6c6c03992456d80f
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review and authorize the exact RT-5b fake-only contract separately; RT-5b is not authorized yet
+Next implementation action: review RT-5b implementation only; RT-5c remains blocked pending RT-5b acceptance
 ```
 
 ## Source of truth
@@ -54,6 +54,8 @@ docs/v300_rt4_backend_stream_contract.md
 scripts/check_v300_rt4_backend_stream_contract.py
 docs/v300_rt5_tts_output_control_current_behavior_inventory.md
 scripts/check_v300_rt5_tts_output_control_current_behavior_inventory.py
+docs/v300_rt5b_voice_output_queue_contract.md
+scripts/check_v300_rt5b_voice_output_queue_contract.py
 ```
 
 Historical release sources remain immutable:
@@ -74,8 +76,8 @@ DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```text
 RT-5 CURRENT / NOT_COMPLETED
 RT-5a COMPLETED / ACCEPTED / PUSHED
-RT-5b NOT_STARTED / NOT_AUTHORIZED
-RT-5c NOT_STARTED
+RT-5b IMPLEMENTED / AWAITING_REVIEW
+RT-5c NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
 RT-5d NOT_STARTED
 RT-5e NOT_STARTED
 RT-5f NOT_STARTED / BLOCKED_READINESS
@@ -96,10 +98,37 @@ PARTIAL_READY_FOR_DRC_APP_OWNED_QUEUE_AND_LOCAL_PLAYBACK_FLUSH
 
 RT-5a acceptance passed on 2026-07-30 at implementation commit `1cf77774dca75b9875099c2b6c6c03992456d80f` with compileall, the dedicated candidate gate, Backend 192 passed with one existing warning, Flutter analyze, Flutter 278 passed, exact seven-file review, privacy scan, `git diff --check`, explicit operator approval, commit, and push.
 
-RT-5a acceptance does not automatically authorize RT-5b runtime. RT-5b remains
-NOT_STARTED / NOT_AUTHORIZED until its exact fake-only contract receives a
-separate review. RT-5f remains blocked on a separately reviewed app-visible real
-input source plus sufficient public FW execution capability.
+RT-5b is authorized only for the exact Flutter-only fake/in-memory contract
+below and is IMPLEMENTED / AWAITING_REVIEW. This does not authorize HomeScreen,
+Backend/FW/provider execution, real audio playback, automatic TTS, hard cancel,
+or barge-in. RT-5c remains blocked pending RT-5b acceptance. RT-5f remains
+blocked on a separately reviewed app-visible real input source plus sufficient
+public FW execution capability.
+
+## Current RT-5b candidate
+
+```text
+RT-5b IMPLEMENTED / AWAITING_REVIEW
+RT-5c NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
+```
+
+Contract:
+
+```text
+pending FIFO maximum: 8
+utterance maximum: 4096 Unicode code points
+retained active + pending maximum: 16384 Unicode code points
+active claim maximum: 1
+flush generation invalidates late results: true
+concurrent flush local stop calls: 1
+public state contains utterance text: false
+HomeScreen / Backend / Framework / provider / real audio: unchanged
+```
+
+Exact implementation surface: nine files listed in
+`docs/v300_rt5b_voice_output_queue_contract.md`. Focused tests use only an
+in-memory queue and fake local playback-stop callback. RT-5b does not start
+RT-5c.
 
 ## v3.0.0 goal
 

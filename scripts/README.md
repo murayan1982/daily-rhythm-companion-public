@@ -6288,6 +6288,61 @@ explicit operator approval: accepted
 implementation push: completed
 ```
 
-RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b remains
-`NOT_STARTED / NOT_AUTHORIZED` and requires a separate exact fake-only contract
-review before implementation.
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b is now
+`IMPLEMENTED / AWAITING_REVIEW` under the separately authorized exact
+Flutter-only fake/in-memory contract. RT-5c remains
+`NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE`.
+
+## v3.0.0 RT-5b app-owned voice-output queue gate
+
+Detailed contract:
+`docs/v300_rt5b_voice_output_queue_contract.md`.
+
+Run from the repository root after applying the exact candidate:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts/check_v300_rt5b_voice_output_queue_contract.py
+python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+dart format lib/services/voice_output_queue.dart test/voice_output_queue_test.dart
+flutter analyze
+flutter test test/voice_output_queue_test.dart
+flutter test
+cd ..
+
+Remove-Item -Recurse -Force .pytest-tmp
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
+```
+
+The gate is source-tree-only, credential-free, network-free, Backend-runtime-free,
+Framework-free, provider-free, and audio-free. It validates the exact nine-file
+candidate, bounds, FIFO/single-active lifecycle, generation invalidation,
+concurrent flush deduplication, injected local stop callback, public-state text
+privacy, protected non-change paths, and added-content privacy.
+
+Expected candidate markers:
+
+```text
+v300_rt5b_voice_output_queue_status: implemented-awaiting-acceptance
+v300_rt5b_exact_change_surface: True
+v300_rt5b_pending_item_limit: 8
+v300_rt5b_utterance_code_point_limit: 4096
+v300_rt5b_retained_code_point_limit: 16384
+v300_rt5b_generation_late_result_rejection: True
+v300_rt5b_concurrent_flush_stop_deduplicated: True
+v300_rt5b_home_screen_changed: False
+v300_rt5b_backend_changed: False
+v300_rt5b_framework_imported: False
+v300_rt5b_real_audio_playback: False
+v300_rt5b_automatic_tts: False
+v300_rt5b_provider_hard_cancel_claimed: False
+v300_rt5c_authorization: blocked-pending-rt5b-acceptance
+```
+
+Do not connect the queue to HomeScreen, Backend voice output, the existing real
+player, Framework, or a provider in RT-5b.
