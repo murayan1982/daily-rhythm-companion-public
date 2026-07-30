@@ -6090,8 +6090,9 @@ implementation candidate.
 It is not expected to pass against the later seven-file acceptance
 documentation sync.
 
-The active accepted state is RT-4f2 COMPLETED / ACCEPTED / PUSHED, and RT-4f3
-is AUTHORIZED / NOT_STARTED.
+These markers describe the historical uncommitted ten-file RT-4f2
+implementation candidate and its later acceptance sync, not the active RT-4f3
+or RT-4f4 state.
 
 ## v3.0.0 RT-4f3 transcript-to-stream handoff gate
 
@@ -6127,7 +6128,7 @@ files, and added-content private scan. It does not import Backend/FW runtime,
 run Flutter, execute network requests, claim provider-level hard cancel, or
 start RT-4f4 configured execution.
 
-Expected public-safe markers:
+Historical RT-4f3 implementation-candidate gate markers:
 
 ```text
 v300_rt4f3_transcript_stream_handoff_status: implemented-awaiting-acceptance
@@ -6143,3 +6144,12 @@ v300_rt4f3_main_runtime_wiring: False
 v300_rt4f3_tts_auto_start: False
 v300_rt4f4_status: not-started
 ```
+
+The dedicated gate validates the historical uncommitted thirteen-file RT-4f3
+implementation candidate.
+
+It is not expected to pass against the later seven-file acceptance
+documentation sync.
+
+The active accepted state is RT-4f3 COMPLETED / ACCEPTED / PUSHED, and RT-4f4
+is AUTHORIZED / NOT_STARTED.

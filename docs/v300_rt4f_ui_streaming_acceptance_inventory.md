@@ -8,14 +8,14 @@ RT-4e: COMPLETED / ACCEPTED / PUSHED
 RT-4f: CURRENT / NOT_COMPLETED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
 RT-4f2: COMPLETED / ACCEPTED / PUSHED
-RT-4f3: IMPLEMENTED / AWAITING_ACCEPTANCE
-RT-4f4: NOT_STARTED
-Current small commit: RT-4f3 IMPLEMENTED / AWAITING_ACCEPTANCE
-Current implementation step: App-owned provider-neutral transcript-to-stream handoff using injected/fake transcript and fake/in-memory stream dependencies
-Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
+RT-4f3: COMPLETED / ACCEPTED / PUSHED
+RT-4f4: AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f4 AUTHORIZED / NOT_STARTED
+Current implementation step: Configured local Backend/FW text streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
+Current implementation state: AUTHORIZED / NOT_STARTED
 Current implementation commit: none
-Last accepted small commit: RT-4f2 COMPLETED / ACCEPTED / PUSHED at 1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
-Next action: verify and accept RT-4f3 only; do not begin configured RT-4f4 execution
+Last accepted small commit: RT-4f3 COMPLETED / ACCEPTED / PUSHED at d651a00be8713a70be3a46524f33c787299bbe9c
+Next action: inspect and begin RT-4f4 only; do not claim real-STT-to-stream acceptance without a separately reviewed safe real transcript source, and do not begin RT-5 TTS queue/flush/barge-in
 RT-4e implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 RT-4e acceptance docs commit: 964cbae19728618e85cef0917f747f21ae5c5e4e
 RT-4f1 implementation commit: f54e8638f0255b28e015702bc64b624a6d4a36af
@@ -200,29 +200,23 @@ Current behavior inventory and exact small-commit split.
 Docs/test-only. No runtime change.
 
 RT-4f2
-IMPLEMENTED / AWAITING_ACCEPTANCE
+COMPLETED / ACCEPTED / PUSHED
 Flutter HomeScreen stream presentation and controller lifecycle wiring with
 injected fake stream client/controller and bounded manual test input. No real
 Backend, Framework, provider, or STT handoff. Widget/fake tests only.
 
 RT-4f3
-NOT_STARTED
-Define and implement the missing app-owned transcript-to-stream handoff
-boundary. Connect an injected/fake provider-neutral transcript result to
-exactly one stream start. The current source has no app-visible accepted
-real-STT transcript to connect. RT-4f3 must first add the missing app-owned
-provider-neutral handoff boundary. Fake transcript and fake stream tests only.
-No real provider/operator execution.
+COMPLETED / ACCEPTED / PUSHED
+App-owned provider-neutral transcript-to-stream handoff boundary using injected
+fake transcript results and fake/in-memory stream dependencies. No real
+Backend, Framework, provider, STT handoff, configured transcript source, or TTS
+execution.
 
 RT-4f4
-NOT_STARTED
-Configured local Backend/FW streaming and cooperative cancel operator execution
-and visible UI acceptance. Real-STT-to-stream acceptance can be performed only
-if a safe transcript transport/exposure boundary is separately reviewed and
-exists; without that boundary, RT-4f4 does not complete or claim real STT
-transcript handoff. Private local environment only. No committed transcripts,
-provider payloads, screenshots, private paths, LAN IPs, credentials, or
-operator evidence.
+AUTHORIZED / NOT_STARTED
+Configured local Backend/FW text streaming and cooperative cancel visible UI
+acceptance. Real-STT-to-stream acceptance requires a separately reviewed safe
+app-visible real transcript source.
 ```
 
 ## Non-Actions
@@ -274,9 +268,10 @@ automatic real client construction. Focused tests use fake/in-memory HTTP only,
 with no socket, localhost, real Backend, Framework, provider, transcript, or
 TTS execution.
 
-RT-4f2 keeps accepted real-STT transcript handoff absent. RT-4f3 remains
-responsible for the missing app-owned transcript-to-stream handoff boundary.
-RT-5 TTS queue/flush/barge-in remains excluded.
+RT-4f2 kept accepted real-STT transcript handoff absent. RT-4f3 subsequently
+completed and accepted the app-owned provider-neutral transcript-to-stream
+handoff boundary without adding a configured real transcript source. RT-4f4 is
+authorized next, and RT-5 TTS queue/flush/barge-in remains excluded.
 
 RT-4f2 acceptance record:
 
@@ -305,11 +300,11 @@ RT-4f2 status: COMPLETED / ACCEPTED / PUSHED
 RT-4f3 authorization: AUTHORIZED / NOT_STARTED
 ```
 
-RT-4f2 did not connect a transcript to streaming. The current source still has
-no app-visible accepted real-STT transcript. RT-4f3 must define and implement
-the missing app-owned, provider-neutral transcript-to-stream handoff boundary
-using injected/fake transcript and fake stream dependencies. It must not claim
-that the private real-STT operator transcript already reaches Flutter.
+RT-4f2 did not connect a transcript to streaming. RT-4f3 later completed the
+app-owned, provider-neutral transcript-to-stream handoff boundary using
+injected/fake transcript and fake stream dependencies. The source still has no
+configured app-visible real-STT transcript source, and private real-STT
+operator output is not available to Flutter.
 
 Detailed contract:
 `docs/v300_rt4f2_home_screen_stream_ui.md`.
@@ -319,7 +314,9 @@ Dedicated gate:
 
 ## RT-4f3 Implementation Candidate Record
 
-RT-4f3 adds an app-owned provider-neutral transcript-to-stream handoff
+RT-4f3 is COMPLETED / ACCEPTED / PUSHED at implementation commit
+`d651a00be8713a70be3a46524f33c787299bbe9c`. It adds an app-owned
+provider-neutral transcript-to-stream handoff
 boundary. It introduces a minimal transcript result model with opaque
 `resultId`, transcript `text`, and `isFinal` only, plus a ChangeNotifier
 handoff service that validates injected/fake final transcript results before
@@ -328,11 +325,12 @@ calling the accepted RT-4e `RealtimeTextStreamController`.
 The handoff service does not own the realtime controller, owns no HTTP client,
 BackendApiClient, microphone/STT object, or provider client, and stores no
 transcript text in fields or public state. It checks active stream state before
-invoking the transcript provider, rejects simultaneous duplicate invocation,
-bounds result IDs to 128 Unicode code points, bounds transcript text to 4096
-Unicode code points, remembers only up to 32 opaque consumed result IDs, marks
-the consumed ID before exactly one `controller.start(inputText:)`, and does
-not retry automatically.
+invoking the transcript provider, uses an independent private in-flight guard
+so duplicate calls do not invoke the provider again or change `acquiring` to
+`rejected`, bounds result IDs to 128 Unicode code points, bounds transcript
+text to 4096 Unicode code points, remembers only up to 32 opaque consumed
+result IDs, marks the consumed ID before exactly one
+`controller.start(inputText:)`, and does not retry automatically.
 
 HomeScreen accepts an optional handoff factory, calls it once from `initState`
 only when the RT-4f2 realtime controller exists, passes the exact owned
@@ -342,12 +340,24 @@ controller. Normal `const HomeScreen()` remains handoff-unconfigured because
 IDs, does not copy transcript text into manual input, does not read
 `VoiceInputDemoRequestResponse.transcript`, and does not start TTS.
 
+RT-4f3 acceptance passed compileall, the dedicated RT-4f3 gate, Backend 192
+with one existing warning, Flutter analyze, focused RT-4f3 unit tests 15,
+focused RT-4f3 HomeScreen widget tests 9, Flutter full tests 266, exact
+thirteen-file implementation review, `git diff --check`, HomeScreen
+implementation numstat 115 additions / 0 deletions, independent in-flight
+guard review, three-or-more concurrent invocation coverage, concurrent
+create-failure exactly-once coverage, explicit operator approval, commit, and
+push.
+
 RT-4f3 adds an interface/boundary, not a real transcript source. The current
 accepted real-STT transcript still does not reach Flutter. All tests use
 injected fake transcript results and fake/in-memory stream dependencies. RT-4f3
 performs no real Backend/FW/provider/STT execution, adds no Backend transcript
-route, and does not begin RT-4f4 configured execution. RT-5
-TTS queue/flush/barge-in remains excluded.
+route, and does not configure runtime wiring. RT-4f4 is authorized for
+configured local Backend/FW text streaming and cooperative cancel visible UI
+acceptance, but must not claim real-STT transcript handoff acceptance without a
+separately reviewed safe app-visible transcript source. RT-5 TTS
+queue/flush/barge-in remains excluded.
 
 Detailed contract:
 `docs/v300_rt4f3_transcript_stream_handoff.md`.
