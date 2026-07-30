@@ -250,12 +250,12 @@ Not ready or not claimable:
 ## 12. Exact RT-5 split
 
 ```text
-RT-5a  IMPLEMENTED / AWAITING_REVIEW
+RT-5a  COMPLETED / ACCEPTED / PUSHED
         Current DRC/FW TTS output-control inventory, readiness classification,
         terminology separation, and exact small-commit split.
         Docs/test-only. No runtime, provider, network, audio, or existing-test change.
 
-RT-5b  NOT_STARTED / BLOCKED_PENDING_RT5A_ACCEPTANCE
+RT-5b  NOT_STARTED / NOT_AUTHORIZED
         App-owned bounded TTS utterance queue and local playback-flush lifecycle
         contract with fake-only tests.
         No HomeScreen integration, real HTTP, FW/provider execution, or audio playback.
@@ -286,7 +286,7 @@ Parent state:
 RT-5 CURRENT / NOT_COMPLETED
 ```
 
-RT-5a does not authorize RT-5b.
+RT-5a acceptance does not automatically authorize RT-5b. RT-5b remains NOT_STARTED / NOT_AUTHORIZED until a separate exact fake-only contract review authorizes it.
 
 ## 13. Exact seven-file change surface
 
@@ -370,26 +370,37 @@ playback, microphone use, or barge-in execution.
 ## 18. Acceptance checklist
 
 ```text
-[ ] exact seven-file candidate
-[ ] compileall passed
-[ ] dedicated RT-5a gate passed
-[ ] Backend full tests passed
-[ ] Flutter analyze passed
-[ ] Flutter full tests passed
-[ ] git diff --check passed
-[ ] changed-content private scan passed
-[ ] diff review passed
-[ ] explicit operator approval received
-[ ] commit approved
-[ ] push approved
+[x] exact seven-file candidate
+[x] compileall passed
+[x] dedicated RT-5a candidate gate passed
+[x] Backend full tests passed: 192 passed, 1 existing warning
+[x] Flutter analyze passed
+[x] Flutter full tests passed: 278 passed
+[x] git diff --check passed
+[x] changed-content private scan passed
+[x] diff review passed
+[x] explicit operator approval received
+[x] commit approved
+[x] push approved
 ```
 
-Until all acceptance steps pass:
+Acceptance result:
 
 ```text
-RT-5a: IMPLEMENTED / AWAITING_REVIEW
-RT-5b: NOT_STARTED / BLOCKED_PENDING_RT5A_ACCEPTANCE
+RT-5a: COMPLETED / ACCEPTED / PUSHED
+RT-5a implementation commit: 1cf77774dca75b9875099c2b6c6c03992456d80f
+RT-5: CURRENT / NOT_COMPLETED
+RT-5b: NOT_STARTED / NOT_AUTHORIZED
+Backend runtime changed: false
+Flutter runtime changed: false
+existing tests changed: false
+real TTS executed: false
+audio playback executed: false
+automatic stream-to-TTS added: false
+provider-level hard cancel claimed: false
 ```
+
+RT-5b requires a separate exact fake-only contract review and authorization.
 
 ## 19. Historical/current marker policy
 

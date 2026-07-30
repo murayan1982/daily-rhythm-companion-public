@@ -6255,12 +6255,39 @@ voice-output session creation, synthesis call, audio generation/playback,
 microphone access, or real barge-in execution.
 
 Historical RT-0 through RT-4 implementation, authorization, and acceptance
-markers remain historical. The current RT-5a status must not rewrite those
-checkpoint-local records.
+markers remain historical. The dedicated RT-5a gate is also a historical
+implementation-candidate gate bound to the pre-implementation baseline and
+exact seven-file working-tree surface.
 
-Expected status marker:
+Historical candidate output:
 
 ```text
 v300_rt5_tts_output_control_inventory_status: implemented-awaiting-acceptance
 v300_rt5b_authorization: blocked-pending-rt5a-acceptance
 ```
+
+Do not rerun that candidate gate after implementation commit `1cf77774dca75b9875099c2b6c6c03992456d80f`.
+
+## v3.0.0 RT-5a acceptance record
+
+RT-5a is `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`1cf77774dca75b9875099c2b6c6c03992456d80f`.
+
+Accepted verification:
+
+```text
+compileall: passed
+dedicated RT-5a candidate gate: passed before commit
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 278 passed
+exact implementation surface: 7 files
+git diff --check: passed
+changed-content privacy scan: passed
+explicit operator approval: accepted
+implementation push: completed
+```
+
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b remains
+`NOT_STARTED / NOT_AUTHORIZED` and requires a separate exact fake-only contract
+review before implementation.
