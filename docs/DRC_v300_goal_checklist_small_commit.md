@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f4 AUTHORIZED / NOT_STARTED
-Current implementation step: Configured local Backend/FW text streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
-Current implementation state: AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f4 IMPLEMENTED / AWAITING_REVIEW
+Current implementation step: Default-off configured Flutter realtime text stream runtime wiring for configured local Backend/FW streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 Current implementation commit: none
 Last accepted small commit: RT-4f3 COMPLETED / ACCEPTED / PUSHED at d651a00be8713a70be3a46524f33c787299bbe9c
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: inspect and begin RT-4f4 only; do not claim real-STT-to-stream acceptance without a separately reviewed safe real transcript source, and do not begin RT-5 TTS queue/flush/barge-in
+Next implementation action: review RT-4f4 implementation candidate only; do not claim configured real Backend/FW execution, real-STT-to-stream acceptance, or RT-5 TTS queue/flush/barge-in
 ```
 
 ## Source of truth
@@ -1498,7 +1498,7 @@ RT-4f  CURRENT / NOT_COMPLETED
   RT-4f1  COMPLETED / ACCEPTED / PUSHED
   RT-4f2  COMPLETED / ACCEPTED / PUSHED
   RT-4f3  COMPLETED / ACCEPTED / PUSHED
-  RT-4f4  AUTHORIZED / NOT_STARTED
+  RT-4f4  IMPLEMENTED / AWAITING_REVIEW
 ```
 
 ### RT-4a — Current behavior inventory and small-commit split
@@ -1798,8 +1798,9 @@ RT-4f3  COMPLETED / ACCEPTED / PUSHED
         Connects an injected/fake provider-neutral final transcript result to
         exactly one stream start with an independent in-flight guard. No real
         provider/operator execution and no configured real transcript source.
-RT-4f4  AUTHORIZED / NOT_STARTED
-        Configured local Backend/FW streaming and cooperative cancel operator
+RT-4f4  IMPLEMENTED / AWAITING_REVIEW
+        Default-off configured Flutter runtime wiring for configured local
+        Backend/FW streaming and cooperative cancel operator
         execution and visible UI acceptance. Real-STT-to-stream acceptance can
         be performed only if a safe transcript transport/exposure boundary is
         separately reviewed and exists; without that boundary, RT-4f4 does not
@@ -1973,3 +1974,40 @@ Detailed contract:
 
 Dedicated gate:
 `scripts/check_v300_rt4f3_transcript_stream_handoff.py`.
+
+### RT-4f4 - Configured local stream acceptance wiring
+
+RT-4f4 is implemented and awaiting review. It adds
+`ConfiguredRealtimeTextStreamRuntime` and default-off `main.dart` wiring so the
+normal Flutter startup path can construct the accepted RT-4e
+`RealtimeTextStreamController` from the existing `BackendApiClient.baseUrl`
+when `DRC_RT4_ENABLE_CONFIGURED_TEXT_STREAM=true`.
+
+Implementation contract:
+
+- [x] Flutter configured realtime text stream runtime is default-off;
+- [x] disabled runtime returns no controller factory and does not construct an HTTP client;
+- [x] existing `DRC_BACKEND_API_BASE_URL` / `BackendApiClient.baseUrl` is reused;
+- [x] no separate Backend URL configuration surface is added;
+- [x] only absolute `http` and `https` URLs with nonempty host, no user info, and no fragment are accepted;
+- [x] invalid URLs safely return unconfigured without throwing or exposing raw URL text;
+- [x] HTTP client construction is lazy and happens only when the controller factory is invoked;
+- [x] each factory invocation creates an independent `http.Client`, `RealtimeTextStreamClient`, and `RealtimeTextStreamController`;
+- [x] controller dispose closes the HTTP client through accepted RT-4e ownership;
+- [x] runtime construction, factory lookup, and widget pump start no stream HTTP request;
+- [x] `DailyRhythmCompanionApp` injects `BackendApiClient` and optional realtime controller factory into HomeScreen;
+- [x] HomeScreen itself remains unchanged and keeps existing RT-4f2 lifecycle ownership;
+- [x] RT-4f3 transcript handoff remains unconfigured unless separately injected.
+
+RT-4f4 does not claim configured real Backend/FW execution, real network
+acceptance, real-STT-to-stream acceptance, provider-level hard cancel, RT-4
+completion, or RT-4f completion. Real transcript source remains unconfigured,
+private real-STT operator output does not reach Flutter, cooperative cancel
+only remains the boundary, `hard_cancel_supported=false`, automatic TTS is not
+started, and RT-5 TTS queue/flush/barge-in remains excluded.
+
+Detailed contract:
+`docs/v300_rt4f4_configured_local_stream_acceptance.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt4f4_configured_local_stream_acceptance.py`.

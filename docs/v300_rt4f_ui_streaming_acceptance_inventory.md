@@ -9,13 +9,13 @@ RT-4f: CURRENT / NOT_COMPLETED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
 RT-4f2: COMPLETED / ACCEPTED / PUSHED
 RT-4f3: COMPLETED / ACCEPTED / PUSHED
-RT-4f4: AUTHORIZED / NOT_STARTED
-Current small commit: RT-4f4 AUTHORIZED / NOT_STARTED
-Current implementation step: Configured local Backend/FW text streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
-Current implementation state: AUTHORIZED / NOT_STARTED
+RT-4f4: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-4f4 IMPLEMENTED / AWAITING_REVIEW
+Current implementation step: Default-off configured Flutter realtime text stream runtime wiring for configured local Backend/FW streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 Current implementation commit: none
 Last accepted small commit: RT-4f3 COMPLETED / ACCEPTED / PUSHED at d651a00be8713a70be3a46524f33c787299bbe9c
-Next action: inspect and begin RT-4f4 only; do not claim real-STT-to-stream acceptance without a separately reviewed safe real transcript source, and do not begin RT-5 TTS queue/flush/barge-in
+Next action: review RT-4f4 implementation candidate only; do not claim configured real Backend/FW execution, real-STT-to-stream acceptance, or RT-5 TTS queue/flush/barge-in
 RT-4e implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 RT-4e acceptance docs commit: 964cbae19728618e85cef0917f747f21ae5c5e4e
 RT-4f1 implementation commit: f54e8638f0255b28e015702bc64b624a6d4a36af
@@ -213,8 +213,9 @@ Backend, Framework, provider, STT handoff, configured transcript source, or TTS
 execution.
 
 RT-4f4
-AUTHORIZED / NOT_STARTED
-Configured local Backend/FW text streaming and cooperative cancel visible UI
+IMPLEMENTED / AWAITING_REVIEW
+Default-off configured Flutter realtime text stream runtime wiring for
+configured local Backend/FW text streaming and cooperative cancel visible UI
 acceptance. Real-STT-to-stream acceptance requires a separately reviewed safe
 app-visible real transcript source.
 ```

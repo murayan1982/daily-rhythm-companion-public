@@ -6151,5 +6151,65 @@ implementation candidate.
 It is not expected to pass against the later seven-file acceptance
 documentation sync.
 
-The active accepted state is RT-4f3 COMPLETED / ACCEPTED / PUSHED, and RT-4f4
-is AUTHORIZED / NOT_STARTED.
+The active accepted state is RT-4f3 COMPLETED / ACCEPTED / PUSHED. The later
+RT-4f4 implementation candidate is IMPLEMENTED / AWAITING_REVIEW.
+
+## v3.0.0 RT-4f4 configured local stream acceptance gate
+
+Detailed contract:
+`docs/v300_rt4f4_configured_local_stream_acceptance.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4f4_configured_local_stream_acceptance.py
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+flutter analyze
+flutter test test\configured_realtime_text_stream_runtime_test.dart
+flutter test test\main_realtime_text_stream_wiring_widget_test.dart
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
+```
+
+The RT-4f4 gate is source-tree-only, credential-free, provider-free, and
+network-free. It verifies the exact thirteen-file candidate surface,
+default-off configured Flutter runtime wiring, reuse of the existing Backend
+base URL define, lazy HTTP client construction, main.dart injection,
+mock-safe tests, protected unchanged runtime surfaces, historical RT-4f3
+markers, and added-content private scan. It does not run Flutter, import
+Backend/FW runtime, execute network requests, claim provider-level hard cancel,
+claim real-STT-to-stream acceptance, or start RT-5 TTS queue/flush/barge-in.
+
+Expected historical candidate markers:
+
+```text
+v300_rt4f4_configured_local_stream_acceptance_status: implemented-awaiting-acceptance
+v300_rt4f4_exact_change_surface: True
+v300_rt4f4_default_enabled: False
+v300_rt4f4_main_runtime_wiring: True
+v300_rt4f4_reuses_backend_base_url: True
+v300_rt4f4_controller_factory_lazy: True
+v300_rt4f4_mock_tests_real_network_execution: False
+v300_rt4f4_real_stt_source_configured: False
+v300_rt4f4_real_stt_to_stream_accepted: False
+v300_rt4f4_cooperative_cancel_only: True
+v300_rt4f4_hard_cancel_supported: False
+v300_rt4f4_tts_auto_start: False
+v300_rt4f4_private_lan_scanner_self_check: True
+v300_rt4f4_windows_absolute_path_scanner_self_check: True
+v300_rt4f4_per_document_status_checks: True
+v300_rt4f4_normalized_base_url_reused: True
+v300_rt5_status: not-started
+```
+
+These markers describe the historical uncommitted thirteen-file RT-4f4
+implementation candidate. They intentionally remain
+`implemented-awaiting-acceptance` until a later acceptance documentation sync.

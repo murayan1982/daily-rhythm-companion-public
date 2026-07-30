@@ -9,13 +9,13 @@ RT-4f: CURRENT / NOT_COMPLETED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
 RT-4f2: COMPLETED / ACCEPTED / PUSHED
 RT-4f3: COMPLETED / ACCEPTED / PUSHED
-RT-4f4: AUTHORIZED / NOT_STARTED
-Current small commit: RT-4f4 AUTHORIZED / NOT_STARTED
-Current implementation: Configured local Backend/FW text streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
-Current implementation state: AUTHORIZED / NOT_STARTED
+RT-4f4: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-4f4 IMPLEMENTED / AWAITING_REVIEW
+Current implementation: Default-off configured Flutter realtime text stream runtime wiring for configured local Backend/FW streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 Current implementation commit: none
 Last accepted small commit: RT-4f3 COMPLETED / ACCEPTED / PUSHED at d651a00be8713a70be3a46524f33c787299bbe9c
-Next action: inspect and begin RT-4f4 only; do not claim real-STT-to-stream acceptance without a separately reviewed safe real transcript source, and do not begin RT-5 TTS queue/flush/barge-in
+Next action: review RT-4f4 implementation candidate only; do not claim configured real Backend/FW execution, real-STT-to-stream acceptance, or RT-5 TTS queue/flush/barge-in
 ```
 
 ## Scope
@@ -249,7 +249,8 @@ RT-4f4 started: false
 RT-4f3 adds a provider-neutral interface and handoff boundary only.
 RT-4f3 does not add a configured real transcript source. The private real-STT
 operator result still does not automatically reach Flutter. RT-4f4 is
-authorized for configured local Backend/FW text streaming and cooperative
+implemented and awaiting review for default-off configured Flutter runtime
+wiring toward configured local Backend/FW text streaming and cooperative
 cancel visible UI acceptance. RT-4f4 may claim real-STT-to-stream execution
 only if a separately reviewed, safe, app-visible real transcript source is
 configured. Without that separately reviewed source, RT-4f4 must not claim
