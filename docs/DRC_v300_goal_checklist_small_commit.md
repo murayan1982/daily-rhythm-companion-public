@@ -5,14 +5,14 @@ Updated: 2026-07-30
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f4 IMPLEMENTED / AWAITING_REVIEW
-Current implementation step: Default-off configured Flutter realtime text stream runtime wiring for configured local Backend/FW streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current parent phase: RT-4 COMPLETED / ACCEPTED
+Current small commit: none
+Current implementation step: RT-4f4 configured local Backend/FW stream completion and cooperative cancel operator acceptance passed; RT-4f and RT-4 are complete. RT-5 is NOT_STARTED / NOT_AUTHORIZED.
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation commit: none
-Last accepted small commit: RT-4f3 COMPLETED / ACCEPTED / PUSHED at d651a00be8713a70be3a46524f33c787299bbe9c
+Last accepted small commit: RT-4f4 COMPLETED / ACCEPTED / PUSHED at 9b19e379634a718df2ab3ed5eb49bb20bfe7e240
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review RT-4f4 implementation candidate only; do not claim configured real Backend/FW execution, real-STT-to-stream acceptance, or RT-5 TTS queue/flush/barge-in
+Next implementation action: none for RT-4; do not begin RT-5 TTS queue/flush/barge-in without separate authorization
 ```
 
 ## Source of truth
@@ -1488,17 +1488,17 @@ LAN address, and operator evidence must stay outside the repository.
 ## RT-4 — Streaming LLM, DRC event consumption, and cooperative cancellation
 
 ```text
-RT-4   CURRENT / NOT_COMPLETED
+RT-4   COMPLETED / ACCEPTED
 RT-4a  COMPLETED / ACCEPTED
 RT-4b  COMPLETED / ACCEPTED
 RT-4c  COMPLETED / ACCEPTED / PUSHED
 RT-4d  COMPLETED / ACCEPTED / PUSHED
 RT-4e  COMPLETED / ACCEPTED / PUSHED
-RT-4f  CURRENT / NOT_COMPLETED
+RT-4f  COMPLETED / ACCEPTED
   RT-4f1  COMPLETED / ACCEPTED / PUSHED
   RT-4f2  COMPLETED / ACCEPTED / PUSHED
   RT-4f3  COMPLETED / ACCEPTED / PUSHED
-  RT-4f4  IMPLEMENTED / AWAITING_REVIEW
+  RT-4f4  COMPLETED / ACCEPTED / PUSHED
 ```
 
 ### RT-4a — Current behavior inventory and small-commit split
@@ -1528,14 +1528,20 @@ RT-4e  Flutter streaming client/controller and fake transport tests; no HomeScre
 RT-4f  UI integration, transcript-to-stream handoff, configured streaming, and cancel acceptance.
 ```
 
-RT-4 parent acceptance minimum:
+RT-4 parent acceptance result:
 
 ```text
-real incremental LLM streaming: required by RT-4f
-DRC normalized event consumption: required
-cooperative cancel: required
-disconnect cleanup and bounded lifecycle: required
-provider-level hard cancel: not claimed unless a later released FW contract proves it
+real incremental LLM streaming: accepted
+DRC normalized event consumption: accepted
+configured local Backend/FW stream completion: accepted
+cooperative cancel: accepted
+bounded Backend transport lifecycle: accepted from RT-4c
+disconnect cleanup: accepted from RT-4c
+Flutter incremental response consumption: accepted
+provider-level hard cancel: not claimed
+hard_cancel_supported: false
+real-STT-to-stream: not executed / not accepted
+automatic TTS: not started
 TTS queue/flush/barge-in: RT-5 only
 ```
 
@@ -1734,7 +1740,8 @@ Stop rule: do not edit HomeScreen, integrate the controller into UI, connect STT
 transcripts, execute a real Backend/Framework/provider, import Framework, add a
 DRC provider client, claim provider-level hard cancel, add reconnect/resume,
 add WebSocket, add dependencies, change versions, or implement TTS
-queue/flush/barge-in. RT-4f is CURRENT / NOT_COMPLETED after RT-4f1 begins.
+queue/flush/barge-in. Historical next marker after RT-4e: RT-4f was not yet
+complete. RT-4f is now COMPLETED / ACCEPTED after RT-4f4 operator acceptance.
 
 RT-4e verification record:
 
@@ -1798,7 +1805,7 @@ RT-4f3  COMPLETED / ACCEPTED / PUSHED
         Connects an injected/fake provider-neutral final transcript result to
         exactly one stream start with an independent in-flight guard. No real
         provider/operator execution and no configured real transcript source.
-RT-4f4  IMPLEMENTED / AWAITING_REVIEW
+RT-4f4  COMPLETED / ACCEPTED / PUSHED
         Default-off configured Flutter runtime wiring for configured local
         Backend/FW streaming and cooperative cancel operator
         execution and visible UI acceptance. Real-STT-to-stream acceptance can
@@ -1962,12 +1969,10 @@ RT-4f3 adds an interface/boundary, not a real transcript source. The current
 accepted real-STT transcript still does not reach Flutter. All transcript
 acceptance tests use injected fake results. RT-4f3 performs no real
 Backend/FW/provider/STT execution, adds no Backend transcript route, and does
-not configure runtime wiring. RT-4f4 is authorized for configured local
-Backend/FW text streaming and cooperative cancel visible UI acceptance, but may
-claim real-STT-to-stream execution only if a separately reviewed safe
-app-visible real transcript source is configured. Without that source, RT-4f4
-must not claim real-STT transcript handoff acceptance. RT-5 TTS
-queue/flush/barge-in remains excluded.
+not configure runtime wiring. RT-4f4 later accepted configured local Backend/FW
+text streaming and cooperative cancel visible UI behavior with manual bounded
+input. Real transcript source remains unconfigured, real-STT-to-stream
+acceptance remains false, and RT-5 TTS queue/flush/barge-in remains excluded.
 
 Detailed contract:
 `docs/v300_rt4f3_transcript_stream_handoff.md`.
@@ -1977,7 +1982,10 @@ Dedicated gate:
 
 ### RT-4f4 - Configured local stream acceptance wiring
 
-RT-4f4 is implemented and awaiting review. It adds
+RT-4f4 implementation is committed and pushed at
+`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`; the later configured operator
+acceptance is completed and accepted. Operator evidence is not committed or
+pushed. The RT-4f4 milestone is COMPLETED / ACCEPTED / PUSHED. It adds
 `ConfiguredRealtimeTextStreamRuntime` and default-off `main.dart` wiring so the
 normal Flutter startup path can construct the accepted RT-4e
 `RealtimeTextStreamController` from the existing `BackendApiClient.baseUrl`
@@ -1999,12 +2007,42 @@ Implementation contract:
 - [x] HomeScreen itself remains unchanged and keeps existing RT-4f2 lifecycle ownership;
 - [x] RT-4f3 transcript handoff remains unconfigured unless separately injected.
 
-RT-4f4 does not claim configured real Backend/FW execution, real network
-acceptance, real-STT-to-stream acceptance, provider-level hard cancel, RT-4
-completion, or RT-4f completion. Real transcript source remains unconfigured,
-private real-STT operator output does not reach Flutter, cooperative cancel
-only remains the boundary, `hard_cancel_supported=false`, automatic TTS is not
-started, and RT-5 TTS queue/flush/barge-in remains excluded.
+Operator acceptance record:
+
+- [x] configured Flutter stream runtime enabled for operator execution;
+- [x] configured local Backend/FW execution passed;
+- [x] input source was bounded manual input only;
+- [x] real transcript source configured: false;
+- [x] real-STT-to-stream executed: false;
+- [x] SSE events request observed;
+- [x] stream event counts: `stream_started=1`, `stream_chunk=23`, `stream_completed=1`;
+- [x] chunks arrived at multiple distinct times;
+- [x] real incremental streaming accepted;
+- [x] incremental UI output before terminal confirmed;
+- [x] completed terminal confirmed;
+- [x] duplicate start blocked while active;
+- [x] cancel button enabled only while active;
+- [x] cooperative cancel POST returned HTTP 200;
+- [x] `cancel_requested` UI phase confirmed;
+- [x] cancelled terminal confirmed;
+- [x] partial output retained at cancellation;
+- [x] output stopped after cancelled;
+- [x] start button re-enabled after cancelled;
+- [x] cancel button disabled after cancelled;
+- [x] cancel mode: cooperative;
+- [x] `hard_cancel_supported=false`;
+- [x] automatic TTS start: false;
+- [x] provider-neutral transcript handoff: unconfigured;
+- [x] private evidence committed: false;
+- [x] Backend Framework-stream flag restored off;
+- [x] DRC and FW working trees clean after execution.
+
+RT-4f and RT-4 are COMPLETED / ACCEPTED. Real transcript source remains
+unconfigured, private real-STT operator output does not reach Flutter,
+real-STT-to-stream was not executed or accepted, cooperative cancel only
+remains the boundary, provider-level hard cancel is not claimed, automatic TTS
+is not started, RT-5 is NOT_STARTED / NOT_AUTHORIZED, and RT-5 TTS
+queue/flush/barge-in remains excluded.
 
 Detailed contract:
 `docs/v300_rt4f4_configured_local_stream_acceptance.md`.

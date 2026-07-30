@@ -6151,8 +6151,12 @@ implementation candidate.
 It is not expected to pass against the later seven-file acceptance
 documentation sync.
 
-The active accepted state is RT-4f3 COMPLETED / ACCEPTED / PUSHED. The later
-RT-4f4 implementation candidate is IMPLEMENTED / AWAITING_REVIEW.
+The historical RT-4f3 milestone is COMPLETED / ACCEPTED / PUSHED. The later
+RT-4f4 implementation is committed and pushed at
+`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`; the configured operator
+acceptance is completed and accepted. Operator evidence is not committed or
+pushed. The RT-4f4 milestone is COMPLETED / ACCEPTED / PUSHED, RT-4f and RT-4
+are COMPLETED / ACCEPTED, and RT-5 is NOT_STARTED / NOT_AUTHORIZED.
 
 ## v3.0.0 RT-4f4 configured local stream acceptance gate
 
@@ -6212,4 +6216,18 @@ v300_rt5_status: not-started
 
 These markers describe the historical uncommitted thirteen-file RT-4f4
 implementation candidate. They intentionally remain
-`implemented-awaiting-acceptance` until a later acceptance documentation sync.
+`implemented-awaiting-acceptance`; the gate itself was not changed for the
+later acceptance documentation sync and is not expected to pass against the
+docs-only eight-file surface.
+
+The RT-4f4 implementation gate passed before implementation commit
+`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`, and the implementation was pushed.
+The later configured local operator acceptance also passed with public-safe
+markers only: configured
+local Backend/FW execution passed, manual bounded input only, real incremental
+streaming accepted, one `stream_started`, 23 `stream_chunk`, one
+`stream_completed`, cooperative cancel POST HTTP 200, `cancel_requested` UI
+phase confirmed, cancelled terminal confirmed, `hard_cancel_supported=false`,
+real-STT-to-stream not executed or accepted, provider-level hard cancel not
+claimed, automatic TTS not started, and RT-5 TTS queue/flush/barge-in not
+started. Operator evidence is not committed or pushed.

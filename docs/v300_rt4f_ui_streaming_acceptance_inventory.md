@@ -3,19 +3,19 @@
 Updated: 2026-07-30
 
 ```text
-RT-4: CURRENT / NOT_COMPLETED
+RT-4: COMPLETED / ACCEPTED
 RT-4e: COMPLETED / ACCEPTED / PUSHED
-RT-4f: CURRENT / NOT_COMPLETED
+RT-4f: COMPLETED / ACCEPTED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
 RT-4f2: COMPLETED / ACCEPTED / PUSHED
 RT-4f3: COMPLETED / ACCEPTED / PUSHED
-RT-4f4: IMPLEMENTED / AWAITING_REVIEW
-Current small commit: RT-4f4 IMPLEMENTED / AWAITING_REVIEW
-Current implementation step: Default-off configured Flutter realtime text stream runtime wiring for configured local Backend/FW streaming and cooperative cancel visible UI acceptance. Real-STT-to-stream execution may be included only if a separately reviewed safe real transcript source is configured.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+RT-4f4: COMPLETED / ACCEPTED / PUSHED
+Current small commit: none
+Current implementation step: RT-4f4 configured local Backend/FW stream completion and cooperative cancel operator acceptance passed; RT-4f and RT-4 are complete. RT-5 is NOT_STARTED / NOT_AUTHORIZED.
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation commit: none
-Last accepted small commit: RT-4f3 COMPLETED / ACCEPTED / PUSHED at d651a00be8713a70be3a46524f33c787299bbe9c
-Next action: review RT-4f4 implementation candidate only; do not claim configured real Backend/FW execution, real-STT-to-stream acceptance, or RT-5 TTS queue/flush/barge-in
+Last accepted small commit: RT-4f4 COMPLETED / ACCEPTED / PUSHED at 9b19e379634a718df2ab3ed5eb49bb20bfe7e240
+Next action: none for RT-4; RT-5 TTS queue/flush/barge-in is NOT_STARTED / NOT_AUTHORIZED
 RT-4e implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 RT-4e acceptance docs commit: 964cbae19728618e85cef0917f747f21ae5c5e4e
 RT-4f1 implementation commit: f54e8638f0255b28e015702bc64b624a6d4a36af
@@ -213,7 +213,7 @@ Backend, Framework, provider, STT handoff, configured transcript source, or TTS
 execution.
 
 RT-4f4
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / ACCEPTED / PUSHED
 Default-off configured Flutter realtime text stream runtime wiring for
 configured local Backend/FW text streaming and cooperative cancel visible UI
 acceptance. Real-STT-to-stream acceptance requires a separately reviewed safe
@@ -240,6 +240,21 @@ TTS queue/flush/barge-in added: false
 RT-4f2 started: true
 RT-4f3 started: false
 RT-4f4 started: false
+```
+
+Current acceptance status:
+
+```text
+RT-4: COMPLETED / ACCEPTED
+RT-4f: COMPLETED / ACCEPTED
+RT-4f4: COMPLETED / ACCEPTED / PUSHED
+manual-input configured execution: accepted
+real incremental streaming: accepted
+cooperative cancel: accepted
+real transcript source: unconfigured
+real-STT-to-stream: not executed / not accepted
+hard cancel: not supported / not claimed
+automatic TTS: false
 ```
 
 ## Acceptance Record
@@ -272,7 +287,10 @@ TTS execution.
 RT-4f2 kept accepted real-STT transcript handoff absent. RT-4f3 subsequently
 completed and accepted the app-owned provider-neutral transcript-to-stream
 handoff boundary without adding a configured real transcript source. RT-4f4 is
-authorized next, and RT-5 TTS queue/flush/barge-in remains excluded.
+committed and pushed at `9b19e379634a718df2ab3ed5eb49bb20bfe7e240`; the later
+configured manual-input local Backend/FW streaming and cooperative cancel
+operator acceptance is completed and accepted. Operator evidence is not
+committed or pushed. RT-5 TTS queue/flush/barge-in remains excluded.
 
 RT-4f2 acceptance record:
 
@@ -354,11 +372,11 @@ RT-4f3 adds an interface/boundary, not a real transcript source. The current
 accepted real-STT transcript still does not reach Flutter. All tests use
 injected fake transcript results and fake/in-memory stream dependencies. RT-4f3
 performs no real Backend/FW/provider/STT execution, adds no Backend transcript
-route, and does not configure runtime wiring. RT-4f4 is authorized for
-configured local Backend/FW text streaming and cooperative cancel visible UI
-acceptance, but must not claim real-STT transcript handoff acceptance without a
-separately reviewed safe app-visible transcript source. RT-5 TTS
-queue/flush/barge-in remains excluded.
+route, and does not configure runtime wiring. RT-4f4 accepted configured local
+Backend/FW text streaming and cooperative cancel visible UI acceptance with
+manual bounded input. Real-STT-to-stream was not executed or accepted because
+no separately reviewed safe app-visible transcript source is configured. RT-5
+TTS queue/flush/barge-in remains excluded.
 
 Detailed contract:
 `docs/v300_rt4f3_transcript_stream_handoff.md`.

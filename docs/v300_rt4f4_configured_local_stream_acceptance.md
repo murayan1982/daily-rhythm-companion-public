@@ -5,12 +5,15 @@ Updated: 2026-07-30
 ## Status
 
 ```text
-RT-4: CURRENT / NOT_COMPLETED
-RT-4f: CURRENT / NOT_COMPLETED
+RT-4: COMPLETED / ACCEPTED
+RT-4f: COMPLETED / ACCEPTED
 RT-4f3: COMPLETED / ACCEPTED / PUSHED
-RT-4f4: IMPLEMENTED / AWAITING_REVIEW
+RT-4f4: COMPLETED / ACCEPTED / PUSHED
 Current implementation commit: none
 ```
+
+RT-4f4 implementation:
+`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`
 
 RT-4f3 implementation:
 `d651a00be8713a70be3a46524f33c787299bbe9c`
@@ -23,9 +26,12 @@ RT-4f3 acceptance docs:
 RT-4f4 makes the accepted RT-4e Flutter realtime text stream client/controller
 constructible from the normal Flutter startup path, behind a default-off
 compile-time flag. This source implementation prepares configured local
-Backend/FW text streaming and cooperative cancel for a later private local
-operator acceptance review. It does not perform that configured real
-acceptance in this candidate.
+Backend/FW text streaming and cooperative cancel.
+
+The implementation is committed and pushed at
+`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`. The later configured operator
+acceptance is completed and accepted. Operator evidence itself is not
+committed or pushed. The RT-4f4 milestone is COMPLETED / ACCEPTED / PUSHED.
 
 ## Configured Flutter Runtime Contract
 
@@ -97,18 +103,60 @@ loading does not contact a real Backend.
 ## Configured Local Operator Acceptance Boundary
 
 Configured real local Backend/FW streaming and cooperative cancel visible UI
-acceptance is pending review. This candidate does not claim configured real
-Backend/FW execution passed and does not claim real network acceptance.
+acceptance passed. The accepted operator execution used bounded manual input
+only and recorded public-safe markers only.
 
-Manual bounded input is the only configured local stream input covered by the
-later RT-4f4 operator acceptance unless a separately reviewed safe
-app-visible real transcript source is configured.
+Manual bounded input is the only configured local stream input accepted by
+RT-4f4. No separately reviewed safe app-visible real transcript source is
+configured.
+
+## Operator Acceptance Record
+
+```text
+configured Flutter stream runtime: true
+configured local Backend/FW execution: passed
+Framework root-public ask_stream path exercised: true
+input source: bounded manual input only
+real transcript source configured: false
+real STT execution: false
+real-STT-to-stream executed: false
+provider-specific execution acceptance: not claimed
+provider identity/model/payload recorded: false
+SSE events request observed: true
+stream_started event count: 1
+stream_chunk event count: 23
+stream_completed event count: 1
+chunks arrived at multiple distinct times: true
+real incremental streaming: accepted
+incremental UI output before terminal: confirmed
+completed terminal: confirmed
+duplicate start blocked while active: confirmed
+cancel button enabled only while active: confirmed
+cooperative cancel POST: HTTP 200
+cancel_requested UI phase: confirmed
+cancelled terminal: confirmed
+partial output retained at cancellation: confirmed
+output stopped after cancelled: confirmed
+start button re-enabled after cancelled: confirmed
+cancel button disabled after cancelled: confirmed
+cancel mode: cooperative
+hard cancel supported: false
+automatic TTS start: false
+provider-neutral transcript handoff: unconfigured
+private evidence committed: false
+operator evidence committed: false
+operator evidence pushed: false
+Backend Framework-stream flag restored off: true
+DRC working tree after execution: clean
+DRC HEAD after execution: 9b19e379634a718df2ab3ed5eb49bb20bfe7e240
+FW working tree after execution: clean
+FW HEAD after execution: d313eb6acb643103fe25988720ebee5976a04f78
+```
 
 ## Real Transcript Boundary
 
 RT-4f4 does not configure a real transcript source. Private real-STT operator
-output still does not reach Flutter. Real-STT-to-stream acceptance is false and
-is not claimed by this candidate.
+output still does not reach Flutter. Real-STT-to-stream acceptance is false.
 
 ## Cooperative Cancel Boundary
 
@@ -126,15 +174,22 @@ dedicated gates.
 ## Non-Actions
 
 ```text
-RT-4f4 ACCEPTED: false
-RT-4f4 PUSHED: false
-configured real Backend/FW execution passed: false
+RT-4f4 ACCEPTED: true
+RT-4f4 PUSHED: true
+configured real Backend/FW execution passed: true
+real incremental streaming accepted: true
+cooperative cancel accepted: true
 real-STT-to-stream accepted: false
 provider-level hard cancel supported: false
-RT-4 completed: false
-RT-4f completed: false
-real Backend/FW/provider/STT execution: false
-real network acceptance: false
+RT-4 completed: true
+RT-4f completed: true
+real Backend/FW execution: true
+real STT execution: false
+Framework root-public ask_stream path exercised: true
+provider-specific execution acceptance: not claimed
+provider-specific implementation details accepted: false
+provider identity/model/payload recorded: false
+provider-specific payload recorded: false
 VoiceInputDemo transcript wired: false
 transcript persistence: false
 generated output persistence: false
@@ -150,10 +205,42 @@ turn IDs are not committed.
 
 ## Candidate Verification Record
 
-Candidate verification is performed with compileall, the dedicated RT-4f4
+Implementation verification passed with compileall, the dedicated RT-4f4
 source-tree gate, Backend full tests, Flutter analyze, focused RT-4f4 runtime
 unit tests, focused main wiring widget tests, Flutter full tests, exact
-thirteen-file surface review, and `git diff --check`.
+thirteen-file surface review, and `git diff --check`. Later operator
+acceptance passed with the public-safe markers above.
+
+## RT-4 Parent Acceptance Result
+
+```text
+real incremental LLM streaming: accepted
+DRC normalized stream event consumption: accepted
+configured local Backend/FW stream completion: accepted
+cooperative cancel: accepted
+bounded Backend transport lifecycle: accepted from RT-4c
+disconnect cleanup: accepted from RT-4c
+Flutter incremental response consumption: accepted
+provider-level hard cancel: not claimed
+hard_cancel_supported: false
+real-STT-to-stream: not accepted and not executed
+automatic TTS: not started
+TTS queue/flush/barge-in: RT-5 only, not started
+RT-5 status: NOT_STARTED / NOT_AUTHORIZED
+```
+
+## Historical Gate Marker
+
+The dedicated implementation gate
+`scripts/check_v300_rt4f4_configured_local_stream_acceptance.py` is unchanged.
+Its historical implementation-candidate output remains:
+
+```text
+v300_rt4f4_configured_local_stream_acceptance_status: implemented-awaiting-acceptance
+```
+
+That marker describes the uncommitted thirteen-file implementation candidate.
+It does not conflict with this later acceptance documentation sync.
 
 ## Exact Change Surface
 
