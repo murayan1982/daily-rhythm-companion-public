@@ -6092,3 +6092,54 @@ documentation sync.
 
 The active accepted state is RT-4f2 COMPLETED / ACCEPTED / PUSHED, and RT-4f3
 is AUTHORIZED / NOT_STARTED.
+
+## v3.0.0 RT-4f3 transcript-to-stream handoff gate
+
+Detailed contract:
+`docs/v300_rt4f3_transcript_stream_handoff.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4f3_transcript_stream_handoff.py
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+flutter analyze
+flutter test test\realtime_text_stream_transcript_handoff_test.dart
+flutter test test\realtime_text_stream_transcript_handoff_home_screen_widget_test.dart
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git diff --numstat -- app/lib/screens/home_screen.dart
+git status --short
+```
+
+The RT-4f3 gate is source-tree-only. It verifies the exact thirteen-file
+candidate surface, provider-neutral transcript model, handoff service
+ownership and exactly-one-start contract, HomeScreen optional handoff factory
+and UI keys, fake/in-memory unit and widget coverage, protected unchanged
+files, and added-content private scan. It does not import Backend/FW runtime,
+run Flutter, execute network requests, claim provider-level hard cancel, or
+start RT-4f4 configured execution.
+
+Expected public-safe markers:
+
+```text
+v300_rt4f3_transcript_stream_handoff_status: implemented-awaiting-acceptance
+v300_rt4f3_exact_change_surface: True
+v300_rt4f3_provider_neutral_transcript_model: True
+v300_rt4f3_exactly_one_stream_start: True
+v300_rt4f3_consumed_result_ids_bounded: True
+v300_rt4f3_transcript_text_retained_in_state: False
+v300_rt4f3_voice_input_demo_transcript_wired: False
+v300_rt4f3_real_stt_execution: False
+v300_rt4f3_real_network_execution: False
+v300_rt4f3_main_runtime_wiring: False
+v300_rt4f3_tts_auto_start: False
+v300_rt4f4_status: not-started
+```

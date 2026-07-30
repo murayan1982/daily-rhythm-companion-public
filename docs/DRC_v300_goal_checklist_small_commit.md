@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f3 AUTHORIZED / NOT_STARTED
-Current implementation step: Define and implement the missing app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake stream dependencies
-Current implementation state: AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f3 IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: App-owned provider-neutral transcript-to-stream handoff using injected/fake transcript and fake/in-memory stream dependencies
+Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
 Current implementation commit: none
 Last accepted small commit: RT-4f2 COMPLETED / ACCEPTED / PUSHED at 1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: inspect and begin RT-4f3 only; do not begin configured RT-4f4 execution
+Next implementation action: verify and accept RT-4f3 only; do not begin configured RT-4f4 execution
 ```
 
 ## Source of truth
@@ -1497,7 +1497,7 @@ RT-4e  COMPLETED / ACCEPTED / PUSHED
 RT-4f  CURRENT / NOT_COMPLETED
   RT-4f1  COMPLETED / ACCEPTED / PUSHED
   RT-4f2  COMPLETED / ACCEPTED / PUSHED
-  RT-4f3  AUTHORIZED / NOT_STARTED
+  RT-4f3  IMPLEMENTED / AWAITING_ACCEPTANCE
   RT-4f4  NOT_STARTED
 ```
 
@@ -1793,7 +1793,7 @@ RT-4f2  COMPLETED / ACCEPTED / PUSHED
         Flutter HomeScreen stream presentation and controller lifecycle wiring
         with injected fake stream client/controller and bounded manual test
         input. No real Backend, Framework, provider, or STT handoff.
-RT-4f3  AUTHORIZED / NOT_STARTED
+RT-4f3  IMPLEMENTED / AWAITING_ACCEPTANCE
         Define and implement the missing app-owned transcript-to-stream handoff
         boundary. Connect an injected/fake provider-neutral transcript result
         to exactly one stream start. The current source has no app-visible
@@ -1903,3 +1903,54 @@ and implementing the missing app-owned, provider-neutral transcript-to-stream
 handoff boundary using injected/fake transcript and fake stream dependencies.
 RT-4f3 must not claim that the private real-STT operator transcript already
 reaches Flutter.
+
+### RT-4f3 — App-owned provider-neutral transcript-to-stream handoff
+
+RT-4f3 is implemented and awaiting acceptance. It adds
+`ProviderNeutralTranscriptResult` and `RealtimeTextStreamTranscriptHandoff` as
+an app-owned boundary between an injected provider-neutral final transcript
+result and the accepted RT-4e realtime controller.
+
+Implementation contract:
+
+- [x] provider-neutral transcript model has opaque `resultId`, `text`, and `isFinal` only;
+- [x] model carries no provider name, model name, confidence, audio path, provider payload, raw response, or credential;
+- [x] handoff service does not own or dispose `RealtimeTextStreamController`;
+- [x] handoff owns no HTTP client, BackendApiClient, microphone/STT object, or provider client;
+- [x] active controller state is rejected before invoking the transcript provider;
+- [x] duplicate simultaneous handoff invocation is rejected safely;
+- [x] final, nonempty transcript text is bounded to 4096 Unicode code points;
+- [x] opaque result ID is trimmed, nonempty, and bounded to 128 Unicode code points;
+- [x] consumed result IDs are remembered in-memory only and bounded to 32 entries;
+- [x] consumed result ID is marked before exactly one `controller.start(inputText:)`;
+- [x] no automatic retry occurs, including after controller start failure;
+- [x] transcript text and result ID are not exposed in handoff public state;
+- [x] safe messages are whitespace-compacted and bounded to 240 Unicode code points;
+- [x] disposed/late provider completion does not notify or start a stream.
+
+HomeScreen contract:
+
+- [x] optional `RealtimeTextStreamTranscriptHandoffFactory` is accepted;
+- [x] normal `const HomeScreen()` remains valid and handoff-unconfigured;
+- [x] `main.dart` remains unchanged;
+- [x] handoff factory is called once in `initState()` only when the RT-4f2 realtime controller exists;
+- [x] the exact HomeScreen-owned realtime controller is passed to the handoff factory;
+- [x] HomeScreen owns/listens to/disposes the handoff before disposing the realtime controller;
+- [x] UI exposes transcript handoff keys, phase, safe error, privacy note, and explicit injected/provider-neutral start button;
+- [x] transcript text and result ID are not displayed;
+- [x] transcript text is not copied into the manual stream input;
+- [x] `_voiceInputDemoResponse.transcript` is not wired to handoff;
+- [x] no automatic TTS starts.
+
+RT-4f3 adds an interface/boundary, not a real transcript source. The current
+accepted real-STT transcript still does not reach Flutter. All transcript
+acceptance tests use injected fake results. RT-4f3 performs no real
+Backend/FW/provider/STT execution, adds no Backend transcript route, and does
+not begin RT-4f4 configured execution. RT-5 TTS queue/flush/barge-in remains
+excluded.
+
+Detailed contract:
+`docs/v300_rt4f3_transcript_stream_handoff.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt4f3_transcript_stream_handoff.py`.

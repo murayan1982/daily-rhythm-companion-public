@@ -9,13 +9,13 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4f3 (**AUTHORIZED / NOT_STARTED**)
-Current implementation: Define and implement the missing app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake stream dependencies (**AUTHORIZED / NOT_STARTED**)
+Current small commit: RT-4f3 (**IMPLEMENTED / AWAITING_ACCEPTANCE**)
+Current implementation: App-owned provider-neutral transcript-to-stream handoff using injected/fake transcript and fake/in-memory stream dependencies (**IMPLEMENTED / AWAITING_ACCEPTANCE**)
 Current implementation commit: none
 Last accepted small commit: RT-4f2 (**COMPLETED / ACCEPTED / PUSHED**) at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-4 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: inspect and begin RT-4f3 only; do not begin configured RT-4f4 execution
+Current realtime action: verify and accept RT-4f3 only; do not begin configured RT-4f4 execution
 
 Current phase state:
 
@@ -66,7 +66,7 @@ RT-4  CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and coopera
   RT-4f  CURRENT / NOT_COMPLETED  UI integration and configured streaming/cancel acceptance
     RT-4f1  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory and exact small-commit split
     RT-4f2  COMPLETED / ACCEPTED / PUSHED  HomeScreen stream presentation and fake controller lifecycle wiring
-    RT-4f3  AUTHORIZED / NOT_STARTED  App-owned provider-neutral transcript handoff boundary
+    RT-4f3  IMPLEMENTED / AWAITING_ACCEPTANCE  App-owned provider-neutral transcript handoff boundary
     RT-4f4  NOT_STARTED  Configured local Backend/FW streaming and cancel acceptance
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
@@ -82,7 +82,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter models, an injectable SSE client, a ChangeNotifier controller, and fake transport tests. RT-4f1 is COMPLETED / ACCEPTED / PUSHED at `f54e8638f0255b28e015702bc64b624a6d4a36af` as a docs/test-only current behavior inventory and exact four-child split; no runtime behavior changed. RT-4f2 is COMPLETED / ACCEPTED / PUSHED at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a` with HomeScreen fake streaming presentation and controller lifecycle wiring. RT-4f3 is AUTHORIZED / NOT_STARTED for the missing app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake stream dependencies.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter models, an injectable SSE client, a ChangeNotifier controller, and fake transport tests. RT-4f1 is COMPLETED / ACCEPTED / PUSHED at `f54e8638f0255b28e015702bc64b624a6d4a36af` as a docs/test-only current behavior inventory and exact four-child split; no runtime behavior changed. RT-4f2 is COMPLETED / ACCEPTED / PUSHED at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a` with HomeScreen fake streaming presentation and controller lifecycle wiring. RT-4f3 is IMPLEMENTED / AWAITING_ACCEPTANCE with an app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake/in-memory stream dependencies. RT-4f4 remains NOT_STARTED.
 
 ## v3.0.0 RT-4a streaming/cancel current behavior inventory
 
@@ -219,12 +219,37 @@ ten-file implementation review, `git diff --check`, HomeScreen unrelated
 formatting removal, a 239 additions / 0 deletions HomeScreen implementation
 numstat, a 240 Unicode code-point public-safe problem display bound, corrected
 input echo assertion, fake/in-memory HTTP only, and explicit operator approval.
-RT-4f3 is AUTHORIZED / NOT_STARTED. RT-4f4 remains NOT_STARTED.
+RT-4f3 is IMPLEMENTED / AWAITING_ACCEPTANCE. RT-4f4 remains NOT_STARTED.
 
 Detailed inventory:
 `docs/v300_rt4f_ui_streaming_acceptance_inventory.md`.
 Dedicated gate:
 `scripts/check_v300_rt4f_ui_streaming_acceptance_inventory.py`.
+
+## v3.0.0 RT-4f3 transcript-to-stream handoff
+
+RT-4f3 is **IMPLEMENTED / AWAITING_ACCEPTANCE**. It adds a provider-neutral
+`ProviderNeutralTranscriptResult` model and an app-owned
+`RealtimeTextStreamTranscriptHandoff` service that accepts only injected/fake
+final transcript results, validates opaque result IDs and transcript text,
+marks consumed result IDs before exactly one `controller.start(inputText:)`,
+and retains no transcript text in public state.
+
+HomeScreen accepts an optional transcript handoff factory and remains
+unconfigured in normal `const HomeScreen()` because `main.dart` is unchanged.
+The UI exposes a provider-neutral transcript handoff subsection, does not show
+transcript text or result IDs, does not copy transcript text into manual input,
+does not read `VoiceInputDemoRequestResponse.transcript`, and starts no TTS.
+
+RT-4f3 adds no real transcript source, real microphone/STT execution, Backend
+transcript route, configured runtime wiring, Framework/provider execution,
+hard cancel, reconnect/resume, WebSocket, or TTS queue/flush/barge-in.
+RT-4f4 configured execution has not started.
+
+Detailed contract:
+`docs/v300_rt4f3_transcript_stream_handoff.md`.
+Dedicated gate:
+`scripts/check_v300_rt4f3_transcript_stream_handoff.py`.
 
 Detailed contract:
 `docs/v300_rt4_framework_public_streaming_adapter.md`.

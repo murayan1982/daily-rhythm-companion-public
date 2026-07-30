@@ -8,14 +8,14 @@ RT-4e: COMPLETED / ACCEPTED / PUSHED
 RT-4f: CURRENT / NOT_COMPLETED
 RT-4f1: COMPLETED / ACCEPTED / PUSHED
 RT-4f2: COMPLETED / ACCEPTED / PUSHED
-RT-4f3: AUTHORIZED / NOT_STARTED
+RT-4f3: IMPLEMENTED / AWAITING_ACCEPTANCE
 RT-4f4: NOT_STARTED
-Current small commit: RT-4f3 AUTHORIZED / NOT_STARTED
-Current implementation step: Define and implement the missing app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake stream dependencies
-Current implementation state: AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f3 IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: App-owned provider-neutral transcript-to-stream handoff using injected/fake transcript and fake/in-memory stream dependencies
+Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
 Current implementation commit: none
 Last accepted small commit: RT-4f2 COMPLETED / ACCEPTED / PUSHED at 1e1a4b27a0fe7c105eec344bfde39afe6a077f8a
-Next action: inspect and begin RT-4f3 only; do not begin configured RT-4f4 execution
+Next action: verify and accept RT-4f3 only; do not begin configured RT-4f4 execution
 RT-4e implementation commit: 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 RT-4e acceptance docs commit: 964cbae19728618e85cef0917f747f21ae5c5e4e
 RT-4f1 implementation commit: f54e8638f0255b28e015702bc64b624a6d4a36af
@@ -316,6 +316,44 @@ Detailed contract:
 
 Dedicated gate:
 `scripts/check_v300_rt4f2_home_screen_stream_ui.py`.
+
+## RT-4f3 Implementation Candidate Record
+
+RT-4f3 adds an app-owned provider-neutral transcript-to-stream handoff
+boundary. It introduces a minimal transcript result model with opaque
+`resultId`, transcript `text`, and `isFinal` only, plus a ChangeNotifier
+handoff service that validates injected/fake final transcript results before
+calling the accepted RT-4e `RealtimeTextStreamController`.
+
+The handoff service does not own the realtime controller, owns no HTTP client,
+BackendApiClient, microphone/STT object, or provider client, and stores no
+transcript text in fields or public state. It checks active stream state before
+invoking the transcript provider, rejects simultaneous duplicate invocation,
+bounds result IDs to 128 Unicode code points, bounds transcript text to 4096
+Unicode code points, remembers only up to 32 opaque consumed result IDs, marks
+the consumed ID before exactly one `controller.start(inputText:)`, and does
+not retry automatically.
+
+HomeScreen accepts an optional handoff factory, calls it once from `initState`
+only when the RT-4f2 realtime controller exists, passes the exact owned
+controller, listens to the handoff, and disposes it before disposing the
+controller. Normal `const HomeScreen()` remains handoff-unconfigured because
+`main.dart` is unchanged. The UI does not display transcript text or result
+IDs, does not copy transcript text into manual input, does not read
+`VoiceInputDemoRequestResponse.transcript`, and does not start TTS.
+
+RT-4f3 adds an interface/boundary, not a real transcript source. The current
+accepted real-STT transcript still does not reach Flutter. All tests use
+injected fake transcript results and fake/in-memory stream dependencies. RT-4f3
+performs no real Backend/FW/provider/STT execution, adds no Backend transcript
+route, and does not begin RT-4f4 configured execution. RT-5
+TTS queue/flush/barge-in remains excluded.
+
+Detailed contract:
+`docs/v300_rt4f3_transcript_stream_handoff.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt4f3_transcript_stream_handoff.py`.
 
 ## Exact Change Surface
 

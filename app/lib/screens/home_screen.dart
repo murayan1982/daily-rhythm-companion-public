@@ -22,6 +22,7 @@ import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
 import '../services/realtime_text_stream_controller.dart';
+import '../services/realtime_text_stream_transcript_handoff.dart';
 import '../services/voice_output_audio_player.dart';
 import '../ui/character_asset_catalog.dart';
 import '../widgets/character_display_card.dart';
@@ -35,12 +36,15 @@ class HomeScreen extends StatefulWidget {
     this.apiClient = const BackendApiClient(),
     this.voiceOutputAudioEngine,
     this.realtimeTextStreamControllerFactory,
+    this.realtimeTextStreamTranscriptHandoffFactory,
   });
 
   final BackendApiClient apiClient;
   final VoiceOutputAudioEngine? voiceOutputAudioEngine;
   final RealtimeTextStreamController Function()?
       realtimeTextStreamControllerFactory;
+  final RealtimeTextStreamTranscriptHandoffFactory?
+      realtimeTextStreamTranscriptHandoffFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -183,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final VoiceOutputAudioPlayerController
       _voiceOutputAudioPlayerController;
   RealtimeTextStreamController? _realtimeTextStreamController;
+  RealtimeTextStreamTranscriptHandoff? _realtimeTextStreamTranscriptHandoff;
   String? _realtimeTextStreamStartError;
 
   void _handleVoiceOutputPlaybackStateChanged() {
@@ -197,8 +202,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleRealtimeTextStreamTranscriptHandoffChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
+    _realtimeTextStreamTranscriptHandoff?.removeListener(
+      _handleRealtimeTextStreamTranscriptHandoffChanged,
+    );
+    _realtimeTextStreamTranscriptHandoff?.dispose();
     _realtimeTextStreamController?.removeListener(
       _handleRealtimeTextStreamControllerChanged,
     );
@@ -676,6 +691,16 @@ class _HomeScreenState extends State<HomeScreen> {
     _realtimeTextStreamController = realtimeTextStreamController;
     realtimeTextStreamController?.addListener(
       _handleRealtimeTextStreamControllerChanged,
+    );
+    final realtimeTextStreamTranscriptHandoff =
+        realtimeTextStreamController == null
+        ? null
+        : widget.realtimeTextStreamTranscriptHandoffFactory?.call(
+            realtimeTextStreamController,
+          );
+    _realtimeTextStreamTranscriptHandoff = realtimeTextStreamTranscriptHandoff;
+    realtimeTextStreamTranscriptHandoff?.addListener(
+      _handleRealtimeTextStreamTranscriptHandoffChanged,
     );
     _loadInitialData();
     _refreshDemoStatus();
@@ -1212,6 +1237,15 @@ class _HomeScreenState extends State<HomeScreen> {
         !state.isTerminal;
   }
 
+  bool get _canStartRealtimeTextStreamTranscriptHandoff {
+    final controller = _realtimeTextStreamController;
+    final handoff = _realtimeTextStreamTranscriptHandoff;
+    if (controller == null || handoff == null) {
+      return false;
+    }
+    return !handoff.state.isBusy && !controller.state.isActive;
+  }
+
   Future<void> _startRealtimeTextStream() async {
     final controller = _realtimeTextStreamController;
     if (controller == null || controller.state.isActive) {
@@ -1267,6 +1301,14 @@ class _HomeScreenState extends State<HomeScreen> {
     await controller.cancel();
   }
 
+  Future<void> _startRealtimeTextStreamTranscriptHandoff() async {
+    final handoff = _realtimeTextStreamTranscriptHandoff;
+    if (handoff == null || !_canStartRealtimeTextStreamTranscriptHandoff) {
+      return;
+    }
+    await handoff.startFromNextTranscript();
+  }
+
   String _formatRealtimeTextStreamPhase(
     RealtimeTextStreamControllerState? state,
   ) {
@@ -1293,6 +1335,27 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String _formatRealtimeTextStreamTranscriptHandoffPhase() {
+    final handoff = _realtimeTextStreamTranscriptHandoff;
+    if (handoff == null) {
+      return 'unconfigured';
+    }
+    switch (handoff.state.phase) {
+      case RealtimeTextStreamTranscriptHandoffPhase.ready:
+        return 'ready';
+      case RealtimeTextStreamTranscriptHandoffPhase.acquiring:
+        return 'acquiring';
+      case RealtimeTextStreamTranscriptHandoffPhase.accepted:
+        return 'accepted';
+      case RealtimeTextStreamTranscriptHandoffPhase.rejected:
+        return 'rejected';
+      case RealtimeTextStreamTranscriptHandoffPhase.failed:
+        return 'failed';
+      case RealtimeTextStreamTranscriptHandoffPhase.disposed:
+        return 'disposed';
+    }
+  }
+
   String _formatRealtimeTextStreamProblem(
     RealtimeTextStreamProblem problem,
   ) {
@@ -1312,6 +1375,57 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return String.fromCharCodes(
       compact.runes.take(realtimeTextStreamMaxProblemMessageChars),
+    );
+  }
+
+  Widget _buildRealtimeTextStreamTranscriptHandoffSection() {
+    final handoff = _realtimeTextStreamTranscriptHandoff;
+    final safeMessage = handoff?.state.safeMessage ?? '';
+
+    return Column(
+      key: const ValueKey('realtime-text-stream-transcript-handoff'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        const Text(
+          'Provider-neutral transcript handoff',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        if (handoff == null) ...[
+          const Text(
+            'unconfigured',
+            key: ValueKey('realtime-text-stream-transcript-unconfigured'),
+          ),
+          const SizedBox(height: 8),
+        ],
+        OutlinedButton(
+          key: const ValueKey(
+            'realtime-text-stream-transcript-start-button',
+          ),
+          onPressed: _canStartRealtimeTextStreamTranscriptHandoff
+              ? _startRealtimeTextStreamTranscriptHandoff
+              : null,
+          child: const Text('Start from injected provider-neutral transcript'),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Transcript handoff: ${_formatRealtimeTextStreamTranscriptHandoffPhase()}',
+          key: const ValueKey('realtime-text-stream-transcript-status'),
+        ),
+        if (safeMessage.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            safeMessage,
+            key: const ValueKey('realtime-text-stream-transcript-error'),
+          ),
+        ],
+        const SizedBox(height: 8),
+        const Text(
+          'Transcript text is not displayed or stored by this UI.',
+          key: ValueKey('realtime-text-stream-transcript-privacy-note'),
+        ),
+      ],
     );
   }
 
@@ -1400,6 +1514,7 @@ class _HomeScreenState extends State<HomeScreen> {
             key: const ValueKey('realtime-text-stream-error'),
           ),
         ],
+        _buildRealtimeTextStreamTranscriptHandoffSection(),
       ],
     );
   }
