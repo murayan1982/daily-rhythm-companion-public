@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f AUTHORIZED / NOT_STARTED
-Current implementation step: RT-4f UI integration, transcript-to-stream handoff, configured streaming, and cooperative cancel acceptance
-Current implementation state: AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f1 IMPLEMENTED / AWAITING_ACCEPTANCE
+Current implementation step: RT-4f current behavior inventory and exact small-commit split
+Current implementation state: IMPLEMENTED / AWAITING_ACCEPTANCE
 Current implementation commit: none
 Last accepted small commit: RT-4e COMPLETED / ACCEPTED / PUSHED at 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: inspect and begin RT-4f only; preserve RT-5 TTS queue/flush/barge-in exclusion
+Next implementation action: verify and accept RT-4f1 only; do not begin RT-4f2 before acceptance
 ```
 
 ## Source of truth
@@ -1494,7 +1494,11 @@ RT-4b  COMPLETED / ACCEPTED
 RT-4c  COMPLETED / ACCEPTED / PUSHED
 RT-4d  COMPLETED / ACCEPTED / PUSHED
 RT-4e  COMPLETED / ACCEPTED / PUSHED
-RT-4f  AUTHORIZED / NOT_STARTED
+RT-4f  CURRENT / NOT_COMPLETED
+  RT-4f1  IMPLEMENTED / AWAITING_ACCEPTANCE
+  RT-4f2  NOT_STARTED
+  RT-4f3  NOT_STARTED
+  RT-4f4  NOT_STARTED
 ```
 
 ### RT-4a — Current behavior inventory and small-commit split
@@ -1730,7 +1734,7 @@ Stop rule: do not edit HomeScreen, integrate the controller into UI, connect STT
 transcripts, execute a real Backend/Framework/provider, import Framework, add a
 DRC provider client, claim provider-level hard cancel, add reconnect/resume,
 add WebSocket, add dependencies, change versions, or implement TTS
-queue/flush/barge-in. RT-4f is AUTHORIZED / NOT_STARTED after RT-4e acceptance.
+queue/flush/barge-in. RT-4f is CURRENT / NOT_COMPLETED after RT-4f1 begins.
 
 RT-4e verification record:
 
@@ -1750,3 +1754,76 @@ explicit operator approval: accepted
 RT-4e status: COMPLETED / ACCEPTED / PUSHED
 RT-4f authorization: AUTHORIZED / NOT_STARTED
 ```
+
+### RT-4f1 — Current behavior inventory and exact small-commit split
+
+RT-4f1 is docs/test-only and changes no runtime behavior.
+
+Current factual inventory:
+
+- [x] HomeScreen injects `BackendApiClient` and optional `VoiceOutputAudioEngine`.
+- [x] HomeScreen owns existing loading/error, voice-input demo, post-advice chat, and voice-output player state.
+- [x] HomeScreen starts initial backend/demo/health checks in `initState()` and disposes its text/audio controllers.
+- [x] HomeScreen has no realtime stream import, client, controller, listener, or stream UI.
+- [x] `main.dart` constructs `const HomeScreen()` and provides no realtime stream injection.
+- [x] `VoiceInputDemoRequestResponse` has a nullable `transcript` field.
+- [x] HomeScreen calls the metadata-only `/demo/voice-input` placeholder.
+- [x] `VoiceInputDemoService.submit_request()` always returns `accepted=False`, `request_state="not_started"`, and `transcript=None`.
+- [x] Accepted real RT-3 transcript reaches Flutter/HomeScreen: false.
+- [x] Metadata-only voice-input demo transcript: always null in production.
+- [x] Fake Backend transcript routes wired to Flutter: false.
+- [x] Real-STT transcript public API route: absent.
+- [x] Real-STT transcript Flutter handoff: absent.
+- [x] App-owned transcript-to-stream handoff: absent.
+- [x] The private real-STT transcript is held only by the private operator result handoff field.
+- [x] RT-4e provides `RealtimeTextStreamClient` with injected `http.Client` and base URL.
+- [x] RT-4e provides `RealtimeTextStreamController` with start/cancel/dispose and immutable public state.
+- [x] Backend create/events/cancel routes exist under `/realtime/text`.
+- [x] CORS uses configured origins and Framework text streaming is default-off.
+- [x] Configured real acceptance would prove local Backend/FW streaming and cooperative cancel only.
+- [x] RT-5 TTS queue/flush/barge-in remains excluded.
+
+Resolved RT-4f split:
+
+```text
+RT-4f1  IMPLEMENTED / AWAITING_ACCEPTANCE
+        Current behavior inventory and exact small-commit split.
+        Docs/test-only. No runtime change.
+RT-4f2  NOT_STARTED
+        Flutter HomeScreen stream presentation and controller lifecycle wiring
+        with injected fake stream client/controller and bounded manual test
+        input. No real Backend, Framework, provider, or STT handoff.
+RT-4f3  NOT_STARTED
+        Define and implement the missing app-owned transcript-to-stream handoff
+        boundary. Connect an injected/fake provider-neutral transcript result
+        to exactly one stream start. The current source has no app-visible
+        accepted real-STT transcript to connect. RT-4f3 must first add the
+        missing app-owned provider-neutral handoff boundary. Fake transcript
+        and fake stream tests only. No real provider/operator execution.
+RT-4f4  NOT_STARTED
+        Configured local Backend/FW streaming and cooperative cancel operator
+        execution and visible UI acceptance. Real-STT-to-stream acceptance can
+        be performed only if a safe transcript transport/exposure boundary is
+        separately reviewed and exists; without that boundary, RT-4f4 does not
+        complete or claim real STT transcript handoff. Private local
+        environment only.
+```
+
+RT-4f protected boundaries:
+
+- [x] do not add a DRC provider client;
+- [x] do not import Framework internal modules;
+- [x] do not weaken same-origin checks;
+- [x] do not add reconnect/resume or WebSocket;
+- [x] do not add always-on/background microphone;
+- [x] do not persist raw audio or transcripts by default;
+- [x] do not add TTS queue/flush/barge-in;
+- [x] do not claim provider-level immediate cancellation;
+- [x] do not modify FW repository;
+- [x] do not change dependencies, versions, or platform permissions unless a later reviewed split proves it necessary.
+
+Detailed inventory:
+`docs/v300_rt4f_ui_streaming_acceptance_inventory.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt4f_ui_streaming_acceptance_inventory.py`.

@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-4f AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f1 IMPLEMENTED / AWAITING_ACCEPTANCE
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,12 +571,12 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-4 CURRENT / NOT_COMPLETED
-Current small commit: RT-4f AUTHORIZED / NOT_STARTED
+Current small commit: RT-4f1 IMPLEMENTED / AWAITING_ACCEPTANCE
 Last accepted small commit: RT-4e COMPLETED / ACCEPTED / PUSHED at 1cfe6134b0d19a4d14ebcf3ec76812ce07dac261
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-4f UI integration, transcript-to-stream handoff, configured streaming, and cooperative cancel acceptance
+Current implementation: RT-4f current behavior inventory and exact small-commit split
 Current implementation commit: none
-Current implementation boundary: RT-4e is accepted and pushed; RT-4f is authorized but not started; RT-5 TTS queue/flush/barge-in remains excluded
+Current implementation boundary: RT-4f1 is docs/test-only; no runtime behavior changes; RT-4f2 must not begin before RT-4f1 acceptance; RT-5 TTS queue/flush/barge-in remains excluded
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -773,7 +773,11 @@ RT-4   CURRENT / NOT_COMPLETED  Streaming LLM, DRC event consumption, and cooper
   RT-4c  COMPLETED / ACCEPTED / PUSHED  Bounded Backend SSE transport and cancel request boundary
   RT-4d  COMPLETED / ACCEPTED / PUSHED  FW v5.4.0 root-public streaming adapter and cooperative cancel
   RT-4e  COMPLETED / ACCEPTED / PUSHED  Flutter stream client/controller without HomeScreen integration
-  RT-4f  AUTHORIZED / NOT_STARTED  UI integration and configured streaming/cancel acceptance
+  RT-4f  CURRENT / NOT_COMPLETED  UI integration and configured streaming/cancel acceptance
+    RT-4f1  IMPLEMENTED / AWAITING_ACCEPTANCE  Current behavior inventory and exact small-commit split
+    RT-4f2  NOT_STARTED  HomeScreen stream presentation and fake controller lifecycle wiring
+    RT-4f3  NOT_STARTED  App-owned provider-neutral transcript handoff boundary
+    RT-4f4  NOT_STARTED  Configured local Backend/FW streaming and cancel acceptance
 RT-5   BLOCKED                   TTS queue, interruption, and barge-in
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -7404,4 +7408,26 @@ service. Candidate behavior is limited to:
 ```
 
 Detailed contract: `docs/v300_rt4_backend_stream_contract.md`.
-RT-4b was accepted and pushed at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c owns bounded SSE/cancel transport, one-consumer ownership, capacity/time/event limits, and disconnect cleanup. RT-4d is COMPLETED / ACCEPTED / PUSHED with a default-off FW v5.4.0 root-public `ask_stream()` adapter, cooperative `interrupt()` request, fake public-session tests, no Framework internal import, no DRC provider client, no Flutter change, and no provider-level hard-cancel claim. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter normalized realtime stream models, an injectable HTTP/SSE client, a ChangeNotifier stream controller, incremental UTF-8 SSE parsing, CRLF/LF HTTP chunk-boundary handling, same-origin `events_path` and `cancel_path` enforcement, monotonic sequence/session/turn validation, event type/state/payload/terminal validation, Unicode code-point chunk/output/safe-message bounds, cooperative cancel only, `hard_cancel_supported=false`, failed/terminal/dispose subscription cleanup, active-stream replacement and simultaneous start rejection, delayed `streamStarted` preserving local `cancelRequested`, fake/in-memory transport only in normal tests, no HomeScreen integration, no STT transcript handoff, no real Backend/Framework/provider execution, and no TTS queue/flush/barge-in work. RT-4f is AUTHORIZED / NOT_STARTED.
+RT-4b was accepted and pushed at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c owns bounded SSE/cancel transport, one-consumer ownership, capacity/time/event limits, and disconnect cleanup. RT-4d is COMPLETED / ACCEPTED / PUSHED with a default-off FW v5.4.0 root-public `ask_stream()` adapter, cooperative `interrupt()` request, fake public-session tests, no Framework internal import, no DRC provider client, no Flutter change, and no provider-level hard-cancel claim. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter normalized realtime stream models, an injectable HTTP/SSE client, a ChangeNotifier stream controller, incremental UTF-8 SSE parsing, CRLF/LF HTTP chunk-boundary handling, same-origin `events_path` and `cancel_path` enforcement, monotonic sequence/session/turn validation, event type/state/payload/terminal validation, Unicode code-point chunk/output/safe-message bounds, cooperative cancel only, `hard_cancel_supported=false`, failed/terminal/dispose subscription cleanup, active-stream replacement and simultaneous start rejection, delayed `streamStarted` preserving local `cancelRequested`, fake/in-memory transport only in normal tests, no HomeScreen integration, no STT transcript handoff, no real Backend/Framework/provider execution, and no TTS queue/flush/barge-in work. RT-4f is CURRENT / NOT_COMPLETED; RT-4f1 is IMPLEMENTED / AWAITING_ACCEPTANCE as docs/test-only inventory and split, while RT-4f2, RT-4f3, and RT-4f4 remain NOT_STARTED.
+
+### RT-4f1 current behavior inventory and split
+
+Status: `IMPLEMENTED / AWAITING_ACCEPTANCE`
+
+RT-4f1 records the factual current behavior before runtime wiring. HomeScreen
+currently injects `BackendApiClient` and optional `VoiceOutputAudioEngine`,
+owns existing loading/error/chat/voice-output state, starts initial loads in
+`initState()`, disposes text/audio controllers, and has no realtime stream
+client/controller import. The metadata-only `/demo/voice-input` endpoint always
+returns `accepted=false`, `request_state=not_started`, and `transcript=None`, so
+accepted real RT-3 transcript text does not reach Flutter/HomeScreen. Fake
+Backend transcript routes exist separately, but Flutter/HomeScreen has no
+consumer for them. The private real-STT transcript remains inside the operator
+result's private handoff field and has no public API route or Flutter handoff.
+RT-4e provides the injectable HTTP/SSE client and ChangeNotifier controller but
+is not integrated into HomeScreen. Backend `/realtime/text`
+create/events/cancel routes exist, CORS uses configured origins, and FW
+streaming remains default-off behind the accepted root-public adapter.
+
+Detailed inventory:
+`docs/v300_rt4f_ui_streaming_acceptance_inventory.md`.

@@ -5980,3 +5980,54 @@ candidate that the source-tree gate validates. The gate is not expected to pass
 against the later six-file acceptance documentation sync. The active accepted
 state is RT-4e COMPLETED / ACCEPTED / PUSHED, and RT-4f is AUTHORIZED /
 NOT_STARTED.
+
+## v3.0.0 RT-4f1 UI streaming acceptance inventory gate
+
+Detailed contract:
+`docs/v300_rt4f_ui_streaming_acceptance_inventory.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt4f_ui_streaming_acceptance_inventory.py
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --stat
+git diff --name-only
+```
+
+The RT-4f1 gate is source-tree-only. It verifies the exact seven-file
+docs/test-only surface, preserves the RT-4e accepted commit markers, checks the
+RT-4f1/RT-4f2/RT-4f3/RT-4f4 split statuses, confirms inspected Flutter and
+Backend paths exist, confirms HomeScreen, RT-3 handoff, RT-4e controller,
+configured Backend, UI acceptance, and protected-boundary inventory sections,
+checks protected runtime/test/dependency/release surfaces are unchanged, scans
+added content only for private material, and does not import Backend/FW runtime
+or execute network requests.
+
+Expected public-safe markers:
+
+```text
+v300_rt4f_ui_streaming_acceptance_inventory_status: implemented-awaiting-acceptance
+v300_rt4f1_exact_change_surface: True
+v300_rt4f1_docs_test_only: True
+v300_rt4f1_home_screen_realtime_import: False
+v300_rt4f1_transcript_forwarded_to_stream: False
+v300_rt4f1_real_stt_transcript_reaches_flutter: False
+v300_rt4f1_metadata_demo_transcript_nonnull: False
+v300_rt4f1_real_stt_public_api_route: False
+v300_rt4f1_app_transcript_stream_handoff: False
+v300_rt4f1_backend_framework_streaming_default_on: False
+v300_rt4f1_provider_level_hard_cancel_claimed: False
+v300_rt4f2_status: not-started
+v300_rt4f3_status: not-started
+v300_rt4f4_status: not-started
+```
