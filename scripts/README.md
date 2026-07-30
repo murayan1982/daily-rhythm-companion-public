@@ -6291,7 +6291,9 @@ implementation push: completed
 RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b is
 `COMPLETED / ACCEPTED / PUSHED` at implementation commit
 `c48238256cb0b17c925f8063c3b636d3b4ccf533` under the separately authorized exact Flutter-only
-fake/in-memory contract. RT-5c remains `NOT_STARTED / NOT_AUTHORIZED`.
+fake/in-memory contract. At that RT-5b acceptance checkpoint, RT-5c was still
+`NOT_STARTED / NOT_AUTHORIZED`; it was authorized later under a separate exact
+contract and is now `IMPLEMENTED / AWAITING_REVIEW`.
 
 ## v3.0.0 RT-5b app-owned voice-output queue gate
 
@@ -6373,9 +6375,70 @@ The dedicated RT-5b gate remains a historical implementation-candidate gate
 bound to the pre-commit baseline and exact nine-file working-tree surface. It
 is not rerun for the later six-document acceptance sync.
 
-RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5c remains
-`NOT_STARTED / NOT_AUTHORIZED` until a separate exact fake-only orchestration
-contract is reviewed and explicitly authorized. RT-5b acceptance does not
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5c was separately reviewed and
+explicitly authorized, and its exact fake-only nine-file candidate is now
+`IMPLEMENTED / AWAITING_REVIEW`. RT-5b acceptance alone did not
 connect HomeScreen, Backend voice output, the existing real player, Framework,
 or a provider, and does not claim real audio playback, automatic TTS,
 Framework real output flush, provider hard cancel, or real barge-in.
+
+## v3.0.0 RT-5c realtime-terminal voice-output orchestration gate
+
+Detailed contract:
+`docs/v300_rt5c_realtime_terminal_voice_output_orchestration_contract.md`.
+
+Run from the repository root after applying the exact candidate:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt5c_realtime_terminal_voice_output_orchestration_contract.py
+python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+dart format lib/services/realtime_terminal_voice_output_orchestrator.dart test/realtime_terminal_voice_output_orchestrator_test.dart
+flutter analyze
+flutter test test/realtime_terminal_voice_output_orchestrator_test.dart
+flutter test
+cd ..
+
+Remove-Item -Recurse -Force .pytest-tmp
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
+```
+
+The default gate is commit-scoped to baseline
+`5fcac869f81e1070e854550f4376353e109905e5` and the exact nine-file surface.
+It verifies explicit enqueue/process separation, one-item processing, bounded
+completed-terminal deduplication, fake synthesis/playback delegates, bounded
+opaque URI validation, operation-epoch plus queue-generation invalidation,
+concurrent flush deduplication, public-state privacy, protected non-change paths,
+and added-content privacy.
+
+Expected candidate markers:
+
+```text
+v300_rt5c_realtime_terminal_voice_output_status: implemented-awaiting-review
+v300_rt5c_exact_change_surface: True
+v300_rt5c_explicit_enqueue_only: True
+v300_rt5c_one_item_per_process_call: True
+v300_rt5c_completed_terminal_dedup_limit: 32
+v300_rt5c_audio_uri_code_point_limit: 2048
+v300_rt5c_generation_and_epoch_late_result_rejection: True
+v300_rt5c_concurrent_flush_stop_deduplicated: True
+v300_rt5c_home_screen_changed: False
+v300_rt5c_backend_changed: False
+v300_rt5c_framework_imported: False
+v300_rt5c_real_synthesis: False
+v300_rt5c_real_audio_playback: False
+v300_rt5c_automatic_tts: False
+v300_rt5c_provider_hard_cancel_claimed: False
+v300_rt5d_authorization: blocked-pending-rt5c-acceptance
+```
+
+No HomeScreen integration, Backend HTTP, existing real-player wiring, Framework
+or provider execution, real synthesis, real audio playback, automatic TTS,
+Framework real output flush, provider hard cancel, or speech-triggered barge-in
+is authorized. Review the actual patch before commit. Do not commit or push
+without explicit approval.
