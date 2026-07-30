@@ -7,8 +7,8 @@ Updated: 2026-07-30
 ```text
 RT-5: CURRENT / NOT_COMPLETED
 RT-5a: COMPLETED / ACCEPTED / PUSHED
-RT-5b: IMPLEMENTED / AWAITING_REVIEW
-RT-5c: NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
+RT-5b: COMPLETED / ACCEPTED / PUSHED
+RT-5c: NOT_STARTED / NOT_AUTHORIZED
 ```
 
 RT-5b adds a Flutter-only, app-owned, in-memory voice-output utterance queue and
@@ -33,6 +33,9 @@ v5.4.0
 Framework HEAD / tag:
 d313eb6acb643103fe25988720ebee5976a04f78
 ```
+
+RT-5b implementation:
+`c48238256cb0b17c925f8063c3b636d3b4ccf533`
 
 RT-5b does not modify or import the Framework repository.
 
@@ -210,34 +213,57 @@ platform audio operation.
 ## 11. Acceptance checklist
 
 ```text
-[ ] exact nine-file candidate
-[ ] dart format applied to the two new Dart files
-[ ] compileall passed
-[ ] dedicated RT-5b gate passed
-[ ] focused Flutter RT-5b tests passed
-[ ] Backend full tests passed
-[ ] Flutter analyze passed
-[ ] Flutter full tests passed
-[ ] git diff --check passed
-[ ] changed-content private scan passed
-[ ] exact diff review passed
-[ ] explicit operator approval received
-[ ] commit approved
-[ ] push approved
+[x] exact nine-file candidate
+[x] dart format applied to the two new Dart files
+[x] compileall passed
+[x] dedicated RT-5b gate passed
+[x] focused Flutter RT-5b tests passed
+[x] Backend full tests passed
+[x] Flutter analyze passed
+[x] Flutter full tests passed
+[x] git diff --check passed
+[x] changed-content private scan passed
+[x] exact diff review passed
+[x] explicit operator approval received
+[x] commit approved
+[x] push approved
 ```
 
-Until every acceptance item passes:
+Acceptance result:
 
 ```text
-RT-5b: IMPLEMENTED / AWAITING_REVIEW
-RT-5c: NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
+RT-5b: COMPLETED / ACCEPTED / PUSHED
+RT-5b implementation commit: c48238256cb0b17c925f8063c3b636d3b4ccf533
+RT-5: CURRENT / NOT_COMPLETED
+RT-5c: NOT_STARTED / NOT_AUTHORIZED
+dart format: passed
+compileall: passed
+dedicated candidate gate: passed before commit
+focused Flutter tests: 15 passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 293 passed
+exact implementation surface: 9 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+HomeScreen changed: false
+Backend changed: false
+Framework/provider execution: false
+real audio playback: false
+automatic TTS: false
+provider hard cancel claimed: false
 ```
 
 ## 12. Stop rule
 
-Stop after the exact nine-file candidate and verification.
+The dedicated RT-5b gate is a historical implementation-candidate gate
+bound to the pre-commit baseline and exact nine-file working-tree surface. Do
+not rerun it for the later docs-only acceptance sync.
 
-Do not connect the queue to HomeScreen, the realtime text controller, Backend
-voice-output requests, the existing real player, Framework, or a provider.
-Do not start RT-5c. Do not claim Backend cancellation, Framework real output
-flush, provider hard cancel, automatic TTS, or real barge-in.
+Do not connect the accepted queue to HomeScreen, the realtime text controller,
+Backend voice-output requests, the existing real player, Framework, or a
+provider without a separately reviewed later commit. RT-5b acceptance does not
+start or authorize RT-5c and does not claim Backend cancellation, Framework
+real output flush, provider hard cancel, automatic TTS, or real barge-in.

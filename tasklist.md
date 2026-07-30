@@ -13,28 +13,28 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-5 CURRENT / NOT_COMPLETED
-current small commit: RT-5b IMPLEMENTED / AWAITING_REVIEW
-current implementation step: RT-5b Flutter-only app-owned bounded TTS utterance queue and local playback-flush lifecycle candidate.
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation commit: none
-last accepted small commit: RT-5a implementation COMPLETED / ACCEPTED / PUSHED at 1cf77774dca75b9875099c2b6c6c03992456d80f
+current small commit: none
+current implementation step: RT-5b Flutter-only app-owned bounded TTS utterance queue and local playback-flush lifecycle completed and accepted at c48238256cb0b17c925f8063c3b636d3b4ccf533; RT-5c remains NOT_STARTED / NOT_AUTHORIZED.
+current implementation state: COMPLETED / ACCEPTED
+current implementation commit: c48238256cb0b17c925f8063c3b636d3b4ccf533
+last accepted small commit: RT-5b implementation COMPLETED / ACCEPTED / PUSHED at c48238256cb0b17c925f8063c3b636d3b4ccf533
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
-その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはCOMPLETED / ACCEPTEDで、RT-4f1はdocs/test-only inventoryとしてCOMPLETED / ACCEPTED / PUSHED、RT-4f2はCOMPLETED / ACCEPTED / PUSHED、RT-4f3はCOMPLETED / ACCEPTED / PUSHED、RT-4f4は実装コミット`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5aはdocs/test-only inventoryとして実装コミット`1cf77774dca75b9875099c2b6c6c03992456d80f`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5はCURRENT / NOT_COMPLETED。RT-5bはFlutter-only fake/in-memory候補としてIMPLEMENTED / AWAITING_REVIEWで、RT-5cはNOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE。
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはCOMPLETED / ACCEPTEDで、RT-4f1はdocs/test-only inventoryとしてCOMPLETED / ACCEPTED / PUSHED、RT-4f2はCOMPLETED / ACCEPTED / PUSHED、RT-4f3はCOMPLETED / ACCEPTED / PUSHED、RT-4f4は実装コミット`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5aはdocs/test-only inventoryとして実装コミット`1cf77774dca75b9875099c2b6c6c03992456d80f`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5はCURRENT / NOT_COMPLETED。RT-5bはFlutter-only fake/in-memory実装として実装コミット`c48238256cb0b17c925f8063c3b636d3b4ccf533`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5cはNOT_STARTED / NOT_AUTHORIZEDで、別のexact contract review前には開始しない。
 
 
 ## RT-5b — App-owned bounded voice-output queue
 
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: COMPLETED / ACCEPTED / PUSHED
 
 ```text
 RT-5a  COMPLETED / ACCEPTED / PUSHED
-RT-5b  IMPLEMENTED / AWAITING_REVIEW
-RT-5c  NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
+RT-5b  COMPLETED / ACCEPTED / PUSHED
+RT-5c  NOT_STARTED / NOT_AUTHORIZED
 ```
 
 実装境界:
@@ -55,6 +55,28 @@ RT-5c  NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
 No HomeScreen integration、Backend/HTTP、existing player、Framework/provider、
 real audio、automatic TTS、hard cancel、barge-in変更は含めない。詳細:
 `docs/v300_rt5b_voice_output_queue_contract.md`。
+
+受け入れ結果:
+
+```text
+implementation commit: c48238256cb0b17c925f8063c3b636d3b4ccf533
+dart format: passed
+compileall: passed
+dedicated RT-5b candidate gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter tests: 15 passed
+Flutter full tests: 293 passed
+exact implementation surface: 9 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+RT-5c: NOT_STARTED / NOT_AUTHORIZED
+```
+
+専用RT-5b gateはpre-commit exact nine-file候補に束縛された履歴gateとして
+保持し、docs-only acceptance syncでは再実行しない。
 
 ---
 

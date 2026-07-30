@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5b IMPLEMENTED / AWAITING_REVIEW
-Current implementation step: RT-5b Flutter-only app-owned bounded TTS utterance queue and local playback-flush lifecycle candidate.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none
-Last accepted small commit: RT-5a implementation COMPLETED / ACCEPTED / PUSHED at 1cf77774dca75b9875099c2b6c6c03992456d80f
+Current small commit: none
+Current implementation step: RT-5b Flutter-only app-owned bounded TTS utterance queue and local playback-flush lifecycle completed and accepted at c48238256cb0b17c925f8063c3b636d3b4ccf533; RT-5c remains NOT_STARTED / NOT_AUTHORIZED.
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: c48238256cb0b17c925f8063c3b636d3b4ccf533
+Last accepted small commit: RT-5b implementation COMPLETED / ACCEPTED / PUSHED at c48238256cb0b17c925f8063c3b636d3b4ccf533
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review RT-5b implementation only; RT-5c remains blocked pending RT-5b acceptance
+Next implementation action: review and authorize the exact RT-5c fake-only orchestration contract separately; RT-5c is not authorized yet
 ```
 
 ## Source of truth
@@ -71,13 +71,13 @@ release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
 
-## Accepted RT-5a checkpoint
+## Accepted RT-5a and RT-5b checkpoints
 
 ```text
 RT-5 CURRENT / NOT_COMPLETED
 RT-5a COMPLETED / ACCEPTED / PUSHED
-RT-5b IMPLEMENTED / AWAITING_REVIEW
-RT-5c NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
+RT-5b COMPLETED / ACCEPTED / PUSHED
+RT-5c NOT_STARTED / NOT_AUTHORIZED
 RT-5d NOT_STARTED
 RT-5e NOT_STARTED
 RT-5f NOT_STARTED / BLOCKED_READINESS
@@ -98,18 +98,18 @@ PARTIAL_READY_FOR_DRC_APP_OWNED_QUEUE_AND_LOCAL_PLAYBACK_FLUSH
 
 RT-5a acceptance passed on 2026-07-30 at implementation commit `1cf77774dca75b9875099c2b6c6c03992456d80f` with compileall, the dedicated candidate gate, Backend 192 passed with one existing warning, Flutter analyze, Flutter 278 passed, exact seven-file review, privacy scan, `git diff --check`, explicit operator approval, commit, and push.
 
-RT-5b is authorized only for the exact Flutter-only fake/in-memory contract
-below and is IMPLEMENTED / AWAITING_REVIEW. This does not authorize HomeScreen,
-Backend/FW/provider execution, real audio playback, automatic TTS, hard cancel,
-or barge-in. RT-5c remains blocked pending RT-5b acceptance. RT-5f remains
-blocked on a separately reviewed app-visible real input source plus sufficient
-public FW execution capability.
+RT-5b is COMPLETED / ACCEPTED / PUSHED at implementation commit
+`c48238256cb0b17c925f8063c3b636d3b4ccf533` under the exact Flutter-only fake/in-memory contract
+below. This does not authorize HomeScreen, Backend/FW/provider execution, real
+audio playback, automatic TTS, hard cancel, barge-in, or RT-5c. RT-5c remains
+NOT_STARTED / NOT_AUTHORIZED. RT-5f remains blocked on a separately reviewed
+app-visible real input source plus sufficient public FW execution capability.
 
-## Current RT-5b candidate
+## Accepted RT-5b checkpoint
 
 ```text
-RT-5b IMPLEMENTED / AWAITING_REVIEW
-RT-5c NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE
+RT-5b COMPLETED / ACCEPTED / PUSHED
+RT-5c NOT_STARTED / NOT_AUTHORIZED
 ```
 
 Contract:
@@ -127,8 +127,16 @@ HomeScreen / Backend / Framework / provider / real audio: unchanged
 
 Exact implementation surface: nine files listed in
 `docs/v300_rt5b_voice_output_queue_contract.md`. Focused tests use only an
-in-memory queue and fake local playback-stop callback. RT-5b does not start
-RT-5c.
+in-memory queue and fake local playback-stop callback. RT-5b acceptance
+passed on 2026-07-30 at implementation commit `c48238256cb0b17c925f8063c3b636d3b4ccf533`
+with Dart formatting, compileall, the dedicated candidate gate, Backend 192
+passed with one existing warning, Flutter analyze, 15 focused Flutter tests,
+293 full Flutter tests, exact nine-file review, changed-content privacy review,
+`git diff --check`, explicit operator approval, commit, and push.
+
+The dedicated gate remains a historical pre-commit candidate gate and is not
+rerun for this docs-only acceptance sync. RT-5b acceptance does not start or
+authorize RT-5c.
 
 ## v3.0.0 goal
 

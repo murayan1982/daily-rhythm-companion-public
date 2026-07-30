@@ -6288,10 +6288,10 @@ explicit operator approval: accepted
 implementation push: completed
 ```
 
-RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b is now
-`IMPLEMENTED / AWAITING_REVIEW` under the separately authorized exact
-Flutter-only fake/in-memory contract. RT-5c remains
-`NOT_STARTED / BLOCKED_PENDING_RT5B_ACCEPTANCE`.
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b is
+`COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`c48238256cb0b17c925f8063c3b636d3b4ccf533` under the separately authorized exact Flutter-only
+fake/in-memory contract. RT-5c remains `NOT_STARTED / NOT_AUTHORIZED`.
 
 ## v3.0.0 RT-5b app-owned voice-output queue gate
 
@@ -6346,3 +6346,36 @@ v300_rt5c_authorization: blocked-pending-rt5b-acceptance
 
 Do not connect the queue to HomeScreen, Backend voice output, the existing real
 player, Framework, or a provider in RT-5b.
+
+## v3.0.0 RT-5b acceptance record
+
+RT-5b is `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`c48238256cb0b17c925f8063c3b636d3b4ccf533`.
+
+Accepted verification:
+
+```text
+dart format: passed
+compileall: passed
+dedicated RT-5b candidate gate: passed before commit
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter RT-5b tests: 15 passed
+Flutter full tests: 293 passed
+exact implementation surface: 9 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+```
+
+The dedicated RT-5b gate remains a historical implementation-candidate gate
+bound to the pre-commit baseline and exact nine-file working-tree surface. It
+is not rerun for the later six-document acceptance sync.
+
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5c remains
+`NOT_STARTED / NOT_AUTHORIZED` until a separate exact fake-only orchestration
+contract is reviewed and explicitly authorized. RT-5b acceptance does not
+connect HomeScreen, Backend voice output, the existing real player, Framework,
+or a provider, and does not claim real audio playback, automatic TTS,
+Framework real output flush, provider hard cancel, or real barge-in.
