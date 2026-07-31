@@ -6471,9 +6471,76 @@ bound to baseline `5fcac869f81e1070e854550f4376353e109905e5` and the exact nine-
 working-tree surface. It is not rerun for the later six-document acceptance
 sync.
 
-RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5d remains
-`NOT_STARTED / NOT_AUTHORIZED` until a separate exact HomeScreen explicit
-opt-in contract is reviewed. RT-5c acceptance does not connect HomeScreen,
-Backend voice output, the existing real player, Framework, or a provider, and
-does not claim real synthesis, real audio playback, automatic TTS, Framework
-real output flush, provider hard cancel, or speech-triggered barge-in.
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5d was separately reviewed and
+authorized for the exact ten-file fake-only HomeScreen contract and is now
+`IMPLEMENTED / AWAITING_REVIEW`. RT-5e remains
+`NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE`.
+
+## v3.0.0 RT-5d HomeScreen manual voice-output controls gate
+
+Detailed contract:
+`docs/v300_rt5d_home_screen_voice_output_controls.md`.
+
+Run from the repository root after applying the exact candidate:
+
+```powershell
+dart format `
+  app\lib\screens\home_screen.dart `
+  app\lib\services\realtime_terminal_voice_output_home_screen_binding.dart `
+  app\test\realtime_terminal_voice_output_home_screen_widget_test.dart
+
+python -m compileall -q backend scripts
+python scripts\check_v300_rt5d_home_screen_voice_output_controls.py
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+Push-Location app
+flutter analyze
+flutter test test\realtime_terminal_voice_output_home_screen_widget_test.dart
+flutter test
+Pop-Location
+
+Remove-Item -Recurse -Force .pytest-tmp
+python scripts\check_v300_rt5d_home_screen_voice_output_controls.py
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --stat
+```
+
+The gate is commit-scoped to baseline
+`04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70` and the exact ten-file
+surface. It validates default-off opt-in, explicit enqueue/process/flush
+separation, one-item processing, binding ownership, stale UI result
+invalidation after flush, existing-player separation, visible-state privacy,
+protected non-change paths, and added-content privacy.
+
+Expected candidate markers:
+
+```text
+v300_rt5d_home_screen_voice_output_status: implemented-awaiting-review
+v300_rt5d_exact_change_surface: True
+v300_rt5d_default_opt_in: False
+v300_rt5d_explicit_enqueue_only: True
+v300_rt5d_one_item_per_process_click: True
+v300_rt5d_manual_flush_only: True
+v300_rt5d_binding_dispose_idempotent: True
+v300_rt5d_old_future_ui_invalidation: True
+v300_rt5d_main_changed: False
+v300_rt5d_backend_changed: False
+v300_rt5d_framework_imported: False
+v300_rt5d_existing_real_player_wired: False
+v300_rt5d_real_synthesis: False
+v300_rt5d_real_audio_playback: False
+v300_rt5d_automatic_tts: False
+v300_rt5d_provider_hard_cancel_claimed: False
+v300_rt5e_authorization: blocked-pending-rt5d-acceptance
+v300_rt5d_baseline_head: 04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70
+```
+
+RT-5d is fake/in-memory only. `main.dart` remains unchanged, so the normal app
+does not construct the binding. The candidate does not call Backend voice
+output, the existing real player, Framework, or a provider, and does not claim
+real synthesis, real audio playback, automatic TTS, Framework real output
+flush, provider hard cancel, or speech-triggered barge-in.
+
+Review the actual ten-file patch before commit. Do not commit or push without
+explicit approval.

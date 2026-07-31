@@ -13,10 +13,10 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-5 CURRENT / NOT_COMPLETED
-current small commit: none
-current implementation step: RT-5c explicit completed terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback lifecycle completed and accepted at f00214cd7e75b28c041728bca6ffc3b180face80; RT-5d remains NOT_STARTED / NOT_AUTHORIZED.
-current implementation state: COMPLETED / ACCEPTED
-current implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
+current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
+current implementation step: optional HomeScreen binding + default-off explicit completed-terminal enqueue + one-item fake process + app-queue/local-fake-stop flush controls.
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation commit: not committed
 last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
@@ -24,7 +24,7 @@ strategic target: v3.0.0
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
-その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはCOMPLETED / ACCEPTEDで、RT-4f1はdocs/test-only inventoryとしてCOMPLETED / ACCEPTED / PUSHED、RT-4f2はCOMPLETED / ACCEPTED / PUSHED、RT-4f3はCOMPLETED / ACCEPTED / PUSHED、RT-4f4は実装コミット`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5aはdocs/test-only inventoryとして実装コミット`1cf77774dca75b9875099c2b6c6c03992456d80f`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5はCURRENT / NOT_COMPLETED。RT-5bはFlutter-only fake/in-memory実装として実装コミット`c48238256cb0b17c925f8063c3b636d3b4ccf533`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5cは別のexact contract reviewで承認され、exact nine-file fake-only実装コミット`f00214cd7e75b28c041728bca6ffc3b180face80`がCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5dはNOT_STARTED / NOT_AUTHORIZEDで、別のexact contract review前には開始しない。
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはCOMPLETED / ACCEPTEDで、RT-4f1はdocs/test-only inventoryとしてCOMPLETED / ACCEPTED / PUSHED、RT-4f2はCOMPLETED / ACCEPTED / PUSHED、RT-4f3はCOMPLETED / ACCEPTED / PUSHED、RT-4f4は実装コミット`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5aはdocs/test-only inventoryとして実装コミット`1cf77774dca75b9875099c2b6c6c03992456d80f`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5はCURRENT / NOT_COMPLETED。RT-5bはFlutter-only fake/in-memory実装として実装コミット`c48238256cb0b17c925f8063c3b636d3b4ccf533`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5cは別のexact contract reviewで承認され、exact nine-file fake-only実装コミット`f00214cd7e75b28c041728bca6ffc3b180face80`がCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5dは別のexact ten-file fake-only HomeScreen contractで承認され、IMPLEMENTED / AWAITING_REVIEW。commit/pushは未承認。
 
 
 ## RT-5b — App-owned bounded voice-output queue
@@ -132,6 +132,60 @@ RT-5d: NOT_STARTED / NOT_AUTHORIZED
 専用gateはpre-commit baselineとexact nine-file候補に束縛された履歴gateとして
 保持し、docs-only acceptance syncでは再実行しない。
 
+## RT-5d — HomeScreen manual voice-output controls
+
+Status: IMPLEMENTED / AWAITING_REVIEW
+
+```text
+RT-5a  COMPLETED / ACCEPTED / PUSHED
+RT-5b  COMPLETED / ACCEPTED / PUSHED
+RT-5c  COMPLETED / ACCEPTED / PUSHED
+RT-5d  IMPLEMENTED / AWAITING_REVIEW
+RT-5e  NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE
+```
+
+実装境界:
+
+```text
+- optional HomeScreen binding factory。main.dartは変更せずdefault unconfigured。
+- session-local opt-inはdefault OFF、非永続。
+- completed terminalはbutton押下時だけenqueue。
+- enqueueだけではprocessしない。
+- process button 1回でprocessNextを1回だけ呼ぶ。
+- flush buttonだけがapp queue invalidation + injected local fake stopを呼ぶ。
+- flushは古いUI process sequenceを無効化し、新generation表示を保護する。
+- bindingがorchestratorとbinding-owned cleanupをexactly onceでdisposeする。
+- UIはphase/count/typed outcome/fixed codeのみ表示し、text/ID/URI/raw errorを複製しない。
+- existing Voice Output Demo playerとは分離し、load/play/stopを呼ばない。
+```
+
+Exact ten-file surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+app/lib/screens/home_screen.dart
+app/lib/services/realtime_terminal_voice_output_home_screen_binding.dart
+app/test/realtime_terminal_voice_output_home_screen_widget_test.dart
+docs/v300_rt5d_home_screen_voice_output_controls.md
+scripts/check_v300_rt5d_home_screen_voice_output_controls.py
+```
+
+No `main.dart`、Backend、configured runtime、existing RT-5c orchestrator、
+queue、existing real player、dependency、permission、version、release record、
+FW repo変更。
+
+No Backend HTTP、Framework/provider実行、real synthesis、real audio、
+automatic TTS、Framework real output flush、provider hard cancel、
+speech-triggered barge-in。RT-5eはRT-5d acceptanceまでblocked。
+
+詳細: `docs/v300_rt5d_home_screen_voice_output_controls.md`。
+専用gate: `scripts/check_v300_rt5d_home_screen_voice_output_controls.py`。
+actual patchとfocused/full verificationを確認し、明示承認まではcommit/pushしない。
+
 ---
 
 ## 2. Source of truth
@@ -182,6 +236,10 @@ docs/v300_rt5_tts_output_control_current_behavior_inventory.md
 scripts/check_v300_rt5_tts_output_control_current_behavior_inventory.py
 docs/v300_rt5b_voice_output_queue_contract.md
 scripts/check_v300_rt5b_voice_output_queue_contract.py
+docs/v300_rt5c_realtime_terminal_voice_output_orchestration_contract.md
+scripts/check_v300_rt5c_realtime_terminal_voice_output_orchestration_contract.py
+docs/v300_rt5d_home_screen_voice_output_controls.md
+scripts/check_v300_rt5d_home_screen_voice_output_controls.py
 ```
 
 v2.1.0のauthoritative詳細タスクリスト:

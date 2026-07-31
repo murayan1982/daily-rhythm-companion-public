@@ -1,12 +1,12 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-07-30
+Updated: 2026-07-31
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none
+Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: none
+Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
 Last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5c explicit completed-terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback orchestration completed and accepted at f00214cd7e75b28c041728bca6ffc3b180face80; RT-5d remains NOT_STARTED / NOT_AUTHORIZED.
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
-Current implementation boundary: accepted RT-5c changed only the exact nine-file Flutter fake/in-memory orchestration service/test/docs/gate surface; no HomeScreen, Backend HTTP, Framework/provider execution, real synthesis, real audio playback, automatic TTS, hard cancel, or barge-in.
+Current implementation: RT-5d optional HomeScreen binding plus default-off explicit completed-terminal enqueue, one-item fake processing, and app-queue/local-fake-stop flush controls.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation commit: none
+Current implementation boundary: exact ten-file Flutter fake-only HomeScreen/binding/widget-test/docs/gate candidate; no main.dart, Backend HTTP, Framework/provider execution, existing real-player wiring, real synthesis, real audio playback, automatic TTS, hard cancel, or barge-in.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -783,8 +783,8 @@ RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
   RT-5a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness classification, and exact split
   RT-5b  COMPLETED / ACCEPTED / PUSHED  App-owned bounded TTS utterance queue and local playback-flush lifecycle
   RT-5c  COMPLETED / ACCEPTED / PUSHED  Explicit terminal-to-queue/fake-synthesis/fake-terminal-playback orchestration
-  RT-5d  NOT_STARTED / NOT_AUTHORIZED  HomeScreen explicit opt-in enqueue/play/flush controls
-  RT-5e  NOT_STARTED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
+  RT-5d  IMPLEMENTED / AWAITING_REVIEW  HomeScreen explicit opt-in enqueue/process/flush controls
+  RT-5e  NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
   RT-5f  NOT_STARTED / BLOCKED_READINESS  Speech-triggered real barge-in and real-STT-to-TTS acceptance
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -922,8 +922,49 @@ changed-content privacy review, `git diff --check`, explicit operator approval,
 commit, and push. The candidate gate remains historical and is not rerun for
 the six-document acceptance sync.
 
-RT-5d remains NOT_STARTED / NOT_AUTHORIZED until a separate exact HomeScreen
-explicit opt-in contract is reviewed and authorized.
+RT-5d was later separately reviewed and authorized for the exact fake-only
+HomeScreen implementation below.
+
+### RT-5d - HomeScreen manual voice-output controls
+
+Implementation status: `IMPLEMENTED / AWAITING_REVIEW`.
+
+```text
+- optional binding factory; normal main.dart remains unconfigured.
+- session-local opt-in is off by default and is not persisted.
+- explicit completed-terminal enqueue only.
+- explicit processNext once per button press; no automatic drain.
+- explicit queue flush plus injected local fake stop only.
+- HomeScreen UI sequences reject stale old-Future display updates after flush.
+- binding owns orchestrator and final composition cleanup exactly once.
+- visible bounded lifecycle metadata without terminal text, IDs, URI, or raw error.
+- existing Voice Output Demo player remains separate and unused by RT-5d.
+```
+
+Exact ten-file surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+app/lib/screens/home_screen.dart
+app/lib/services/realtime_terminal_voice_output_home_screen_binding.dart
+app/test/realtime_terminal_voice_output_home_screen_widget_test.dart
+docs/v300_rt5d_home_screen_voice_output_controls.md
+scripts/check_v300_rt5d_home_screen_voice_output_controls.py
+```
+
+No `main.dart`, Backend, configured runtime, existing RT-5c orchestrator, queue,
+existing real player, dependency, permission, version, release record, or
+Framework change is included.
+
+No Backend HTTP, Framework/provider execution, real synthesis, real audio
+playback, automatic TTS, Framework real output flush, provider hard cancel, or
+speech-triggered barge-in is authorized. RT-5e remains
+NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE. Review the exact patch before
+commit and do not commit or push without explicit approval.
 
 RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is COMPLETED / ACCEPTED and used only released, verifiable public Framework APIs. RT-0c is also COMPLETED / ACCEPTED after the v5.1.0 reassessment, local gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval.
 

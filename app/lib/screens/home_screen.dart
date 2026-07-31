@@ -21,6 +21,8 @@ import '../models/voice_output_demo.dart';
 import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
+import '../services/realtime_terminal_voice_output_home_screen_binding.dart';
+import '../services/realtime_terminal_voice_output_orchestrator.dart';
 import '../services/realtime_text_stream_controller.dart';
 import '../services/realtime_text_stream_transcript_handoff.dart';
 import '../services/voice_output_audio_player.dart';
@@ -37,6 +39,7 @@ class HomeScreen extends StatefulWidget {
     this.voiceOutputAudioEngine,
     this.realtimeTextStreamControllerFactory,
     this.realtimeTextStreamTranscriptHandoffFactory,
+    this.realtimeTerminalVoiceOutputBindingFactory,
   });
 
   final BackendApiClient apiClient;
@@ -45,6 +48,8 @@ class HomeScreen extends StatefulWidget {
       realtimeTextStreamControllerFactory;
   final RealtimeTextStreamTranscriptHandoffFactory?
       realtimeTextStreamTranscriptHandoffFactory;
+  final RealtimeTerminalVoiceOutputHomeScreenBindingFactory?
+      realtimeTerminalVoiceOutputBindingFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -189,6 +194,20 @@ class _HomeScreenState extends State<HomeScreen> {
   RealtimeTextStreamController? _realtimeTextStreamController;
   RealtimeTextStreamTranscriptHandoff? _realtimeTextStreamTranscriptHandoff;
   String? _realtimeTextStreamStartError;
+  RealtimeTerminalVoiceOutputHomeScreenBinding?
+      _realtimeTerminalVoiceOutputBinding;
+  String? _realtimeTerminalVoiceOutputConfigurationCode;
+  bool _realtimeTerminalVoiceOutputOptedIn = false;
+  String? _realtimeTerminalVoiceOutputLastEnqueue;
+  String? _realtimeTerminalVoiceOutputLastProcess;
+  String? _realtimeTerminalVoiceOutputLastFlush;
+  int? _realtimeTerminalVoiceOutputLastClearedPendingCount;
+  bool? _realtimeTerminalVoiceOutputLastStopRequested;
+  bool? _realtimeTerminalVoiceOutputLastStopSucceeded;
+  String? _realtimeTerminalVoiceOutputLastTechnicalCode;
+  int _realtimeTerminalVoiceOutputProcessUiSequence = 0;
+  int _realtimeTerminalVoiceOutputFlushUiSequence = 0;
+  bool _isDisposing = false;
 
   void _handleVoiceOutputPlaybackStateChanged() {
     if (mounted) {
@@ -208,8 +227,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleRealtimeTerminalVoiceOutputChanged() {
+    if (mounted && !_isDisposing) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
+    _isDisposing = true;
+    ++_realtimeTerminalVoiceOutputProcessUiSequence;
+    ++_realtimeTerminalVoiceOutputFlushUiSequence;
+    _realtimeTerminalVoiceOutputBinding?.orchestrator.removeListener(
+      _handleRealtimeTerminalVoiceOutputChanged,
+    );
+    _realtimeTerminalVoiceOutputBinding?.dispose();
     _realtimeTextStreamTranscriptHandoff?.removeListener(
       _handleRealtimeTextStreamTranscriptHandoffChanged,
     );
@@ -702,6 +734,22 @@ class _HomeScreenState extends State<HomeScreen> {
     realtimeTextStreamTranscriptHandoff?.addListener(
       _handleRealtimeTextStreamTranscriptHandoffChanged,
     );
+
+    if (realtimeTextStreamController != null &&
+        widget.realtimeTerminalVoiceOutputBindingFactory != null) {
+      try {
+        final binding =
+            widget.realtimeTerminalVoiceOutputBindingFactory!.call();
+        _realtimeTerminalVoiceOutputBinding = binding;
+        binding.orchestrator.addListener(
+          _handleRealtimeTerminalVoiceOutputChanged,
+        );
+      } catch (_) {
+        _realtimeTerminalVoiceOutputConfigurationCode =
+            'configuration_failed';
+      }
+    }
+
     _loadInitialData();
     _refreshDemoStatus();
     _refreshGoogleHealthConnectionUx();
@@ -1515,6 +1563,351 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         _buildRealtimeTextStreamTranscriptHandoffSection(),
+      ],
+    );
+  }
+
+
+  RealtimeTerminalVoiceOutputOrchestrator?
+  get _realtimeTerminalVoiceOutputOrchestrator =>
+      _realtimeTerminalVoiceOutputBinding?.orchestrator;
+
+  bool get _isRealtimeTerminalVoiceOutputConfigured =>
+      _realtimeTextStreamController != null &&
+      _realtimeTerminalVoiceOutputOrchestrator != null &&
+      _realtimeTerminalVoiceOutputConfigurationCode == null;
+
+  bool get _canDisableRealtimeTerminalVoiceOutputOptIn {
+    final state = _realtimeTerminalVoiceOutputOrchestrator?.state;
+    if (state == null) {
+      return false;
+    }
+    return state.pendingCount == 0 &&
+        state.activeItem == null &&
+        !state.isProcessing &&
+        state.phase != RealtimeTerminalVoiceOutputPhase.flushing &&
+        state.phase != RealtimeTerminalVoiceOutputPhase.disposed;
+  }
+
+  bool get _canToggleRealtimeTerminalVoiceOutputOptIn =>
+      _isRealtimeTerminalVoiceOutputConfigured &&
+      (!_realtimeTerminalVoiceOutputOptedIn ||
+          _canDisableRealtimeTerminalVoiceOutputOptIn);
+
+  bool get _canEnqueueRealtimeTerminalVoiceOutput {
+    final controllerState = _realtimeTextStreamController?.state;
+    final orchestratorState = _realtimeTerminalVoiceOutputOrchestrator?.state;
+    if (!_realtimeTerminalVoiceOutputOptedIn ||
+        controllerState == null ||
+        orchestratorState == null) {
+      return false;
+    }
+    return controllerState.phase == RealtimeTextStreamControllerPhase.completed &&
+        orchestratorState.phase !=
+            RealtimeTerminalVoiceOutputPhase.flushing &&
+        orchestratorState.phase != RealtimeTerminalVoiceOutputPhase.disposed;
+  }
+
+  bool get _canProcessRealtimeTerminalVoiceOutput {
+    final state = _realtimeTerminalVoiceOutputOrchestrator?.state;
+    if (!_realtimeTerminalVoiceOutputOptedIn || state == null) {
+      return false;
+    }
+    return state.pendingCount > 0 &&
+        state.activeItem == null &&
+        !state.isProcessing &&
+        state.phase == RealtimeTerminalVoiceOutputPhase.ready;
+  }
+
+  bool get _canFlushRealtimeTerminalVoiceOutput {
+    final state = _realtimeTerminalVoiceOutputOrchestrator?.state;
+    if (!_realtimeTerminalVoiceOutputOptedIn || state == null) {
+      return false;
+    }
+    final hasWork =
+        state.pendingCount > 0 || state.activeItem != null || state.isProcessing;
+    return hasWork &&
+        state.phase != RealtimeTerminalVoiceOutputPhase.flushing &&
+        state.phase != RealtimeTerminalVoiceOutputPhase.disposed;
+  }
+
+  void _setRealtimeTerminalVoiceOutputOptIn(bool value) {
+    if (!_isRealtimeTerminalVoiceOutputConfigured) {
+      return;
+    }
+    if (!value && !_canDisableRealtimeTerminalVoiceOutputOptIn) {
+      return;
+    }
+    setState(() {
+      _realtimeTerminalVoiceOutputOptedIn = value;
+    });
+  }
+
+  void _enqueueRealtimeTerminalVoiceOutput() {
+    final controller = _realtimeTextStreamController;
+    final orchestrator = _realtimeTerminalVoiceOutputOrchestrator;
+    if (controller == null ||
+        orchestrator == null ||
+        !_canEnqueueRealtimeTerminalVoiceOutput) {
+      return;
+    }
+
+    final result = orchestrator.enqueueCompletedTerminal(controller.state);
+    setState(() {
+      _realtimeTerminalVoiceOutputLastEnqueue = result.accepted
+          ? 'accepted'
+          : result.rejection?.name ?? 'rejected';
+      _realtimeTerminalVoiceOutputLastTechnicalCode = result.accepted
+          ? null
+          : orchestrator.state.lastTechnicalCode;
+    });
+  }
+
+  Future<void> _processNextRealtimeTerminalVoiceOutput() async {
+    final orchestrator = _realtimeTerminalVoiceOutputOrchestrator;
+    if (orchestrator == null || !_canProcessRealtimeTerminalVoiceOutput) {
+      return;
+    }
+
+    final uiSequence = ++_realtimeTerminalVoiceOutputProcessUiSequence;
+    setState(() {
+      _realtimeTerminalVoiceOutputLastProcess = 'processing';
+      _realtimeTerminalVoiceOutputLastTechnicalCode = null;
+    });
+
+    final result = await orchestrator.processNext();
+    if (!mounted ||
+        _isDisposing ||
+        uiSequence != _realtimeTerminalVoiceOutputProcessUiSequence) {
+      return;
+    }
+
+    setState(() {
+      _realtimeTerminalVoiceOutputLastProcess = result.outcome.name;
+      _realtimeTerminalVoiceOutputLastTechnicalCode = result.technicalCode;
+    });
+  }
+
+  Future<void> _flushRealtimeTerminalVoiceOutput() async {
+    final orchestrator = _realtimeTerminalVoiceOutputOrchestrator;
+    if (orchestrator == null || !_canFlushRealtimeTerminalVoiceOutput) {
+      return;
+    }
+
+    ++_realtimeTerminalVoiceOutputProcessUiSequence;
+    final uiSequence = ++_realtimeTerminalVoiceOutputFlushUiSequence;
+    setState(() {
+      _realtimeTerminalVoiceOutputLastFlush = 'flushing';
+      _realtimeTerminalVoiceOutputLastTechnicalCode = null;
+    });
+
+    final result = await orchestrator.flush();
+    if (!mounted ||
+        _isDisposing ||
+        uiSequence != _realtimeTerminalVoiceOutputFlushUiSequence) {
+      return;
+    }
+
+    setState(() {
+      _realtimeTerminalVoiceOutputLastFlush = result.outcome.name;
+      _realtimeTerminalVoiceOutputLastClearedPendingCount =
+          result.clearedPendingCount;
+      _realtimeTerminalVoiceOutputLastStopRequested =
+          result.localPlaybackStopRequested;
+      _realtimeTerminalVoiceOutputLastStopSucceeded =
+          result.localPlaybackStopSucceeded;
+      _realtimeTerminalVoiceOutputLastTechnicalCode = result.technicalCode;
+    });
+  }
+
+  String _formatRealtimeTerminalVoiceOutputConfiguration() {
+    if (_realtimeTerminalVoiceOutputConfigurationCode != null) {
+      return _realtimeTerminalVoiceOutputConfigurationCode!;
+    }
+    return _isRealtimeTerminalVoiceOutputConfigured
+        ? 'configured'
+        : 'unconfigured';
+  }
+
+  String _formatOptionalBool(bool? value) {
+    if (value == null) {
+      return '-';
+    }
+    return value ? 'true' : 'false';
+  }
+
+  Widget _buildRealtimeTerminalVoiceOutputSection(BuildContext context) {
+    final orchestratorState = _realtimeTerminalVoiceOutputOrchestrator?.state;
+    final phase =
+        orchestratorState?.phase.name ??
+        _realtimeTerminalVoiceOutputConfigurationCode ??
+        'unconfigured';
+    final technicalCode =
+        _realtimeTerminalVoiceOutputLastTechnicalCode ??
+        orchestratorState?.lastTechnicalCode ??
+        '-';
+
+    return Column(
+      key: const ValueKey('realtime-terminal-voice-output-section'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Manual Realtime Voice Output',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'RT-5 fake/in-memory lifecycle only. It requires explicit opt-in, explicit enqueue, and one explicit process action per queued item.',
+        ),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SwitchListTile(
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-opt-in',
+                ),
+                contentPadding: EdgeInsets.zero,
+                value: _realtimeTerminalVoiceOutputOptedIn,
+                onChanged: _canToggleRealtimeTerminalVoiceOutputOptIn
+                    ? _setRealtimeTerminalVoiceOutputOptIn
+                    : null,
+                title: const Text('Enable manual fake voice output'),
+                subtitle: const Text(
+                  'This session-local setting is off by default and is not persisted.',
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton(
+                    key: const ValueKey(
+                      'realtime-terminal-voice-output-enqueue-button',
+                    ),
+                    onPressed: _canEnqueueRealtimeTerminalVoiceOutput
+                        ? _enqueueRealtimeTerminalVoiceOutput
+                        : null,
+                    child: const Text('Enqueue completed terminal'),
+                  ),
+                  OutlinedButton(
+                    key: const ValueKey(
+                      'realtime-terminal-voice-output-process-button',
+                    ),
+                    onPressed: _canProcessRealtimeTerminalVoiceOutput
+                        ? _processNextRealtimeTerminalVoiceOutput
+                        : null,
+                    child: const Text('Process next queued item'),
+                  ),
+                  OutlinedButton(
+                    key: const ValueKey(
+                      'realtime-terminal-voice-output-flush-button',
+                    ),
+                    onPressed: _canFlushRealtimeTerminalVoiceOutput
+                        ? _flushRealtimeTerminalVoiceOutput
+                        : null,
+                    child: const Text('Flush RT-5 queue'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Configuration: ${_formatRealtimeTerminalVoiceOutputConfiguration()}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-configuration',
+                ),
+              ),
+              Text(
+                'Opt-in: ${_realtimeTerminalVoiceOutputOptedIn ? 'on' : 'off'}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-opt-in-status',
+                ),
+              ),
+              Text(
+                'RT-5 phase: $phase',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-phase',
+                ),
+              ),
+              Text(
+                'Pending: ${orchestratorState?.pendingCount ?? 0}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-pending',
+                ),
+              ),
+              Text(
+                'Active: ${orchestratorState?.activeItem == null ? 'no' : 'yes'}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-active',
+                ),
+              ),
+              Text(
+                'Last enqueue: ${_realtimeTerminalVoiceOutputLastEnqueue ?? '-'}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-last-enqueue',
+                ),
+              ),
+              Text(
+                'Last process: ${_realtimeTerminalVoiceOutputLastProcess ?? '-'}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-last-process',
+                ),
+              ),
+              Text(
+                'Last flush: ${_realtimeTerminalVoiceOutputLastFlush ?? '-'}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-last-flush',
+                ),
+              ),
+              Text(
+                'Cleared pending: ${_realtimeTerminalVoiceOutputLastClearedPendingCount ?? '-'}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-cleared-pending',
+                ),
+              ),
+              Text(
+                'Local fake stop requested: ${_formatOptionalBool(_realtimeTerminalVoiceOutputLastStopRequested)}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-stop-requested',
+                ),
+              ),
+              Text(
+                'Local fake stop succeeded: ${_formatOptionalBool(_realtimeTerminalVoiceOutputLastStopSucceeded)}',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-stop-succeeded',
+                ),
+              ),
+              Text(
+                'Technical code: $technicalCode',
+                key: const ValueKey(
+                  'realtime-terminal-voice-output-technical-code',
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'This section does not display terminal text, session/turn IDs, queue item IDs, audio URIs, provider payloads, or raw exceptions.',
+                key: ValueKey(
+                  'realtime-terminal-voice-output-privacy-note',
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'This fake RT-5 lifecycle does not control the existing Voice Output Demo player.',
+                key: ValueKey(
+                  'realtime-terminal-voice-output-player-separation-note',
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -4476,6 +4869,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 24),
                     _buildRealtimeTextStreamSection(context),
+
+                    const SizedBox(height: 24),
+                    _buildRealtimeTerminalVoiceOutputSection(context),
 
                     const SizedBox(height: 24),
                     _buildVoiceInputDemoSection(context),

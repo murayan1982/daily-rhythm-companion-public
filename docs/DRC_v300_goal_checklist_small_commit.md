@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: none
-Current implementation step: RT-5c explicit completed terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback lifecycle completed and accepted at f00214cd7e75b28c041728bca6ffc3b180face80; RT-5d remains NOT_STARTED / NOT_AUTHORIZED
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
+Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
+Current implementation step: optional HomeScreen binding + default-off explicit completed-terminal enqueue + one-item fake process + app-queue/local-fake-stop flush controls
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation commit: not committed
 Last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review and authorize the exact RT-5d HomeScreen explicit opt-in contract separately; RT-5d is not authorized yet
+Next implementation action: review the exact RT-5d ten-file patch and verification results; do not commit or push without explicit approval
 ```
 
 ## Source of truth
@@ -58,6 +58,8 @@ docs/v300_rt5b_voice_output_queue_contract.md
 scripts/check_v300_rt5b_voice_output_queue_contract.py
 docs/v300_rt5c_realtime_terminal_voice_output_orchestration_contract.md
 scripts/check_v300_rt5c_realtime_terminal_voice_output_orchestration_contract.py
+docs/v300_rt5d_home_screen_voice_output_controls.md
+scripts/check_v300_rt5d_home_screen_voice_output_controls.py
 ```
 
 Historical release sources remain immutable:
@@ -73,15 +75,15 @@ release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
 
-## Accepted RT-5a, RT-5b, and RT-5c checkpoints
+## Accepted RT-5a, RT-5b, and RT-5c checkpoints plus active RT-5d candidate
 
 ```text
 RT-5 CURRENT / NOT_COMPLETED
 RT-5a COMPLETED / ACCEPTED / PUSHED
 RT-5b COMPLETED / ACCEPTED / PUSHED
 RT-5c COMPLETED / ACCEPTED / PUSHED
-RT-5d NOT_STARTED / NOT_AUTHORIZED
-RT-5e NOT_STARTED
+RT-5d IMPLEMENTED / AWAITING_REVIEW
+RT-5e NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE
 RT-5f NOT_STARTED / BLOCKED_READINESS
 ```
 
@@ -106,8 +108,11 @@ below. This does not authorize HomeScreen, Backend/FW/provider execution, real
 audio playback, automatic TTS, hard cancel, barge-in, or RT-5c.
 RT-5c was later separately reviewed and authorized and is now
 COMPLETED / ACCEPTED / PUSHED at implementation commit `f00214cd7e75b28c041728bca6ffc3b180face80`.
-RT-5d remains NOT_STARTED / NOT_AUTHORIZED. RT-5f remains blocked on a separately reviewed
-app-visible real input source plus sufficient public FW execution capability.
+RT-5d was later separately reviewed and authorized for the exact ten-file
+fake-only HomeScreen candidate and is now IMPLEMENTED / AWAITING_REVIEW.
+RT-5e remains NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE. RT-5f remains
+blocked on a separately reviewed app-visible real input source plus sufficient
+public FW execution capability.
 
 ## Accepted RT-5b checkpoint
 
@@ -185,8 +190,72 @@ commit, and push.
 
 The dedicated gate remains a historical pre-commit candidate gate bound to
 baseline `5fcac869f81e1070e854550f4376353e109905e5` and the exact nine-file
-surface. It is not rerun for the later six-document acceptance sync. RT-5d is
-not started or authorized by RT-5c acceptance.
+surface. It is not rerun for the later six-document acceptance sync. RT-5c
+acceptance did not itself start or authorize RT-5d; RT-5d was later separately
+reviewed and authorized under the candidate contract below.
+
+## RT-5d implementation candidate
+
+```text
+RT-5d IMPLEMENTED / AWAITING_REVIEW
+RT-5e NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE
+baseline HEAD / origin/main: 04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70
+implementation commit: not committed
+```
+
+Candidate contract:
+
+```text
+optional HomeScreen binding factory: true
+normal main.dart configures binding: false
+session opt-in default: off
+opt-in persistence: false
+stream completion automatically enqueues: false
+opt-in automatically enqueues/processes: false
+explicit enqueue button: true
+enqueue automatically processes: false
+one processNext per process button press: true
+automatic queue drain: false
+explicit flush button: true
+flush existing Voice Output Demo player: false
+binding dispose idempotent: true
+old process UI result invalidated by flush: true
+visible terminal text / IDs / item ID / URI / raw error: false
+```
+
+Exact ten-file surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+app/lib/screens/home_screen.dart
+app/lib/services/realtime_terminal_voice_output_home_screen_binding.dart
+app/test/realtime_terminal_voice_output_home_screen_widget_test.dart
+docs/v300_rt5d_home_screen_voice_output_controls.md
+scripts/check_v300_rt5d_home_screen_voice_output_controls.py
+```
+
+Focused widget tests use only fake controller state, fake synthesis, fake
+terminal playback, fake local stop, and a fake existing audio engine. They
+verify default opt-out, explicit action separation, manual one-by-one FIFO,
+flush during synthesis/playback, new-generation processing, exact-once binding
+cleanup, late-dispose safety, configuration failure privacy, section privacy,
+and existing-player non-use.
+
+No `main.dart`, Backend, configured runtime, existing RT-5c orchestrator,
+queue, existing real player, dependency, permission, version, release record,
+or Framework file is changed.
+
+No Backend HTTP, Framework/provider execution, real synthesis, real audio
+playback, automatic TTS, Framework real output flush, provider hard cancel, or
+speech-triggered barge-in is added.
+
+Review the actual patch, focused/full verification, privacy scan, exact surface,
+and `git diff --check` before commit. Do not commit or push without explicit
+approval.
 
 ## v3.0.0 goal
 
