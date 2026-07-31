@@ -1,14 +1,29 @@
 # RT-5e configured local Backend/FW voice output acceptance
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Updated: 2026-07-31
+
+## Status
+
+```text
+RT-5: CURRENT / NOT_COMPLETED
+RT-5d: COMPLETED / ACCEPTED / PUSHED
+RT-5e: COMPLETED / ACCEPTED / PUSHED
+RT-5f: NOT_STARTED / BLOCKED_READINESS / NOT_AUTHORIZED
+implementation commit: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+DRC HEAD / origin/main after acceptance: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+FW v5.4.0 HEAD after acceptance: d313eb6acb643103fe25988720ebee5976a04f78
+```
 
 RT-5e adds a default-off Flutter runtime assembly that connects one explicitly
 processed app-owned queue item to the existing DRC Backend voice-output route,
 the released Framework v5.4.0 root-public voice-output boundary, and a
 binding-owned local playback controller.
 
-This implementation does not execute the private operator run and does not
-claim real provider or local playback acceptance yet.
+The implementation is committed and pushed at `ef5f96337b5f601277a9bcc38b9e6fedc520b0a6`. The later private
+configured operator run passed real root-public synthesis, natural audible
+local playback, explicit playback-stop during active playback, private cleanup,
+and final clean-tree verification. Operator evidence itself is not committed
+or pushed.
 
 ## Exact runtime path
 
@@ -106,6 +121,98 @@ An explicit flush:
 Flush does not cancel an in-flight Backend request, delete generated artifacts,
 call a Framework real-output flush, or cancel provider synthesis.
 
+## Operator acceptance record
+
+Private configured operator acceptance passed on 2026-07-31.
+
+Preflight and runtime readiness:
+
+```text
+DRC implementation HEAD verified: true
+DRC origin/main matched implementation: true
+FW v5.4.0 HEAD verified: true
+DRC/FW working trees clean before execution: true
+private env files ignored: true
+DRC RT-4 configured stream gate ready: true
+DRC voice-output gate ready: true
+FW provider configuration isolated in FW private env: true
+FW root-public voice-output session ready: true
+FW root-public text session ready: true
+Backend health ready: true
+Backend voice-output engine: framework
+Backend voice-output adapter: framework
+Backend real-TTS gate enabled for operator process: true
+Backend voice-output capability: available
+Flutter RT-4 configured runtime enabled: true
+Flutter RT-5 configured runtime enabled: true
+configured UI visible: true
+session opt-in default: off
+TTS provider call before explicit process action: false
+```
+
+Natural playback acceptance:
+
+```text
+completed realtime terminal: confirmed
+explicit opt-in: on
+explicit enqueue: accepted
+pending before process: 1
+explicit process action count: 1
+real FW root-public synthesis: accepted
+audible playback started: confirmed
+audible playback completed naturally: confirmed
+last process after natural completion: completed
+final pending after natural completion: 0
+final active after natural completion: no
+```
+
+Playback-stop acceptance:
+
+```text
+second completed realtime terminal: confirmed
+second explicit enqueue: accepted
+pending before second process: 1
+playback phase before flush: playing
+active before flush: yes
+last process before flush: processing
+explicit flush action count: 1
+audible playback stopped by flush: confirmed
+last flush: completed
+cleared pending: 0
+local playback stop requested: true
+local playback stop succeeded: true
+final phase: idle
+final pending: 0
+final active: no
+technical error code: none
+```
+
+Cleanup and privacy:
+
+```text
+Flutter operator runtime stopped: true
+Backend operator runtime stopped: true
+FW real-TTS gate restored disabled: true
+FW provider-execution guard restored disabled: true
+operator artifact files removed: 3
+operator artifacts remaining: false
+private operator logs removed: true
+temporary private backups removed or restored: true
+DRC corrected private Framework root retained: true
+DRC working tree after cleanup: clean
+DRC HEAD after cleanup: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+FW working tree after cleanup: clean
+FW HEAD after cleanup: d313eb6acb643103fe25988720ebee5976a04f78
+credential values recorded: false
+input or generated text committed: false
+provider payload committed: false
+audio URL or artifact ID committed: false
+raw audio committed: false
+private path or LAN address committed: false
+screenshot or raw operator log committed: false
+operator evidence committed or pushed: false
+```
+
 ## Explicit non-claims
 
 RT-5e does not claim or add:
@@ -123,18 +230,22 @@ RT-5e does not claim or add:
 - changes to the existing Voice Output Demo player.
 ```
 
+Real provider synthesis was accepted only through the released FW root-public
+boundary. Provider-specific implementation details, identity, model, payload,
+or hard-cancel behavior are not accepted or recorded by this milestone.
+
 ## Private operator isolation
 
-Private Framework/provider settings remain in the existing ignored local
-operator environment. Credential values, provider payloads, raw audio,
+Private Framework/provider settings remain in ignored local operator
+environments. Credential values, provider payloads, raw audio,
 utterance/transcript text, audio URLs, artifact IDs, private paths, LAN
-addresses, screenshots, raw exceptions, and operator evidence must not be
+addresses, screenshots, raw exceptions, and operator evidence are not
 committed.
 
-Generated audio remains under the existing ignored Backend local-data
-lifecycle. The operator run must begin and end with clean DRC and Framework
-working trees. Public acceptance notes may record only booleans, fixed typed
-outcomes, fixed technical codes, test counts, and commit hashes.
+Generated audio used the ignored Backend local-data lifecycle. The accepted
+operator run began and ended with clean DRC and Framework working trees. Public
+acceptance records contain only booleans, fixed typed outcomes, test counts,
+cleanup counts, and commit hashes.
 
 ## Exact implementation surface
 
@@ -174,52 +285,45 @@ dependency versions
 release metadata
 ```
 
-## Verification before commit authorization
+## Implementation verification record
 
-```powershell
-$ErrorActionPreference = "Stop"
-
-python -m compileall -q backend scripts
-if ($LASTEXITCODE -ne 0) { throw "compileall failed: $LASTEXITCODE" }
-
-python scripts\check_v300_rt5e_configured_local_voice_output_acceptance.py
-if ($LASTEXITCODE -ne 0) { throw "RT-5e gate failed: $LASTEXITCODE" }
-
-python scripts\smoke_v200_fw_voice_output_boundary_for_drc.py
-if ($LASTEXITCODE -ne 0) { throw "FW voice-output smoke failed: $LASTEXITCODE" }
-
-python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
-if ($LASTEXITCODE -ne 0) { throw "Backend tests failed: $LASTEXITCODE" }
-
-Push-Location app
-try {
-    flutter analyze
-    if ($LASTEXITCODE -ne 0) { throw "Flutter analyze failed: $LASTEXITCODE" }
-
-    flutter test `
-        test\configured_realtime_terminal_voice_output_runtime_test.dart `
-        test\main_realtime_terminal_voice_output_wiring_widget_test.dart `
-        test\realtime_terminal_voice_output_home_screen_widget_test.dart `
-        test\realtime_terminal_voice_output_orchestrator_test.dart `
-        test\voice_output_queue_test.dart `
-        test\voice_output_audio_player_test.dart `
-        test\audioplayers_voice_output_audio_engine_test.dart
-    if ($LASTEXITCODE -ne 0) { throw "Focused Flutter tests failed: $LASTEXITCODE" }
-
-    flutter test
-    if ($LASTEXITCODE -ne 0) { throw "Flutter tests failed: $LASTEXITCODE" }
-}
-finally {
-    Pop-Location
-}
-
-git -c core.whitespace=cr-at-eol diff --check
-if ($LASTEXITCODE -ne 0) { throw "git diff --check failed: $LASTEXITCODE" }
-
-git status --short
-if ($LASTEXITCODE -ne 0) { throw "git status failed: $LASTEXITCODE" }
+```text
+compileall: passed
+RT-5e dedicated candidate gate: passed
+FW root-public voice-output boundary smoke: passed
+Backend full tests: 192 passed / 1 existing warning
+Flutter analyze: passed
+focused Flutter tests: 82 passed
+Flutter full tests: 343 passed
+exact implementation surface: 13 files
+HomeScreen semantic diff: +6 / -6
+git diff --check: passed
+implementation commit: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+implementation push: completed
 ```
 
-Stop before commit and push. Private operator execution starts only after the
-implementation candidate is separately reviewed, explicitly approved,
-committed, and pushed. RT-5e acceptance does not authorize RT-5f.
+The dedicated source gate is bound to baseline
+`ead613d27cd32c625b1b0a07eef96387027d70d5` and the exact thirteen-file
+pre-commit candidate. It remains a historical credential-free,
+provider-free, network-free, and platform-audio-free gate and is not rerun for
+this later six-document acceptance sync.
+
+## Result and stop rule
+
+```text
+RT-5e completed: true
+RT-5e accepted: true
+RT-5e implementation pushed: true
+configured real FW synthesis accepted: true
+natural audible playback accepted: true
+explicit binding-owned playback-stop accepted: true
+operator cleanup accepted: true
+private evidence committed or pushed: false
+RT-5 parent completed: false
+RT-5f started: false
+RT-5f authorized: false
+```
+
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5e acceptance does not authorize
+RT-5f. No RT-5f implementation begins through this six-document acceptance
+sync.

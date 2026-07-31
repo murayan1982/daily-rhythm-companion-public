@@ -6520,14 +6520,14 @@ changed. No Backend HTTP, Framework/provider execution, real synthesis, real
 audio playback, automatic TTS, Framework real output flush, provider hard
 cancel, or speech-triggered barge-in was added.
 
-RT-5e was separately reviewed and authorized and is now `IMPLEMENTED / AWAITING_REVIEW`. The private operator run remains unexecuted.
+RT-5e was separately reviewed, implemented, committed, pushed, and operator-accepted at `ef5f96337b5f601277a9bcc38b9e6fedc520b0a6`. Private operator artifacts and logs were cleaned and are not committed.
 
 ## v3.0.0 RT-5e configured local voice-output candidate gate
 
-Detailed contract:
+Detailed contract and public-safe acceptance record:
 `docs/v300_rt5e_configured_local_voice_output_acceptance.md`.
 
-Candidate command from the accepted RT-5d baseline:
+Historical implementation command from the accepted RT-5d baseline:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -6572,10 +6572,25 @@ if ($LASTEXITCODE -ne 0) { throw "git status failed: $LASTEXITCODE" }
 ```
 
 The gate is bound to baseline `ead613d27cd32c625b1b0a07eef96387027d70d5`
-and the exact thirteen-file candidate. It reads no credentials, performs no
-network or provider execution, and starts no platform audio.
+and the exact thirteen-file implementation candidate. It is credential-free,
+network-free, provider-free, and platform-audio-free and remains a historical
+pre-commit gate. It is not rerun for the later six-document acceptance sync.
 
-RT-5e is `IMPLEMENTED / AWAITING_REVIEW`. Do not commit or push without
-explicit approval. Automatic TTS, automatic queue drain, provider hard cancel,
-FW real flush, barge-in, and real-STT-to-TTS remain unclaimed. RT-5f is not
-authorized.
+RT-5e implementation commit `ef5f96337b5f601277a9bcc38b9e6fedc520b0a6` passed the dedicated gate, FW
+root-public boundary smoke, Backend 192 tests with one existing warning,
+Flutter analyze, 82 focused Flutter tests, 343 full Flutter tests, exact
+thirteen-file review, HomeScreen semantic-only `+6/-6`, privacy review, and
+`git diff --check`, then was explicitly approved and pushed.
+
+Configured local operator acceptance later passed with explicit opt-in,
+explicit enqueue, real FW root-public synthesis, natural audible playback, and
+an explicit flush during active playback. Flush ended with `completed`,
+cleared pending `0`, local stop requested/succeeded `true`, phase `idle`,
+pending `0`, and active `no`. Cleanup stopped both runtimes, restored FW real
+provider gates to disabled, removed three operator artifact files and private
+logs/backups, and left both working trees clean.
+
+RT-5e is `COMPLETED / ACCEPTED / PUSHED`. Automatic TTS, automatic queue
+drain, Backend HTTP cancel, provider hard cancel, FW real flush,
+speech-triggered barge-in, and real-STT-to-TTS remain unclaimed. RT-5f remains
+`NOT_STARTED / BLOCKED_READINESS` and is not authorized.

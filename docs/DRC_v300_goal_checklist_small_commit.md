@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5e IMPLEMENTED / AWAITING_REVIEW
-Current implementation step: default-off configured Flutter runtime for explicit existing Backend/FW one-shot synthesis and binding-owned local playback-stop
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: not committed
-Last accepted small commit: RT-5d implementation COMPLETED / ACCEPTED / PUSHED at eff46a3b4de771aa37a48ea9ef5959918e407200
+Current small commit: none
+Current implementation step: RT-5e configured local Backend/FW one-shot synthesis, natural local playback, and explicit binding-owned playback-stop accepted
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+Last accepted small commit: RT-5e implementation COMPLETED / ACCEPTED / PUSHED at ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact RT-5e thirteen-file implementation candidate and verification results; do not commit or push without explicit approval
+Next implementation action: none authorized; RT-5f remains NOT_STARTED / BLOCKED_READINESS
 ```
 
 ## Source of truth
@@ -75,7 +75,7 @@ release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
 
-## Accepted RT-5a through RT-5d checkpoints plus active RT-5e candidate
+## Accepted RT-5a through RT-5e checkpoints
 
 ```text
 RT-5 CURRENT / NOT_COMPLETED
@@ -83,7 +83,7 @@ RT-5a COMPLETED / ACCEPTED / PUSHED
 RT-5b COMPLETED / ACCEPTED / PUSHED
 RT-5c COMPLETED / ACCEPTED / PUSHED
 RT-5d COMPLETED / ACCEPTED / PUSHED
-RT-5e IMPLEMENTED / AWAITING_REVIEW
+RT-5e COMPLETED / ACCEPTED / PUSHED
 RT-5f NOT_STARTED / BLOCKED_READINESS
 ```
 
@@ -111,9 +111,12 @@ COMPLETED / ACCEPTED / PUSHED at implementation commit `f00214cd7e75b28c041728bc
 RT-5d was later separately reviewed and authorized for the exact ten-file
 fake-only HomeScreen implementation and is now COMPLETED / ACCEPTED /
 PUSHED at implementation commit `eff46a3b4de771aa37a48ea9ef5959918e407200`.
-RT-5e is IMPLEMENTED / AWAITING_REVIEW under a separately authorized exact thirteen-file contract. RT-5f remains
+RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
+`ef5f96337b5f601277a9bcc38b9e6fedc520b0a6` under the separately authorized exact thirteen-file contract after
+configured real synthesis, natural audible playback, explicit binding-owned
+playback-stop, cleanup, and clean-tree verification passed. RT-5f remains
 blocked on a separately reviewed app-visible real input source plus sufficient
-public FW execution capability.
+public FW execution capability and is not authorized.
 
 ## Accepted RT-5b checkpoint
 
@@ -195,27 +198,75 @@ surface. It is not rerun for the later six-document acceptance sync. RT-5c
 acceptance did not itself start or authorize RT-5d; RT-5d was later separately
 reviewed and authorized under the candidate contract below.
 
-## Active RT-5e implementation candidate
+## Accepted RT-5e checkpoint
 
 ```text
-RT-5e IMPLEMENTED / AWAITING_REVIEW
-implementation commit: not committed
-private operator acceptance: not executed
-RT-5f NOT_STARTED / BLOCKED_READINESS
+RT-5e COMPLETED / ACCEPTED / PUSHED
+implementation commit: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+private operator acceptance: passed
+DRC HEAD / origin/main: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+FW HEAD: d313eb6acb643103fe25988720ebee5976a04f78
+RT-5f NOT_STARTED / BLOCKED_READINESS / NOT_AUTHORIZED
 ```
 
-The candidate adds a default-off configured Flutter runtime using only the
-existing DRC Backend voice-output API and FW v5.4.0 root-public one-shot output
-boundary. It owns a separate local player, validates the exact generated URL
-handoff, and preserves explicit enqueue/process/flush controls.
+Accepted configured runtime contract:
 
-No automatic TTS, automatic drain, provider hard cancel, FW real flush,
-barge-in, or real-STT-to-TTS is claimed.
+```text
+default-off Flutter runtime: true
+existing Backend /demo/voice-output only: true
+FW root-public create_voice_output_session().create_output only: true
+one queued item per explicit process action: true
+exact generated URL/MP3 contract required: true
+binding-owned dedicated player: true
+existing Voice Output Demo player shared: false
+automatic enqueue/drain: false
+explicit queue/local-player flush: true
+Backend HTTP/provider hard cancel: false
+FW real flush: false
+speech-triggered barge-in: false
+real-STT-to-stream-to-TTS: false
+```
 
-Contract: `docs/v300_rt5e_configured_local_voice_output_acceptance.md`.
-Gate: `scripts/check_v300_rt5e_configured_local_voice_output_acceptance.py`.
+Implementation verification passed with compileall, the dedicated RT-5e gate,
+FW root-public voice-output smoke, Backend 192 passed with one existing warning,
+Flutter analyze, 82 focused Flutter tests, 343 full Flutter tests, exact
+thirteen-file review, HomeScreen semantic-only `+6/-6`, changed-content privacy
+review, `git diff --check`, explicit approval, commit, and push.
 
-Do not commit or push without explicit approval.
+Private configured operator acceptance passed on 2026-07-31:
+
+```text
+configured runtime visible with opt-in default off: true
+completed realtime terminal: confirmed
+explicit enqueue: accepted
+real FW root-public synthesis: accepted
+natural audible playback completion: accepted
+second active playback before flush: confirmed
+explicit flush: completed
+cleared pending: 0
+local playback stop requested: true
+local playback stop succeeded: true
+audible playback interruption: confirmed
+final phase / pending / active: idle / 0 / no
+operator artifact files removed: 3
+operator artifacts remaining: false
+private logs/backups removed or restored: true
+FW real provider gates restored disabled: true
+DRC/FW working trees after cleanup: clean
+private evidence committed or pushed: false
+```
+
+The exact implementation and public-safe acceptance record is
+`docs/v300_rt5e_configured_local_voice_output_acceptance.md`. The dedicated
+source gate remains historical and is not rerun for this six-document
+acceptance sync.
+
+No Backend/FW source change, DRC provider client, FW internal import, automatic
+TTS, automatic queue drain, Backend HTTP cancellation, provider hard cancel,
+FW real flush, speech-triggered barge-in, or real-STT-to-TTS is claimed.
+
+RT-5 remains CURRENT / NOT_COMPLETED. RT-5e acceptance does not start or
+authorize RT-5f.
 
 ## Accepted RT-5d checkpoint
 
