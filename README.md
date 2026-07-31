@@ -9,14 +9,14 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
-Current implementation: RT-5d HomeScreen explicit opt-in controls for completed-terminal enqueue, one-item fake processing, and app-queue/local-fake-stop flush.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: not committed
-Last accepted small commit: RT-5c implementation (**COMPLETED / ACCEPTED / PUSHED**) at `f00214cd7e75b28c041728bca6ffc3b180face80`
+Current small commit: none
+Current implementation: RT-5d HomeScreen explicit opt-in controls completed and accepted at `eff46a3b4de771aa37a48ea9ef5959918e407200`. RT-5e remains NOT_STARTED / NOT_AUTHORIZED.
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: `eff46a3b4de771aa37a48ea9ef5959918e407200`
+Last accepted small commit: RT-5d implementation (**COMPLETED / ACCEPTED / PUSHED**) at `eff46a3b4de771aa37a48ea9ef5959918e407200`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-5 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: review the exact RT-5d ten-file fake-only UI patch and verification results; do not commit or push without explicit approval
+Current realtime action: review and authorize the exact RT-5e configured local Backend/FW one-shot synthesis and local playback-stop operator-acceptance contract separately; RT-5e remains NOT_STARTED / NOT_AUTHORIZED
 
 Current phase state:
 
@@ -73,8 +73,8 @@ RT-5  CURRENT / NOT_COMPLETED  TTS queue/output control and interruption
   RT-5a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness classification, and exact split
   RT-5b  COMPLETED / ACCEPTED / PUSHED  App-owned bounded queue and local playback-flush lifecycle
   RT-5c  COMPLETED / ACCEPTED / PUSHED  Explicit injectable terminal-to-queue/fake-synthesis/fake-playback orchestration
-  RT-5d  IMPLEMENTED / AWAITING_REVIEW  HomeScreen explicit opt-in enqueue/process/flush controls
-  RT-5e  NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE  Configured local synthesis and playback-stop acceptance
+  RT-5d  COMPLETED / ACCEPTED / PUSHED  HomeScreen explicit opt-in enqueue/process/flush controls
+  RT-5e  NOT_STARTED / NOT_AUTHORIZED  Configured local synthesis and playback-stop acceptance
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -89,7 +89,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter models, an injectable SSE client, a ChangeNotifier controller, and fake transport tests. RT-4f1 is COMPLETED / ACCEPTED / PUSHED at `f54e8638f0255b28e015702bc64b624a6d4a36af` as a docs/test-only current behavior inventory and exact four-child split; no runtime behavior changed. RT-4f2 is COMPLETED / ACCEPTED / PUSHED at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a` with HomeScreen fake streaming presentation and controller lifecycle wiring. RT-4f3 is COMPLETED / ACCEPTED / PUSHED at `d651a00be8713a70be3a46524f33c787299bbe9c` with an app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake/in-memory stream dependencies. RT-4f4 is COMPLETED / ACCEPTED / PUSHED at `9b19e379634a718df2ab3ed5eb49bb20bfe7e240` with default-off configured Flutter runtime wiring, configured local Backend/FW stream completion, accepted real incremental streaming, and accepted cooperative cancel. RT-4 and RT-4f are COMPLETED / ACCEPTED. Real-STT-to-stream was not executed or accepted, provider-level hard cancel is not claimed, and automatic TTS is not started. RT-5a is COMPLETED / ACCEPTED / PUSHED at `1cf77774dca75b9875099c2b6c6c03992456d80f` as a docs/test-only TTS output-control inventory and exact RT-5 split. RT-5 remains CURRENT / NOT_COMPLETED. RT-5b is COMPLETED / ACCEPTED / PUSHED at `c48238256cb0b17c925f8063c3b636d3b4ccf533`. RT-5c is COMPLETED / ACCEPTED / PUSHED at `f00214cd7e75b28c041728bca6ffc3b180face80` under the separately authorized exact nine-file fake-only contract. RT-5d is IMPLEMENTED / AWAITING_REVIEW under the separately authorized exact ten-file fake-only UI contract.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter models, an injectable SSE client, a ChangeNotifier controller, and fake transport tests. RT-4f1 is COMPLETED / ACCEPTED / PUSHED at `f54e8638f0255b28e015702bc64b624a6d4a36af` as a docs/test-only current behavior inventory and exact four-child split; no runtime behavior changed. RT-4f2 is COMPLETED / ACCEPTED / PUSHED at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a` with HomeScreen fake streaming presentation and controller lifecycle wiring. RT-4f3 is COMPLETED / ACCEPTED / PUSHED at `d651a00be8713a70be3a46524f33c787299bbe9c` with an app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake/in-memory stream dependencies. RT-4f4 is COMPLETED / ACCEPTED / PUSHED at `9b19e379634a718df2ab3ed5eb49bb20bfe7e240` with default-off configured Flutter runtime wiring, configured local Backend/FW stream completion, accepted real incremental streaming, and accepted cooperative cancel. RT-4 and RT-4f are COMPLETED / ACCEPTED. Real-STT-to-stream was not executed or accepted, provider-level hard cancel is not claimed, and automatic TTS is not started. RT-5a is COMPLETED / ACCEPTED / PUSHED at `1cf77774dca75b9875099c2b6c6c03992456d80f` as a docs/test-only TTS output-control inventory and exact RT-5 split. RT-5 remains CURRENT / NOT_COMPLETED. RT-5b is COMPLETED / ACCEPTED / PUSHED at `c48238256cb0b17c925f8063c3b636d3b4ccf533`. RT-5c is COMPLETED / ACCEPTED / PUSHED at `f00214cd7e75b28c041728bca6ffc3b180face80` under the separately authorized exact nine-file fake-only contract. RT-5d is COMPLETED / ACCEPTED / PUSHED at `eff46a3b4de771aa37a48ea9ef5959918e407200` under the separately authorized exact ten-file fake-only UI contract. RT-5e remains NOT_STARTED / NOT_AUTHORIZED pending a separate exact contract review.
 
 ## v3.0.0 RT-4a streaming/cancel current behavior inventory
 
@@ -432,8 +432,9 @@ authorized for the exact fake-only HomeScreen implementation below.
 
 ## v3.0.0 RT-5d HomeScreen manual voice-output controls
 
-RT-5d is **IMPLEMENTED / AWAITING_REVIEW** under the separately authorized
-exact ten-file fake-only UI contract.
+RT-5d is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`eff46a3b4de771aa37a48ea9ef5959918e407200` under the separately authorized exact ten-file
+fake-only UI contract.
 
 It adds an optional HomeScreen binding factory, session-local default-off
 opt-in, and three independent manual controls:
@@ -463,12 +464,23 @@ Detailed contract:
 Dedicated candidate gate:
 `scripts/check_v300_rt5d_home_screen_voice_output_controls.py`.
 
+Acceptance passed on 2026-07-31 after compileall, the dedicated candidate gate,
+Backend 192 passed with one existing warning, Flutter analyze, 16 focused
+Flutter tests, 331 full Flutter tests, exact ten-file review, changed-content
+privacy review, `git diff --check`, explicit operator approval, implementation
+commit, post-commit verification, and push. The final HomeScreen candidate was
+reviewed as an insertion-only `+396/-0` diff after formatter-noise cleanup.
+
+The dedicated candidate gate remains a historical pre-commit gate bound to
+baseline `04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70` and the exact ten-file
+candidate. It is not rerun for the later six-document acceptance sync.
+
 Normal `main.dart` remains unchanged and does not configure this binding.
 RT-5d does not use the existing Voice Output Demo player and adds no Backend
 HTTP, Framework/provider execution, real synthesis, real audio playback,
 automatic TTS, Framework real output flush, provider hard cancel, or
-speech-triggered barge-in. RT-5e remains blocked pending RT-5d acceptance. Do
-not commit or push without explicit approval.
+speech-triggered barge-in. RT-5e remains NOT_STARTED / NOT_AUTHORIZED and
+requires a separate exact contract review.
 
 ## v3.0.0 RT-1b Backend realtime normalization
 

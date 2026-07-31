@@ -9,8 +9,8 @@ RT-5: CURRENT / NOT_COMPLETED
 RT-5a: COMPLETED / ACCEPTED / PUSHED
 RT-5b: COMPLETED / ACCEPTED / PUSHED
 RT-5c: COMPLETED / ACCEPTED / PUSHED
-RT-5d: IMPLEMENTED / AWAITING_REVIEW
-RT-5e: NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE
+RT-5d: COMPLETED / ACCEPTED / PUSHED
+RT-5e: NOT_STARTED / NOT_AUTHORIZED
 ```
 
 RT-5d adds HomeScreen presentation and ownership for the accepted RT-5c
@@ -45,6 +45,9 @@ v5.4.0
 Framework HEAD / tag:
 d313eb6acb643103fe25988720ebee5976a04f78
 ```
+
+RT-5d implementation commit:
+eff46a3b4de771aa37a48ea9ef5959918e407200
 
 RT-5d does not modify or import the Framework repository.
 
@@ -355,46 +358,45 @@ release records
 AI Character Framework repository
 ```
 
-## 15. Candidate verification
+## 15. Accepted verification
 
-```powershell
-dart format `
-  app\lib\screens\home_screen.dart `
-  app\lib\services\realtime_terminal_voice_output_home_screen_binding.dart `
-  app\test\realtime_terminal_voice_output_home_screen_widget_test.dart
+RT-5d acceptance passed on 2026-07-31 with:
 
-python -m compileall -q backend scripts
-python scripts\check_v300_rt5d_home_screen_voice_output_controls.py
-
-python -m pytest -q backend\tests `
-  --basetemp .pytest-tmp `
-  -p no:cacheprovider
-
-Push-Location app
-flutter analyze
-flutter test test\realtime_terminal_voice_output_home_screen_widget_test.dart
-flutter test
-Pop-Location
-
-Remove-Item -Recurse -Force .pytest-tmp
-python scripts\check_v300_rt5d_home_screen_voice_output_controls.py
-git -c core.whitespace=cr-at-eol diff --check
-git status --short
-git diff --stat
+```text
+implementation commit: eff46a3b4de771aa37a48ea9ef5959918e407200
+compileall: passed
+dedicated RT-5d candidate gate: passed before commit
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter tests: 16 passed
+Flutter full tests: 331 passed
+exact implementation surface: 10 files
+HomeScreen final diff: +396 / -0
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
 ```
 
-## 16. Review and stop rule
+The dedicated gate is commit-scoped to baseline
+`04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70` and the exact ten-file working-tree
+candidate. It remains historical and is not rerun for the later six-document
+acceptance sync.
 
-RT-5d remains `IMPLEMENTED / AWAITING_REVIEW` until the actual ten-file patch,
-focused widget tests, full regressions, privacy scan, and exact surface are
-reviewed and explicit commit approval is received.
+## 16. Acceptance record and next-step rule
 
-Do not commit or push without explicit approval.
+RT-5d is `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`eff46a3b4de771aa37a48ea9ef5959918e407200`.
 
-Do not modify `main.dart` or connect Backend/FW/provider execution, the existing
-real player, real synthesis, real audio playback, automatic TTS, Framework real
-output flush, provider hard cancel, or speech-triggered barge-in. RT-5e remains
-blocked pending RT-5d acceptance.
+The accepted result remains fake-only and default-off. It does not configure
+`main.dart`, call Backend/FW/provider execution, connect the existing real
+player, synthesize or play real audio, claim Framework real output flush,
+provider hard cancellation, or speech-triggered barge-in.
+
+RT-5e remains `NOT_STARTED / NOT_AUTHORIZED`. Review and authorize its exact
+configured local Backend/FW one-shot synthesis and local playback-stop operator
+acceptance contract separately before changing runtime or collecting operator
+evidence.
 
 ## Dedicated gate contract vocabulary
 

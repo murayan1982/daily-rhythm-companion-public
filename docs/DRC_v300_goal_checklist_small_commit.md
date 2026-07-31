@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
-Current implementation step: optional HomeScreen binding + default-off explicit completed-terminal enqueue + one-item fake process + app-queue/local-fake-stop flush controls
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: not committed
-Last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
+Current small commit: none
+Current implementation step: RT-5d optional HomeScreen binding + default-off explicit completed-terminal enqueue + one-item fake process + app-queue/local-fake-stop flush controls completed and accepted at eff46a3b4de771aa37a48ea9ef5959918e407200; RT-5e remains NOT_STARTED / NOT_AUTHORIZED
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: eff46a3b4de771aa37a48ea9ef5959918e407200
+Last accepted small commit: RT-5d implementation COMPLETED / ACCEPTED / PUSHED at eff46a3b4de771aa37a48ea9ef5959918e407200
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact RT-5d ten-file patch and verification results; do not commit or push without explicit approval
+Next implementation action: review and authorize the exact RT-5e configured local Backend/FW one-shot synthesis and local playback-stop operator-acceptance contract separately; RT-5e is not authorized yet
 ```
 
 ## Source of truth
@@ -75,15 +75,15 @@ release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
 
-## Accepted RT-5a, RT-5b, and RT-5c checkpoints plus active RT-5d candidate
+## Accepted RT-5a, RT-5b, RT-5c, and RT-5d checkpoints
 
 ```text
 RT-5 CURRENT / NOT_COMPLETED
 RT-5a COMPLETED / ACCEPTED / PUSHED
 RT-5b COMPLETED / ACCEPTED / PUSHED
 RT-5c COMPLETED / ACCEPTED / PUSHED
-RT-5d IMPLEMENTED / AWAITING_REVIEW
-RT-5e NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE
+RT-5d COMPLETED / ACCEPTED / PUSHED
+RT-5e NOT_STARTED / NOT_AUTHORIZED
 RT-5f NOT_STARTED / BLOCKED_READINESS
 ```
 
@@ -109,8 +109,9 @@ audio playback, automatic TTS, hard cancel, barge-in, or RT-5c.
 RT-5c was later separately reviewed and authorized and is now
 COMPLETED / ACCEPTED / PUSHED at implementation commit `f00214cd7e75b28c041728bca6ffc3b180face80`.
 RT-5d was later separately reviewed and authorized for the exact ten-file
-fake-only HomeScreen candidate and is now IMPLEMENTED / AWAITING_REVIEW.
-RT-5e remains NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE. RT-5f remains
+fake-only HomeScreen implementation and is now COMPLETED / ACCEPTED /
+PUSHED at implementation commit `eff46a3b4de771aa37a48ea9ef5959918e407200`.
+RT-5e remains NOT_STARTED / NOT_AUTHORIZED. RT-5f remains
 blocked on a separately reviewed app-visible real input source plus sufficient
 public FW execution capability.
 
@@ -194,16 +195,16 @@ surface. It is not rerun for the later six-document acceptance sync. RT-5c
 acceptance did not itself start or authorize RT-5d; RT-5d was later separately
 reviewed and authorized under the candidate contract below.
 
-## RT-5d implementation candidate
+## Accepted RT-5d checkpoint
 
 ```text
-RT-5d IMPLEMENTED / AWAITING_REVIEW
-RT-5e NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE
+RT-5d COMPLETED / ACCEPTED / PUSHED
+RT-5e NOT_STARTED / NOT_AUTHORIZED
 baseline HEAD / origin/main: 04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70
-implementation commit: not committed
+implementation commit: eff46a3b4de771aa37a48ea9ef5959918e407200
 ```
 
-Candidate contract:
+Accepted contract:
 
 ```text
 optional HomeScreen binding factory: true
@@ -223,39 +224,30 @@ old process UI result invalidated by flush: true
 visible terminal text / IDs / item ID / URI / raw error: false
 ```
 
-Exact ten-file surface:
+Exact ten-file implementation surface is recorded in
+`docs/v300_rt5d_home_screen_voice_output_controls.md`. Focused widget tests use
+only fake controller state, fake synthesis, fake terminal playback, fake local
+stop, and a fake existing audio engine.
 
-```text
-README.md
-roadmap.md
-tasklist.md
-scripts/README.md
-docs/DRC_v300_goal_checklist_small_commit.md
-app/lib/screens/home_screen.dart
-app/lib/services/realtime_terminal_voice_output_home_screen_binding.dart
-app/test/realtime_terminal_voice_output_home_screen_widget_test.dart
-docs/v300_rt5d_home_screen_voice_output_controls.md
-scripts/check_v300_rt5d_home_screen_voice_output_controls.py
-```
-
-Focused widget tests use only fake controller state, fake synthesis, fake
-terminal playback, fake local stop, and a fake existing audio engine. They
-verify default opt-out, explicit action separation, manual one-by-one FIFO,
-flush during synthesis/playback, new-generation processing, exact-once binding
-cleanup, late-dispose safety, configuration failure privacy, section privacy,
-and existing-player non-use.
+Acceptance passed on 2026-07-31 after compileall, the dedicated candidate gate,
+Backend 192 passed with one existing warning, Flutter analyze, 16 focused
+Flutter tests, 331 full Flutter tests, exact ten-file review, changed-content
+privacy review, `git diff --check`, explicit operator approval, implementation
+commit, post-commit verification, and push. The final HomeScreen candidate was
+reviewed as an insertion-only `+396/-0` diff.
 
 No `main.dart`, Backend, configured runtime, existing RT-5c orchestrator,
 queue, existing real player, dependency, permission, version, release record,
-or Framework file is changed.
+or Framework file was changed.
 
 No Backend HTTP, Framework/provider execution, real synthesis, real audio
 playback, automatic TTS, Framework real output flush, provider hard cancel, or
-speech-triggered barge-in is added.
+speech-triggered barge-in was added.
 
-Review the actual patch, focused/full verification, privacy scan, exact surface,
-and `git diff --check` before commit. Do not commit or push without explicit
-approval.
+The dedicated RT-5d gate remains a historical pre-commit candidate gate bound
+to baseline `04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70` and the exact ten-file
+surface. It is not rerun for this six-document acceptance sync. RT-5d
+acceptance does not authorize or start RT-5e.
 
 ## v3.0.0 goal
 

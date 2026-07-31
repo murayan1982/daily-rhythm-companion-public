@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
+Current small commit: none
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5d IMPLEMENTED / AWAITING_REVIEW
-Last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
+Current small commit: none
+Last accepted small commit: RT-5d implementation COMPLETED / ACCEPTED / PUSHED at eff46a3b4de771aa37a48ea9ef5959918e407200
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5d optional HomeScreen binding plus default-off explicit completed-terminal enqueue, one-item fake processing, and app-queue/local-fake-stop flush controls.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none
-Current implementation boundary: exact ten-file Flutter fake-only HomeScreen/binding/widget-test/docs/gate candidate; no main.dart, Backend HTTP, Framework/provider execution, existing real-player wiring, real synthesis, real audio playback, automatic TTS, hard cancel, or barge-in.
+Current implementation: RT-5d optional HomeScreen binding plus default-off explicit completed-terminal enqueue, one-item fake processing, and app-queue/local-fake-stop flush controls completed and accepted at eff46a3b4de771aa37a48ea9ef5959918e407200; RT-5e remains NOT_STARTED / NOT_AUTHORIZED.
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: eff46a3b4de771aa37a48ea9ef5959918e407200
+Current implementation boundary: accepted exact ten-file Flutter fake-only HomeScreen/binding/widget-test/docs/gate implementation; no main.dart, Backend HTTP, Framework/provider execution, existing real-player wiring, real synthesis, real audio playback, automatic TTS, hard cancel, or barge-in.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -783,8 +783,8 @@ RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
   RT-5a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness classification, and exact split
   RT-5b  COMPLETED / ACCEPTED / PUSHED  App-owned bounded TTS utterance queue and local playback-flush lifecycle
   RT-5c  COMPLETED / ACCEPTED / PUSHED  Explicit terminal-to-queue/fake-synthesis/fake-terminal-playback orchestration
-  RT-5d  IMPLEMENTED / AWAITING_REVIEW  HomeScreen explicit opt-in enqueue/process/flush controls
-  RT-5e  NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
+  RT-5d  COMPLETED / ACCEPTED / PUSHED  HomeScreen explicit opt-in enqueue/process/flush controls
+  RT-5e  NOT_STARTED / NOT_AUTHORIZED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
   RT-5f  NOT_STARTED / BLOCKED_READINESS  Speech-triggered real barge-in and real-STT-to-TTS acceptance
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -927,7 +927,8 @@ HomeScreen implementation below.
 
 ### RT-5d - HomeScreen manual voice-output controls
 
-Implementation status: `IMPLEMENTED / AWAITING_REVIEW`.
+Implementation status: `COMPLETED / ACCEPTED / PUSHED` at
+`eff46a3b4de771aa37a48ea9ef5959918e407200`.
 
 ```text
 - optional binding factory; normal main.dart remains unconfigured.
@@ -941,7 +942,7 @@ Implementation status: `IMPLEMENTED / AWAITING_REVIEW`.
 - existing Voice Output Demo player remains separate and unused by RT-5d.
 ```
 
-Exact ten-file surface:
+Exact ten-file implementation surface:
 
 ```text
 README.md
@@ -956,15 +957,24 @@ docs/v300_rt5d_home_screen_voice_output_controls.md
 scripts/check_v300_rt5d_home_screen_voice_output_controls.py
 ```
 
+Acceptance passed on 2026-07-31 after compileall, the dedicated candidate gate,
+Backend 192 passed with one existing warning, Flutter analyze, 16 focused
+Flutter tests, 331 full Flutter tests, exact ten-file review, changed-content
+privacy review, `git diff --check`, explicit operator approval, implementation
+commit, post-commit verification, and push. The final HomeScreen candidate was
+an insertion-only `+396/-0` diff.
+
 No `main.dart`, Backend, configured runtime, existing RT-5c orchestrator, queue,
 existing real player, dependency, permission, version, release record, or
-Framework change is included.
+Framework change was included.
 
 No Backend HTTP, Framework/provider execution, real synthesis, real audio
 playback, automatic TTS, Framework real output flush, provider hard cancel, or
-speech-triggered barge-in is authorized. RT-5e remains
-NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE. Review the exact patch before
-commit and do not commit or push without explicit approval.
+speech-triggered barge-in was added. RT-5e remains NOT_STARTED /
+NOT_AUTHORIZED and requires a separate exact contract review.
+
+The dedicated RT-5d gate remains a historical pre-commit candidate gate and is
+not rerun for the six-document acceptance sync.
 
 RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is COMPLETED / ACCEPTED and used only released, verifiable public Framework APIs. RT-0c is also COMPLETED / ACCEPTED after the v5.1.0 reassessment, local gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval.
 

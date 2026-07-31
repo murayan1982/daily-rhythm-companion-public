@@ -6481,17 +6481,15 @@ authorized for the exact ten-file fake-only HomeScreen contract and is now
 Detailed contract:
 `docs/v300_rt5d_home_screen_voice_output_controls.md`.
 
-Run from the repository root after applying the exact candidate:
+Historical pre-commit candidate command:
 
 ```powershell
-dart format `
-  app\lib\screens\home_screen.dart `
-  app\lib\services\realtime_terminal_voice_output_home_screen_binding.dart `
-  app\test\realtime_terminal_voice_output_home_screen_widget_test.dart
-
 python -m compileall -q backend scripts
 python scripts\check_v300_rt5d_home_screen_voice_output_controls.py
-python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+python -m pytest -q backend\tests `
+  --basetemp .pytest-tmp `
+  -p no:cacheprovider
 
 Push-Location app
 flutter analyze
@@ -6499,48 +6497,28 @@ flutter test test\realtime_terminal_voice_output_home_screen_widget_test.dart
 flutter test
 Pop-Location
 
-Remove-Item -Recurse -Force .pytest-tmp
-python scripts\check_v300_rt5d_home_screen_voice_output_controls.py
 git -c core.whitespace=cr-at-eol diff --check
 git status --short
-git diff --stat
 ```
 
-The gate is commit-scoped to baseline
-`04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70` and the exact ten-file
-surface. It validates default-off opt-in, explicit enqueue/process/flush
-separation, one-item processing, binding ownership, stale UI result
-invalidation after flush, existing-player separation, visible-state privacy,
-protected non-change paths, and added-content privacy.
+RT-5d is `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`eff46a3b4de771aa37a48ea9ef5959918e407200`. Acceptance recorded compileall, the dedicated
+candidate gate, Backend 192 passed with one existing warning, Flutter analyze,
+16 focused Flutter tests, 331 full Flutter tests, exact ten-file review,
+changed-content privacy review, `git diff --check`, explicit operator approval,
+implementation commit, post-commit verification, and push. The final
+HomeScreen diff was insertion-only `+396/-0`.
 
-Expected candidate markers:
+The dedicated gate is source-tree-only, credential-free, network-free,
+Backend-runtime-free, Framework-free, provider-free, and platform-audio-free.
+It is bound to the pre-commit baseline and exact ten-file candidate, so it
+remains historical and is not rerun for this six-document acceptance sync.
 
-```text
-v300_rt5d_home_screen_voice_output_status: implemented-awaiting-review
-v300_rt5d_exact_change_surface: True
-v300_rt5d_default_opt_in: False
-v300_rt5d_explicit_enqueue_only: True
-v300_rt5d_one_item_per_process_click: True
-v300_rt5d_manual_flush_only: True
-v300_rt5d_binding_dispose_idempotent: True
-v300_rt5d_old_future_ui_invalidation: True
-v300_rt5d_main_changed: False
-v300_rt5d_backend_changed: False
-v300_rt5d_framework_imported: False
-v300_rt5d_existing_real_player_wired: False
-v300_rt5d_real_synthesis: False
-v300_rt5d_real_audio_playback: False
-v300_rt5d_automatic_tts: False
-v300_rt5d_provider_hard_cancel_claimed: False
-v300_rt5e_authorization: blocked-pending-rt5d-acceptance
-v300_rt5d_baseline_head: 04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70
-```
+No `main.dart`, Backend, existing RT-5c orchestrator, queue, existing real
+player, dependency, permission, version, release record, or Framework file was
+changed. No Backend HTTP, Framework/provider execution, real synthesis, real
+audio playback, automatic TTS, Framework real output flush, provider hard
+cancel, or speech-triggered barge-in was added.
 
-RT-5d is fake/in-memory only. `main.dart` remains unchanged, so the normal app
-does not construct the binding. The candidate does not call Backend voice
-output, the existing real player, Framework, or a provider, and does not claim
-real synthesis, real audio playback, automatic TTS, Framework real output
-flush, provider hard cancel, or speech-triggered barge-in.
-
-Review the actual ten-file patch before commit. Do not commit or push without
-explicit approval.
+RT-5e remains `NOT_STARTED / NOT_AUTHORIZED` and requires a separately reviewed
+exact contract and explicit approval.
