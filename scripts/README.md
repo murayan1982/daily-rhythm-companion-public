@@ -6710,3 +6710,32 @@ RT-5f1: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 
 RT-5f0 does not authorize RT-5f1 implementation, commit, or push. A separate
 exact contract review and explicit authorization remain required.
+
+## RT-5f2 fake-only integrated voice-turn candidate gate
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test test/integrated_voice_turn_coordinator_test.dart
+flutter test
+cd ..
+
+git diff --check
+```
+
+The exact nine-file candidate is fake/in-memory only. The gate verifies the
+operation epoch, bounded duplicate speech-event memory, cooperative stream
+cancel, RT-5c local flush/stop reuse, exact non-change surface, race-test
+markers, and conservative non-claims.
+
+```text
+RT-5f2 IMPLEMENTED / AWAITING_REVIEW
+implementation commit: none
+RT-5f3 BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED
+```
+
+Do not commit or push without explicit approval.
