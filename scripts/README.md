@@ -6598,11 +6598,12 @@ speech-triggered barge-in, and real-STT-to-TTS remain unclaimed. RT-5f0 is
 `NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED`.
 
 
-## v3.0.0 RT-5f1 app-visible real-STT transcript source gate
+## RT-5f1 app-visible provider-neutral real-STT source check
 
-Detailed contract: `docs/v300_rt5f1_app_visible_real_stt_contract.md`.
+RT-5f1 is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`daca3a68672eb3106e861278ebb65612380140ed`.
 
-Run from the repository root:
+Historical pre-commit verification commands:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -6620,17 +6621,19 @@ cd ..
 git diff --check
 ```
 
-The gate is bound to baseline `e4ecd46487b43e20b359ce350fc90b5e0ac36d95`
-and exact seventeen-file scope. It verifies the default-off config, body-only
-transcript endpoint, pre-consume credential/FW/single-flight guards, FW
-root-public assembly reuse, exact no-store response, 4096-code-point bound,
-Flutter one-shot provider, redirect/size/header/key rejection, and unchanged
-normal startup/HomeScreen/TTS/speech/barge-in boundaries.
+Acceptance recorded 12 focused Backend tests, 204 full Backend tests, Flutter
+analyze, 12 focused Flutter tests, 355 full Flutter tests, exact seventeen-file
+review, privacy review, explicit approval, push, and clean DRC/FW working
+trees. Checks remained credential-free, provider-free, network-free,
+microphone-free, playback-free, and real-transcript-free.
 
-The gate reads no private credential, imports no provider SDK, creates no
-provider client, performs no network request, accesses no microphone, plays no
-audio, and creates no real transcript. RT-5f1 remains IMPLEMENTED /
-AWAITING_REVIEW until exact diff review and explicit commit/push approval.
+The dedicated gate remains a historical pre-commit gate bound to the
+`e4ecd46487b43e20b359ce350fc90b5e0ac36d95` baseline and exact seventeen-file
+candidate. It is not rerun by the docs-only acceptance sync.
+
+```text
+RT-5f2: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+```
 
 ## v3.0.0 RT-5f0 real-input and soft-barge-in readiness gate
 

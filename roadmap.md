@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-5f1 app-visible real-STT transcript source
+Current small commit: none
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,7 +571,7 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f1 app-visible real-STT transcript source
+Current small commit: none
 Last accepted small commit: RT-5f0 readiness and exact split COMPLETED / ACCEPTED / PUSHED at 348669884e872475aaa4242a5960a6de6fb7e10b
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 Current implementation: RT-5f1 default-off provider-neutral Backend transcript endpoint and Flutter transcript provider candidate.
@@ -787,7 +787,8 @@ RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
   RT-5e  COMPLETED / ACCEPTED / PUSHED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
   RT-5f  CURRENT / NOT_COMPLETED  Speech-triggered DRC-local soft barge-in and real-STT-to-TTS integration
     RT-5f0  COMPLETED / ACCEPTED / PUSHED  Readiness decision and exact small-commit split
-    RT-5f1  IMPLEMENTED / AWAITING_REVIEW  App-visible real-STT transcript source
+    RT-5f1  COMPLETED / ACCEPTED / PUSHED
+RT-5f2  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  App-visible real-STT transcript source
     RT-5f2  NOT_STARTED / NOT_AUTHORIZED  Fake-only integrated voice-turn and soft-barge-in coordinator
     RT-5f3  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen and production speech-activity wiring
     RT-5f4  NOT_STARTED / NOT_AUTHORIZED  Configured local end-to-end and audible soft-barge-in acceptance
@@ -798,25 +799,34 @@ RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and rel
 ```
 
 
-### RT-5f1 - App-visible provider-neutral real-STT transcript source
+## RT-5f1 — App-visible provider-neutral real-STT transcript source
+
+Status: **COMPLETED / ACCEPTED / PUSHED**
 
 ```text
-RT-5f1  IMPLEMENTED / AWAITING_REVIEW
-baseline  e4ecd46487b43e20b359ce350fc90b5e0ac36d95
-FW v5.4.0  d313eb6acb643103fe25988720ebee5976a04f78
+implementation commit: daca3a68672eb3106e861278ebb65612380140ed
+change surface: exact seventeen files
+FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 ```
 
-RT-5f1 adds a default-off, body-only Backend transcript endpoint and an
-injectable Flutter provider. The Backend checks all execution gates before
-consuming the staged WAV, serializes real STT to one process-wide slot, reuses
-only the accepted FW root-public real-executor assembly, and returns an exact
-no-store final transcript response bounded to 4096 Unicode code points.
+RT-5f1 accepted a default-off provider-neutral Backend transcript endpoint,
+host-owned private credential boundary, single-flight real-STT gate, FW
+root-public executor reuse, bounded final transcript response, and injectable
+Flutter transcript provider. It preserves the single-use staged WAV lifecycle
+and existing transcript-to-stream handoff boundary.
 
-The Flutter provider transfers one staged handle, performs one request with no
-automatic retry, rejects redirects and unsafe response shapes, and returns the
-existing provider-neutral transcript model. It is not wired into normal startup
-or HomeScreen in RT-5f1. Real provider execution and operator acceptance are
-deferred to RT-5f4.
+Acceptance passed with compileall, the historical dedicated pre-commit gate,
+12 focused Backend tests, 204 full Backend tests, Flutter analyze, 12 focused
+Flutter tests, 355 full Flutter tests, exact seventeen-file review, privacy
+review, explicit approval, push, and clean DRC/FW working trees.
+
+No private credential read, provider/network execution, real STT, normal
+HomeScreen/main wiring, automatic TTS, speech activity, barge-in, or operator
+acceptance was performed.
+
+```text
+RT-5f2: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+```
 
 ### RT-5f0 - App-visible real-input and DRC-local soft-barge-in readiness
 

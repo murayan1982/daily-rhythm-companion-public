@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f1 app-visible real-STT transcript source
-Current implementation step: RT-5f1 default-off provider-neutral Backend transcript endpoint and Flutter transcript provider
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none (uncommitted candidate)
-Last accepted small commit: RT-5f0 readiness and exact split COMPLETED / ACCEPTED / PUSHED at 348669884e872475aaa4242a5960a6de6fb7e10b
+Current small commit: none
+Current implementation step: RT-5f1 app-visible provider-neutral real-STT transcript source accepted
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: daca3a68672eb3106e861278ebb65612380140ed
+Last accepted small commit: RT-5f1 app-visible real-STT transcript source COMPLETED / ACCEPTED / PUSHED at daca3a68672eb3106e861278ebb65612380140ed
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact seventeen-file RT-5f1 candidate; do not commit or push without explicit approval
+Next implementation action: prepare a separate exact RT-5f2 contract review; RT-5f2 runtime remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -86,7 +86,8 @@ RT-5d COMPLETED / ACCEPTED / PUSHED
 RT-5e COMPLETED / ACCEPTED / PUSHED
 RT-5f CURRENT / NOT_COMPLETED
 RT-5f0 COMPLETED / ACCEPTED / PUSHED
-RT-5f1 IMPLEMENTED / AWAITING_REVIEW
+RT-5f1 COMPLETED / ACCEPTED / PUSHED
+RT-5f2 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -118,18 +119,17 @@ RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
 COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
-docs/test-only readiness checkpoint. RT-5f1 is ready only for a separate exact
-contract review and remains unimplemented and unauthorized.
+docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is ready only for a separate exact contract review and remains unimplemented and unauthorized.
 
 
-## RT-5f1 implementation candidate
+## RT-5f1 accepted implementation checkpoint
 
 ```text
-RT-5f1 IMPLEMENTED / AWAITING_REVIEW
-baseline HEAD / origin/main: e4ecd46487b43e20b359ce350fc90b5e0ac36d95
+RT-5f1 COMPLETED / ACCEPTED / PUSHED
+implementation commit: daca3a68672eb3106e861278ebb65612380140ed
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 change surface: exact seventeen files
-commit/push: not authorized
+RT-5f2: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 - [x] Add default-off `VOICE_INPUT_REAL_STT_ENABLED`.
@@ -144,11 +144,32 @@ commit/push: not authorized
 - [x] Verify compatibility with existing transcript-to-stream handoff.
 - [x] Add synthetic Backend and Flutter tests.
 - [x] Keep main.dart, HomeScreen, private env, FW, TTS, speech activity, and barge-in unchanged.
-- [ ] Review exact seventeen-file diff and Windows Flutter results.
-- [ ] Explicit RT-5f1 commit and push approval.
+- [x] Review exact seventeen-file diff and Windows Flutter results.
+- [x] Explicit RT-5f1 commit and push approval.
+- [x] Push implementation and verify clean DRC/FW working trees.
 
-Detailed contract: `docs/v300_rt5f1_app_visible_real_stt_contract.md`.
-Dedicated gate: `scripts/check_v300_rt5f1_app_visible_real_stt_contract.py`.
+Acceptance verification:
+
+```text
+compileall: passed
+dedicated RT-5f1 pre-commit gate: passed
+focused Backend tests: 12 passed
+Backend full tests: 204 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter tests: 12 passed
+Flutter full tests: 355 passed
+exact implementation surface: 17 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+post-push DRC/FW working trees: clean
+```
+
+Detailed accepted contract:
+`docs/v300_rt5f1_app_visible_real_stt_contract.md`.
+Historical pre-commit gate:
+`scripts/check_v300_rt5f1_app_visible_real_stt_contract.py`.
 
 ## RT-5f0 accepted readiness checkpoint
 
@@ -156,7 +177,8 @@ Dedicated gate: `scripts/check_v300_rt5f1_app_visible_real_stt_contract.py`.
 RT-5f0 COMPLETED / ACCEPTED / PUSHED
 implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
 FW v5.4.0 HEAD: d313eb6acb643103fe25988720ebee5976a04f78
-RT-5f1 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-5f1 COMPLETED / ACCEPTED / PUSHED
+RT-5f2 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 - [x] Accepted RT-3d3 real STT remains private operator-only.

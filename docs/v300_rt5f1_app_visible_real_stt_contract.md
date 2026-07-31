@@ -7,16 +7,14 @@ Updated: 2026-07-31
 ```text
 RT-5: CURRENT / NOT_COMPLETED
 RT-5f0: COMPLETED / ACCEPTED / PUSHED
-RT-5f1: IMPLEMENTED / AWAITING_REVIEW
-RT-5f1 implementation commit: none
-DRC baseline: e4ecd46487b43e20b359ce350fc90b5e0ac36d95
+RT-5f1: COMPLETED / ACCEPTED / PUSHED
+RT-5f1 implementation commit: daca3a68672eb3106e861278ebb65612380140ed
+DRC implementation baseline: e4ecd46487b43e20b359ce350fc90b5e0ac36d95
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-commit/push: not authorized
+commit/push: completed
 ```
 
-RT-5f1 creates the first normal app-visible, provider-neutral transcript source
-without wiring it into normal startup or HomeScreen. The implementation is
-strictly default-off and uses only the accepted FW v5.4.0 root public API.
+RT-5f1 created and accepted the first normal app-visible, provider-neutral transcript source at implementation commit `daca3a68672eb3106e861278ebb65612380140ed` without wiring it into normal startup or HomeScreen. The accepted implementation remains strictly default-off and uses only the FW v5.4.0 root public API.
 
 ## Functional boundary
 
@@ -296,16 +294,31 @@ The synthetic tests do not read private credentials, import the OpenAI SDK,
 create a provider client, execute network requests, access a microphone, play
 audio, or create a real transcript.
 
-## Candidate evidence
+## Acceptance evidence
 
 ```text
+compileall: passed
+dedicated RT-5f1 pre-commit gate: passed
 focused Backend tests: 12 passed
-Backend full tests: 204 passed
-Flutter analyze: pending Windows-host validation
-focused Flutter tests: pending Windows-host validation
-Flutter full tests: pending Windows-host validation
-commit: not performed
-push: not performed
+Backend full tests: 204 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter tests: 12 passed
+Flutter full tests: 355 passed
+exact implementation surface: 17 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation commit: daca3a68672eb3106e861278ebb65612380140ed
+implementation push: completed
+post-push DRC/FW working trees: clean
+```
+
+The accepted synthetic verification did not read private credentials, import the
+OpenAI SDK, create a provider client, execute network requests, access a
+microphone, play audio, or create a real transcript.
+
+```text
+RT-5f2: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 ## Stop rule
