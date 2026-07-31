@@ -6592,15 +6592,23 @@ logs/backups, and left both working trees clean.
 
 RT-5e is `COMPLETED / ACCEPTED / PUSHED`. Automatic TTS, automatic queue
 drain, Backend HTTP cancel, provider hard cancel, FW real flush,
-speech-triggered barge-in, and real-STT-to-TTS remain unclaimed. RT-5f remains
-`NOT_STARTED / BLOCKED_READINESS` and is not authorized.
+speech-triggered barge-in, and real-STT-to-TTS remain unclaimed. RT-5f0 is
+`COMPLETED / ACCEPTED / PUSHED` at
+`348669884e872475aaa4242a5960a6de6fb7e10b`; RT-5f1 remains
+`NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED`.
 
 ## v3.0.0 RT-5f0 real-input and soft-barge-in readiness gate
 
-Detailed contract:
+Detailed accepted contract:
 `docs/v300_rt5f_readiness_and_exact_split.md`.
 
-Run from the clean DRC repository root after applying the exact candidate:
+The dedicated gate is retained as the historical pre-commit verifier for the
+exact seven-file RT-5f0 implementation candidate. It is bound to DRC baseline
+`6272f613906317de3fecd899d4389ce0f13155e8`, clean FW v5.4.0
+`d313eb6acb643103fe25988720ebee5976a04f78`, and the pre-commit candidate
+state. Do not rerun it against the accepted docs-only state sync.
+
+Historical command sequence:
 
 ```powershell
 $env:FRAMEWORK_ROOT = "<clean FW v5.4.0 checkout>"
@@ -6624,13 +6632,7 @@ git diff --stat
 git status --short
 ```
 
-The candidate gate is bound to DRC baseline
-`6272f613906317de3fecd899d4389ce0f13155e8`, clean `origin/main`, clean FW
-v5.4.0 `d313eb6acb643103fe25988720ebee5976a04f78`, and the exact seven-file
-docs/test-only surface. It performs no network, provider, microphone, audio,
-transcript, Backend runtime, Flutter runtime, or platform execution.
-
-Expected markers:
+Historical expected markers:
 
 ```text
 v300_rt5f0_readiness_status: implemented-awaiting-review
@@ -6650,4 +6652,23 @@ v300_rt5f0_final_claim: drc-local-soft-barge-in-only
 v300_rt5f1_authorization: blocked-pending-rt5f0-acceptance
 ```
 
-RT-5f0 does not authorize RT-5f1 implementation, commit, or push.
+Acceptance result:
+
+```text
+implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
+compileall: passed
+dedicated pre-commit gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 343 passed
+exact implementation surface: 7 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+post-push working tree: clean
+RT-5f1: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+```
+
+RT-5f0 does not authorize RT-5f1 implementation, commit, or push. A separate
+exact contract review and explicit authorization remain required.

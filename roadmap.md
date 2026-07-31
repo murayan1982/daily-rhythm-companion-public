@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f0 readiness and exact split
-Last accepted small commit: RT-5e implementation COMPLETED / ACCEPTED / PUSHED at ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+Current small commit: none
+Last accepted small commit: RT-5f0 readiness and exact split COMPLETED / ACCEPTED / PUSHED at 348669884e872475aaa4242a5960a6de6fb7e10b
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5f0 docs/test-only app-visible real-input and DRC-local soft-barge-in readiness contract.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none (uncommitted candidate)
-Current implementation boundary: exact seven-file docs/test-only candidate; no Backend/Flutter/FW runtime, existing test, dependency, private env, provider execution, microphone, audio, transcript, version, or release change.
+Current implementation: RT-5f0 real-input and DRC-local soft-barge-in readiness contract accepted.
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
+Current implementation boundary: accepted exact seven-file docs/test-only readiness checkpoint; RT-5f1 remains unimplemented and unauthorized pending a separate exact contract review.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -786,8 +786,8 @@ RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
   RT-5d  COMPLETED / ACCEPTED / PUSHED  HomeScreen explicit opt-in enqueue/process/flush controls
   RT-5e  COMPLETED / ACCEPTED / PUSHED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
   RT-5f  CURRENT / NOT_COMPLETED  Speech-triggered DRC-local soft barge-in and real-STT-to-TTS integration
-    RT-5f0  IMPLEMENTED / AWAITING_REVIEW  Readiness decision and exact small-commit split
-    RT-5f1  NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE  App-visible real-STT transcript source
+    RT-5f0  COMPLETED / ACCEPTED / PUSHED  Readiness decision and exact small-commit split
+    RT-5f1  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  App-visible real-STT transcript source
     RT-5f2  NOT_STARTED / NOT_AUTHORIZED  Fake-only integrated voice-turn and soft-barge-in coordinator
     RT-5f3  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen and production speech-activity wiring
     RT-5f4  NOT_STARTED / NOT_AUTHORIZED  Configured local end-to-end and audible soft-barge-in acceptance
@@ -797,41 +797,71 @@ RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
 ```
 
-### RT-5f0 - Real-input and DRC-local soft-barge-in readiness
+### RT-5f0 - App-visible real-input and DRC-local soft-barge-in readiness
 
-Purpose:
+Status: COMPLETED / ACCEPTED / PUSHED
 
 ```text
-- Freeze the accepted RT-3d3 private real-STT boundary.
-- Confirm that normal Flutter has no app-visible real transcript provider.
-- Confirm that normal main.dart has no microphone/STT runtime assembly.
-- Confirm that the record adapter exposes no speech-onset/amplitude event.
-- Confirm that RT-5e flush stops only app-owned queue/player work.
-- Re-probe FW v5.4.0 root-public realtime/output-control capability flags.
-- Narrow RT-5f to DRC-local soft barge-in and freeze RT-5f1 through RT-5f4.
+RT-5e  COMPLETED / ACCEPTED / PUSHED
+RT-5f0  COMPLETED / ACCEPTED / PUSHED
+RT-5f1  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
 ```
 
-Readiness classification:
+Readiness result:
 
 ```text
 PARTIAL_READY_FOR_APP_VISIBLE_REAL_STT_AND_DRC_LOCAL_SOFT_BARGE_IN
 ```
 
-Ready without FW modification: an app-visible provider-neutral real-STT
-response built from the already accepted private staging and FW root-public STT
-assembly; an app-owned integrated turn coordinator; local player stop; queue
-invalidation; late-result rejection; cooperative text-stream cancel; and
-default-off operator wiring.
+確認済みの断線点:
 
-Not claimable with FW v5.4.0: unified FW realtime orchestration, FW real TTS
-queue flush, provider synthesis hard cancel, Backend HTTP hard cancel, or
-provider-level LLM hard cancel.
+```text
+- RT-3d3 real transcriptはprivate operator resultだけ。
+- FastAPIのapp-visible real-STT consume routeはない。
+- normal main.dartはconfigured text streamとvoice outputだけを構成する。
+- ProviderNeutralTranscriptResult handoffは存在するがreal providerは未接続。
+- production record adapterにspeech onset / amplitude event境界はない。
+- RT-5e flushはlocal playerとapp-owned queueだけを停止・無効化する。
+- FW v5.4.0はreal runtime / real output flush / hard cancelをsupportしない。
+```
 
-RT-5f0 is docs/test-only. RT-5f1 remains blocked pending RT-5f0 acceptance and
-requires a separate exact contract review.
+RT-5fで許可可能な最終claimはspeech-triggered DRC-local soft barge-inに
+限定する。Backend HTTP cancel、provider synthesis cancel、FW real flush、
+provider hard cancelはclaimしない。
 
-Detailed contract: `docs/v300_rt5f_readiness_and_exact_split.md`.
-Dedicated gate: `scripts/check_v300_rt5f_readiness_and_exact_split.py`.
+Accepted exact split:
+
+```text
+RT-5f1  app-visible provider-neutral real-STT transcript source
+RT-5f2  fake-only integrated voice-turn and soft-barge-in coordinator
+RT-5f3  default-off HomeScreen and production speech-activity wiring
+RT-5f4  configured local real-STT→stream→TTS and audible soft-barge-in acceptance
+```
+
+受け入れ確認:
+
+```text
+compileall: passed
+dedicated RT-5f0 pre-commit gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 343 passed
+exact implementation surface: 7 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit approval: accepted
+implementation push: completed
+post-push working tree: clean
+```
+
+RT-5f0はdocs/test-onlyで、runtime、既存test、dependency、private env、
+provider execution、audio/transcript、version、release recordを変更しない。
+専用gateはbaseline `6272f613906317de3fecd899d4389ce0f13155e8`とpre-commit
+exact seven-file候補に束縛された履歴gateとして保持する。
+
+RT-5f1は別exact contract reviewを開始できるが、実装・commit・pushは明示承認
+まで行わない。詳細: `docs/v300_rt5f_readiness_and_exact_split.md`。
 
 ### RT-5a - TTS output-control current behavior inventory
 

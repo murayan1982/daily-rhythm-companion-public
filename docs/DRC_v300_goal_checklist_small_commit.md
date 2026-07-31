@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f0 readiness and exact split
-Current implementation step: RT-5f0 docs/test-only app-visible real-input and DRC-local soft-barge-in readiness contract
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none (uncommitted candidate)
-Last accepted small commit: RT-5e implementation COMPLETED / ACCEPTED / PUSHED at ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+Current small commit: none
+Current implementation step: RT-5f0 real-input and DRC-local soft-barge-in readiness contract accepted
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
+Last accepted small commit: RT-5f0 readiness and exact split COMPLETED / ACCEPTED / PUSHED at 348669884e872475aaa4242a5960a6de6fb7e10b
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review exact seven-file RT-5f0 candidate; RT-5f1 runtime remains NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
+Next implementation action: prepare a separate exact RT-5f1 contract review; RT-5f1 runtime remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -85,8 +85,8 @@ RT-5c COMPLETED / ACCEPTED / PUSHED
 RT-5d COMPLETED / ACCEPTED / PUSHED
 RT-5e COMPLETED / ACCEPTED / PUSHED
 RT-5f CURRENT / NOT_COMPLETED
-RT-5f0 IMPLEMENTED / AWAITING_REVIEW
-RT-5f1 NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
+RT-5f0 COMPLETED / ACCEPTED / PUSHED
+RT-5f1 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -116,17 +116,18 @@ PUSHED at implementation commit `eff46a3b4de771aa37a48ea9ef5959918e407200`.
 RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 `ef5f96337b5f601277a9bcc38b9e6fedc520b0a6` under the separately authorized exact thirteen-file contract after
 configured real synthesis, natural audible playback, explicit binding-owned
-playback-stop, cleanup, and clean-tree verification passed. RT-5f remains
-blocked on a separately reviewed app-visible real input source plus sufficient
-public FW execution capability and is not authorized.
+playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
+COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
+docs/test-only readiness checkpoint. RT-5f1 is ready only for a separate exact
+contract review and remains unimplemented and unauthorized.
 
-## RT-5f0 readiness candidate
+## RT-5f0 accepted readiness checkpoint
 
 ```text
-RT-5f0 IMPLEMENTED / AWAITING_REVIEW
-baseline HEAD / origin/main: 6272f613906317de3fecd899d4389ce0f13155e8
+RT-5f0 COMPLETED / ACCEPTED / PUSHED
+implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
 FW v5.4.0 HEAD: d313eb6acb643103fe25988720ebee5976a04f78
-RT-5f1 NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
+RT-5f1 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 - [x] Accepted RT-3d3 real STT remains private operator-only.
@@ -142,11 +143,11 @@ RT-5f1 NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
 - [x] FW root-public capability probe reports hard cancel false.
 - [x] Final RT-5f claim is limited to DRC-local soft barge-in.
 - [x] Exact RT-5f1 through RT-5f4 split is frozen.
-- [x] Exact seven-file docs/test-only surface is frozen.
+- [x] Exact seven-file docs/test-only implementation surface is frozen.
 - [x] Runtime, existing tests, dependency, private env, provider execution, audio, transcript, version, and release records remain unchanged.
-- [ ] RT-5f0 explicit review and acceptance.
-- [ ] RT-5f0 commit and push.
-- [ ] Separate RT-5f1 exact contract review and authorization.
+- [x] RT-5f0 explicit review and acceptance.
+- [x] RT-5f0 implementation commit and push.
+- [ ] Separate RT-5f1 exact contract review and explicit authorization.
 
 Readiness classification:
 
@@ -154,10 +155,30 @@ Readiness classification:
 PARTIAL_READY_FOR_APP_VISIBLE_REAL_STT_AND_DRC_LOCAL_SOFT_BARGE_IN
 ```
 
-Exact candidate and stop rule:
+Acceptance verification:
+
+```text
+compileall: passed
+dedicated RT-5f0 pre-commit gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 343 passed
+exact implementation surface: 7 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+post-push working tree: clean
+```
+
+Accepted contract and stop rule:
 `docs/v300_rt5f_readiness_and_exact_split.md`.
-Dedicated gate:
+Historical pre-commit gate:
 `scripts/check_v300_rt5f_readiness_and_exact_split.py`.
+
+The gate remains bound to the pre-commit baseline and exact seven-file
+candidate. It is retained as historical evidence and is not rerun for the
+six-file docs-only acceptance sync.
 
 ## Accepted RT-5b checkpoint
 

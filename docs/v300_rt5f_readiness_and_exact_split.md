@@ -8,16 +8,17 @@ Updated: 2026-07-31
 RT-5: CURRENT / NOT_COMPLETED
 RT-5e: COMPLETED / ACCEPTED / PUSHED
 RT-5f: CURRENT / NOT_COMPLETED
-RT-5f0: IMPLEMENTED / AWAITING_REVIEW
-RT-5f1: NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
-DRC baseline HEAD / origin/main: 6272f613906317de3fecd899d4389ce0f13155e8
+RT-5f0: COMPLETED / ACCEPTED / PUSHED
+RT-5f0 implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
+RT-5f1: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+DRC implementation baseline: 6272f613906317de3fecd899d4389ce0f13155e8
 FW v5.4.0 HEAD: d313eb6acb643103fe25988720ebee5976a04f78
 ```
 
-RT-5f0 is docs/test-only. It freezes the current executable boundaries and the
-small-commit split before any app-visible real transcript source, integrated
-voice-turn coordinator, speech-activity adapter, automatic TTS, or real
-barge-in runtime is added.
+RT-5f0 is an accepted docs/test-only checkpoint. It freezes the current
+executable boundaries and the small-commit split before any app-visible real
+transcript source, integrated voice-turn coordinator, speech-activity adapter,
+automatic TTS, or real barge-in runtime is added.
 
 ## Functional baseline already accepted
 
@@ -282,7 +283,7 @@ Playback echo alone must not satisfy speech-triggered acceptance. Private
 operator evidence, logs, transcripts, audio, screenshots, paths, LAN addresses,
 provider payloads, and credentials remain uncommitted.
 
-## Exact RT-5f0 candidate surface
+## Exact RT-5f0 implementation surface
 
 ```text
 README.md
@@ -294,7 +295,53 @@ docs/v300_rt5f_readiness_and_exact_split.md
 scripts/check_v300_rt5f_readiness_and_exact_split.py
 ```
 
-Exact seven-file docs/test-only surface.
+Exact seven-file docs/test-only implementation surface.
+
+## Acceptance record
+
+```text
+implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
+compileall: passed
+dedicated pre-commit gate: passed
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+Flutter full tests: 343 passed
+exact implementation surface: 7 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+post-push local HEAD / origin/main: 348669884e872475aaa4242a5960a6de6fb7e10b
+post-push working tree: clean
+```
+
+No private credential values, private paths, raw audio, provider payloads,
+transcripts, screenshots, LAN addresses, logs, or operator evidence were added
+to the repository.
+
+The follow-up state is:
+
+```text
+RT-5f1: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+```
+
+A separate exact RT-5f1 contract review and explicit authorization are required
+before any runtime implementation, commit, or push.
+
+## Acceptance-sync surface
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt5f_readiness_and_exact_split.md
+```
+
+Exact six-file docs-only state sync. It changes no runtime, existing test,
+dependency, private env, provider execution, microphone, audio, transcript,
+version, or release record.
 
 ## Explicit non-change surface
 
@@ -330,8 +377,9 @@ Stop the next implementation review if any proposed path requires:
 
 ## RT-5f0 execution boundary
 
-RT-5f0 performs source-tree inspection and a root-public FW capability probe
-only. It performs no Backend/Flutter runtime, network request, provider
-execution, microphone access, audio playback, transcript creation, private env
-read, commit, or push. RT-5f1 remains unauthorized until RT-5f0 is explicitly
-accepted.
+RT-5f0 performed source-tree inspection and a root-public FW capability probe
+only. It performed no Backend/Flutter runtime, network request, provider
+execution, microphone access, audio playback, transcript creation, or private
+env read. The implementation was explicitly accepted, committed, pushed, and
+verified clean. RT-5f1 remains unauthorized until a separate exact contract
+review and explicit authorization are completed.
