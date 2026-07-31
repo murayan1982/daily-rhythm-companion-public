@@ -48,6 +48,7 @@ class AppConfig:
     voice_input_staging_ttl_seconds: int = 300
     voice_input_staging_max_count: int = 8
     voice_input_staging_max_bytes: int = 1048576
+    voice_input_real_stt_enabled: bool = False
     voice_output_demo_enabled: bool = False
     voice_output_adapter_mode: str = "disabled"
     voice_output_real_tts_enabled: bool = False
@@ -262,6 +263,7 @@ def load_config() -> AppConfig:
             "VOICE_INPUT_STAGING_MAX_BYTES",
             1048576,
         ),
+        voice_input_real_stt_enabled=_env_flag("VOICE_INPUT_REAL_STT_ENABLED"),
         voice_output_demo_enabled=_env_flag("VOICE_OUTPUT_DEMO_ENABLED"),
         voice_output_adapter_mode=os.getenv(
             "VOICE_OUTPUT_ADAPTER_MODE",

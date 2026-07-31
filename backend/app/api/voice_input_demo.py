@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import NoReturn
 
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, HTTPException, Request, Response, status
 
 from app.config import AppConfig, load_config
 from app.models.voice_input_demo import (
@@ -13,6 +13,8 @@ from app.models.voice_input_demo import (
     VoiceInputFakeHandoffResponse,
     VoiceInputOpenAIFakeExecutorRequest,
     VoiceInputOpenAIFakeExecutorResponse,
+    VoiceInputRealTranscriptRequest,
+    VoiceInputRealTranscriptResponse,
     VoiceInputStagingProblem,
     VoiceInputStagingUploadResponse,
 )
@@ -26,6 +28,14 @@ from app.services.framework_voice_input_openai_fake_executor import (
     FrameworkVoiceInputOpenAIFakeExecutorAdapter,
     FrameworkVoiceInputOpenAIFakeExecutorError,
     FrameworkVoiceInputOpenAIFakeExecutorRequest as ServiceOpenAIFakeExecutorRequest,
+)
+from app.services.framework_voice_input_app_transcript import (
+    FrameworkVoiceInputAppTranscriptAdapter,
+    FrameworkVoiceInputAppTranscriptError,
+    FrameworkVoiceInputAppTranscriptRequest as ServiceAppTranscriptRequest,
+)
+from app.services.private_voice_input_credential_source import (
+    PrivateVoiceInputCredentialSource,
 )
 from app.services.voice_input_staging_store import (
     VoiceInputStagingError,
@@ -281,6 +291,62 @@ def execute_openai_fake_staged_voice_input(
     )
 
 
+@router.post(
+    "/demo/voice-input/transcript",
+    response_model=VoiceInputRealTranscriptResponse,
+)
+def transcribe_staged_voice_input_for_app(
+    request: VoiceInputRealTranscriptRequest,
+    response: Response,
+) -> VoiceInputRealTranscriptResponse:
+    """Consume one staged WAV through FW root-public real STT.
+
+    The staging ID remains in the JSON body rather than the URL. The response is
+    provider-neutral, final-only, bounded, and explicitly non-cacheable.
+    """
+
+    if not _is_valid_staging_id(request.staging_id):
+        _raise_staging_problem(
+            status.HTTP_400_BAD_REQUEST,
+            "voice_input_transcript_request_invalid",
+            "音声の文字起こし要求が正しくありません。",
+            retryable=False,
+        )
+
+    config = load_config()
+    store = _create_voice_input_staging_store(config)
+    credential_source = _create_private_voice_input_credential_source()
+    adapter = _create_framework_voice_input_app_transcript_adapter(
+        config,
+        store,
+        credential_source,
+    )
+
+    try:
+        result = adapter.transcribe_staged_artifact(
+            ServiceAppTranscriptRequest(
+                staging_id=request.staging_id,
+                foreground_opt_in=request.foreground_opt_in,
+                language=request.language,
+                duration_ms=request.duration_ms,
+                max_duration_ms=_MAX_CAPTURE_DURATION_MS,
+            )
+        )
+    except (FrameworkVoiceInputAppTranscriptError, VoiceInputStagingError) as exc:
+        _raise_app_transcript_error(exc)
+
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return VoiceInputRealTranscriptResponse(
+        accepted=True,
+        request_state="final_transcript_ready",
+        result_id=result.result_id,
+        text=result.text,
+        is_final=result.is_final,
+    )
+
+
 def _create_voice_input_staging_store(config: AppConfig) -> VoiceInputStagingStore:
     return VoiceInputStagingStore(config=config)
 
@@ -297,6 +363,22 @@ def _create_framework_voice_input_openai_fake_executor_adapter(
     store: VoiceInputStagingStore,
 ) -> FrameworkVoiceInputOpenAIFakeExecutorAdapter:
     return FrameworkVoiceInputOpenAIFakeExecutorAdapter(config, store)
+
+
+def _create_private_voice_input_credential_source() -> PrivateVoiceInputCredentialSource:
+    return PrivateVoiceInputCredentialSource()
+
+
+def _create_framework_voice_input_app_transcript_adapter(
+    config: AppConfig,
+    store: VoiceInputStagingStore,
+    credential_source: PrivateVoiceInputCredentialSource,
+) -> FrameworkVoiceInputAppTranscriptAdapter:
+    return FrameworkVoiceInputAppTranscriptAdapter(
+        config,
+        store,
+        credential_source,
+    )
 
 
 def _require_staging_upload_enabled(config: AppConfig) -> None:
@@ -318,6 +400,15 @@ def _require_staging_upload_enabled(config: AppConfig) -> None:
             "voice_input_adapter_not_framework",
             "Voice-input staging requires the framework voice-input adapter mode.",
         )
+
+
+def _is_valid_staging_id(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    normalized = value.strip()
+    return len(normalized) == 32 and all(
+        character in "0123456789abcdef" for character in normalized
+    )
 
 
 def _normalized_media_type(value: str | None) -> str:
@@ -403,6 +494,47 @@ def _raise_openai_fake_executor_error(
         error.code,
         str(error),
         retryable=error.retryable,
+    )
+
+
+def _raise_app_transcript_error(error: Exception) -> NoReturn:
+    code = getattr(error, "code", "voice_input_transcript_unavailable")
+    retryable = bool(getattr(error, "retryable", False))
+    status_code = {
+        "foreground_opt_in_required": status.HTTP_403_FORBIDDEN,
+        "voice_input_demo_disabled": status.HTTP_403_FORBIDDEN,
+        "voice_input_engine_not_framework": status.HTTP_409_CONFLICT,
+        "voice_input_adapter_not_framework": status.HTTP_409_CONFLICT,
+        "real_stt_disabled": status.HTTP_403_FORBIDDEN,
+        "app_transcript_busy": status.HTTP_409_CONFLICT,
+        "invalid_staging_id": status.HTTP_400_BAD_REQUEST,
+        "artifact_not_found": status.HTTP_404_NOT_FOUND,
+        "transcript_too_large": status.HTTP_502_BAD_GATEWAY,
+        "unsafe_app_transcript_result": status.HTTP_502_BAD_GATEWAY,
+    }.get(code, status.HTTP_503_SERVICE_UNAVAILABLE)
+    public_code = {
+        "foreground_opt_in_required": "voice_input_transcript_opt_in_required",
+        "app_transcript_busy": "voice_input_transcript_busy",
+        "invalid_staging_id": "voice_input_transcript_request_invalid",
+        "artifact_not_found": "voice_input_transcript_artifact_unavailable",
+    }.get(code, "voice_input_transcript_unavailable")
+    public_message = {
+        "voice_input_transcript_opt_in_required": (
+            "音声入力を利用するには明示的な許可が必要です。"
+        ),
+        "voice_input_transcript_busy": "音声の文字起こしを処理中です。",
+        "voice_input_transcript_request_invalid": (
+            "音声の文字起こし要求が正しくありません。"
+        ),
+        "voice_input_transcript_artifact_unavailable": (
+            "一時保存された音声を利用できません。"
+        ),
+    }.get(public_code, "音声の文字起こしを利用できません。")
+    _raise_staging_problem(
+        status_code,
+        public_code,
+        public_message,
+        retryable=retryable,
     )
 
 

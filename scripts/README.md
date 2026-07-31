@@ -6597,6 +6597,41 @@ speech-triggered barge-in, and real-STT-to-TTS remain unclaimed. RT-5f0 is
 `348669884e872475aaa4242a5960a6de6fb7e10b`; RT-5f1 remains
 `NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED`.
 
+
+## v3.0.0 RT-5f1 app-visible real-STT transcript source gate
+
+Detailed contract: `docs/v300_rt5f1_app_visible_real_stt_contract.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt5f1_app_visible_real_stt_contract.py
+python -m pytest -q backend/tests/test_framework_voice_input_app_transcript.py
+python -m pytest -q backend/tests/test_voice_input_real_transcript_api.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test test/backend_provider_neutral_transcript_provider_test.dart
+flutter test
+cd ..
+
+git diff --check
+```
+
+The gate is bound to baseline `e4ecd46487b43e20b359ce350fc90b5e0ac36d95`
+and exact seventeen-file scope. It verifies the default-off config, body-only
+transcript endpoint, pre-consume credential/FW/single-flight guards, FW
+root-public assembly reuse, exact no-store response, 4096-code-point bound,
+Flutter one-shot provider, redirect/size/header/key rejection, and unchanged
+normal startup/HomeScreen/TTS/speech/barge-in boundaries.
+
+The gate reads no private credential, imports no provider SDK, creates no
+provider client, performs no network request, accesses no microphone, plays no
+audio, and creates no real transcript. RT-5f1 remains IMPLEMENTED /
+AWAITING_REVIEW until exact diff review and explicit commit/push approval.
+
 ## v3.0.0 RT-5f0 real-input and soft-barge-in readiness gate
 
 Detailed accepted contract:

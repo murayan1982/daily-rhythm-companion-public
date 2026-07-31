@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from app.models.demo_status import CapabilityStatus
@@ -144,3 +146,22 @@ class VoiceInputOpenAIFakeExecutorResponse(BaseModel):
     real_provider_execution_executed: bool
     fake_stt_executed: bool
     real_stt_executed: bool
+
+
+class VoiceInputRealTranscriptRequest(BaseModel):
+    """Provider-neutral request for one single-use staged real transcript."""
+
+    staging_id: Any = Field(repr=False)
+    foreground_opt_in: bool
+    language: str | None = Field(default="ja", max_length=32)
+    duration_ms: int | None = Field(default=None, ge=1, le=15000)
+
+
+class VoiceInputRealTranscriptResponse(BaseModel):
+    """Minimal no-store final transcript response for the Flutter handoff."""
+
+    accepted: bool
+    request_state: str
+    result_id: str = Field(pattern=r"^[0-9a-f]{32}$")
+    text: str = Field(min_length=1, max_length=4096, repr=False)
+    is_final: bool
