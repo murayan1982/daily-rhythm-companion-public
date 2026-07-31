@@ -1757,7 +1757,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'RT-5 fake/in-memory lifecycle only. It requires explicit opt-in, explicit enqueue, and one explicit process action per queued item.',
+          'RT-5 binding-owned lifecycle. It requires explicit opt-in, explicit enqueue, and one explicit process action per queued item. Configured runtime wiring remains off by default.',
         ),
         const SizedBox(height: 12),
         Container(
@@ -1779,7 +1779,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onChanged: _canToggleRealtimeTerminalVoiceOutputOptIn
                     ? _setRealtimeTerminalVoiceOutputOptIn
                     : null,
-                title: const Text('Enable manual fake voice output'),
+                title: const Text('Enable manual voice output'),
                 subtitle: const Text(
                   'This session-local setting is off by default and is not persisted.',
                 ),
@@ -1814,7 +1814,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: _canFlushRealtimeTerminalVoiceOutput
                         ? _flushRealtimeTerminalVoiceOutput
                         : null,
-                    child: const Text('Flush RT-5 queue'),
+                    child: const Text('Flush app queue / local playback'),
                   ),
                 ],
               ),
@@ -1874,13 +1874,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'Local fake stop requested: ${_formatOptionalBool(_realtimeTerminalVoiceOutputLastStopRequested)}',
+                'Local playback stop requested: ${_formatOptionalBool(_realtimeTerminalVoiceOutputLastStopRequested)}',
                 key: const ValueKey(
                   'realtime-terminal-voice-output-stop-requested',
                 ),
               ),
               Text(
-                'Local fake stop succeeded: ${_formatOptionalBool(_realtimeTerminalVoiceOutputLastStopSucceeded)}',
+                'Local playback stop succeeded: ${_formatOptionalBool(_realtimeTerminalVoiceOutputLastStopSucceeded)}',
                 key: const ValueKey(
                   'realtime-terminal-voice-output-stop-succeeded',
                 ),
@@ -1900,7 +1900,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 4),
               const Text(
-                'This fake RT-5 lifecycle does not control the existing Voice Output Demo player.',
+                'This RT-5 binding owns a separate local player and does not control the existing Voice Output Demo player.',
                 key: ValueKey(
                   'realtime-terminal-voice-output-player-separation-note',
                 ),

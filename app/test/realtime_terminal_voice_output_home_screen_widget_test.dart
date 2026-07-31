@@ -64,6 +64,8 @@ void main() {
     expect(factoryCalls, 1);
     expect(find.text('Configuration: configured'), findsOne);
     expect(find.text('Opt-in: off'), findsOne);
+    expect(find.text('Enable manual voice output'), findsOne);
+    expect(find.text('Enable manual fake voice output'), findsNothing);
     expect(fixture.synthesisCalls, 0);
     expect(fixture.playbackCalls, 0);
     expect(fixture.localStopCalls, 0);
@@ -298,8 +300,8 @@ void main() {
     expect(fixture.localStopCalls, 1);
     expect(find.text('Last flush: completed'), findsOne);
     expect(find.text('Cleared pending: 1'), findsOne);
-    expect(find.text('Local fake stop requested: true'), findsOne);
-    expect(find.text('Local fake stop succeeded: true'), findsOne);
+    expect(find.text('Local playback stop requested: true'), findsOne);
+    expect(find.text('Local playback stop succeeded: true'), findsOne);
     expect(find.text('Pending: 0'), findsOne);
     expect(engine.stopCalls, 0);
   });

@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: none
-Current implementation step: RT-5d optional HomeScreen binding + default-off explicit completed-terminal enqueue + one-item fake process + app-queue/local-fake-stop flush controls completed and accepted at eff46a3b4de771aa37a48ea9ef5959918e407200; RT-5e remains NOT_STARTED / NOT_AUTHORIZED
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation commit: eff46a3b4de771aa37a48ea9ef5959918e407200
+Current small commit: RT-5e IMPLEMENTED / AWAITING_REVIEW
+Current implementation step: default-off configured Flutter runtime for explicit existing Backend/FW one-shot synthesis and binding-owned local playback-stop
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation commit: not committed
 Last accepted small commit: RT-5d implementation COMPLETED / ACCEPTED / PUSHED at eff46a3b4de771aa37a48ea9ef5959918e407200
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review and authorize the exact RT-5e configured local Backend/FW one-shot synthesis and local playback-stop operator-acceptance contract separately; RT-5e is not authorized yet
+Next implementation action: review the exact RT-5e thirteen-file implementation candidate and verification results; do not commit or push without explicit approval
 ```
 
 ## Source of truth
@@ -75,7 +75,7 @@ release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
 
-## Accepted RT-5a, RT-5b, RT-5c, and RT-5d checkpoints
+## Accepted RT-5a through RT-5d checkpoints plus active RT-5e candidate
 
 ```text
 RT-5 CURRENT / NOT_COMPLETED
@@ -83,7 +83,7 @@ RT-5a COMPLETED / ACCEPTED / PUSHED
 RT-5b COMPLETED / ACCEPTED / PUSHED
 RT-5c COMPLETED / ACCEPTED / PUSHED
 RT-5d COMPLETED / ACCEPTED / PUSHED
-RT-5e NOT_STARTED / NOT_AUTHORIZED
+RT-5e IMPLEMENTED / AWAITING_REVIEW
 RT-5f NOT_STARTED / BLOCKED_READINESS
 ```
 
@@ -111,7 +111,7 @@ COMPLETED / ACCEPTED / PUSHED at implementation commit `f00214cd7e75b28c041728bc
 RT-5d was later separately reviewed and authorized for the exact ten-file
 fake-only HomeScreen implementation and is now COMPLETED / ACCEPTED /
 PUSHED at implementation commit `eff46a3b4de771aa37a48ea9ef5959918e407200`.
-RT-5e remains NOT_STARTED / NOT_AUTHORIZED. RT-5f remains
+RT-5e is IMPLEMENTED / AWAITING_REVIEW under a separately authorized exact thirteen-file contract. RT-5f remains
 blocked on a separately reviewed app-visible real input source plus sufficient
 public FW execution capability.
 
@@ -195,11 +195,33 @@ surface. It is not rerun for the later six-document acceptance sync. RT-5c
 acceptance did not itself start or authorize RT-5d; RT-5d was later separately
 reviewed and authorized under the candidate contract below.
 
+## Active RT-5e implementation candidate
+
+```text
+RT-5e IMPLEMENTED / AWAITING_REVIEW
+implementation commit: not committed
+private operator acceptance: not executed
+RT-5f NOT_STARTED / BLOCKED_READINESS
+```
+
+The candidate adds a default-off configured Flutter runtime using only the
+existing DRC Backend voice-output API and FW v5.4.0 root-public one-shot output
+boundary. It owns a separate local player, validates the exact generated URL
+handoff, and preserves explicit enqueue/process/flush controls.
+
+No automatic TTS, automatic drain, provider hard cancel, FW real flush,
+barge-in, or real-STT-to-TTS is claimed.
+
+Contract: `docs/v300_rt5e_configured_local_voice_output_acceptance.md`.
+Gate: `scripts/check_v300_rt5e_configured_local_voice_output_acceptance.py`.
+
+Do not commit or push without explicit approval.
+
 ## Accepted RT-5d checkpoint
 
 ```text
 RT-5d COMPLETED / ACCEPTED / PUSHED
-RT-5e NOT_STARTED / NOT_AUTHORIZED
+RT-5e state at RT-5d acceptance: NOT_STARTED / NOT_AUTHORIZED
 baseline HEAD / origin/main: 04b52a2e12d5f4dafd4e9a1172d628c6c58f9a70
 implementation commit: eff46a3b4de771aa37a48ea9ef5959918e407200
 ```

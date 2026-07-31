@@ -6471,10 +6471,10 @@ bound to baseline `5fcac869f81e1070e854550f4376353e109905e5` and the exact nine-
 working-tree surface. It is not rerun for the later six-document acceptance
 sync.
 
-RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5d was separately reviewed and
-authorized for the exact ten-file fake-only HomeScreen contract and is now
-`IMPLEMENTED / AWAITING_REVIEW`. RT-5e remains
-`NOT_STARTED / BLOCKED_PENDING_RT5D_ACCEPTANCE`.
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5d was separately reviewed,
+accepted, and pushed at `eff46a3b4de771aa37a48ea9ef5959918e407200`.
+RT-5e was separately reviewed and authorized and is now
+`IMPLEMENTED / AWAITING_REVIEW`.
 
 ## v3.0.0 RT-5d HomeScreen manual voice-output controls gate
 
@@ -6520,5 +6520,62 @@ changed. No Backend HTTP, Framework/provider execution, real synthesis, real
 audio playback, automatic TTS, Framework real output flush, provider hard
 cancel, or speech-triggered barge-in was added.
 
-RT-5e remains `NOT_STARTED / NOT_AUTHORIZED` and requires a separately reviewed
-exact contract and explicit approval.
+RT-5e was separately reviewed and authorized and is now `IMPLEMENTED / AWAITING_REVIEW`. The private operator run remains unexecuted.
+
+## v3.0.0 RT-5e configured local voice-output candidate gate
+
+Detailed contract:
+`docs/v300_rt5e_configured_local_voice_output_acceptance.md`.
+
+Candidate command from the accepted RT-5d baseline:
+
+```powershell
+python -m compileall -q backend scripts
+if ($LASTEXITCODE -ne 0) { throw "compileall failed: $LASTEXITCODE" }
+
+python scripts\check_v300_rt5e_configured_local_voice_output_acceptance.py
+if ($LASTEXITCODE -ne 0) { throw "RT-5e gate failed: $LASTEXITCODE" }
+
+python scripts\smoke_v200_fw_voice_output_boundary_for_drc.py
+if ($LASTEXITCODE -ne 0) { throw "FW voice-output smoke failed: $LASTEXITCODE" }
+
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+if ($LASTEXITCODE -ne 0) { throw "Backend tests failed: $LASTEXITCODE" }
+
+Push-Location app
+try {
+    flutter analyze
+    if ($LASTEXITCODE -ne 0) { throw "Flutter analyze failed: $LASTEXITCODE" }
+
+    flutter test `
+        test\configured_realtime_terminal_voice_output_runtime_test.dart `
+        test\main_realtime_terminal_voice_output_wiring_widget_test.dart `
+        test\realtime_terminal_voice_output_home_screen_widget_test.dart `
+        test\realtime_terminal_voice_output_orchestrator_test.dart `
+        test\voice_output_queue_test.dart `
+        test\voice_output_audio_player_test.dart `
+        test\audioplayers_voice_output_audio_engine_test.dart
+    if ($LASTEXITCODE -ne 0) { throw "Focused Flutter tests failed: $LASTEXITCODE" }
+
+    flutter test
+    if ($LASTEXITCODE -ne 0) { throw "Flutter tests failed: $LASTEXITCODE" }
+}
+finally {
+    Pop-Location
+}
+
+git -c core.whitespace=cr-at-eol diff --check
+if ($LASTEXITCODE -ne 0) { throw "git diff --check failed: $LASTEXITCODE" }
+
+git status --short
+if ($LASTEXITCODE -ne 0) { throw "git status failed: $LASTEXITCODE" }
+```
+
+The gate is bound to baseline `ead613d27cd32c625b1b0a07eef96387027d70d5`
+and the exact thirteen-file candidate. It reads no credentials, performs no
+network or provider execution, and starts no platform audio.
+
+RT-5e is `IMPLEMENTED / AWAITING_REVIEW`. Do not commit or push without
+explicit approval. Automatic TTS, automatic queue drain, provider hard cancel,
+FW real flush, barge-in, and real-STT-to-TTS remain unclaimed. RT-5f is not
+authorized.
