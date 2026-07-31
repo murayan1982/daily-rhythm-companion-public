@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5c IMPLEMENTED / AWAITING_REVIEW
-Current implementation step: explicit completed terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback lifecycle
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: not committed
-Last accepted small commit: RT-5b implementation COMPLETED / ACCEPTED / PUSHED at c48238256cb0b17c925f8063c3b636d3b4ccf533
+Current small commit: none
+Current implementation step: RT-5c explicit completed terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback lifecycle completed and accepted at f00214cd7e75b28c041728bca6ffc3b180face80; RT-5d remains NOT_STARTED / NOT_AUTHORIZED
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
+Last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact RT-5c nine-file patch and verification results; do not commit or push without explicit approval
+Next implementation action: review and authorize the exact RT-5d HomeScreen explicit opt-in contract separately; RT-5d is not authorized yet
 ```
 
 ## Source of truth
@@ -73,14 +73,14 @@ release_notes/v2.1.0.md
 DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ```
 
-## Accepted RT-5a and RT-5b checkpoints
+## Accepted RT-5a, RT-5b, and RT-5c checkpoints
 
 ```text
 RT-5 CURRENT / NOT_COMPLETED
 RT-5a COMPLETED / ACCEPTED / PUSHED
 RT-5b COMPLETED / ACCEPTED / PUSHED
-RT-5c at this checkpoint: NOT_STARTED / NOT_AUTHORIZED
-RT-5d NOT_STARTED / BLOCKED_PENDING_RT5C_ACCEPTANCE
+RT-5c COMPLETED / ACCEPTED / PUSHED
+RT-5d NOT_STARTED / NOT_AUTHORIZED
 RT-5e NOT_STARTED
 RT-5f NOT_STARTED / BLOCKED_READINESS
 ```
@@ -105,7 +105,8 @@ RT-5b is COMPLETED / ACCEPTED / PUSHED at implementation commit
 below. This does not authorize HomeScreen, Backend/FW/provider execution, real
 audio playback, automatic TTS, hard cancel, barge-in, or RT-5c.
 RT-5c was later separately reviewed and authorized and is now
-IMPLEMENTED / AWAITING_REVIEW. RT-5f remains blocked on a separately reviewed
+COMPLETED / ACCEPTED / PUSHED at implementation commit `f00214cd7e75b28c041728bca6ffc3b180face80`.
+RT-5d remains NOT_STARTED / NOT_AUTHORIZED. RT-5f remains blocked on a separately reviewed
 app-visible real input source plus sufficient public FW execution capability.
 
 ## Accepted RT-5b checkpoint
@@ -141,16 +142,16 @@ The dedicated gate remains a historical pre-commit candidate gate and is not
 rerun for this docs-only acceptance sync. RT-5b acceptance did not itself start
 or authorize RT-5c; RT-5c was later separately reviewed and authorized.
 
-## RT-5c implementation candidate
+## Accepted RT-5c checkpoint
 
 ```text
-RT-5c IMPLEMENTED / AWAITING_REVIEW
-RT-5d NOT_STARTED / BLOCKED_PENDING_RT5C_ACCEPTANCE
+RT-5c COMPLETED / ACCEPTED / PUSHED
+RT-5d NOT_STARTED / NOT_AUTHORIZED
 baseline HEAD / origin/main: 5fcac869f81e1070e854550f4376353e109905e5
-implementation commit: not committed
+implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
 ```
 
-Candidate contract:
+Accepted contract:
 
 ```text
 explicit completed-terminal enqueue: true
@@ -175,9 +176,17 @@ player, Framework/provider, real synthesis, real audio playback, automatic TTS,
 Framework real output flush, provider hard cancel, or speech-triggered barge-in
 is added.
 
-Review the actual patch, focused/full verification, privacy scan, exact surface,
-and `git diff --check` before commit. Do not commit or push without explicit
-approval.
+RT-5c acceptance passed on 2026-07-31 at implementation commit
+`f00214cd7e75b28c041728bca6ffc3b180face80` with Dart formatting, compileall, the dedicated
+candidate gate, Backend 192 passed with one existing warning, Flutter analyze,
+22 focused Flutter tests, 315 full Flutter tests, exact nine-file review,
+changed-content privacy review, `git diff --check`, explicit operator approval,
+commit, and push.
+
+The dedicated gate remains a historical pre-commit candidate gate bound to
+baseline `5fcac869f81e1070e854550f4376353e109905e5` and the exact nine-file
+surface. It is not rerun for the later six-document acceptance sync. RT-5d is
+not started or authorized by RT-5c acceptance.
 
 ## v3.0.0 goal
 

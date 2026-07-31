@@ -6293,7 +6293,8 @@ RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5b is
 `c48238256cb0b17c925f8063c3b636d3b4ccf533` under the separately authorized exact Flutter-only
 fake/in-memory contract. At that RT-5b acceptance checkpoint, RT-5c was still
 `NOT_STARTED / NOT_AUTHORIZED`; it was authorized later under a separate exact
-contract and is now `IMPLEMENTED / AWAITING_REVIEW`.
+contract and is now `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`f00214cd7e75b28c041728bca6ffc3b180face80`. RT-5d remains `NOT_STARTED / NOT_AUTHORIZED`.
 
 ## v3.0.0 RT-5b app-owned voice-output queue gate
 
@@ -6375,9 +6376,10 @@ The dedicated RT-5b gate remains a historical implementation-candidate gate
 bound to the pre-commit baseline and exact nine-file working-tree surface. It
 is not rerun for the later six-document acceptance sync.
 
-RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5c was separately reviewed and
-explicitly authorized, and its exact fake-only nine-file candidate is now
-`IMPLEMENTED / AWAITING_REVIEW`. RT-5b acceptance alone did not
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5c was separately reviewed,
+explicitly authorized, and is now `COMPLETED / ACCEPTED / PUSHED` at
+implementation commit `f00214cd7e75b28c041728bca6ffc3b180face80`. RT-5d remains
+`NOT_STARTED / NOT_AUTHORIZED`. RT-5b acceptance alone did not
 connect HomeScreen, Backend voice output, the existing real player, Framework,
 or a provider, and does not claim real audio playback, automatic TTS,
 Framework real output flush, provider hard cancel, or real barge-in.
@@ -6440,5 +6442,38 @@ v300_rt5d_authorization: blocked-pending-rt5c-acceptance
 No HomeScreen integration, Backend HTTP, existing real-player wiring, Framework
 or provider execution, real synthesis, real audio playback, automatic TTS,
 Framework real output flush, provider hard cancel, or speech-triggered barge-in
-is authorized. Review the actual patch before commit. Do not commit or push
-without explicit approval.
+was added.
+
+## v3.0.0 RT-5c acceptance record
+
+RT-5c is `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`f00214cd7e75b28c041728bca6ffc3b180face80`.
+
+Accepted verification:
+
+```text
+dart format: passed
+compileall: passed
+dedicated RT-5c candidate gate: passed before commit
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter RT-5c tests: 22 passed
+Flutter full tests: 315 passed
+exact implementation surface: 9 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
+```
+
+The dedicated RT-5c gate remains a historical implementation-candidate gate
+bound to baseline `5fcac869f81e1070e854550f4376353e109905e5` and the exact nine-file
+working-tree surface. It is not rerun for the later six-document acceptance
+sync.
+
+RT-5 remains `CURRENT / NOT_COMPLETED`. RT-5d remains
+`NOT_STARTED / NOT_AUTHORIZED` until a separate exact HomeScreen explicit
+opt-in contract is reviewed. RT-5c acceptance does not connect HomeScreen,
+Backend voice output, the existing real player, Framework, or a provider, and
+does not claim real synthesis, real audio playback, automatic TTS, Framework
+real output flush, provider hard cancel, or speech-triggered barge-in.

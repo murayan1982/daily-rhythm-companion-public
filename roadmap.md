@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5c IMPLEMENTED / AWAITING_REVIEW
-Last accepted small commit: RT-5b implementation COMPLETED / ACCEPTED / PUSHED at c48238256cb0b17c925f8063c3b636d3b4ccf533
+Current small commit: none
+Last accepted small commit: RT-5c implementation COMPLETED / ACCEPTED / PUSHED at f00214cd7e75b28c041728bca6ffc3b180face80
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5c explicit completed-terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback orchestration.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: not committed
-Current implementation boundary: exact nine-file Flutter fake/in-memory orchestration service/test/docs/gate surface; no HomeScreen, Backend HTTP, Framework/provider execution, real synthesis, real audio playback, automatic TTS, hard cancel, or barge-in.
+Current implementation: RT-5c explicit completed-terminal -> RT-5b FIFO -> injected fake synthesis -> bounded opaque URI -> injected fake terminal playback orchestration completed and accepted at f00214cd7e75b28c041728bca6ffc3b180face80; RT-5d remains NOT_STARTED / NOT_AUTHORIZED.
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
+Current implementation boundary: accepted RT-5c changed only the exact nine-file Flutter fake/in-memory orchestration service/test/docs/gate surface; no HomeScreen, Backend HTTP, Framework/provider execution, real synthesis, real audio playback, automatic TTS, hard cancel, or barge-in.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -782,8 +782,8 @@ RT-4   COMPLETED / ACCEPTED  Streaming LLM, DRC event consumption, and cooperati
 RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
   RT-5a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness classification, and exact split
   RT-5b  COMPLETED / ACCEPTED / PUSHED  App-owned bounded TTS utterance queue and local playback-flush lifecycle
-  RT-5c  IMPLEMENTED / AWAITING_REVIEW  Explicit terminal-to-queue/fake-synthesis/fake-terminal-playback orchestration
-  RT-5d  NOT_STARTED / BLOCKED_PENDING_RT5C_ACCEPTANCE  HomeScreen explicit opt-in enqueue/play/flush controls
+  RT-5c  COMPLETED / ACCEPTED / PUSHED  Explicit terminal-to-queue/fake-synthesis/fake-terminal-playback orchestration
+  RT-5d  NOT_STARTED / NOT_AUTHORIZED  HomeScreen explicit opt-in enqueue/play/flush controls
   RT-5e  NOT_STARTED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
   RT-5f  NOT_STARTED / BLOCKED_READINESS  Speech-triggered real barge-in and real-STT-to-TTS acceptance
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
@@ -879,7 +879,8 @@ reviewed and authorized for the exact fake-only implementation below.
 
 ### RT-5c - Realtime-terminal voice-output orchestration
 
-Implementation status: `IMPLEMENTED / AWAITING_REVIEW`.
+Implementation status: `COMPLETED / ACCEPTED / PUSHED` at
+`f00214cd7e75b28c041728bca6ffc3b180face80`.
 
 ```text
 - explicit completed-terminal enqueue; no realtime-controller listener.
@@ -911,8 +912,18 @@ scripts/check_v300_rt5c_realtime_terminal_voice_output_orchestration_contract.py
 No HomeScreen integration, Backend HTTP execution, existing real-player wiring,
 Framework/provider execution, real synthesis, real audio playback, automatic
 TTS, Framework real output flush, provider hard cancel, or speech-triggered
-barge-in. RT-5d is NOT_STARTED / BLOCKED_PENDING_RT5C_ACCEPTANCE. Do not commit
-or push without explicit approval.
+barge-in.
+
+RT-5c acceptance passed on 2026-07-31 at implementation commit
+`f00214cd7e75b28c041728bca6ffc3b180face80` with Dart formatting, compileall, the dedicated
+candidate gate, Backend 192 passed with one existing warning, Flutter analyze,
+22 focused Flutter tests, 315 full Flutter tests, exact nine-file review,
+changed-content privacy review, `git diff --check`, explicit operator approval,
+commit, and push. The candidate gate remains historical and is not rerun for
+the six-document acceptance sync.
+
+RT-5d remains NOT_STARTED / NOT_AUTHORIZED until a separate exact HomeScreen
+explicit opt-in contract is reviewed and authorized.
 
 RT-0a was accepted after compileall, the credential-free source-tree gate, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval. At RT-0a acceptance, RT-0b was NOT_STARTED. RT-0b is COMPLETED / ACCEPTED and used only released, verifiable public Framework APIs. RT-0c is also COMPLETED / ACCEPTED after the v5.1.0 reassessment, local gates, 110 Backend tests, 103 Flutter tests, diff review, and explicit operator approval.
 

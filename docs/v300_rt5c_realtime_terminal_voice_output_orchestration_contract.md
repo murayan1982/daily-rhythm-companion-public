@@ -8,8 +8,8 @@ Updated: 2026-07-31
 RT-5: CURRENT / NOT_COMPLETED
 RT-5a: COMPLETED / ACCEPTED / PUSHED
 RT-5b: COMPLETED / ACCEPTED / PUSHED
-RT-5c: IMPLEMENTED / AWAITING_REVIEW
-RT-5d: NOT_STARTED / BLOCKED_PENDING_RT5C_ACCEPTANCE
+RT-5c: COMPLETED / ACCEPTED / PUSHED
+RT-5d: NOT_STARTED / NOT_AUTHORIZED
 ```
 
 RT-5c adds a Flutter-only, app-owned, injectable orchestration boundary from a
@@ -31,6 +31,9 @@ c48238256cb0b17c925f8063c3b636d3b4ccf533
 
 RT-5b acceptance sync:
 5fcac869f81e1070e854550f4376353e109905e5
+
+RT-5c implementation:
+f00214cd7e75b28c041728bca6ffc3b180face80
 
 Framework release:
 v5.4.0
@@ -343,33 +346,36 @@ All synthesis, playback, and stop dependencies are deterministic in-memory
 fakes. No platform audio, HTTP, Backend, Framework, provider, or HomeScreen
 execution occurs.
 
-## 16. Candidate verification
+## 16. Accepted verification
 
-```powershell
-python -m compileall -q backend scripts
-python scripts\check_v300_rt5c_realtime_terminal_voice_output_orchestration_contract.py
-python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
-
-cd app
-dart format lib/services/realtime_terminal_voice_output_orchestrator.dart test/realtime_terminal_voice_output_orchestrator_test.dart
-flutter analyze
-flutter test test/realtime_terminal_voice_output_orchestrator_test.dart
-flutter test
-cd ..
-
-Remove-Item -Recurse -Force .pytest-tmp
-git -c core.whitespace=cr-at-eol diff --check
-git diff --name-only
-git diff --stat
-git status --short
+```text
+implementation commit: f00214cd7e75b28c041728bca6ffc3b180face80
+dart format: passed
+compileall: passed
+dedicated RT-5c candidate gate: passed before commit
+Backend full tests: 192 passed, 1 existing warning
+Flutter analyze: passed
+focused Flutter RT-5c tests: 22 passed
+Flutter full tests: 315 passed
+exact implementation surface: 9 files
+changed-content privacy review: passed
+git diff --check: passed
+explicit operator approval: accepted
+implementation push: completed
 ```
 
-## 17. Review and stop rule
+The dedicated gate remains a historical pre-commit implementation-candidate
+gate bound to baseline `5fcac869f81e1070e854550f4376353e109905e5` and the
+exact nine-file working-tree surface. It is not rerun for the later
+six-document acceptance sync.
 
-RT-5c remains `IMPLEMENTED / AWAITING_REVIEW` until the actual nine-file patch,
-focused tests, full regressions, privacy scan, and exact surface are reviewed
-and explicit commit approval is received.
+## 17. Acceptance and stop rule
 
-Do not commit or push without explicit approval. Do not connect HomeScreen,
-Backend HTTP, Framework, provider execution, real synthesis, or real playback
-in this commit. RT-5d remains blocked pending RT-5c acceptance.
+RT-5c is `COMPLETED / ACCEPTED / PUSHED` at implementation commit
+`f00214cd7e75b28c041728bca6ffc3b180face80`.
+
+Acceptance does not connect HomeScreen, Backend HTTP, Framework, provider
+execution, real synthesis, or real playback, and does not claim automatic TTS,
+Framework real output flush, provider hard cancel, or speech-triggered
+barge-in. RT-5d remains `NOT_STARTED / NOT_AUTHORIZED` until a separate exact
+HomeScreen explicit opt-in contract is reviewed and explicitly authorized.
