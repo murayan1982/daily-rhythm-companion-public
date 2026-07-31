@@ -6,13 +6,13 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: none
-Current implementation step: RT-5e configured local Backend/FW one-shot synthesis, natural local playback, and explicit binding-owned playback-stop accepted
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation commit: ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
+Current small commit: RT-5f0 readiness and exact split
+Current implementation step: RT-5f0 docs/test-only app-visible real-input and DRC-local soft-barge-in readiness contract
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation commit: none (uncommitted candidate)
 Last accepted small commit: RT-5e implementation COMPLETED / ACCEPTED / PUSHED at ef5f96337b5f601277a9bcc38b9e6fedc520b0a6
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: none authorized; RT-5f remains NOT_STARTED / BLOCKED_READINESS
+Next implementation action: review exact seven-file RT-5f0 candidate; RT-5f1 runtime remains NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -84,7 +84,9 @@ RT-5b COMPLETED / ACCEPTED / PUSHED
 RT-5c COMPLETED / ACCEPTED / PUSHED
 RT-5d COMPLETED / ACCEPTED / PUSHED
 RT-5e COMPLETED / ACCEPTED / PUSHED
-RT-5f NOT_STARTED / BLOCKED_READINESS
+RT-5f CURRENT / NOT_COMPLETED
+RT-5f0 IMPLEMENTED / AWAITING_REVIEW
+RT-5f1 NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -117,6 +119,45 @@ configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f remains
 blocked on a separately reviewed app-visible real input source plus sufficient
 public FW execution capability and is not authorized.
+
+## RT-5f0 readiness candidate
+
+```text
+RT-5f0 IMPLEMENTED / AWAITING_REVIEW
+baseline HEAD / origin/main: 6272f613906317de3fecd899d4389ce0f13155e8
+FW v5.4.0 HEAD: d313eb6acb643103fe25988720ebee5976a04f78
+RT-5f1 NOT_STARTED / BLOCKED_PENDING_RT5F0_ACCEPTANCE / NOT_AUTHORIZED
+```
+
+- [x] Accepted RT-3d3 real STT remains private operator-only.
+- [x] App-visible real-STT route/provider is absent.
+- [x] Provider-neutral transcript handoff exists and remains unconfigured in normal startup.
+- [x] Normal `main.dart` contains no microphone or real-STT assembly.
+- [x] Production recorder boundary contains no speech-onset/amplitude event.
+- [x] RT-5e queue generation/operation epoch reject stale output.
+- [x] RT-5e explicit flush requests binding-owned local playback stop.
+- [x] Backend HTTP and provider synthesis cancellation remain absent.
+- [x] FW root-public capability probe reports real runtime false.
+- [x] FW root-public capability probe reports TTS queue flush false.
+- [x] FW root-public capability probe reports hard cancel false.
+- [x] Final RT-5f claim is limited to DRC-local soft barge-in.
+- [x] Exact RT-5f1 through RT-5f4 split is frozen.
+- [x] Exact seven-file docs/test-only surface is frozen.
+- [x] Runtime, existing tests, dependency, private env, provider execution, audio, transcript, version, and release records remain unchanged.
+- [ ] RT-5f0 explicit review and acceptance.
+- [ ] RT-5f0 commit and push.
+- [ ] Separate RT-5f1 exact contract review and authorization.
+
+Readiness classification:
+
+```text
+PARTIAL_READY_FOR_APP_VISIBLE_REAL_STT_AND_DRC_LOCAL_SOFT_BARGE_IN
+```
+
+Exact candidate and stop rule:
+`docs/v300_rt5f_readiness_and_exact_split.md`.
+Dedicated gate:
+`scripts/check_v300_rt5f_readiness_and_exact_split.py`.
 
 ## Accepted RT-5b checkpoint
 

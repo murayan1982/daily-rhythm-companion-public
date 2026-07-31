@@ -5639,7 +5639,7 @@ STT.
 Status: **COMPLETED / ACCEPTED**.
 
 ```powershell
-$env:FRAMEWORK_ROOT = "E:\work\deverop\AI-Character-Framework\Development"
+$env:FRAMEWORK_ROOT = "<clean FW v5.4.0 checkout>"
 python -m compileall -q backend scripts
 python scripts/check_v300_framework_v540_real_stt_adoption_inventory.py
 git diff --check
@@ -5668,7 +5668,7 @@ RT-3d2a acceptance reports
 ## v3.0.0 RT-3d2b bounded marked-fake executor wiring
 
 ```powershell
-$env:FRAMEWORK_ROOT = "E:\work\deverop\AI-Character-Framework\Development"
+$env:FRAMEWORK_ROOT = "<clean FW v5.4.0 checkout>"
 python -m compileall -q backend scripts
 python scripts/check_v300_rt3d2b_bounded_marked_fake_executor_wiring.py
 python -m pytest -q backend/tests/test_framework_voice_input_openai_fake_executor.py backend/tests/test_voice_input_openai_fake_executor_api.py
@@ -5696,7 +5696,7 @@ The accepted gate reports
 ## v3.0.0 RT-3d2c guarded real-executor assembly contract
 
 ```powershell
-$env:FRAMEWORK_ROOT = "E:\work\deverop\AI-Character-Framework\Development"
+$env:FRAMEWORK_ROOT = "<clean FW v5.4.0 checkout>"
 .\.venv\Scripts\python.exe -m compileall -q backend scripts
 .\.venv\Scripts\python.exe scripts\check_v300_rt3d2c_guarded_real_executor_assembly_contract.py
 .\.venv\Scripts\python.exe -m pytest -q backend\tests\test_framework_voice_input_openai_real_executor_assembly.py
@@ -6594,3 +6594,60 @@ RT-5e is `COMPLETED / ACCEPTED / PUSHED`. Automatic TTS, automatic queue
 drain, Backend HTTP cancel, provider hard cancel, FW real flush,
 speech-triggered barge-in, and real-STT-to-TTS remain unclaimed. RT-5f remains
 `NOT_STARTED / BLOCKED_READINESS` and is not authorized.
+
+## v3.0.0 RT-5f0 real-input and soft-barge-in readiness gate
+
+Detailed contract:
+`docs/v300_rt5f_readiness_and_exact_split.md`.
+
+Run from the clean DRC repository root after applying the exact candidate:
+
+```powershell
+$env:FRAMEWORK_ROOT = "<clean FW v5.4.0 checkout>"
+python -m compileall -q backend scripts
+python scripts\check_v300_rt5f_readiness_and_exact_split.py
+python -m pytest -q backend\tests --basetemp .pytest-tmp -p no:cacheprovider
+
+Push-Location app
+try {
+    flutter analyze
+    flutter test
+}
+finally {
+    Pop-Location
+}
+
+Remove-Item -Recurse -Force .pytest-tmp -ErrorAction SilentlyContinue
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
+```
+
+The candidate gate is bound to DRC baseline
+`6272f613906317de3fecd899d4389ce0f13155e8`, clean `origin/main`, clean FW
+v5.4.0 `d313eb6acb643103fe25988720ebee5976a04f78`, and the exact seven-file
+docs/test-only surface. It performs no network, provider, microphone, audio,
+transcript, Backend runtime, Flutter runtime, or platform execution.
+
+Expected markers:
+
+```text
+v300_rt5f0_readiness_status: implemented-awaiting-review
+v300_rt5f0_exact_change_surface: True
+v300_rt5f0_backend_runtime_changed: False
+v300_rt5f0_flutter_runtime_changed: False
+v300_rt5f0_existing_tests_changed: False
+v300_rt5f0_app_visible_real_stt_source_exists: False
+v300_rt5f0_transcript_handoff_boundary_exists: True
+v300_rt5f0_normal_main_microphone_or_stt_wiring_exists: False
+v300_rt5f0_speech_activity_source_exists: False
+v300_rt5f0_local_soft_barge_in_primitives_exist: True
+v300_rt5f0_fw_real_runtime_enabled: False
+v300_rt5f0_fw_tts_queue_flush_supported: False
+v300_rt5f0_fw_hard_cancel_supported: False
+v300_rt5f0_final_claim: drc-local-soft-barge-in-only
+v300_rt5f1_authorization: blocked-pending-rt5f0-acceptance
+```
+
+RT-5f0 does not authorize RT-5f1 implementation, commit, or push.
