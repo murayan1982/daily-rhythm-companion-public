@@ -1,25 +1,32 @@
 # Daily Rhythm Companion v3.0.0 RT-5f4 configured local end-to-end and audible soft-barge-in acceptance
 
-Status: **IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING**
+Status: **COMPLETED / ACCEPTED / PUSHED**
 
 ```text
-baseline DRC HEAD: ec6844c63b89803041e0b4e064d45c924e2d0438
+checkpoint baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+checkpoint commit: c84617e7ce07ecb1ca1605956eda7435b797c2fe
+corrective commit / accepted DRC HEAD: bf17538f8b33aa504671289edda8f55c511fe77d
 RT-5f3 implementation: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-exact implementation surface: 7 files
-private operator execution: NOT_AUTHORIZED
-commit/push: NOT_AUTHORIZED
-RT-5: CURRENT / NOT_COMPLETED
+exact checkpoint surface: 7 files
+exact corrective surface: 5 files
+acceptance sync surface: exact seven files
+private operator execution: COMPLETED / ACCEPTED
+operator acceptance: ACCEPTED
+acceptance-sync commit/push: NOT_AUTHORIZED
+RT-5f: COMPLETED / ACCEPTED
+RT-5: COMPLETED / ACCEPTED
+RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 ## Purpose
 
-RT-5f4 freezes the private operator acceptance checkpoint for the already
-accepted RT-5f3 configured integrated voice-turn graph. It adds no runtime,
-route, dependency, permission, platform, version, or release behavior.
+RT-5f4 accepts the configured local Android voice-turn path and the bounded
+DRC-local soft-barge-in claim built on the accepted RT-5f3 dependency graph.
+It records only public-safe outcomes and commit hashes. It does not retain or
+publish private operator evidence.
 
-The later private run must establish, on one physical Android device and one
-private local Backend/FW configuration:
+The accepted path is:
 
 ```text
 real bounded microphone capture
@@ -36,9 +43,9 @@ real bounded microphone capture
 → next explicit real voice turn completes
 ```
 
-The static candidate and gate do not execute or accept that flow.
+## Exact committed surfaces
 
-## Exact seven-file surface
+Checkpoint commit `c84617e7ce07ecb1ca1605956eda7435b797c2fe` changed exactly:
 
 ```text
 README.md
@@ -50,46 +57,81 @@ docs/v300_rt5f4_configured_local_end_to_end_acceptance.md
 scripts/check_v300_rt5f4_configured_local_end_to_end_acceptance.py
 ```
 
-Any changed or untracked path outside this set is a stop condition.
-
-## Protected accepted runtime
-
-The checkpoint relies on the committed RT-5f3 graph without modification:
+Corrective commit `bf17538f8b33aa504671289edda8f55c511fe77d` changed exactly:
 
 ```text
-DRC_RT5F3_ENABLE_CONFIGURED_VOICE_TURN default false
-DRC_RT4_ENABLE_CONFIGURED_TEXT_STREAM default false
-DRC_RT5_ENABLE_CONFIGURED_VOICE_OUTPUT default false
-Android/iOS-only configured binding factory
-explicit session-local opt-in default off
-explicit Start voice turn action
-explicit Stop capture action
-capture-phase speech activity disarmed
-explicit-turn generation required for later speech arming
-dedicated per-turn stream controller
-dedicated queue/orchestrator/local player
-metadata-only HomeScreen state
+app/lib/services/integrated_voice_turn_home_screen_binding.dart
+app/lib/services/record_speech_activity_source.dart
+app/test/integrated_voice_turn_home_screen_binding_test.dart
+app/test/integrated_voice_turn_home_screen_widget_test.dart
+app/test/record_speech_activity_source_test.dart
 ```
 
-The production detector remains:
+This acceptance sync changes the same seven documentation/static-gate files as
+the checkpoint and changes no Flutter runtime, Backend, Framework, dependency,
+lockfile, platform manifest, version, or release metadata.
+
+## Accepted controls
 
 ```text
-record 6.2.1 PCM16 stream drained and dropped
-mono 16 kHz
-auto gain enabled
-echo cancellation enabled
-noise suppression enabled
-100 ms amplitude interval
--24.0 dBFS threshold
-3 consecutive samples
-one event per arming generation
-90 second maximum armed lifetime
+Control A — natural full-turn control: PASS / ACCEPTED
+Control B — silent-playback negative control: PASS / ACCEPTED
+Control C — real user-speech interruption: PASS / ACCEPTED
+Control D — recovery turn: PASS / ACCEPTED
+repeated Stop Capture corrective: REAL-DEVICE PASS
+playback-time speech detection corrective: REAL-DEVICE PASS
 ```
 
-These values are bounded implementation defaults, not universal acoustic
-quality claims.
+Control A accepted real capture, private staging and cleanup, real STT,
+incremental streaming, completed terminal-to-TTS handoff, real TTS, dedicated
+audible playback, and natural completion.
 
-## Exact accepted claim if the later run passes
+Control B accepted that playback remained active during the deliberate silent
+window without an interruption.
+
+Control C accepted one confirmed real user-speech event during active playback,
+one interrupted outcome, successful dedicated local-player stop, zero pending
+voice output, no retry-required state, bounded audible stop, no old-audio
+resume, and inert late old-turn work.
+
+Control D accepted a new explicit recovery turn through real capture, real STT,
+incremental streaming, real TTS, audible playback, and natural completion.
+
+## Accepted correctives
+
+The repeated Stop Capture corrective makes capture-session changes observable
+to the HomeScreen binding so a second already-authorized turn exposes its Stop
+Capture action without relying on a permission rebuild.
+
+The playback-time speech detection corrective sets the production record
+stream to `AudioInterruptionMode.none`, preserving the speech-activity stream
+while dedicated local playback is active. The accepted detector remains mono
+16 kHz PCM16 with auto gain, echo cancellation, noise suppression, bounded
+threshold/consecutive-sample confirmation, and one event per arming generation.
+These are bounded implementation defaults, not universal acoustic quality
+claims.
+
+## Accepted verification
+
+```text
+Backend full: 204 passed, 1 existing warning
+Flutter analyze: No issues found
+Flutter full: 411 passed
+checkpoint exact surface review: passed
+corrective exact surface review: passed
+private-data exclusion review: passed
+DRC HEAD/origin-main: bf17538f8b33aa504671289edda8f55c511fe77d
+DRC working tree after push: clean
+FW HEAD: d313eb6acb643103fe25988720ebee5976a04f78
+FW working tree: clean
+```
+
+The dedicated checkpoint gate was run before the checkpoint commit. The later
+acceptance-sync gate is bound to accepted HEAD `bf17538f8b33aa504671289edda8f55c511fe77d` and the
+exact seven-file uncommitted acceptance-sync surface. After the acceptance-sync
+commit, that gate is historical and is not rerun against the new HEAD.
+
+## Exact accepted claim
 
 ```text
 configured local Android real voice turn accepted
@@ -138,160 +180,14 @@ iOS acceptance
 PC acceptance
 noisy-room acceptance
 provider identity/model/payload acceptance
+configured Live2D / VTS adapter execution
 v3.0.0 release readiness
 ```
 
-## Private operator prerequisites
+## Public-safe record boundary
 
-Before any later execution:
-
-```text
-DRC HEAD/origin-main == ec6844c63b89803041e0b4e064d45c924e2d0438
-DRC working tree clean
-FW HEAD == d313eb6acb643103fe25988720ebee5976a04f78
-FW working tree clean
-physical Android device connected
-microphone permission available
-private ignored Backend/FW environments ready
-Backend reachable from the device
-configured integrated HomeScreen section visible
-session opt-in default off
-no microphone/network/provider work before explicit Start
-```
-
-The private Backend process may enable the already accepted framework
-conversation, real-STT, stream, and real-TTS gates. The Flutter process may set
-the three accepted compile-time switches and one private Backend URL. No actual
-private value is written into this contract or any committed artifact.
-
-## Operator sequence
-
-### A. Natural full-turn control
-
-```text
-opt in
-→ explicit Start voice turn
-→ real capture
-→ private spoken input
-→ explicit Stop capture
-→ private staging
-→ real STT
-→ incremental stream
-→ completed terminal
-→ real TTS
-→ audible playback
-→ natural completion
-```
-
-Required public-safe results:
-
-```text
-phase order includes capturing/staging/acquiringTranscript/streaming/voiceOutput/completed
-turn generation increments once
-real STT completes
-transcript is nonempty but not recorded
-exactly one stream starts
-stream chunk count is positive
-exactly one stream completes
-real TTS completes
-audible playback starts and completes naturally
-last turn outcome is completed
-interruption count does not change
-pending voice output ends at zero
-local stop retry required is false
-```
-
-This is the primary echo-only control: playback output alone must not trigger an
-interruption.
-
-### B. Silent-playback negative control
-
-Start a second real turn and wait until dedicated playback is active. Do not
-speak for at least 1500 ms.
-
-Required result:
-
-```text
-playback remains active
-interruption count unchanged
-last speech outcome not interrupted
-```
-
-An interruption before deliberate operator speech is a stop condition.
-
-### C. Real user-speech interruption
-
-After the silent window, speak deliberately while dedicated playback remains
-active.
-
-Required result:
-
-```text
-speech source was armed
-coordinator was in voiceOutput
-one confirmed event forwarded
-interruption count increments exactly once
-last speech outcome is interrupted
-local playback stop requested true
-local playback stop succeeded true
-final coordinator phase ready
-pending voice output zero
-local stop retry required false
-audible playback stops within 3 seconds of speech
-old audio does not resume during the following 5 seconds
-late old turn work does not mutate final state
-```
-
-The 3-second bound is an operator acceptance bound for the local audible stop;
-it is not a provider hard-cancel guarantee.
-
-### D. Recovery turn
-
-After the interrupted state is ready, start one new explicit voice turn and
-complete it naturally.
-
-Required result:
-
-```text
-turn generation increments
-new capture starts
-new real STT completes privately
-new incremental stream completes
-new real TTS/audible playback completes
-last turn outcome completed
-local stop retry required false
-```
-
-## Public-safe record schema
-
-Only fixed booleans, typed outcomes, counts, and commit hashes may be retained:
-
-```text
-physical Android device used
-configured integrated UI visible
-opt-in default off
-real microphone capture accepted
-real STT completed
-transcript nonempty
-transcript exposed false
-real incremental streaming accepted
-stream chunk count positive
-real TTS completed
-natural audible playback accepted
-echo-only natural control passed
-silent playback control passed
-user speech event confirmed
-audible stop within 3 seconds
-interruption count incremented once
-last speech outcome interrupted
-old audio resumed false
-old turn state mutated false
-recovery turn completed
-private cleanup completed
-DRC/FW trees clean after execution
-```
-
-Never retain or commit:
+The tracked record contains only fixed booleans, typed outcomes, counts, and
+commit hashes. It never retains or commits:
 
 ```text
 spoken phrase
@@ -312,51 +208,54 @@ raw Backend/FW/Flutter log
 operator evidence file
 ```
 
-## Cleanup
+## Parent completion and next gate
 
-The private run must stop Flutter and Backend processes, restore default-off
-private gates, remove temporary capture/staging/generated-audio/operator files,
-and end with clean DRC and FW working trees at the expected commits.
+```text
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
+RT-5f: COMPLETED / ACCEPTED
+RT-5: COMPLETED / ACCEPTED
+RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-7: BLOCKED
+RT-8: BLOCKED
+RT-9: BLOCKED
+```
 
-## Candidate verification
+RT-6 may proceed only to a separate exact contract review using the released
+FW root-public provider-neutral mock-safe motion contract. This acceptance sync
+does not authorize RT-6 implementation, motion runtime wiring, Live2D/VTS
+execution, commit, or push.
 
-Run before commit while HEAD remains the baseline and this exact seven-file
-candidate is uncommitted:
+## Acceptance-sync verification
+
+Run before the acceptance-sync commit while HEAD remains the pushed corrective
+commit and only the exact seven files are modified:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v300_rt5f4_configured_local_end_to_end_acceptance.py
-python -m pytest -q backend/tests
+python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
 
 cd app
 flutter analyze
 flutter test
 cd ..
 
-git diff --check
+Remove-Item -Recurse -Force .pytest-tmp
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
 git status --short
 ```
 
-The gate and synthetic regression commands read no private env or credential
-and execute no real microphone, network, provider, STT, stream, synthesis,
-playback, or speech activity.
-
-## Stop rule
-
-Stop if the surface differs; any app/Backend/FW/dependency/manifest/runtime
-change appears; a default-off switch changes; Android physical execution is
-replaced with a simulator; real STT/stream/TTS/playback is incomplete; echo or
-silence triggers interruption; deliberate speech fails to stop playback; retry
-is required; old audio resumes; old state mutates; the recovery turn fails;
-cleanup fails; a tree remains dirty; or private data enters a tracked file.
-
-## Candidate state
+## Acceptance state
 
 ```text
-RT-5f4: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
-private operator execution: NOT_AUTHORIZED
-operator acceptance: NOT_EXECUTED / NOT_CLAIMED
-commit/push: NOT_AUTHORIZED
-RT-5f: CURRENT / NOT_COMPLETED
-RT-5: CURRENT / NOT_COMPLETED
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
+private operator execution: COMPLETED / ACCEPTED
+operator acceptance: ACCEPTED
+checkpoint and corrective pushes: COMPLETED
+acceptance-sync commit/push: NOT_AUTHORIZED
+RT-5f: COMPLETED / ACCEPTED
+RT-5: COMPLETED / ACCEPTED
+RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```

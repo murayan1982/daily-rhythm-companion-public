@@ -5,15 +5,15 @@ Updated: 2026-08-01
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f4 configured local end-to-end and audible soft-barge-in checkpoint
-Current implementation step: RT-5f4 exact seven-file docs/static-gate/private-operator checkpoint candidate
-Current implementation state: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
+Current parent phase: RT-5 COMPLETED / ACCEPTED
+Current small commit: RT-5f4 acceptance-state sync awaiting review
+Current implementation step: RT-5f4 configured local end-to-end and audible soft-barge-in accepted through real-device correctives
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
-Current implementation commit: none
-Last accepted small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring COMPLETED / ACCEPTED / PUSHED at 75504424c37222234ea8a4314d01ce386ff92d23
+Current implementation commit: bf17538f8b33aa504671289edda8f55c511fe77d
+Last accepted small commit: RT-5f4 configured local end-to-end and audible soft-barge-in COMPLETED / ACCEPTED / PUSHED at bf17538f8b33aa504671289edda8f55c511fe77d
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: exact candidate review only; private operator execution, commit, and push remain NOT_AUTHORIZED
+Next implementation action: exact RT-6 contract review only; RT-6 remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -79,18 +79,19 @@ DRC_v2.0.0 / DRC_v2.0.1 / DRC_v2.1.0 tags and GitHub Releases
 ## Accepted RT-5a through RT-5e checkpoints
 
 ```text
-RT-5 CURRENT / NOT_COMPLETED
+RT-5 COMPLETED / ACCEPTED
 RT-5a COMPLETED / ACCEPTED / PUSHED
 RT-5b COMPLETED / ACCEPTED / PUSHED
 RT-5c COMPLETED / ACCEPTED / PUSHED
 RT-5d COMPLETED / ACCEPTED / PUSHED
 RT-5e COMPLETED / ACCEPTED / PUSHED
-RT-5f CURRENT / NOT_COMPLETED
+RT-5f COMPLETED / ACCEPTED
 RT-5f0 COMPLETED / ACCEPTED / PUSHED
 RT-5f1 COMPLETED / ACCEPTED / PUSHED
 RT-5f2 COMPLETED / ACCEPTED / PUSHED
 RT-5f3 COMPLETED / ACCEPTED / PUSHED
-RT-5f4 IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
+RT-5f4 COMPLETED / ACCEPTED / PUSHED
+RT-6 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -122,7 +123,7 @@ RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
 COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
-docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 now has an exact seven-file docs/static-gate checkpoint candidate. Private operator execution, commit, and push remain NOT_AUTHORIZED.
+docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`. Controls A-D and both real-device correctives passed; Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED.
 
 
 ## RT-5f1 accepted implementation checkpoint
@@ -2462,7 +2463,7 @@ FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 exact implementation surface: 20 files
 acceptance sync surface: exact seven files
 real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
-RT-5f4: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
 ```
 
 - [x] Keep the configured integrated runtime default-off.
@@ -2494,36 +2495,37 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt5f3_default_off_home_screen_speech_activity_contract.py`.
 
 
-## RT-5f4 implementation candidate checklist
+## RT-5f4 accepted implementation and operator checkpoint
 
 ```text
-RT-5f4: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
-baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
+checkpoint baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+checkpoint commit: c84617e7ce07ecb1ca1605956eda7435b797c2fe
+corrective commit / accepted HEAD: bf17538f8b33aa504671289edda8f55c511fe77d
 RT-5f3 implementation: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-exact implementation surface: 7 files
-private operator execution: NOT_AUTHORIZED
-commit/push: NOT_AUTHORIZED
-RT-5: CURRENT / NOT_COMPLETED
+exact checkpoint surface: 7 files
+exact corrective surface: 5 files
+acceptance sync surface: exact seven files
+private operator execution: COMPLETED / ACCEPTED
+operator acceptance: ACCEPTED
+acceptance-sync commit/push: NOT_AUTHORIZED
+RT-5f: COMPLETED / ACCEPTED
+RT-5: COMPLETED / ACCEPTED
+RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-- [x] Keep the candidate docs/static-gate-only.
-- [x] Freeze physical Android as the operator target.
-- [x] Require one natural real end-to-end control turn.
-- [x] Require echo-only and silent-playback negative controls.
-- [x] Require real user speech during active dedicated playback.
-- [x] Require one interrupted outcome and successful local-player stop.
-- [x] Require old audio and old turn completions to remain inert.
-- [x] Require one explicit recovery turn to complete naturally.
-- [x] Keep public records boolean/count/typed-outcome only.
-- [x] Keep private values, text, audio, IDs, paths, addresses, screenshots,
-      raw logs, and evidence outside commits.
-- [ ] Run the dedicated source gate.
-- [ ] Run compileall, Backend regression, Flutter analyze, and Flutter full tests.
-- [ ] Complete exact seven-file/privacy review.
+- [x] Keep the checkpoint docs/static-gate-only.
+- [x] Complete physical Android Controls A-D.
+- [x] Accept repeated Stop Capture corrective on a real device.
+- [x] Accept playback-time speech detection corrective on a real device.
+- [x] Pass Backend full: 204 passed, 1 existing warning.
+- [x] Pass Flutter analyze: No issues found.
+- [x] Pass Flutter full: 411 passed.
+- [x] Record only public-safe outcomes and commit hashes.
+- [x] Preserve all RT-5f4 explicit non-claims.
+- [x] Mark RT-5f4, RT-5f, and RT-5 completed and accepted.
+- [x] Move RT-6 to exact-contract-review readiness only.
+- [ ] Review this exact seven-file acceptance sync.
 - [ ] Obtain explicit commit approval.
-- [ ] Push the checkpoint commit after separate approval.
-- [ ] Obtain separate authorization for private operator execution.
-- [ ] Execute and accept the private Android operator run.
-- [ ] Record acceptance without private evidence.
-- [ ] Mark RT-5f4, RT-5f, and RT-5 completed only after acceptance sync.
+- [ ] Commit and push only after approval.

@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: none
+Current small commit: RT-5f4 acceptance-state sync awaiting review
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,15 +570,15 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f4 configured local end-to-end and audible soft-barge-in checkpoint
-Last accepted small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring COMPLETED / ACCEPTED / PUSHED at 75504424c37222234ea8a4314d01ce386ff92d23
+Status: RT-5 COMPLETED / ACCEPTED
+Current small commit: RT-5f4 acceptance-state sync awaiting review
+Last accepted small commit: RT-5f4 configured local end-to-end and audible soft-barge-in COMPLETED / ACCEPTED / PUSHED at bf17538f8b33aa504671289edda8f55c511fe77d
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5f4 exact seven-file docs/static-gate/private-operator checkpoint candidate.
-Current implementation state: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
+Current implementation: RT-5f4 accepted configured local real voice-turn and DRC-local soft-barge-in flow with real-device correctives.
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: `ec6844c63b89803041e0b4e064d45c924e2d0438`
-Current implementation commit: none
-Current implementation boundary: exact seven docs/static-gate files only; app, Backend, Framework, dependencies, lockfiles, platform manifests, runtime defaults, versions, release metadata, and accepted RT-5f3 ownership remain unchanged.
+Current implementation commit: `bf17538f8b33aa504671289edda8f55c511fe77d`
+Current implementation boundary: checkpoint commit `c84617e7ce07ecb1ca1605956eda7435b797c2fe` changed seven docs/static-gate files; corrective `bf17538f8b33aa504671289edda8f55c511fe77d` changed exactly five Flutter runtime/test files; Backend, Framework, dependencies, lockfiles, platform manifests, versions, and release metadata remain unchanged.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -780,19 +780,19 @@ RT-4   COMPLETED / ACCEPTED  Streaming LLM, DRC event consumption, and cooperati
     RT-4f2  COMPLETED / ACCEPTED / PUSHED  HomeScreen stream presentation and fake controller lifecycle wiring
     RT-4f3  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral transcript handoff boundary
     RT-4f4  COMPLETED / ACCEPTED / PUSHED  Configured local Backend/FW streaming and cancel acceptance
-RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
+RT-5   COMPLETED / ACCEPTED  TTS output control, queue, flush, and barge-in
   RT-5a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness classification, and exact split
   RT-5b  COMPLETED / ACCEPTED / PUSHED  App-owned bounded TTS utterance queue and local playback-flush lifecycle
   RT-5c  COMPLETED / ACCEPTED / PUSHED  Explicit terminal-to-queue/fake-synthesis/fake-terminal-playback orchestration
   RT-5d  COMPLETED / ACCEPTED / PUSHED  HomeScreen explicit opt-in enqueue/process/flush controls
   RT-5e  COMPLETED / ACCEPTED / PUSHED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
-  RT-5f  CURRENT / NOT_COMPLETED  Speech-triggered DRC-local soft barge-in and real-STT-to-TTS integration
+  RT-5f  COMPLETED / ACCEPTED  Speech-triggered DRC-local soft barge-in and real-STT-to-TTS integration
     RT-5f0  COMPLETED / ACCEPTED / PUSHED  Readiness decision and exact small-commit split
     RT-5f1  COMPLETED / ACCEPTED / PUSHED  App-visible real-STT transcript source
     RT-5f2  COMPLETED / ACCEPTED / PUSHED  Fake-only integrated voice-turn and soft-barge-in coordinator
     RT-5f3  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen and production speech-activity wiring
-    RT-5f4  IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING  Configured local end-to-end and audible soft-barge-in acceptance
-RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
+    RT-5f4  COMPLETED / ACCEPTED / PUSHED  Configured local end-to-end and audible soft-barge-in acceptance
+RT-6   NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
@@ -7844,7 +7844,7 @@ Flutter full 381, exact surface/privacy review, explicit approval, both pushes,
 and clean DRC/FW working trees.
 
 RT-5f3 is completed, accepted, and pushed at `75504424c37222234ea8a4314d01ce386ff92d23` under the separately
-approved exact twenty-file contract. RT-5f4 now has an exact seven-file docs/static-gate checkpoint candidate; private operator execution, commit, and push remain NOT_AUTHORIZED.
+approved exact twenty-file contract. RT-5f4 is completed, accepted, and pushed through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`. RT-5f and RT-5 are completed and accepted. RT-6 is ready only for a separate exact contract review and remains not authorized.
 
 
 ## RT-5f3 — Default-off HomeScreen and production speech activity
@@ -7858,7 +7858,7 @@ FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 exact implementation surface: 20 files
 acceptance sync surface: exact seven files
 real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
-RT-5f4: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
 ```
 
 RT-5f3 accepts a dedicated integrated voice-turn dependency graph behind three
@@ -7885,32 +7885,57 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt5f3_default_off_home_screen_speech_activity_contract.py`.
 
 
-## RT-5f4 — Configured local end-to-end and audible soft-barge-in checkpoint
+## RT-5f4 — Configured local end-to-end and audible soft-barge-in acceptance
 
-Status: **IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING**
+Status: **COMPLETED / ACCEPTED / PUSHED**
+
+RT-5f4 is **COMPLETED / ACCEPTED / PUSHED** through the public-safe checkpoint
+commit `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and real-device corrective commit
+`bf17538f8b33aa504671289edda8f55c511fe77d`.
 
 ```text
-baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+checkpoint baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+checkpoint commit: c84617e7ce07ecb1ca1605956eda7435b797c2fe
+corrective commit / accepted HEAD: bf17538f8b33aa504671289edda8f55c511fe77d
 RT-5f3 implementation: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-exact implementation surface: seven docs/static-gate files
-private operator execution: NOT_AUTHORIZED
-commit/push: NOT_AUTHORIZED
+exact checkpoint surface: 7 files
+exact corrective surface: 5 files
+acceptance sync surface: exact seven files
+private operator execution: COMPLETED / ACCEPTED
+operator acceptance: ACCEPTED
+Control A: PASS / ACCEPTED
+Control B: PASS / ACCEPTED
+Control C: PASS / ACCEPTED
+Control D: PASS / ACCEPTED
+repeated Stop Capture corrective: REAL-DEVICE PASS
+playback-time speech detection corrective: REAL-DEVICE PASS
+Backend full: 204 passed, 1 existing warning
+Flutter analyze: No issues found
+Flutter full: 411 passed
+RT-5f: COMPLETED / ACCEPTED
+RT-5: COMPLETED / ACCEPTED
+RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-RT-5f4 changes no normal runtime. The checkpoint requires a physical Android
-control turn that completes real capture, private staging, real STT,
-incremental streaming, real TTS, and natural audible playback. A second turn
-must survive an echo-only/silent negative-control window and then stop active
-local playback only after real user speech. Old work must stay inert, and a
-third explicit recovery turn must complete.
+The accepted claim remains DRC-local soft barge-in only: cooperative stream
+cancel, app-owned generation invalidation, pending queue clear, and dedicated
+local-player stop. The corrective commit makes repeated authorized capture
+state observable without a permission rebuild and keeps production speech
+activity active during local playback.
 
-The accepted claim, if the private run later passes, is DRC-local soft
-barge-in only: cooperative stream cancel, app-owned generation invalidation,
-pending queue clear, and dedicated local-player stop. Provider hard cancel,
-Backend HTTP hard cancel, provider synthesis cancellation, FW real queue flush,
-universal VAD/echo-cancellation quality, iOS/PC acceptance, and release
-readiness remain outside the claim.
+Provider-level LLM hard cancel, Backend HTTP hard cancel, provider STT/TTS hard
+cancel, FW real TTS queue flush, always-on capture, universal VAD or echo
+cancellation quality, iOS/PC acceptance, Live2D/VTS execution, and v3.0.0
+release readiness remain outside the claim.
 
-Detailed contract:
+Only public-safe outcomes, counts, and commit hashes are recorded. Spoken input,
+transcripts, generated text, audio, identifiers, provider payloads, credentials,
+private paths, LAN addresses, screenshots, recordings, raw logs, and operator
+evidence remain outside tracked source.
+
+Detailed accepted contract:
 `docs/v300_rt5f4_configured_local_end_to_end_acceptance.md`.
+Historical acceptance-sync gate:
+`scripts/check_v300_rt5f4_configured_local_end_to_end_acceptance.py`.

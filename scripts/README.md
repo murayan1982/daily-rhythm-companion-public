@@ -6766,7 +6766,7 @@ exact acceptance-sync surface: 7 files
 focused Flutter: 53 passed
 Flutter full: 408 passed
 real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
-RT-5f4: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
 ```
 
 Run from the DRC repository root while HEAD remains the pushed implementation
@@ -6793,38 +6793,69 @@ Detailed accepted contract:
 `docs/v300_rt5f3_default_off_home_screen_speech_activity_contract.md`.
 
 
-## RT-5f4 configured local end-to-end acceptance checkpoint gate
+## RT-5f4 configured local end-to-end acceptance-sync gate
 
-Candidate state:
+Accepted implementation and operator checkpoint:
 
 ```text
-RT-5f4: IMPLEMENTED / PRIVATE_OPERATOR_EXECUTION_PENDING
-baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+RT-5f4: COMPLETED / ACCEPTED / PUSHED
+checkpoint baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
+checkpoint commit: c84617e7ce07ecb1ca1605956eda7435b797c2fe
+corrective commit / expected HEAD: bf17538f8b33aa504671289edda8f55c511fe77d
 RT-5f3 implementation: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-exact implementation surface: 7 files
-private operator execution: NOT_AUTHORIZED
-commit/push: NOT_AUTHORIZED
+exact checkpoint surface: 7 files
+exact corrective surface: 5 files
+exact acceptance-sync surface: 7 files
+private operator execution: COMPLETED / ACCEPTED
+operator acceptance: ACCEPTED
+Control A: PASS / ACCEPTED
+Control B: PASS / ACCEPTED
+Control C: PASS / ACCEPTED
+Control D: PASS / ACCEPTED
+repeated Stop Capture corrective: REAL-DEVICE PASS
+playback-time speech detection corrective: REAL-DEVICE PASS
+Backend full: 204 passed, 1 existing warning
+Flutter analyze: No issues found
+Flutter full: 411 passed
+RT-5f: COMPLETED / ACCEPTED
+RT-5: COMPLETED / ACCEPTED
+RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-Run from the clean DRC repository while HEAD remains the accepted RT-5f3
-acceptance commit and the exact seven-file RT-5f4 candidate is uncommitted:
+Run from the DRC repository root while HEAD remains the pushed corrective
+commit and the exact seven-file acceptance sync is uncommitted:
 
 ```powershell
+python -m compileall -q backend scripts
 python scripts\check_v300_rt5f4_configured_local_end_to_end_acceptance.py
+python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+Remove-Item -Recurse -Force .pytest-tmp
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
 ```
 
-The gate verifies commit ancestry and the RT-5f3 implementation/acceptance
-surfaces, exact RT-5f4 worktree surface, default-off compile-time gates,
-mobile-only configured assembly, capture-phase speech disarm, authorized-turn
-arming, dedicated stream/TTS ownership, epoch-before-await invalidation,
-cooperative stream cancellation, app-owned queue/local-player flush, bounded
-production speech defaults, metadata-only HomeScreen, public-safe operator
-record schema, explicit non-claims, and private-operator non-execution.
+The acceptance-sync gate verifies the checkpoint/corrective ancestry and exact
+seven-file/five-file committed surfaces, the exact seven-file docs/static-gate
+worktree surface, the two corrective runtime contracts and focused regression
+markers, default-off prerequisites, accepted public-safe operator results,
+parent completion, RT-6 non-authorization, explicit non-claims, and privacy
+boundaries.
 
 It reads no private env, credential, microphone/audio, network, provider,
 synthesis, playback, private path, LAN address, screenshot, raw log, or
-operator evidence. The gate itself cannot accept RT-5f4.
+operator evidence. This acceptance sync changes documentation and this gate
+only. After the acceptance-sync commit, the gate is historical and is not
+rerun against the new HEAD.
 
-Detailed checkpoint contract:
+Detailed accepted contract:
 `docs/v300_rt5f4_configured_local_end_to_end_acceptance.md`.
