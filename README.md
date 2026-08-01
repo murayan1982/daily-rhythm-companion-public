@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-5f4 acceptance-state sync awaiting review
-Current implementation: RT-5f4 configured local end-to-end and audible soft-barge-in accepted through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`.
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation baseline: `ec6844c63b89803041e0b4e064d45c924e2d0438`
-Current implementation commit: `bf17538f8b33aa504671289edda8f55c511fe77d`
-Last accepted small commit: RT-5f4 configured local end-to-end and audible soft-barge-in (**COMPLETED / ACCEPTED / PUSHED**) at `bf17538f8b33aa504671289edda8f55c511fe77d`
+Current small commit: RT-6a character-motion mapping readiness and exact split
+Current implementation: RT-6a exact seven-file docs/static-gate current-behavior inventory and child split candidate.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7`
+Current implementation commit: none
+Last accepted small commit: RT-5f4 acceptance-state sync (**COMPLETED / ACCEPTED / PUSHED**) at `ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
-Current realtime phase: RT-5 (**COMPLETED / ACCEPTED**)
-Current realtime action: review the exact RT-6 contract separately; RT-6 remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+Current realtime phase: RT-6 (**CURRENT / NOT_COMPLETED**)
+Current realtime action: review the exact seven-file RT-6a candidate; RT-6b through RT-6f remain NOT_STARTED / NOT_AUTHORIZED
 
 Current phase state:
 
@@ -82,7 +82,13 @@ RT-5  COMPLETED / ACCEPTED  TTS queue/output control and interruption
     RT-5f2  COMPLETED / ACCEPTED / PUSHED  Fake-only integrated voice-turn and soft-barge-in coordinator
     RT-5f3  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen and production speech-activity wiring
     RT-5f4  COMPLETED / ACCEPTED / PUSHED  Configured local end-to-end and audible soft-barge-in acceptance
-RT-6  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Realtime character presentation and motion-event mapping
+RT-6  CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event mapping
+  RT-6a  IMPLEMENTED / AWAITING_REVIEW  Current behavior inventory, readiness decision, and exact split
+  RT-6b  NOT_STARTED / NOT_AUTHORIZED  App-owned provider-neutral motion mapping contract
+  RT-6c  NOT_STARTED / NOT_AUTHORIZED  Guarded FW root-public mock motion-session adapter
+  RT-6d  NOT_STARTED / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
+  RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
+  RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7  BLOCKED  Configured Live2D / VTS adapter execution
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
@@ -5196,7 +5202,7 @@ Flutter full: 411 passed
 RT-5f: COMPLETED / ACCEPTED
 RT-5: COMPLETED / ACCEPTED
 RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
-acceptance-sync commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: COMPLETED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 ```
 
 The accepted claim remains DRC-local soft barge-in only: cooperative stream
@@ -5219,3 +5225,49 @@ Detailed accepted contract:
 `docs/v300_rt5f4_configured_local_end_to_end_acceptance.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt5f4_configured_local_end_to_end_acceptance.py`.
+
+
+## v3.0.0 RT-6a character-motion mapping readiness
+
+RT-6a is an **IMPLEMENTED / AWAITING_REVIEW** docs/static-gate-only
+checkpoint against DRC baseline `ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7` and clean FW v5.4.0
+`d313eb6acb643103fe25988720ebee5976a04f78`. It freezes the current DRC motion-demo, Flutter character-display,
+and FW root-public mock-motion boundaries before any new mapping or runtime
+wiring is authorized.
+
+Current findings:
+
+```text
+DRC Backend /demo/motion/status and /demo/motion: present
+DRC motion request execution: metadata-only / not_started
+motion_sent: false
+vts_connection_used: false
+DRC-to-FW motion session wiring: absent
+Flutter character activity states: idle / loading / speaking
+Flutter realtime lifecycle-to-motion mapping: absent
+FW root-public mock MotionSession contract: present
+FW real Live2D / VTS adapter: not implemented
+```
+
+Accepted RT-6 split:
+
+```text
+RT-6a  docs/static-gate inventory, readiness, and exact split
+RT-6b  app-owned provider-neutral motion mapping contract
+RT-6c  guarded FW root-public mock motion-session adapter
+RT-6d  Flutter motion presentation model/client/controller
+RT-6e  default-off HomeScreen character-motion wiring
+RT-6f  configured local mock-motion presentation acceptance
+```
+
+RT-6a changes exactly seven documentation/static-gate files. It changes no
+Backend runtime, Flutter runtime, existing test, dependency, Framework source,
+route, asset, configuration, version, release metadata, provider execution,
+network connection, VTS token, WebSocket, Live2D runtime, microphone/audio,
+STT, LLM, TTS, or private operator evidence. RT-6b through RT-6f remain
+not authorized pending explicit RT-6a acceptance.
+
+Detailed candidate contract:
+`docs/v300_rt6a_character_motion_mapping_readiness.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt6a_character_motion_mapping_readiness.py`.

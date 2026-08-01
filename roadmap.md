@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-5f4 acceptance-state sync awaiting review
+Current small commit: RT-6a character-motion mapping readiness and exact split
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,15 +570,15 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-5 COMPLETED / ACCEPTED
-Current small commit: RT-5f4 acceptance-state sync awaiting review
-Last accepted small commit: RT-5f4 configured local end-to-end and audible soft-barge-in COMPLETED / ACCEPTED / PUSHED at bf17538f8b33aa504671289edda8f55c511fe77d
+Status: RT-6 CURRENT / NOT_COMPLETED
+Current small commit: RT-6a character-motion mapping readiness and exact split
+Last accepted small commit: RT-5f4 acceptance-state sync COMPLETED / ACCEPTED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5f4 accepted configured local real voice-turn and DRC-local soft-barge-in flow with real-device correctives.
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation baseline: `ec6844c63b89803041e0b4e064d45c924e2d0438`
-Current implementation commit: `bf17538f8b33aa504671289edda8f55c511fe77d`
-Current implementation boundary: checkpoint commit `c84617e7ce07ecb1ca1605956eda7435b797c2fe` changed seven docs/static-gate files; corrective `bf17538f8b33aa504671289edda8f55c511fe77d` changed exactly five Flutter runtime/test files; Backend, Framework, dependencies, lockfiles, platform manifests, versions, and release metadata remain unchanged.
+Current implementation: RT-6a exact seven-file docs/static-gate current-behavior inventory and child split candidate.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7`
+Current implementation commit: none
+Current implementation boundary: exact seven documentation/static-gate files only; Backend runtime, Flutter runtime, existing tests, Framework, dependencies, lockfiles, platform manifests, versions, assets, routes, and release metadata remain unchanged.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -792,7 +792,13 @@ RT-5   COMPLETED / ACCEPTED  TTS output control, queue, flush, and barge-in
     RT-5f2  COMPLETED / ACCEPTED / PUSHED  Fake-only integrated voice-turn and soft-barge-in coordinator
     RT-5f3  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen and production speech-activity wiring
     RT-5f4  COMPLETED / ACCEPTED / PUSHED  Configured local end-to-end and audible soft-barge-in acceptance
-RT-6   NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Realtime character presentation and motion-event mapping
+RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event mapping
+  RT-6a  IMPLEMENTED / AWAITING_REVIEW  Current behavior inventory, readiness decision, and exact split
+  RT-6b  NOT_STARTED / NOT_AUTHORIZED  App-owned provider-neutral motion mapping contract
+  RT-6c  NOT_STARTED / NOT_AUTHORIZED  Guarded FW root-public mock motion-session adapter
+  RT-6d  NOT_STARTED / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
+  RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
+  RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
@@ -7916,7 +7922,7 @@ Flutter full: 411 passed
 RT-5f: COMPLETED / ACCEPTED
 RT-5: COMPLETED / ACCEPTED
 RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
-acceptance-sync commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: COMPLETED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 ```
 
 The accepted claim remains DRC-local soft barge-in only: cooperative stream
@@ -7939,3 +7945,48 @@ Detailed accepted contract:
 `docs/v300_rt5f4_configured_local_end_to_end_acceptance.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt5f4_configured_local_end_to_end_acceptance.py`.
+
+
+## RT-6a — Character-motion mapping readiness and exact split
+
+Status: **IMPLEMENTED / AWAITING_REVIEW**
+
+```text
+DRC baseline HEAD/origin: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
+FW v5.4.0 HEAD/tag: d313eb6acb643103fe25988720ebee5976a04f78
+change surface: exact seven docs/static-gate files
+Backend runtime changed: false
+Flutter runtime changed: false
+Framework changed: false
+RT-6b through RT-6f authorized: false
+RT-7 real Live2D / VTS execution: blocked
+```
+
+RT-6a freezes the current source facts:
+
+- The existing Backend motion-demo routes normalize and echo bounded metadata,
+  but return `accepted=false`, `request_state=not_started`,
+  `motion_sent=false`, and `vts_connection_used=false`.
+- The existing DRC motion vocabulary is application-specific (`greeting`,
+  `thinking`, `happy`, `tired_supportive`, `speaking`, `idle`) and is not yet
+  mapped to FW `MotionIntent` values.
+- Flutter has a static character presentation boundary with
+  `idle`, `loading`, and `speaking` activity states. Speaking is derived from
+  local playback state; there is no realtime lifecycle-to-motion controller.
+- FW v5.4.0 exports a root-public mock-safe motion contract and event callback.
+  Mock requests complete locally. Real Live2D/VTS adapter execution remains
+  typed `not_implemented` / unsupported for DRC release planning.
+
+The exact child split is:
+
+```text
+RT-6b: pure app-owned provider-neutral mapping; fake-only, no FW call
+RT-6c: default-off injectable FW root-public mock MotionSession adapter
+RT-6d: Flutter motion presentation model/client/controller without HomeScreen
+RT-6e: default-off HomeScreen wiring through app-owned boundaries
+RT-6f: configured local mock-motion and character-presentation acceptance
+```
+
+RT-6a authorizes no runtime implementation. Each child requires a separate
+exact contract review. RT-7 remains blocked until a released FW real adapter
+exists and is reviewed separately.

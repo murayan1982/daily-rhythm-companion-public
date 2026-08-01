@@ -6859,3 +6859,54 @@ rerun against the new HEAD.
 
 Detailed accepted contract:
 `docs/v300_rt5f4_configured_local_end_to_end_acceptance.md`.
+
+
+## v3.0.0 RT-6a character-motion mapping readiness gate
+
+RT-6a is a docs/static-gate-only candidate against DRC `ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7` and clean
+FW v5.4.0 `d313eb6acb643103fe25988720ebee5976a04f78`. It inspects source markers only. It starts no application,
+opens no network/VTS connection, loads no Live2D runtime, reads no credential,
+and executes no microphone/audio/STT/LLM/TTS/provider operation.
+
+Set `FRAMEWORK_ROOT` when the FW checkout cannot be discovered from the normal
+workspace layout, then run from the DRC repository root:
+
+```powershell
+$env:FRAMEWORK_ROOT = "<clean AI Character Framework v5.4.0 checkout>"
+python -m compileall -q backend scripts
+python scripts\check_v300_rt6a_character_motion_mapping_readiness.py
+python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+Remove-Item -Recurse -Force .pytest-tmp
+git -c core.whitespace=cr-at-eol diff --check
+git diff --name-only
+git diff --stat
+git status --short
+```
+
+Expected candidate markers include:
+
+```text
+v300_rt6a_status: implemented-awaiting-review
+v300_rt6a_exact_change_surface: True
+v300_rt6a_change_file_count: 7
+v300_rt6a_existing_motion_demo_boundary_exists: True
+v300_rt6a_existing_motion_demo_is_metadata_only: True
+v300_rt6a_existing_motion_send_enabled: False
+v300_rt6a_existing_vts_connection_enabled: False
+v300_rt6a_static_character_presentation_exists: True
+v300_rt6a_realtime_motion_mapping_exists: False
+v300_rt6a_fw_root_public_motion_contract_exists: True
+v300_rt6a_fw_mock_motion_available: True
+v300_rt6a_fw_real_motion_adapter_supported: False
+v300_rt6a_rt6b_authorized: False
+```
+
+The `--snapshot` option skips commit/tag/worktree checks for an extracted
+candidate snapshot. It remains static and is only for reconstruction review;
+acceptance requires the normal command against the real clean DRC/FW checkouts.

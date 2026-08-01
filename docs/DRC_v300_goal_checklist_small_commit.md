@@ -5,15 +5,15 @@ Updated: 2026-08-01
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-5 COMPLETED / ACCEPTED
-Current small commit: RT-5f4 acceptance-state sync awaiting review
-Current implementation step: RT-5f4 configured local end-to-end and audible soft-barge-in accepted through real-device correctives
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
-Current implementation commit: bf17538f8b33aa504671289edda8f55c511fe77d
-Last accepted small commit: RT-5f4 configured local end-to-end and audible soft-barge-in COMPLETED / ACCEPTED / PUSHED at bf17538f8b33aa504671289edda8f55c511fe77d
+Current parent phase: RT-6 CURRENT / NOT_COMPLETED
+Current small commit: RT-6a character-motion mapping readiness and exact split
+Current implementation step: RT-6a docs/static-gate current-behavior inventory and child split
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
+Current implementation commit: none
+Last accepted small commit: RT-5f4 acceptance-state sync COMPLETED / ACCEPTED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: exact RT-6 contract review only; RT-6 remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+Next implementation action: review exact seven-file RT-6a candidate; RT-6b through RT-6f remain NOT_STARTED / NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -91,7 +91,13 @@ RT-5f1 COMPLETED / ACCEPTED / PUSHED
 RT-5f2 COMPLETED / ACCEPTED / PUSHED
 RT-5f3 COMPLETED / ACCEPTED / PUSHED
 RT-5f4 COMPLETED / ACCEPTED / PUSHED
-RT-6 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-6 CURRENT / NOT_COMPLETED
+RT-6a IMPLEMENTED / AWAITING_REVIEW
+RT-6b NOT_STARTED / NOT_AUTHORIZED
+RT-6c NOT_STARTED / NOT_AUTHORIZED
+RT-6d NOT_STARTED / NOT_AUTHORIZED
+RT-6e NOT_STARTED / NOT_AUTHORIZED
+RT-6f NOT_STARTED / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -123,7 +129,7 @@ RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
 COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
-docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`. Controls A-D and both real-device correctives passed; Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 remains NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED.
+docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`. Controls A-D and both real-device correctives passed; Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 is CURRENT / NOT_COMPLETED and RT-6a is IMPLEMENTED / AWAITING_REVIEW under the separate exact seven-file docs/static-gate contract.
 
 
 ## RT-5f1 accepted implementation checkpoint
@@ -2509,7 +2515,7 @@ exact corrective surface: 5 files
 acceptance sync surface: exact seven files
 private operator execution: COMPLETED / ACCEPTED
 operator acceptance: ACCEPTED
-acceptance-sync commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: COMPLETED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 RT-5f: COMPLETED / ACCEPTED
 RT-5: COMPLETED / ACCEPTED
 RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
@@ -2526,6 +2532,41 @@ RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 - [x] Preserve all RT-5f4 explicit non-claims.
 - [x] Mark RT-5f4, RT-5f, and RT-5 completed and accepted.
 - [x] Move RT-6 to exact-contract-review readiness only.
-- [ ] Review this exact seven-file acceptance sync.
+- [x] Review this exact seven-file acceptance sync.
+- [x] Obtain explicit commit approval.
+- [x] Commit and push only after approval.
+
+
+## RT-6a implementation candidate
+
+```text
+RT-6: CURRENT / NOT_COMPLETED
+RT-6a: IMPLEMENTED / AWAITING_REVIEW
+DRC baseline: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
+FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
+exact surface: seven files
+runtime changes: none
+RT-6b through RT-6f authorization: false
+RT-7 real adapter execution: blocked
+```
+
+- [x] Replace the stale RT-5f4 acceptance-sync review marker with RT-6a.
+- [x] Freeze existing metadata-only Backend motion-demo behavior.
+- [x] Freeze existing static Flutter character presentation behavior.
+- [x] Freeze released FW root-public mock-safe motion semantics.
+- [x] Record DRC/FW vocabulary mismatch and require explicit mapping.
+- [x] Split RT-6b through RT-6f by ownership and stop rules.
+- [x] Preserve root-public-only FW integration policy.
+- [x] Preserve real Live2D/VTS execution as RT-7 blocked work.
+- [x] Add exact seven-file static candidate gate.
+- [ ] Execute compileall and dedicated gate in real checkouts.
+- [ ] Execute Backend full regression.
+- [ ] Execute Flutter analyze/full regression.
+- [ ] Review exact surface and changed-content privacy.
 - [ ] Obtain explicit commit approval.
 - [ ] Commit and push only after approval.
+
+Detailed candidate contract:
+`docs/v300_rt6a_character_motion_mapping_readiness.md`.
+Candidate gate:
+`scripts/check_v300_rt6a_character_motion_mapping_readiness.py`.

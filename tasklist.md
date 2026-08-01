@@ -12,13 +12,13 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current parent phase: RT-5 COMPLETED / ACCEPTED
-current small commit: RT-5f4 acceptance-state sync awaiting review
-current implementation step: RT-5f4 configured local end-to-end and audible soft-barge-in accepted through real-device correctives
-current implementation state: COMPLETED / ACCEPTED
-current implementation baseline: ec6844c63b89803041e0b4e064d45c924e2d0438
-current implementation commit: bf17538f8b33aa504671289edda8f55c511fe77d
-last accepted small commit: RT-5f4 configured local end-to-end and audible soft-barge-in COMPLETED / ACCEPTED / PUSHED at bf17538f8b33aa504671289edda8f55c511fe77d
+current parent phase: RT-6 CURRENT / NOT_COMPLETED
+current small commit: RT-6a character-motion mapping readiness and exact split
+current implementation step: RT-6a docs/static-gate current-behavior inventory and child split
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
+current implementation commit: none
+last accepted small commit: RT-5f4 acceptance-state sync COMPLETED / ACCEPTED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
@@ -2558,7 +2558,7 @@ checkpoint surface: exact seven docs/static-gate files
 corrective surface: exact five Flutter runtime/test files
 acceptance sync surface: exact seven files
 private operator execution: COMPLETED / ACCEPTED
-acceptance-sync commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: COMPLETED / PUSHED at ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 RT-5f: COMPLETED / ACCEPTED
 RT-5: COMPLETED / ACCEPTED
 RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
@@ -2579,6 +2579,46 @@ RT-6: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 - [x] Keep provider hard cancel, Backend hard cancel, provider TTS cancel, FW real queue flush, universal acoustic quality, iOS/PC acceptance, Live2D/VTS execution, and release readiness as non-claims.
 - [x] Keep private values, text, audio, IDs, paths, addresses, screenshots, raw logs, and evidence outside commits.
 - [ ] Review the exact seven-file acceptance sync.
-- [ ] Obtain explicit commit approval for the acceptance sync.
-- [ ] Commit and push the acceptance sync only after approval.
-- [ ] Start RT-6 exact contract review separately; do not implement RT-6 in this sync.
+- [x] Obtain explicit commit approval for the acceptance sync.
+- [x] Commit and push the acceptance sync only after approval.
+- [x] Start RT-6 exact contract review separately; RT-6a is now the active docs/static-gate candidate.
+
+
+## RT-6a — Character-motion mapping readiness and exact split
+
+```text
+status: IMPLEMENTED / AWAITING_REVIEW
+DRC baseline: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
+FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
+exact change surface: seven docs/static-gate files
+RT-6b through RT-6f: NOT_STARTED / NOT_AUTHORIZED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+```
+
+実装済み候補:
+
+- [x] RT-5f4 acceptance sync `ca1bd17...` を新baselineとして固定
+- [x] 既存Backend motion-demo route/service/modelを棚卸し
+- [x] `accepted=false` / `not_started` / `motion_sent=false` を固定
+- [x] `vts_connection_used=false` と実VTS未接続を固定
+- [x] DRC独自motion vocabularyを固定
+- [x] Flutter static character presentationとidle/loading/speakingを固定
+- [x] realtime lifecycle-to-motion mapping/controller不在を固定
+- [x] FW root-public mock motion contractを固定
+- [x] FW real Live2D/VTS adapter未実装を固定
+- [x] RT-6b〜RT-6fのexact ownershipを分離
+- [x] exact seven-file candidate gateを追加
+- [x] private/network/provider/audio non-actionを固定
+- [ ] real DRC/FW checkoutで専用gateを実行
+- [ ] Backend 204件を通過
+- [ ] Flutter analyzeを通過
+- [ ] Flutter 411件を通過
+- [ ] exact diff/privacy reviewと`git diff --check`を通過
+- [ ] explicit commit approvalを取得
+- [ ] commit/push後clean-treeを確認
+- [ ] RT-6b exact contract reviewを別工程で開始
+
+RT-6aではBackend/Flutter runtime、既存test、dependency、route、asset、
+configuration、version、release metadata、FW source、network/provider、
+VTS WebSocket/token、Live2D runtime、microphone/audio/STT/LLM/TTSを変更・
+実行しない。
