@@ -1,15 +1,16 @@
 # Daily Rhythm Companion v3.0.0 RT-5f3 default-off HomeScreen and production speech-activity contract
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / ACCEPTED / PUSHED**
 
 ```text
-baseline DRC HEAD: 888814d09fad75039733a4a94719454e0a69db63
+implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
+implementation commit: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-implementation commit: none
 exact implementation surface: 20 files
-commit/push: NOT_AUTHORIZED
-real operator acceptance: NOT_EXECUTED
+acceptance sync surface: exact seven files
+real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
 RT-5: CURRENT / NOT_COMPLETED
+RT-5f4: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 ## Purpose
@@ -20,7 +21,7 @@ adds a DRC-owned bounded production speech-activity source that can forward one
 confirmed foreground event to the existing DRC-local soft-interruption
 boundary.
 
-The candidate does not claim real audible barge-in acceptance, production
+The accepted RT-5f3 implementation does not claim real audible barge-in acceptance, production
 speech-detection quality, echo-cancellation effectiveness, provider hard
 cancel, Framework queue flush, or release readiness. Those claims remain
 outside RT-5f3 and require separate operator acceptance.
@@ -210,7 +211,7 @@ late capture/staging/STT/stream/synthesis/playback completions inert
 
 ## Synthetic tests
 
-The candidate adds focused coverage for:
+The accepted implementation adds focused coverage for:
 
 ```text
 bounded detector defaults and invalid configuration
@@ -246,7 +247,7 @@ microphone, network, provider, Framework synthesis, or local playback.
 
 ## Verification commands
 
-Run from the real DRC repository root while HEAD remains the approved baseline:
+The implementation candidate was verified from the real DRC repository root before commit and push with:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -313,12 +314,37 @@ private text/IDs/amplitude/audio/provider/path/error data reaches UI; accepted
 RT-5f2 ownership checks are relaxed; real execution occurs in synthetic tests;
 or focused/full regression verification fails.
 
-## Candidate state
+## Acceptance record
 
 ```text
-RT-5f3: IMPLEMENTED / AWAITING_REVIEW
-implementation commit: none
-commit/push: NOT_AUTHORIZED
-operator acceptance: NOT_EXECUTED
+RT-5f3: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
+implementation commit: 75504424c37222234ea8a4314d01ce386ff92d23
+FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
+exact implementation surface: 20 files
+exact acceptance-sync surface: 7 files
+exact acceptance review: PASS
+blocking findings: 0
+compileall: passed
+dedicated RT-5f3 gate: passed
+Backend full: 204 passed, 1 existing warning
+Flutter analyze: no issues
+focused Flutter: 53 passed
+Flutter full: 408 passed
+exact surface and privacy review: passed
+git diff --check: passed
+explicit commit approval: accepted
+implementation push: completed
+post-push DRC working tree: clean
+Framework repository changed: false
+real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
 RT-5: CURRENT / NOT_COMPLETED
+RT-5f4: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
+
+This seven-file acceptance sync changes documentation and this gate only. It
+does not change Flutter or Backend runtime, tests, dependencies, platform
+manifests, versions, release metadata, Framework source, private environment,
+audio, transcript, provider payload, private path, LAN address, screenshot, or
+operator evidence. After the acceptance-sync commit, the gate is historical
+and is not rerun against the new HEAD.

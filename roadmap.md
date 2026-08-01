@@ -571,14 +571,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring
-Last accepted small commit: RT-5f2 fake-only integrated voice-turn coordinator COMPLETED / ACCEPTED / PUSHED at b7bd436196210f27782b64c1a094aa65d6893915
+Current small commit: none
+Last accepted small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring COMPLETED / ACCEPTED / PUSHED at 75504424c37222234ea8a4314d01ce386ff92d23
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5f3 exact twenty-file default-off HomeScreen and production speech-activity candidate.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation: RT-5f3 default-off configured integrated voice-turn wiring accepted.
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: `888814d09fad75039733a4a94719454e0a69db63`
-Current implementation commit: none
-Current implementation boundary: Flutter runtime/UI/tests plus docs/gate only; Backend, Framework, dependencies, lockfiles, platform manifests, versions, release metadata, and existing manual RT-4f4/RT-5e ownership remain unchanged.
+Current implementation commit: `75504424c37222234ea8a4314d01ce386ff92d23`
+Current implementation boundary: accepted exact twenty-file Flutter runtime/UI/tests plus docs/gate implementation; Backend, Framework, dependencies, lockfiles, platform manifests, versions, release metadata, and existing manual RT-4f4/RT-5e ownership remain unchanged.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -790,8 +790,8 @@ RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
     RT-5f0  COMPLETED / ACCEPTED / PUSHED  Readiness decision and exact small-commit split
     RT-5f1  COMPLETED / ACCEPTED / PUSHED  App-visible real-STT transcript source
     RT-5f2  COMPLETED / ACCEPTED / PUSHED  Fake-only integrated voice-turn and soft-barge-in coordinator
-    RT-5f3  IMPLEMENTED / AWAITING_REVIEW  Default-off HomeScreen and production speech-activity wiring
-    RT-5f4  NOT_STARTED / NOT_AUTHORIZED  Configured local end-to-end and audible soft-barge-in acceptance
+    RT-5f3  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen and production speech-activity wiring
+    RT-5f4  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Configured local end-to-end and audible soft-barge-in acceptance
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
@@ -7830,7 +7830,7 @@ implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
 corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
 original implementation surface: exact nine files
 corrective surface: exact four files
-RT-5f3: IMPLEMENTED / AWAITING_REVIEW
+RT-5f3: COMPLETED / ACCEPTED / PUSHED
 ```
 
 RT-5f2 accepts the fake/in-memory integrated voice-turn and DRC-local
@@ -7843,35 +7843,44 @@ Acceptance passed with Backend 204, Flutter analyze, focused Flutter 26,
 Flutter full 381, exact surface/privacy review, explicit approval, both pushes,
 and clean DRC/FW working trees.
 
-RT-5f3 is implemented under the separately approved exact twenty-file
-contract and awaits review. Commit/push and operator acceptance are not
-authorized.
+RT-5f3 is completed, accepted, and pushed at `75504424c37222234ea8a4314d01ce386ff92d23` under the separately
+approved exact twenty-file contract. RT-5f4 may proceed only to a separate
+exact contract review and remains NOT_AUTHORIZED.
 
 
 ## RT-5f3 — Default-off HomeScreen and production speech activity
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / ACCEPTED / PUSHED**
 
 ```text
-baseline: 888814d09fad75039733a4a94719454e0a69db63
+implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
+implementation commit: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 exact implementation surface: 20 files
-implementation commit: none
-commit/push: NOT_AUTHORIZED
-real operator acceptance: NOT_EXECUTED
+acceptance sync surface: exact seven files
+real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
+RT-5f4: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-RT-5f3 assembles a dedicated integrated voice-turn dependency graph behind
-three compile-time gates, session-local opt-in, foreground state, and explicit
+RT-5f3 accepts a dedicated integrated voice-turn dependency graph behind three
+compile-time gates, session-local opt-in, foreground state, and explicit
 start/stop actions. It does not share the manual RT-4f4 stream controller or
 manual RT-5e queue/orchestrator/player. Production speech activity drains and
 drops PCM16 stream bytes and publishes only a bounded confirmed foreground
 event after three consecutive dBFS samples. One event is allowed per arming
 generation; initial capture is never monitored.
 
-The HomeScreen section is metadata-only. Real end-to-end execution, audible
-barge-in, threshold quality, acoustic echo cancellation, provider hard cancel,
-FW queue flush, operator acceptance, and release readiness remain unclaimed.
+Acceptance passed with compileall, the dedicated RT-5f3 gate, Backend 204,
+Flutter analyze, 53 focused Flutter tests, 408 full Flutter tests, exact
+surface/privacy review, `git diff --check`, explicit commit approval, push, and
+a clean DRC working tree.
 
-Detailed contract:
+The HomeScreen section remains metadata-only. Real end-to-end execution,
+audible barge-in, threshold quality, acoustic echo cancellation, provider hard
+cancel, FW queue flush, operator acceptance, and release readiness remain
+unclaimed.
+
+Detailed accepted contract:
 `docs/v300_rt5f3_default_off_home_screen_speech_activity_contract.md`.
+Historical acceptance-sync gate:
+`scripts/check_v300_rt5f3_default_off_home_screen_speech_activity_contract.py`.

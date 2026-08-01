@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring
-Current implementation step: RT-5f3 exact twenty-file candidate
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: none
+Current implementation step: RT-5f3 default-off configured integrated voice-turn wiring accepted
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
-Current implementation commit: none
-Last accepted small commit: RT-5f2 fake-only integrated voice-turn coordinator COMPLETED / ACCEPTED / PUSHED at b7bd436196210f27782b64c1a094aa65d6893915
+Current implementation commit: 75504424c37222234ea8a4314d01ce386ff92d23
+Last accepted small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring COMPLETED / ACCEPTED / PUSHED at 75504424c37222234ea8a4314d01ce386ff92d23
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: run exact RT-5f3 verification and review; commit/push remain NOT_AUTHORIZED
+Next implementation action: prepare a separate exact RT-5f4 contract review; RT-5f4 remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -89,7 +89,8 @@ RT-5f CURRENT / NOT_COMPLETED
 RT-5f0 COMPLETED / ACCEPTED / PUSHED
 RT-5f1 COMPLETED / ACCEPTED / PUSHED
 RT-5f2 COMPLETED / ACCEPTED / PUSHED
-RT-5f3 IMPLEMENTED / AWAITING_REVIEW
+RT-5f3 COMPLETED / ACCEPTED / PUSHED
+RT-5f4 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -121,7 +122,7 @@ RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
 COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
-docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is ready only for a separate exact contract review and remains unimplemented and unauthorized.
+docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 is ready only for a separate exact contract review and remains NOT_AUTHORIZED.
 
 
 ## RT-5f1 accepted implementation checkpoint
@@ -2428,7 +2429,7 @@ implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
 corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
 original surface: exact nine files
 corrective surface: exact four files
-RT-5f3: IMPLEMENTED / AWAITING_REVIEW
+RT-5f3: COMPLETED / ACCEPTED / PUSHED
 ```
 
 - [x] Compose fake capture, staging, transcript, stream, and RT-5c output.
@@ -2451,16 +2452,17 @@ Detailed accepted contract:
 `docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md`.
 
 
-## RT-5f3 implementation candidate checklist
+## RT-5f3 accepted implementation checkpoint
 
 ```text
-RT-5f3: IMPLEMENTED / AWAITING_REVIEW
-baseline: 888814d09fad75039733a4a94719454e0a69db63
+RT-5f3: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
+implementation commit: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 exact implementation surface: 20 files
-implementation commit: none
-commit/push: NOT_AUTHORIZED
-real operator acceptance: NOT_EXECUTED
+acceptance sync surface: exact seven files
+real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
+RT-5f4: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 - [x] Keep the configured integrated runtime default-off.
@@ -2475,13 +2477,18 @@ real operator acceptance: NOT_EXECUTED
 - [x] Preserve RT-5f2 queue exclusivity and processed-item identity checks.
 - [x] Add metadata-only HomeScreen presentation and synthetic focused tests.
 - [x] Add exact twenty-file contract and dedicated gate.
-- [ ] Pass the dedicated gate in the real Git checkout at the approved baseline.
-- [ ] Pass Backend full tests.
-- [ ] Pass Flutter analyze and all focused Flutter tests.
-- [ ] Pass full Flutter tests.
-- [ ] Pass exact surface, privacy, and `git diff --check` review.
-- [ ] Receive explicit commit approval.
-- [ ] Commit and push.
+- [x] Pass the dedicated gate in the real Git checkout.
+- [x] Pass Backend full: 204 passed, 1 existing warning.
+- [x] Pass Flutter analyze: no issues.
+- [x] Pass focused Flutter: 53 passed.
+- [x] Pass full Flutter: 408 passed.
+- [x] Pass exact surface, privacy, and `git diff --check` review.
+- [x] Receive explicit commit approval.
+- [x] Commit and push exact twenty-file implementation at `75504424c37222234ea8a4314d01ce386ff92d23`.
+- [x] Verify post-push DRC working tree clean.
+- [x] Preserve real operator acceptance, audible barge-in quality, provider hard cancel, FW real queue flush, and release readiness as non-claims.
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt5f3_default_off_home_screen_speech_activity_contract.md`.
+Historical acceptance-sync gate:
+`scripts/check_v300_rt5f3_default_off_home_screen_speech_activity_contract.py`.

@@ -6745,7 +6745,7 @@ expected Backend full: 204 passed, 1 existing warning
 expected focused Flutter: 26 passed
 expected Flutter full: 381 passed
 RT-5f2 COMPLETED / ACCEPTED / PUSHED
-RT-5f3 IMPLEMENTED / AWAITING_REVIEW
+RT-5f3 COMPLETED / ACCEPTED / PUSHED
 ```
 
 This acceptance sync changes documentation and this gate only. After the sync
@@ -6754,31 +6754,40 @@ commit, the gate is historical and is not rerun against the new HEAD.
 
 ## RT-5f3 default-off HomeScreen and production speech-activity gate
 
-Candidate status:
+Accepted implementation:
 
 ```text
-RT-5f3: IMPLEMENTED / AWAITING_REVIEW
-baseline: 888814d09fad75039733a4a94719454e0a69db63
+RT-5f3: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
+implementation commit: 75504424c37222234ea8a4314d01ce386ff92d23
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 exact implementation surface: 20 files
-implementation commit: none
-commit/push: NOT_AUTHORIZED
-real operator acceptance: NOT_EXECUTED
+exact acceptance-sync surface: 7 files
+focused Flutter: 53 passed
+Flutter full: 408 passed
+real operator acceptance: NOT_EXECUTED / NOT_CLAIMED
+RT-5f4: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-Run from the DRC repository root while HEAD remains the approved baseline:
+Run from the DRC repository root while HEAD remains the pushed implementation
+commit and the exact seven-file acceptance sync is uncommitted:
 
 ```powershell
 python scripts\check_v300_rt5f3_default_off_home_screen_speech_activity_contract.py
 ```
 
-The gate requires the exact twenty-file worktree surface; verifies the three
-default-off runtime gates, dedicated stream/TTS ownership, capture-phase
-disarm, bounded production detector defaults, one event per arming generation,
-metadata-only HomeScreen markers, neutral coordinator messages, focused test
-coverage, unchanged dependency files, and non-acceptance documentation. It does
-not access credentials, microphone/audio, network, providers, Framework
-runtime, synthesis, playback, or operator evidence.
+The acceptance-sync gate verifies the implementation parent and exact
+commit-scoped twenty-file surface, the exact seven-file docs/test-only worktree
+surface, default-off runtime gates, dedicated stream/TTS ownership,
+capture-phase disarm, bounded production detector defaults, one event per
+arming generation, metadata-only HomeScreen markers, neutral coordinator
+messages, focused test coverage, unchanged dependency files, accepted
+verification records, and the RT-5f4 non-authorization boundary.
 
-Detailed contract:
+It accesses no credential, microphone/audio, network, provider, Framework
+runtime, synthesis, playback, or operator evidence. This acceptance sync
+changes documentation and this gate only. After the acceptance-sync commit,
+the gate is historical and is not rerun against the new HEAD.
+
+Detailed accepted contract:
 `docs/v300_rt5f3_default_off_home_screen_speech_activity_contract.md`.
