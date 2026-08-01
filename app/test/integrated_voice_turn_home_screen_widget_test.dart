@@ -69,6 +69,78 @@ void main() {
     expect(fixture.disposeOwnedCalls, 1);
   });
 
+  testWidgets(
+    'second capture enables stop when permission is already granted',
+    (tester) async {
+      final fixture = _WidgetBindingFixture();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: HomeScreen(
+            apiClient: const _FakeBackendApiClient(),
+            integratedVoiceTurnBindingFactory: () => fixture.binding,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final optInFinder = find.byKey(
+        const Key('integrated-voice-turn-opt-in'),
+      );
+      final startFinder = find.byKey(
+        const Key('integrated-voice-turn-start-button'),
+      );
+      final stopFinder = find.byKey(
+        const Key('integrated-voice-turn-stop-capture-button'),
+      );
+
+      await tester.ensureVisible(optInFinder);
+      await tester.tap(optInFinder);
+      await tester.pump();
+
+      await tester.ensureVisible(startFinder);
+      await tester.tap(startFinder);
+      await _pumpUntil(
+        tester,
+        () =>
+            fixture.engine.startCalls == 1 &&
+            fixture.binding.canStopCapture,
+      );
+
+      expect(
+        tester.widget<OutlinedButton>(stopFinder).onPressed,
+        isNotNull,
+      );
+
+      await tester.ensureVisible(stopFinder);
+      await tester.tap(stopFinder);
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(startFinder);
+      await tester.tap(startFinder);
+      await _pumpUntil(
+        tester,
+        () =>
+            fixture.engine.startCalls == 2 &&
+            fixture.binding.canStopCapture,
+      );
+
+      expect(
+        tester.widget<OutlinedButton>(stopFinder).onPressed,
+        isNotNull,
+      );
+
+      await tester.ensureVisible(stopFinder);
+      await tester.tap(stopFinder);
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(
+        const MaterialApp(home: SizedBox.shrink()),
+      );
+      await tester.pumpAndSettle();
+    },
+  );
+
   testWidgets('unconfigured section remains disabled and uniquely labelled', (
     tester,
   ) async {
@@ -122,6 +194,22 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
     await tester.pumpAndSettle();
   });
+}
+
+Future<void> _pumpUntil(
+  WidgetTester tester,
+  bool Function() predicate,
+) async {
+  for (var index = 0; index < 100; index += 1) {
+    await tester.pump();
+    if (predicate()) {
+      // The predicate reflects binding state. Pump once more so the
+      // HomeScreen consumes the notification before widget inspection.
+      await tester.pump();
+      return;
+    }
+  }
+  fail('widget condition not reached');
 }
 
 class _WidgetBindingFixture {

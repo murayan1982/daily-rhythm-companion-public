@@ -49,7 +49,7 @@ class IntegratedVoiceTurnHomeScreenState {
 
 /// Bridges one explicit HomeScreen start/stop action to the existing bounded
 /// microphone controller without exposing capture identity or private paths.
-class IntegratedVoiceTurnCaptureSession {
+class IntegratedVoiceTurnCaptureSession extends ChangeNotifier {
   IntegratedVoiceTurnCaptureSession({
     required MicrophoneCaptureController controller,
     this.maximumDuration = integratedVoiceTurnCaptureMaximumDuration,
@@ -103,6 +103,7 @@ class IntegratedVoiceTurnCaptureSession {
     final completion = Completer<MicrophoneCaptureResult>();
     _completion = completion;
     _completeFromControllerIfTerminal();
+    notifyListeners();
     return completion.future;
   }
 
@@ -132,6 +133,7 @@ class IntegratedVoiceTurnCaptureSession {
 
   void _handleControllerChanged() {
     _completeFromControllerIfTerminal();
+    notifyListeners();
   }
 
   void _completeFromControllerIfTerminal() {
@@ -185,6 +187,7 @@ class IntegratedVoiceTurnCaptureSession {
       );
     }
     await _controller.close();
+    super.dispose();
   }
 }
 
@@ -212,6 +215,7 @@ class IntegratedVoiceTurnHomeScreenBinding extends ChangeNotifier
                      AppLifecycleState.resumed),
        ) {
     coordinator.addListener(_handleCoordinatorChanged);
+    captureSession.addListener(_handleCaptureSessionChanged);
     speechActivitySource.addListener(_handleSpeechActivitySourceChanged);
     speechActivitySource.setEventHandler(_handleSpeechActivity);
     if (_observeApplicationLifecycle) {
@@ -354,6 +358,12 @@ class IntegratedVoiceTurnHomeScreenBinding extends ChangeNotifier
     }
     notifyListeners();
     _scheduleSpeechActivitySync();
+  }
+
+  void _handleCaptureSessionChanged() {
+    if (!_closed) {
+      notifyListeners();
+    }
   }
 
   void _handleSpeechActivitySourceChanged() {
@@ -504,6 +514,7 @@ class IntegratedVoiceTurnHomeScreenBinding extends ChangeNotifier
       WidgetsBinding.instance.removeObserver(this);
     }
     coordinator.removeListener(_handleCoordinatorChanged);
+    captureSession.removeListener(_handleCaptureSessionChanged);
     speechActivitySource.removeListener(_handleSpeechActivitySourceChanged);
     speechActivitySource.setEventHandler(null);
     try {

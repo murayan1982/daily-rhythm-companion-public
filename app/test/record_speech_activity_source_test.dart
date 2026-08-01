@@ -3,9 +3,26 @@ import 'dart:async';
 import 'package:app/services/record_speech_activity_source.dart';
 import 'package:app/services/speech_activity_source.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:record/record.dart';
 
 void main() {
   group('RecordSpeechActivitySource', () {
+    test('production config remains active during local playback', () {
+      expect(
+        recordSpeechActivityRecordConfig.audioInterruption,
+        AudioInterruptionMode.none,
+      );
+      expect(
+        recordSpeechActivityRecordConfig.encoder,
+        AudioEncoder.pcm16bits,
+      );
+      expect(recordSpeechActivityRecordConfig.sampleRate, 16000);
+      expect(recordSpeechActivityRecordConfig.numChannels, 1);
+      expect(recordSpeechActivityRecordConfig.autoGain, isTrue);
+      expect(recordSpeechActivityRecordConfig.echoCancel, isTrue);
+      expect(recordSpeechActivityRecordConfig.noiseSuppress, isTrue);
+    });
+
     test('three consecutive threshold samples emit exactly once', () async {
       final fixture = _Fixture();
       final events = <SpeechActivityEvent>[];

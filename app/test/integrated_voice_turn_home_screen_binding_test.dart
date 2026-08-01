@@ -186,6 +186,46 @@ void main() {
       await fixture.close();
     });
 
+    test(
+      'second authorized turn exposes stop without a permission rebuild',
+      () async {
+        final fixture = _BindingFixture();
+        fixture.binding.setOptIn(true);
+
+        final firstTurn = fixture.binding.startVoiceTurn();
+        await _waitFor(() => fixture.engine.startCalls == 1);
+
+        expect(fixture.binding.canStopCapture, isTrue);
+        expect(
+          (await fixture.binding.stopCapture())?.isCompleted,
+          isTrue,
+        );
+        fixture.staging.complete(_rejectedStaging());
+        expect(
+          (await firstTurn)?.outcome,
+          IntegratedVoiceTurnOutcome.stagingRejected,
+        );
+
+        fixture.resetStaging();
+
+        final secondTurn = fixture.binding.startVoiceTurn();
+        await _waitFor(() => fixture.engine.startCalls == 2);
+
+        expect(fixture.binding.canStopCapture, isTrue);
+        expect(
+          (await fixture.binding.stopCapture())?.isCompleted,
+          isTrue,
+        );
+        fixture.staging.complete(_rejectedStaging());
+        expect(
+          (await secondTurn)?.outcome,
+          IntegratedVoiceTurnOutcome.stagingRejected,
+        );
+
+        await fixture.close();
+      },
+    );
+
     test('close is idempotent and owns all dedicated resources', () async {
       final fixture = _BindingFixture();
 
@@ -267,7 +307,7 @@ class _BindingFixture {
   late final RealtimeTerminalVoiceOutputOrchestrator voiceOutput;
   late final IntegratedVoiceTurnCoordinator coordinator;
   late final IntegratedVoiceTurnHomeScreenBinding binding;
-  final Completer<HostAudioHandoffResult> staging =
+  Completer<HostAudioHandoffResult> staging =
       Completer<HostAudioHandoffResult>();
 
   int stagingCalls = 0;
@@ -275,6 +315,10 @@ class _BindingFixture {
   int playbackCalls = 0;
   int localStopCalls = 0;
   int disposeOwnedCalls = 0;
+
+  void resetStaging() {
+    staging = Completer<HostAudioHandoffResult>();
+  }
 
   Future<void> close() => binding.close();
 }

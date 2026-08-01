@@ -5,6 +5,16 @@ import 'package:record/record.dart';
 
 import 'speech_activity_source.dart';
 
+const RecordConfig recordSpeechActivityRecordConfig = RecordConfig(
+  encoder: AudioEncoder.pcm16bits,
+  sampleRate: 16000,
+  numChannels: 1,
+  autoGain: true,
+  echoCancel: true,
+  noiseSuppress: true,
+  audioInterruption: AudioInterruptionMode.none,
+);
+
 abstract interface class RecordSpeechActivityDriver {
   Stream<double> get amplitudeDbfs;
 
@@ -48,14 +58,7 @@ class RecordPackageSpeechActivityDriver
 
     try {
       final pcmStream = await _recorder.startStream(
-        const RecordConfig(
-          encoder: AudioEncoder.pcm16bits,
-          sampleRate: 16000,
-          numChannels: 1,
-          autoGain: true,
-          echoCancel: true,
-          noiseSuppress: true,
-        ),
+        recordSpeechActivityRecordConfig,
       );
       _pcmSubscription = pcmStream.listen(
         (_) {
