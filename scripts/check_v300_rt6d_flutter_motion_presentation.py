@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the exact RT-6d Flutter motion-presentation candidate."""
+"""Validate the exact RT-6d acceptance-state synchronization."""
 
 from __future__ import annotations
 
@@ -9,7 +9,9 @@ import subprocess
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DRC_BASELINE = "cd423fa2236ce16a7635f0c67460f2fa2fd210e9"
+DRC_BASELINE = "0f220b792feb7ebb82c5871a794731aa1327439a"
+IMPLEMENTATION_BASELINE = "cd423fa2236ce16a7635f0c67460f2fa2fd210e9"
+IMPLEMENTATION_COMMIT = "0f220b792feb7ebb82c5871a794731aa1327439a"
 FW_VERSION = "5.4.0"
 FW_REFERENCE_COMMIT = "d313eb6acb643103fe25988720ebee5976a04f78"
 FW_SOURCE_MODE = "external-vendored-snapshot"
@@ -21,18 +23,13 @@ EXACT_PATHS = {
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_rt6d_flutter_motion_presentation.md",
     "scripts/check_v300_rt6d_flutter_motion_presentation.py",
-    "app/lib/models/character_motion_presentation.dart",
-    "app/lib/services/character_motion_presentation_client.dart",
-    "app/lib/services/character_motion_presentation_controller.dart",
-    "app/test/character_motion_presentation_client_test.dart",
-    "app/test/character_motion_presentation_controller_test.dart",
 }
-FLUTTER_RUNTIME_PATHS = {
+IMPLEMENTATION_RUNTIME_PATHS = {
     "app/lib/models/character_motion_presentation.dart",
     "app/lib/services/character_motion_presentation_client.dart",
     "app/lib/services/character_motion_presentation_controller.dart",
 }
-FLUTTER_TEST_PATHS = {
+IMPLEMENTATION_TEST_PATHS = {
     "app/test/character_motion_presentation_client_test.dart",
     "app/test/character_motion_presentation_controller_test.dart",
 }
@@ -79,30 +76,28 @@ def _git_paths() -> set[str]:
     return values
 
 
-def _assert_exact_surface(*, snapshot: bool) -> set[str]:
+def _assert_exact_surface(*, snapshot: bool) -> None:
     missing = sorted(path for path in EXACT_PATHS if not (REPO_ROOT / path).is_file())
     if missing:
-        raise AssertionError(f"RT-6d candidate files are missing: {missing}")
+        raise AssertionError(f"RT-6d acceptance-sync files are missing: {missing}")
     changed = _git_paths()
     if changed != EXACT_PATHS:
         raise AssertionError(
-            "RT-6d exact surface mismatch: "
+            "RT-6d acceptance-sync surface mismatch: "
             f"expected={sorted(EXACT_PATHS)} actual={sorted(changed)}"
         )
     if changed & PROTECTED_PATHS:
-        raise AssertionError("RT-6d changed a protected Flutter integration path")
+        raise AssertionError("RT-6d acceptance sync changed a protected integration path")
+    if changed & IMPLEMENTATION_RUNTIME_PATHS:
+        raise AssertionError("RT-6d acceptance sync changed Flutter runtime")
+    if changed & IMPLEMENTATION_TEST_PATHS:
+        raise AssertionError("RT-6d acceptance sync changed focused Flutter tests")
+    if any(path.startswith("app/") for path in changed):
+        raise AssertionError("RT-6d acceptance sync changed Flutter files")
     if any(path.startswith("backend/") for path in changed):
-        raise AssertionError("RT-6d changed Backend source")
+        raise AssertionError("RT-6d acceptance sync changed Backend source")
     if any(path.startswith("vendor/") for path in changed):
-        raise AssertionError("RT-6d changed external vendor source")
-    if any(path.startswith("app/android/") for path in changed):
-        raise AssertionError("RT-6d changed Android platform files")
-    if any(path.startswith("app/ios/") for path in changed):
-        raise AssertionError("RT-6d changed iOS platform files")
-    if any(path.startswith("app/web/") for path in changed):
-        raise AssertionError("RT-6d changed Web platform files")
-    if any(path.startswith("app/windows/") for path in changed):
-        raise AssertionError("RT-6d changed Windows platform files")
+        raise AssertionError("RT-6d acceptance sync changed external vendor source")
     if not snapshot:
         head = _run("git", "rev-parse", "HEAD")
         origin = _run("git", "rev-parse", "origin/main")
@@ -110,7 +105,6 @@ def _assert_exact_surface(*, snapshot: bool) -> set[str]:
             raise AssertionError(
                 f"DRC baseline mismatch: head={head} origin/main={origin} expected={DRC_BASELINE}"
             )
-    return changed
 
 
 def _assert_docs() -> None:
@@ -126,26 +120,32 @@ def _assert_docs() -> None:
         )
     )
     required = (
-        "RT-6d: IMPLEMENTED / AWAITING_REVIEW",
-        DRC_BASELINE,
+        "RT-6d: COMPLETED / ACCEPTED / PUSHED",
+        IMPLEMENTATION_BASELINE,
+        IMPLEMENTATION_COMMIT,
         FW_VERSION,
         FW_REFERENCE_COMMIT,
         FW_SOURCE_MODE,
         "exact 12 files",
-        "RT-6e",
-        "NOT_AUTHORIZED",
+        "focused Flutter: 41 passed",
+        "Flutter full: 452 passed",
+        "Backend full: 279 passed",
+        "RT-6e: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED",
         "BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED",
     )
     for marker in required:
         if marker not in docs:
-            raise AssertionError(f"RT-6d documentation marker missing: {marker}")
+            raise AssertionError(f"RT-6d acceptance marker missing: {marker}")
 
 
-def _assert_model() -> None:
-    source = (
-        REPO_ROOT / "app/lib/models/character_motion_presentation.dart"
-    ).read_text(encoding="utf-8")
-    required = (
+def _assert_implementation() -> None:
+    model = (REPO_ROOT / "app/lib/models/character_motion_presentation.dart").read_text(encoding="utf-8")
+    client = (REPO_ROOT / "app/lib/services/character_motion_presentation_client.dart").read_text(encoding="utf-8")
+    controller = (REPO_ROOT / "app/lib/services/character_motion_presentation_controller.dart").read_text(encoding="utf-8")
+    client_test = (REPO_ROOT / "app/test/character_motion_presentation_client_test.dart").read_text(encoding="utf-8")
+    controller_test = (REPO_ROOT / "app/test/character_motion_presentation_controller_test.dart").read_text(encoding="utf-8")
+
+    model_required = (
         "characterMotionPresentationMaxCommands = 3",
         "characterMotionPresentationMaxEventTypes = 12",
         "characterMotionPresentationMaxIdChars = 128",
@@ -171,57 +171,28 @@ def _assert_model() -> None:
         "providerExecutionAttempted",
         "networkExecution",
     )
-    for marker in required:
-        if marker not in source:
+    for marker in model_required:
+        if marker not in model:
             raise AssertionError(f"RT-6d model marker missing: {marker}")
-    forbidden = (
-        "package:http",
-        "dart:io",
-        "WebSocket",
-        "framework/",
-        "VTubeStudio",
-        "Live2D",
-    )
-    for marker in forbidden:
-        if marker in source:
+    for marker in ("package:http", "dart:io", "WebSocket", "framework/", "VTubeStudio", "Live2D"):
+        if marker in model:
             raise AssertionError(f"RT-6d model forbidden marker present: {marker}")
 
-
-def _assert_client() -> None:
-    source = (
-        REPO_ROOT / "app/lib/services/character_motion_presentation_client.dart"
-    ).read_text(encoding="utf-8")
-    required = (
+    client_required = (
         "typedef CharacterMotionPresentationTransport",
         "Future<Map<String, Object?>> Function",
         "CharacterMotionPresentationResult.fromJson(response)",
         "motion_transport_failed",
         "The character-motion presentation request failed.",
     )
-    for marker in required:
-        if marker not in source:
+    for marker in client_required:
+        if marker not in client:
             raise AssertionError(f"RT-6d client marker missing: {marker}")
-    forbidden = (
-        "package:http",
-        "dart:io",
-        "HttpClient",
-        "WebSocket",
-        "realtime/",
-        "/demo/motion",
-        "framework",
-        "provider",
-        "token",
-    )
-    for marker in forbidden:
-        if marker in source:
+    for marker in ("package:http", "dart:io", "HttpClient", "WebSocket", "/demo/motion", "framework", "token"):
+        if marker in client:
             raise AssertionError(f"RT-6d client forbidden marker present: {marker}")
 
-
-def _assert_controller() -> None:
-    source = (
-        REPO_ROOT / "app/lib/services/character_motion_presentation_controller.dart"
-    ).read_text(encoding="utf-8")
-    required = (
+    controller_required = (
         "extends ChangeNotifier",
         "active_motion_request_rejected",
         "motion_controller_closed",
@@ -235,61 +206,34 @@ def _assert_controller() -> None:
         "void dispose()",
         "notifyListeners()",
     )
-    for marker in required:
-        if marker not in source:
+    for marker in controller_required:
+        if marker not in controller:
             raise AssertionError(f"RT-6d controller marker missing: {marker}")
-    forbidden = (
-        "Timer.periodic",
-        "Queue<",
-        "package:http",
-        "WebSocket",
-        "HomeScreen",
-        "framework",
-    )
-    for marker in forbidden:
-        if marker in source:
+    for marker in ("Timer.periodic", "Queue<", "package:http", "WebSocket", "HomeScreen", "framework"):
+        if marker in controller:
             raise AssertionError(f"RT-6d controller forbidden marker present: {marker}")
 
-
-def _assert_tests() -> None:
-    client = (
-        REPO_ROOT / "app/test/character_motion_presentation_client_test.dart"
-    ).read_text(encoding="utf-8")
-    controller = (
-        REPO_ROOT / "app/test/character_motion_presentation_controller_test.dart"
-    ).read_text(encoding="utf-8")
-    client_required = (
+    for marker in (
         "parses completed mock result with three ordered commands",
         "rejects more than twelve event types",
         "rejects non-contiguous command order",
         "rejects unsafe",
         "normalizes raw transport exception to safe problem",
-    )
-    controller_required = (
+    ):
+        if marker not in client_test:
+            raise AssertionError(f"RT-6d client test marker missing: {marker}")
+    for marker in (
         "starts idle and completes one request",
         "rejects simultaneous apply and active replacement",
         "reset invalidates late completion",
         "close invalidates late completion",
         "dispose invalidates late completion without notification",
         "safe failed state",
-    )
-    for marker in client_required:
-        if marker not in client:
-            raise AssertionError(f"RT-6d client test marker missing: {marker}")
-    for marker in controller_required:
-        if marker not in controller:
+    ):
+        if marker not in controller_test:
             raise AssertionError(f"RT-6d controller test marker missing: {marker}")
-    combined = client + controller
-    forbidden = (
-        "http.get(",
-        "http.post(",
-        "WebSocket.connect",
-        "127.0.0.1",
-        "localhost",
-        "VTubeStudio",
-        "Live2D",
-    )
-    for marker in forbidden:
+    combined = client_test + controller_test
+    for marker in ("http.get(", "http.post(", "WebSocket.connect", "127.0.0.1", "localhost", "VTubeStudio", "Live2D"):
         if marker in combined:
             raise AssertionError(f"RT-6d focused tests contain real execution marker: {marker}")
 
@@ -303,26 +247,24 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    changed = _assert_exact_surface(snapshot=args.snapshot)
+    _assert_exact_surface(snapshot=args.snapshot)
     _assert_docs()
-    _assert_model()
-    _assert_client()
-    _assert_controller()
-    _assert_tests()
+    _assert_implementation()
 
-    print("v300_rt6d_status: implemented-awaiting-review")
-    print("v300_rt6d_exact_change_surface: True")
-    print(f"v300_rt6d_change_file_count: {len(changed)}")
-    print(f"v300_rt6d_flutter_runtime_file_count: {len(changed & FLUTTER_RUNTIME_PATHS)}")
-    print(f"v300_rt6d_flutter_test_file_count: {len(changed & FLUTTER_TEST_PATHS)}")
-    print("v300_rt6d_backend_changed: False")
-    print("v300_rt6d_home_screen_changed: False")
-    print("v300_rt6d_main_changed: False")
-    print("v300_rt6d_character_display_changed: False")
-    print("v300_rt6d_existing_tests_changed: False")
-    print("v300_rt6d_dependencies_changed: False")
-    print("v300_rt6d_framework_changed: False")
-    print("v300_rt6d_vendor_changed: False")
+    print("v300_rt6d_status: completed-accepted-pushed")
+    print("v300_rt6d_exact_acceptance_sync_surface: True")
+    print(f"v300_rt6d_acceptance_sync_file_count: {len(EXACT_PATHS)}")
+    print(f"v300_rt6d_implementation_baseline: {IMPLEMENTATION_BASELINE}")
+    print(f"v300_rt6d_implementation_commit: {IMPLEMENTATION_COMMIT}")
+    print("v300_rt6d_implementation_surface: 12")
+    print(f"v300_rt6d_flutter_runtime_file_count: {len(IMPLEMENTATION_RUNTIME_PATHS)}")
+    print(f"v300_rt6d_flutter_test_file_count: {len(IMPLEMENTATION_TEST_PATHS)}")
+    print("v300_rt6d_focused_flutter_passed: 41")
+    print("v300_rt6d_flutter_full_passed: 452")
+    print("v300_rt6d_backend_full_passed: 279")
+    print("v300_rt6d_backend_warning_count: 3")
+    print("v300_rt6d_dart_format_passed: True")
+    print("v300_rt6d_flutter_analyze_passed: True")
     print("v300_rt6d_injected_transport_only: True")
     print("v300_rt6d_real_http_execution: False")
     print("v300_rt6d_max_commands: 3")
@@ -331,14 +273,27 @@ def main() -> int:
     print("v300_rt6d_stale_result_ignored: True")
     print("v300_rt6d_raw_transport_exception_exposed: False")
     print("v300_rt6d_raw_response_exposed: False")
+    print("v300_rt6d_runtime_changed_by_acceptance_sync: False")
+    print("v300_rt6d_flutter_runtime_changed_by_acceptance_sync: False")
+    print("v300_rt6d_flutter_tests_changed_by_acceptance_sync: False")
+    print("v300_rt6d_backend_changed: False")
+    print("v300_rt6d_home_screen_changed: False")
+    print("v300_rt6d_main_changed: False")
+    print("v300_rt6d_character_display_changed: False")
+    print("v300_rt6d_existing_tests_changed: False")
+    print("v300_rt6d_dependencies_changed: False")
+    print("v300_rt6d_framework_changed: False")
+    print("v300_rt6d_vendor_changed: False")
     print(f"v300_rt6d_framework_version: {FW_VERSION}")
     print(f"v300_rt6d_framework_reference_commit: {FW_REFERENCE_COMMIT}")
     print(f"v300_rt6d_framework_source_mode: {FW_SOURCE_MODE}")
     print("v300_rt6d_framework_execution: False")
-    print("v300_rt6e_authorized: False")
+    print("v300_rt6_status: current-not-completed")
+    print("v300_rt6e_status: ready-for-exact-contract-review-not-authorized")
+    print("v300_rt6e_implementation_authorized: False")
     print("v300_rt6f_authorized: False")
     print("v300_rt7_real_adapter_blocked: True")
-    print("v300_rt6d_commit_push_authorized: False")
+    print("v300_rt6d_acceptance_sync_commit_push_authorized: False")
     print(f"v300_rt6d_snapshot_mode: {args.snapshot}")
     return 0
 

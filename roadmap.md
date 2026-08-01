@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6d Flutter motion presentation candidate
+Current small commit: RT-6e exact contract review
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,7 +571,7 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6d Flutter motion presentation candidate
+Current small commit: RT-6e exact contract review
 Last accepted small commit: RT-6c FW root-public mock motion-session adapter COMPLETED / ACCEPTED / PUSHED at f929e8faa65a817f1ba4fed82b729438b73dbfab
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 Current implementation: RT-6d Flutter provider-neutral motion presentation model/client/controller.
@@ -796,8 +796,8 @@ RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event
   RT-6a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness decision, and exact split
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
-  RT-6d  IMPLEMENTED / AWAITING_REVIEW  Flutter motion presentation model/client/controller
-  RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
+  RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
+  RT-6e  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
   RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
@@ -8099,29 +8099,50 @@ No Framework source, dependency, Flutter runtime, network/provider execution,
 VTS connection, Live2D runtime, credential, private path, payload, raw object,
 or operator evidence is part of the accepted change.
 
-RT-6d is **IMPLEMENTED / AWAITING_REVIEW** under the separately authorized exact twelve-file Flutter-only contract. Commit/push remains not authorized.
+RT-6d is **COMPLETED / ACCEPTED / PUSHED** at `0f220b792feb7ebb82c5871a794731aa1327439a` under the exact twelve-file Flutter-only contract. RT-6e is ready for separate exact contract review and remains not authorized.
 Real Live2D/VTS adapter execution remains blocked in RT-7.
 
 Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
 
 
-## RT-6d implementation candidate
+## RT-6d accepted implementation
 
 ```text
 RT-6: CURRENT / NOT_COMPLETED
 RT-6c: COMPLETED / ACCEPTED / PUSHED
-RT-6d: IMPLEMENTED / AWAITING_REVIEW
-DRC baseline: cd423fa2236ce16a7635f0c67460f2fa2fd210e9
+RT-6d: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: cd423fa2236ce16a7635f0c67460f2fa2fd210e9
+implementation commit: 0f220b792feb7ebb82c5871a794731aa1327439a
+implementation surface: exact 12 files
+acceptance-sync surface: exact 7 files
+Flutter runtime: 3 files
+focused Flutter tests: 2 files
+focused Flutter: 41 passed
+Flutter full: 452 passed
+Backend full: 279 passed, 3 dependency warnings
 FW baseline version: 5.4.0
 FW canonical reference: d313eb6acb643103fe25988720ebee5976a04f78
 source mode: external-vendored-snapshot
-exact surface: 12 files
-RT-6e and RT-6f: NOT_AUTHORIZED
+FW execution: false
+RT-6e: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-6f: NOT_STARTED / NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-RT-6d is limited to Flutter provider-neutral presentation models, an injected
-fake/in-memory client, a single-active-request ChangeNotifier controller, and
-focused tests. It adds no HomeScreen/main.dart wiring, Backend route, real HTTP,
-Framework execution, dependency, platform, asset, or release change.
+Accepted RT-6d scope is limited to Flutter provider-neutral presentation
+models, an injected fake/in-memory client, a single-active-request
+`ChangeNotifier` controller, and focused tests. It adds no HomeScreen or
+`main.dart` wiring, Backend route, real HTTP transport, Framework execution,
+dependency, platform file, asset, or release change.
+
+Acceptance passed with compileall, the dedicated gate, Backend 279, Dart
+format, Flutter analyze, 41 focused tests, 452 full tests, exact-surface and
+privacy review, CRLF-aware diff checking, explicit approval, push, and a clean
+DRC working tree.
+
+Detailed accepted contract:
+`docs/v300_rt6d_flutter_motion_presentation.md`.
+Historical acceptance-sync gate:
+`scripts/check_v300_rt6d_flutter_motion_presentation.py`.

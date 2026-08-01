@@ -7065,15 +7065,14 @@ Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
 
 
-## v3.0.0 RT-6d Flutter motion presentation candidate gate
+## v3.0.0 RT-6d Flutter motion presentation acceptance gate
 
-RT-6d is **IMPLEMENTED / AWAITING_REVIEW** against baseline
-`cd423fa2236ce16a7635f0c67460f2fa2fd210e9`. The gate validates the exact
-twelve-file Flutter-only candidate, bounded DRC-owned model, injected transport,
-single-active-request controller, stale-result protection, focused fake tests,
-and all protected non-change surfaces.
+RT-6d is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`0f220b792feb7ebb82c5871a794731aa1327439a`. This historical gate validates the exact seven-file
+acceptance-state synchronization against that implementation while preserving
+the accepted Flutter runtime and focused tests unchanged.
 
-Run from repository root:
+Run before the acceptance-sync commit from repository root:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -7081,9 +7080,16 @@ python scripts\check_v300_rt6d_flutter_motion_presentation.py
 python -m pytest -q
 
 cd app
+dart format --output=none --set-exit-if-changed `
+    lib\models\character_motion_presentation.dart `
+    lib\services\character_motion_presentation_client.dart `
+    lib\services\character_motion_presentation_controller.dart `
+    test\character_motion_presentation_client_test.dart `
+    test\character_motion_presentation_controller_test.dart
 flutter analyze
-flutter test test\character_motion_presentation_client_test.dart
-flutter test test\character_motion_presentation_controller_test.dart
+flutter test `
+    test\character_motion_presentation_client_test.dart `
+    test\character_motion_presentation_controller_test.dart
 flutter test
 cd ..
 
@@ -7096,7 +7102,40 @@ Artifact-generation snapshot mode:
 python scripts\check_v300_rt6d_flutter_motion_presentation.py --snapshot
 ```
 
+Expected historical markers include:
+
+```text
+v300_rt6d_status: completed-accepted-pushed
+v300_rt6d_exact_acceptance_sync_surface: True
+v300_rt6d_acceptance_sync_file_count: 7
+v300_rt6d_implementation_commit: 0f220b792feb7ebb82c5871a794731aa1327439a
+v300_rt6d_implementation_surface: 12
+v300_rt6d_flutter_runtime_file_count: 3
+v300_rt6d_flutter_test_file_count: 2
+v300_rt6d_focused_flutter_passed: 41
+v300_rt6d_flutter_full_passed: 452
+v300_rt6d_backend_full_passed: 279
+v300_rt6d_backend_warning_count: 3
+v300_rt6d_dart_format_passed: True
+v300_rt6d_flutter_analyze_passed: True
+v300_rt6d_runtime_changed_by_acceptance_sync: False
+v300_rt6d_home_screen_changed: False
+v300_rt6d_main_changed: False
+v300_rt6d_backend_changed: False
+v300_rt6d_dependencies_changed: False
+v300_rt6d_framework_execution: False
+v300_rt6e_status: ready-for-exact-contract-review-not-authorized
+v300_rt6e_implementation_authorized: False
+v300_rt6f_authorized: False
+v300_rt7_real_adapter_blocked: True
+v300_rt6d_acceptance_sync_commit_push_authorized: False
+```
+
 The gate performs no HTTP, Framework, provider, network, VTS, Live2D, audio,
-STT, LLM, TTS, or credential execution. The FW v5.4.0 canonical commit is
-recorded for the small-commit contract, but RT-6d imports or executes no FW code.
-RT-6e, RT-6f, commit, and push remain not authorized.
+STT, LLM, TTS, or credential execution. It checks the accepted Dart source and
+tests statically; the recorded Flutter/Backend counts are separately rerun by
+the validation commands above. After the acceptance-sync commit is created,
+this gate becomes historical and is not rerun against the new HEAD.
+
+Detailed accepted contract:
+`docs/v300_rt6d_flutter_motion_presentation.md`.
