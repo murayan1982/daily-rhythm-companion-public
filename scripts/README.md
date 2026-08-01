@@ -7063,3 +7063,40 @@ new HEAD.
 
 Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
+
+
+## v3.0.0 RT-6d Flutter motion presentation candidate gate
+
+RT-6d is **IMPLEMENTED / AWAITING_REVIEW** against baseline
+`cd423fa2236ce16a7635f0c67460f2fa2fd210e9`. The gate validates the exact
+twelve-file Flutter-only candidate, bounded DRC-owned model, injected transport,
+single-active-request controller, stale-result protection, focused fake tests,
+and all protected non-change surfaces.
+
+Run from repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt6d_flutter_motion_presentation.py
+python -m pytest -q
+
+cd app
+flutter analyze
+flutter test test\character_motion_presentation_client_test.dart
+flutter test test\character_motion_presentation_controller_test.dart
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+```
+
+Artifact-generation snapshot mode:
+
+```powershell
+python scripts\check_v300_rt6d_flutter_motion_presentation.py --snapshot
+```
+
+The gate performs no HTTP, Framework, provider, network, VTS, Live2D, audio,
+STT, LLM, TTS, or credential execution. The FW v5.4.0 canonical commit is
+recorded for the small-commit contract, but RT-6d imports or executes no FW code.
+RT-6e, RT-6f, commit, and push remain not authorized.

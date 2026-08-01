@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6d exact contract review
+Current small commit: RT-6d Flutter motion presentation candidate
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,14 +571,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6d exact contract review
-Last accepted small commit: RT-6b provider-neutral motion mapping COMPLETED / ACCEPTED / PUSHED at 17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594
+Current small commit: RT-6d Flutter motion presentation candidate
+Last accepted small commit: RT-6c FW root-public mock motion-session adapter COMPLETED / ACCEPTED / PUSHED at f929e8faa65a817f1ba4fed82b729438b73dbfab
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6c default-off FW root-public mock motion-session adapter.
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation baseline: `9442f511f9e41d18f64a65cf7fa44a375e7a67ce`
-Current implementation commit: `f929e8faa65a817f1ba4fed82b729438b73dbfab`
-Current implementation boundary: exact ten files; two new Backend default-off mock-adapter runtime files, one new focused Backend test, seven documentation/static-gate files; no RT-6b, route, config, Flutter, Framework, dependency, lockfile, platform, asset, version, or release change.
+Current implementation: RT-6d Flutter provider-neutral motion presentation model/client/controller.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `cd423fa2236ce16a7635f0c67460f2fa2fd210e9`
+Current implementation commit: none
+Current implementation boundary: exact twelve files; three Flutter runtime files, two focused Flutter tests, seven documentation/static-gate files; no HomeScreen, main.dart, Backend, Framework execution, dependency, platform, asset, version, or release change.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -796,7 +796,7 @@ RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event
   RT-6a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness decision, and exact split
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
-  RT-6d  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
+  RT-6d  IMPLEMENTED / AWAITING_REVIEW  Flutter motion presentation model/client/controller
   RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
   RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -8068,7 +8068,8 @@ exact surface/privacy review: PASS
 explicit implementation approval: ACCEPTED
 implementation commit/push: COMPLETED
 DRC post-push working tree: clean
-RT-6d: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-6d: IMPLEMENTED / AWAITING_REVIEW
+RT-6d commit/push: NOT_AUTHORIZED
 ```
 
 Accepted exact ten-file implementation surface:
@@ -8098,8 +8099,29 @@ No Framework source, dependency, Flutter runtime, network/provider execution,
 VTS connection, Live2D runtime, credential, private path, payload, raw object,
 or operator evidence is part of the accepted change.
 
-RT-6d is **NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED**.
+RT-6d is **IMPLEMENTED / AWAITING_REVIEW** under the separately authorized exact twelve-file Flutter-only contract. Commit/push remains not authorized.
 Real Live2D/VTS adapter execution remains blocked in RT-7.
 
 Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
+
+
+## RT-6d implementation candidate
+
+```text
+RT-6: CURRENT / NOT_COMPLETED
+RT-6c: COMPLETED / ACCEPTED / PUSHED
+RT-6d: IMPLEMENTED / AWAITING_REVIEW
+DRC baseline: cd423fa2236ce16a7635f0c67460f2fa2fd210e9
+FW baseline version: 5.4.0
+FW canonical reference: d313eb6acb643103fe25988720ebee5976a04f78
+source mode: external-vendored-snapshot
+exact surface: 12 files
+RT-6e and RT-6f: NOT_AUTHORIZED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+```
+
+RT-6d is limited to Flutter provider-neutral presentation models, an injected
+fake/in-memory client, a single-active-request ChangeNotifier controller, and
+focused tests. It adds no HomeScreen/main.dart wiring, Backend route, real HTTP,
+Framework execution, dependency, platform, asset, or release change.

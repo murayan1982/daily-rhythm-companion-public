@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6d exact contract review
-Current implementation: RT-6c default-off FW root-public mock motion-session adapter.
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation baseline: `9442f511f9e41d18f64a65cf7fa44a375e7a67ce`
-Current implementation commit: `f929e8faa65a817f1ba4fed82b729438b73dbfab`
+Current small commit: RT-6d Flutter motion presentation candidate
+Current implementation: RT-6d exact twelve-file Flutter provider-neutral motion presentation model/client/controller.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `cd423fa2236ce16a7635f0c67460f2fa2fd210e9`
+Current implementation commit: none
 Last accepted small commit: RT-6c FW root-public mock motion-session adapter (**COMPLETED / ACCEPTED / PUSHED**) at `f929e8faa65a817f1ba4fed82b729438b73dbfab`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-6 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: review the exact RT-6d contract; implementation remains NOT_AUTHORIZED
+Current realtime action: review the exact twelve-file RT-6d candidate; commit/push and RT-6e remain NOT_AUTHORIZED
 
 Current phase state:
 
@@ -86,7 +86,7 @@ RT-6  CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event 
   RT-6a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness decision, and exact split
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
-  RT-6d  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
+  RT-6d  IMPLEMENTED / AWAITING_REVIEW  Flutter motion presentation model/client/controller
   RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
   RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7  BLOCKED  Configured Live2D / VTS adapter execution
@@ -106,7 +106,7 @@ R-1  COMPLETED / ACCEPTED
 ```
 
 Strategic target: v3.0.0
-Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter models, an injectable SSE client, a ChangeNotifier controller, and fake transport tests. RT-4f1 is COMPLETED / ACCEPTED / PUSHED at `f54e8638f0255b28e015702bc64b624a6d4a36af` as a docs/test-only current behavior inventory and exact four-child split; no runtime behavior changed. RT-4f2 is COMPLETED / ACCEPTED / PUSHED at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a` with HomeScreen fake streaming presentation and controller lifecycle wiring. RT-4f3 is COMPLETED / ACCEPTED / PUSHED at `d651a00be8713a70be3a46524f33c787299bbe9c` with an app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake/in-memory stream dependencies. RT-4f4 is COMPLETED / ACCEPTED / PUSHED at `9b19e379634a718df2ab3ed5eb49bb20bfe7e240` with default-off configured Flutter runtime wiring, configured local Backend/FW stream completion, accepted real incremental streaming, and accepted cooperative cancel. RT-4 and RT-4f are COMPLETED / ACCEPTED. Real-STT-to-stream was not executed or accepted, provider-level hard cancel is not claimed, and automatic TTS is not started. RT-5a is COMPLETED / ACCEPTED / PUSHED at `1cf77774dca75b9875099c2b6c6c03992456d80f` as a docs/test-only TTS output-control inventory and exact RT-5 split. RT-5 remains CURRENT / NOT_COMPLETED. RT-5b is COMPLETED / ACCEPTED / PUSHED at `c48238256cb0b17c925f8063c3b636d3b4ccf533`. RT-5c is COMPLETED / ACCEPTED / PUSHED at `f00214cd7e75b28c041728bca6ffc3b180face80` under the separately authorized exact nine-file fake-only contract. RT-5d is COMPLETED / ACCEPTED / PUSHED at `eff46a3b4de771aa37a48ea9ef5959918e407200` under the separately authorized exact ten-file fake-only UI contract. RT-5e is COMPLETED / ACCEPTED / PUSHED at `ef5f96337b5f601277a9bcc38b9e6fedc520b0a6` under the separately authorized exact thirteen-file contract after configured local FW synthesis, natural audible playback, explicit binding-owned playback-stop, private cleanup, and clean-tree verification passed. RT-5 remains CURRENT / NOT_COMPLETED. RT-5f0 is COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file docs/test-only readiness and split checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` as the exact seventeen-file default-off app-visible provider-neutral real-STT source. Acceptance passed with the dedicated gate, 12 focused Backend tests, 204 full Backend tests, Flutter analyze, 12 focused Flutter tests, 355 full Flutter tests, exact-surface review, privacy review, explicit approval, push, and clean-tree verification. No private credential read, SDK import, network call, real STT, HomeScreen wiring, or operator acceptance occurred. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through implementation commit `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and corrective commit `b7bd436196210f27782b64c1a094aa65d6893915`. Acceptance passed with Backend 204, Flutter analyze, 26 focused Flutter tests, 381 full Flutter tests, exact surface/privacy review, explicit approval, both pushes, and clean DRC/FW working trees. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` under the exact twenty-file contract. Acceptance passed with the dedicated gate, Backend 204, Flutter analyze, 53 focused Flutter tests, 408 full Flutter tests, exact surface/privacy review, explicit commit approval, push, and a clean DRC working tree. Real operator execution and audible soft-barge-in acceptance were not part of RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d` after Controls A-D, the repeated Stop Capture corrective, and playback-time speech detection corrective passed on a real device. Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 is CURRENT / NOT_COMPLETED. RT-6a is COMPLETED / ACCEPTED / PUSHED at `cbcb218aa54d286da7515a01e899121b22d8f3fc`. RT-6b is COMPLETED / ACCEPTED / PUSHED at `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594` under the exact ten-file pure-mapping contract. RT-6c is COMPLETED / ACCEPTED / PUSHED at `f929e8faa65a817f1ba4fed82b729438b73dbfab` under the exact ten-file default-off root-public mock-only adapter contract. RT-6d is NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED.
+Current v3 phase: RT-3d3, RT-3d2, RT-3d, and parent RT-3 are COMPLETED / ACCEPTED after implementation commit `5f7c7a682b5d52de2ba3ff9592d253f9bbb3341c` and acceptance commit `eecf13d7dce653f341721ad007ca39aca91f497e`. RT-4a is COMPLETED / ACCEPTED / PUSHED at `235654e470f8c0cac17644ddf216ac7e6e223514`. RT-4b is COMPLETED / ACCEPTED / PUSHED at `7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`. RT-4c is COMPLETED / ACCEPTED / PUSHED at `72622cab2e73699adaff4b628cfbc4b14323a23a` with bounded SSE session creation, one-consumer event delivery, cooperative cancel, capacity/time/event limits, disconnect cleanup, and no Framework/provider execution. RT-4d is COMPLETED / ACCEPTED / PUSHED at `f713f515eef723a1d51cfbe35c1dfe16e3547420` with the default-off FW root-public `ask_stream()` adapter and cooperative `interrupt()` request. RT-4e is COMPLETED / ACCEPTED / PUSHED at `1cfe6134b0d19a4d14ebcf3ec76812ce07dac261` with Flutter models, an injectable SSE client, a ChangeNotifier controller, and fake transport tests. RT-4f1 is COMPLETED / ACCEPTED / PUSHED at `f54e8638f0255b28e015702bc64b624a6d4a36af` as a docs/test-only current behavior inventory and exact four-child split; no runtime behavior changed. RT-4f2 is COMPLETED / ACCEPTED / PUSHED at `1e1a4b27a0fe7c105eec344bfde39afe6a077f8a` with HomeScreen fake streaming presentation and controller lifecycle wiring. RT-4f3 is COMPLETED / ACCEPTED / PUSHED at `d651a00be8713a70be3a46524f33c787299bbe9c` with an app-owned provider-neutral transcript-to-stream handoff boundary using injected/fake transcript and fake/in-memory stream dependencies. RT-4f4 is COMPLETED / ACCEPTED / PUSHED at `9b19e379634a718df2ab3ed5eb49bb20bfe7e240` with default-off configured Flutter runtime wiring, configured local Backend/FW stream completion, accepted real incremental streaming, and accepted cooperative cancel. RT-4 and RT-4f are COMPLETED / ACCEPTED. Real-STT-to-stream was not executed or accepted, provider-level hard cancel is not claimed, and automatic TTS is not started. RT-5a is COMPLETED / ACCEPTED / PUSHED at `1cf77774dca75b9875099c2b6c6c03992456d80f` as a docs/test-only TTS output-control inventory and exact RT-5 split. RT-5 remains CURRENT / NOT_COMPLETED. RT-5b is COMPLETED / ACCEPTED / PUSHED at `c48238256cb0b17c925f8063c3b636d3b4ccf533`. RT-5c is COMPLETED / ACCEPTED / PUSHED at `f00214cd7e75b28c041728bca6ffc3b180face80` under the separately authorized exact nine-file fake-only contract. RT-5d is COMPLETED / ACCEPTED / PUSHED at `eff46a3b4de771aa37a48ea9ef5959918e407200` under the separately authorized exact ten-file fake-only UI contract. RT-5e is COMPLETED / ACCEPTED / PUSHED at `ef5f96337b5f601277a9bcc38b9e6fedc520b0a6` under the separately authorized exact thirteen-file contract after configured local FW synthesis, natural audible playback, explicit binding-owned playback-stop, private cleanup, and clean-tree verification passed. RT-5 remains CURRENT / NOT_COMPLETED. RT-5f0 is COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file docs/test-only readiness and split checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` as the exact seventeen-file default-off app-visible provider-neutral real-STT source. Acceptance passed with the dedicated gate, 12 focused Backend tests, 204 full Backend tests, Flutter analyze, 12 focused Flutter tests, 355 full Flutter tests, exact-surface review, privacy review, explicit approval, push, and clean-tree verification. No private credential read, SDK import, network call, real STT, HomeScreen wiring, or operator acceptance occurred. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through implementation commit `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and corrective commit `b7bd436196210f27782b64c1a094aa65d6893915`. Acceptance passed with Backend 204, Flutter analyze, 26 focused Flutter tests, 381 full Flutter tests, exact surface/privacy review, explicit approval, both pushes, and clean DRC/FW working trees. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` under the exact twenty-file contract. Acceptance passed with the dedicated gate, Backend 204, Flutter analyze, 53 focused Flutter tests, 408 full Flutter tests, exact surface/privacy review, explicit commit approval, push, and a clean DRC working tree. Real operator execution and audible soft-barge-in acceptance were not part of RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d` after Controls A-D, the repeated Stop Capture corrective, and playback-time speech detection corrective passed on a real device. Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 is CURRENT / NOT_COMPLETED. RT-6a is COMPLETED / ACCEPTED / PUSHED at `cbcb218aa54d286da7515a01e899121b22d8f3fc`. RT-6b is COMPLETED / ACCEPTED / PUSHED at `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594` under the exact ten-file pure-mapping contract. RT-6c is COMPLETED / ACCEPTED / PUSHED at `f929e8faa65a817f1ba4fed82b729438b73dbfab` under the exact ten-file default-off root-public mock-only adapter contract. RT-6d is IMPLEMENTED / AWAITING_REVIEW under the exact twelve-file Flutter-only injected-transport contract.
 
 ## v3.0.0 RT-4a streaming/cancel current behavior inventory
 
@@ -5339,8 +5339,8 @@ Flutter analyze: No issues found
 Flutter full: 411 passed
 provider/network/VTS/Live2D execution: none
 DRC post-push working tree: clean
-RT-6d: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
-acceptance-sync commit/push: NOT_AUTHORIZED
+RT-6d: IMPLEMENTED / AWAITING_REVIEW
+RT-6d commit/push: NOT_AUTHORIZED
 ```
 
 The accepted adapter imports only the FW root module dynamically, forces
@@ -5368,3 +5368,38 @@ Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6c_framework_mock_motion_session_adapter.py`.
+
+
+## v3.0.0 RT-6d Flutter motion presentation
+
+RT-6d is **IMPLEMENTED / AWAITING_REVIEW** against DRC baseline
+`cd423fa2236ce16a7635f0c67460f2fa2fd210e9`. It adds Flutter-only immutable
+motion presentation models, an injected fake/in-memory client, a ChangeNotifier
+controller, and focused tests.
+
+```text
+exact implementation surface: 12 files
+Flutter runtime: 3 files
+Flutter focused tests: 2 files
+maximum commands: 3
+maximum event types: 12
+active requests: 1
+HomeScreen integration: false
+Backend/HTTP/FW/provider/network/VTS/Live2D execution: false
+Framework baseline version: 5.4.0
+Framework reference commit: d313eb6acb643103fe25988720ebee5976a04f78
+Framework source mode: external-vendored-snapshot
+RT-6e authorization: false
+commit/push authorization: false
+```
+
+The client accepts only an injected transport and strictly decodes the DRC-owned
+RT-6c normalized mock result. The controller rejects simultaneous requests and
+ignores stale completions after reset, close, or dispose. Existing HomeScreen,
+main.dart, static character display, motion demo, Backend routes, dependencies,
+assets, and vendor source remain unchanged.
+
+Detailed candidate contract:
+`docs/v300_rt6d_flutter_motion_presentation.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt6d_flutter_motion_presentation.py`.
