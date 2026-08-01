@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6b provider-neutral motion mapping candidate
+Current small commit: RT-6c exact contract review
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6b provider-neutral motion mapping candidate
+Current small commit: RT-6c exact contract review
 Last accepted small commit: RT-6a character-motion mapping readiness COMPLETED / ACCEPTED / PUSHED at cbcb218aa54d286da7515a01e899121b22d8f3fc
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6b exact ten-file app-owned provider-neutral motion mapping.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation: RT-6b app-owned provider-neutral motion mapping.
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68`
-Current implementation commit: none
+Current implementation commit: `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`
 Current implementation boundary: exact ten files; two new Backend pure-mapping runtime files, one new focused Backend test, seven documentation/static-gate files; no route, Flutter, Framework, dependency, lockfile, platform, asset, version, or release change.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
@@ -794,8 +794,8 @@ RT-5   COMPLETED / ACCEPTED  TTS output control, queue, flush, and barge-in
     RT-5f4  COMPLETED / ACCEPTED / PUSHED  Configured local end-to-end and audible soft-barge-in acceptance
 RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event mapping
   RT-6a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness decision, and exact split
-  RT-6b  IMPLEMENTED / AWAITING_REVIEW  App-owned provider-neutral motion mapping contract
-  RT-6c  NOT_STARTED / NOT_AUTHORIZED  Guarded FW root-public mock motion-session adapter
+  RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
+  RT-6c  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Guarded FW root-public mock motion-session adapter
   RT-6d  NOT_STARTED / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
   RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
   RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
@@ -7991,11 +7991,13 @@ by this acceptance sync.
 
 ## RT-6b — App-owned provider-neutral character-motion mapping
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / ACCEPTED / PUSHED**
 
-Baseline: `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68`
+Implementation baseline: `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68`
 
-Exact ten-file scope:
+Implementation commit: `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`
+
+Accepted exact ten-file implementation surface:
 
 ```text
 README.md
@@ -8010,8 +8012,36 @@ backend/app/services/character_motion_mapper.py
 backend/tests/test_character_motion_mapper.py
 ```
 
-RT-6b owns only deterministic, bounded mapping. It adds no route, Framework adapter, Flutter presentation, HomeScreen wiring, configured runtime, network/provider execution, VTS connection, or Live2D runtime. Plans contain zero to three commands. `motion_active` and `unknown` are ignored. RT-6c remains separately reviewed and not authorized.
+Accepted verification:
 
-Candidate generation checks: focused Backend 37 passed; Backend full 241 passed. Flutter remains at the accepted 411-test baseline and must be rerun in the real checkout before approval.
+```text
+compileall: PASS
+dedicated RT-6b gate: PASS
+focused Backend: 37 passed
+Backend full: 241 passed
+Backend dependency warnings: 3
+Flutter analyze: No issues found
+Flutter full: 411 passed
+exact ten-file review: PASS
+CRLF-aware git diff --check: PASS
+explicit commit approval: ACCEPTED
+implementation commit/push: COMPLETED
+DRC post-push working tree: clean
+FW working tree: clean
+```
 
-Detailed contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
+RT-6b owns only deterministic bounded planning. Plans contain zero to three
+commands; `motion_active` and `unknown` are ignored; only `speaking` sets
+`speaking=true`; failure and terminal stop paths begin with `stop_motion` where
+specified. It adds no route, Framework adapter, Flutter presentation,
+HomeScreen wiring, configured runtime, network/provider execution, VTS
+connection, or Live2D runtime.
+
+RT-6c is **NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED**.
+Real Live2D/VTS adapter execution remains blocked in RT-7.
+
+The RT-6b acceptance-state sync changes only the same seven
+`README/roadmap/tasklist/scripts README/checklist/contract/gate` files. Backend
+runtime and focused tests remain byte-for-byte implementation content.
+
+Detailed accepted contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.

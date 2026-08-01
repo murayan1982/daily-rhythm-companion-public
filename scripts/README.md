@@ -6920,11 +6920,13 @@ Detailed accepted contract:
 `docs/v300_rt6a_character_motion_mapping_readiness.md`.
 
 
-## v3.0.0 RT-6b provider-neutral motion mapping gate
+## v3.0.0 RT-6b provider-neutral motion mapping acceptance gate
 
-RT-6b is an **IMPLEMENTED / AWAITING_REVIEW** exact ten-file candidate at baseline `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68`. It adds a pure DRC-owned mapping model/service and focused tests. It does not import or execute Framework, add a route, change Flutter, open network/VTS, or load Live2D.
+RT-6b is **COMPLETED / ACCEPTED / PUSHED** at `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`. The historical gate now
+validates the exact seven-file acceptance-state synchronization against that
+implementation commit while rechecking the accepted pure mapping behavior.
 
-Run before commit from the DRC root:
+Run before the acceptance-sync commit from the DRC root:
 
 ```powershell
 $env:FRAMEWORK_ROOT = "<clean AI Character Framework v5.4.0 checkout>"
@@ -6942,28 +6944,33 @@ git -c core.whitespace=cr-at-eol diff --check
 git status --short
 git diff --stat
 git diff --name-only
-git ls-files --others --exclude-standard
 ```
 
 Expected markers:
 
 ```text
-v300_rt6b_status: implemented-awaiting-review
-v300_rt6b_exact_change_surface: True
-v300_rt6b_change_file_count: 10
-v300_rt6b_backend_runtime_file_count: 2
-v300_rt6b_backend_test_file_count: 1
-v300_rt6b_fw_imported: False
-v300_rt6b_mapping_deterministic: True
-v300_rt6b_max_commands_per_plan: 3
-v300_rt6b_recursive_motion_fact_ignored: True
-v300_rt6b_unknown_fact_ignored: True
+v300_rt6b_status: completed-accepted-pushed
+v300_rt6b_exact_acceptance_sync_surface: True
+v300_rt6b_acceptance_sync_file_count: 7
+v300_rt6b_implementation_commit: 17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594
+v300_rt6b_implementation_surface: 10
 v300_rt6b_focused_backend_passed: 37
 v300_rt6b_backend_full_passed: 241
-v300_rt6c_authorized: False
-v300_rt6b_commit_push_authorized: False
+v300_rt6b_flutter_analyze_passed: True
+v300_rt6b_flutter_full_passed: 411
+v300_rt6b_mapping_deterministic: True
+v300_rt6b_max_commands_per_plan: 3
+v300_rt6b_runtime_changed_by_acceptance_sync: False
+v300_rt6_status: current-not-completed
+v300_rt6c_status: ready-for-exact-contract-review-not-authorized
+v300_rt6c_implementation_authorized: False
+v300_rt7_real_adapter_blocked: True
+v300_rt6b_acceptance_sync_commit_push_authorized: False
 ```
 
-`--snapshot` skips commit/tag/FW-clean checks for extracted candidate reconstruction. Normal mode requires DRC HEAD/origin main `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68` and clean FW v5.4.0 `d313eb6acb643103fe25988720ebee5976a04f78`.
+Normal mode requires DRC HEAD/origin main `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594` and clean FW v5.4.0
+`d313eb6acb643103fe25988720ebee5976a04f78`. `--snapshot` skips commit/tag/FW-clean checks for extracted candidate
+reconstruction. After the acceptance-sync commit is created, this gate is
+historical and is not rerun against the new HEAD.
 
-Detailed contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
+Detailed accepted contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.

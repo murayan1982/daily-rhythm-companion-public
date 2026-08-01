@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6b provider-neutral motion mapping candidate
+Current small commit: RT-6c exact contract review
 Current implementation step: RT-6b exact ten-file app-owned provider-neutral motion mapping
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: 6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68
-Current implementation commit: none
+Current implementation commit: `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`
 Last accepted small commit: RT-6a character-motion mapping readiness COMPLETED / ACCEPTED / PUSHED at cbcb218aa54d286da7515a01e899121b22d8f3fc
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact ten-file RT-6b candidate; commit/push and RT-6c remain NOT_AUTHORIZED
+Next implementation action: review the exact RT-6c contract; implementation remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -129,7 +129,7 @@ RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
 COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
-docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`. Controls A-D and both real-device correctives passed; Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 is CURRENT / NOT_COMPLETED. RT-6a is COMPLETED / ACCEPTED / PUSHED at `cbcb218aa54d286da7515a01e899121b22d8f3fc` under the exact seven-file docs/static-gate contract, and RT-6b is IMPLEMENTED / AWAITING_REVIEW under the exact ten-file pure-mapping contract.
+docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is COMPLETED / ACCEPTED / PUSHED at `75504424c37222234ea8a4314d01ce386ff92d23` after the dedicated gate, Backend 204, Flutter analyze, focused Flutter 53, Flutter full 408, exact surface/privacy review, explicit commit approval, push, and clean DRC working tree passed. Real operator acceptance remains outside RT-5f3. RT-5f4 is COMPLETED / ACCEPTED / PUSHED through checkpoint `c84617e7ce07ecb1ca1605956eda7435b797c2fe` and corrective `bf17538f8b33aa504671289edda8f55c511fe77d`. Controls A-D and both real-device correctives passed; Backend 204, Flutter analyze, and Flutter 411 passed. RT-5f and RT-5 are COMPLETED / ACCEPTED. RT-6 is CURRENT / NOT_COMPLETED. RT-6a is COMPLETED / ACCEPTED / PUSHED at `cbcb218aa54d286da7515a01e899121b22d8f3fc` under the exact seven-file docs/static-gate contract, and RT-6b is COMPLETED / ACCEPTED / PUSHED at `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594` under the exact ten-file pure-mapping contract. RT-6c is NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED.
 
 
 ## RT-5f1 accepted implementation checkpoint
@@ -2584,17 +2584,19 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt6a_character_motion_mapping_readiness.py`.
 
 
-## RT-6b implementation candidate
+## RT-6b accepted implementation
 
 ```text
 RT-6: CURRENT / NOT_COMPLETED
 RT-6a: COMPLETED / ACCEPTED / PUSHED
-RT-6b: IMPLEMENTED / AWAITING_REVIEW
-baseline: 6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68
-exact surface: ten files
-Backend runtime files: 2 new
-Backend focused test files: 1 new
-RT-6c authorization: false
+RT-6b: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68
+implementation commit: 17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594
+implementation surface: exact 10 files
+acceptance-sync surface: exact 7 files
+RT-6c: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-6d through RT-6f: NOT_STARTED / NOT_AUTHORIZED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
 ```
 
 - [x] Pure app-owned motion mapping modelsを追加
@@ -2607,12 +2609,31 @@ RT-6c authorization: false
 - [x] Arbitrary/private metadata channelを追加しない
 - [x] Existing motion-demo/realtime model/API/Flutter/FWを変更しない
 - [x] Focused Backend 37 passed
-- [x] Backend full 241 passed（generation-side）
-- [ ] Real checkout dedicated gate
-- [ ] Flutter analyze/full 411 regression
-- [ ] Exact surface/privacy review
-- [ ] Explicit commit approval
-- [ ] Commit/push after approval only
+- [x] Backend full 241 passed
+- [x] Real checkout dedicated gate passed
+- [x] Flutter analyze/full 411 regression passed
+- [x] Exact ten-file/privacy review passed
+- [x] Explicit commit approval obtained
+- [x] Implementation committed/pushed at `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`
+- [x] DRC/FW clean-tree verified after push
+- [x] RT-6b accepted
+- [x] RT-6c moved to exact-contract-review readiness only
+- [ ] Review RT-6c exact contract separately
+- [ ] Authorize RT-6c implementation separately
 
-Detailed candidate contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
-Dedicated gate: `scripts/check_v300_rt6b_provider_neutral_motion_mapping.py`.
+Accepted verification:
+
+```text
+compileall: PASS
+dedicated gate: PASS
+focused Backend: 37 passed
+Backend full: 241 passed, 3 dependency warnings
+Flutter analyze: No issues found
+Flutter full: 411 passed
+exact surface/privacy: PASS
+DRC/FW clean: true
+acceptance-sync commit/push: NOT_AUTHORIZED
+```
+
+Detailed accepted contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
+Historical acceptance-sync gate: `scripts/check_v300_rt6b_provider_neutral_motion_mapping.py`.

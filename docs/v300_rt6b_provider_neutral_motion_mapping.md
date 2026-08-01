@@ -9,28 +9,43 @@ RT-6: CURRENT / NOT_COMPLETED
 RT-6a: COMPLETED / ACCEPTED / PUSHED
 RT-6a implementation: cbcb218aa54d286da7515a01e899121b22d8f3fc
 RT-6a acceptance sync: 6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68
-RT-6b: IMPLEMENTED / AWAITING_REVIEW
-RT-6b baseline: 6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68
-RT-6b implementation commit/push: NOT_AUTHORIZED
-RT-6c through RT-6f: NOT_STARTED / NOT_AUTHORIZED
+RT-6b: COMPLETED / ACCEPTED / PUSHED
+RT-6b implementation baseline: 6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68
+RT-6b implementation commit: 17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594
+RT-6b acceptance-sync commit/push: NOT_AUTHORIZED
+RT-6c: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-6d through RT-6f: NOT_STARTED / NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 ```
 
-## Purpose
+## Accepted result
 
-RT-6b adds a pure DRC-owned mapping boundary between accepted realtime
-lifecycle facts and bounded provider-neutral character-motion plans. The mapper
-is deterministic and stateless. It does not own a Framework session, motion
-runtime, route, network client, queue, timer, UUID source, clock, random source,
-or mutable global state.
+RT-6b accepted the exact ten-file pure DRC-owned mapping implementation at
+`17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`. The implementation is deterministic, stateless, bounded to three
+commands, provider-neutral, and independent of Framework runtime ownership.
 
-RT-6b is fake-only planning work. It does not send motion. FW root-public mock
-session integration remains RT-6c. Flutter presentation remains RT-6d.
-HomeScreen wiring remains RT-6e. Configured local mock-motion acceptance
-remains RT-6f. Real Live2D/VTS execution remains blocked in RT-7.
+```text
+compileall: PASS
+dedicated RT-6b gate: PASS
+focused Backend tests: 37 passed
+Backend full tests: 241 passed
+Backend dependency warnings: 3
+Flutter analyze: No issues found
+Flutter full tests: 411 passed
+exact ten-file review: PASS
+changed-content privacy review: PASS
+CRLF-aware git diff --check: PASS
+explicit operator approval: ACCEPTED
+implementation commit/push: COMPLETED
+DRC post-push clean: true
+FW clean: true
+```
 
-## Exact change surface
+The three Backend warnings came from installed dependency deprecations and did
+not fail the suite.
+
+## Accepted exact implementation surface
 
 ```text
 README.md
@@ -47,16 +62,14 @@ backend/tests/test_character_motion_mapper.py
 
 ```text
 documentation/static gate: 7 files
-Backend runtime: 2 new files
+Backend pure-mapping runtime: 2 new files
 Backend focused test: 1 new file
 total: exact ten files
 ```
 
-No existing Backend runtime file, existing test, API route, Flutter file,
-Framework file, dependency, lockfile, platform manifest, environment profile,
-asset, version, or release record changes in RT-6b.
+## Accepted model and mapper boundary
 
-## App-owned lifecycle facts
+The app-owned lifecycle facts are:
 
 ```text
 idle
@@ -75,13 +88,8 @@ unavailable
 unknown
 ```
 
-`tts_preparing` is app-owned and reserved for later voice-output orchestration.
-It is not added to the existing `RealtimeState` enum by RT-6b.
-
-`motion_active` is a recursion stop fact. It must never generate another motion
-plan. `unknown` fails closed and is ignored.
-
-## App-owned cue vocabulary
+The bounded cue vocabulary remains compatible with the metadata-only DRC
+motion demo:
 
 ```text
 greeting
@@ -92,20 +100,10 @@ speaking
 idle
 ```
 
-The vocabulary remains compatible with the existing metadata-only DRC motion
-demo. Automatic lifecycle mapping in RT-6b emits only:
+Automatic lifecycle mapping emits only `idle`, `thinking`, `speaking`, and
+`tired_supportive`. `greeting` and `happy` remain reserved.
 
-```text
-idle
-thinking
-speaking
-tired_supportive
-```
-
-`greeting` and `happy` are reserved for later explicit/manual or advice-driven
-mapping and are not generated automatically by RT-6b.
-
-## App-owned command intent vocabulary
+The app-owned command intents are:
 
 ```text
 expression
@@ -115,53 +113,12 @@ stop_motion
 reset_expression
 ```
 
-These are DRC-owned strings. RT-6b imports no FW module or FW type. A later
-RT-6c adapter may convert this bounded plan to released FW root-public motion
-requests under its own exact contract.
+RT-6b imports no Framework module or type. Arbitrary metadata dictionaries are
+rejected. Source event type, session ID, turn ID, and character ID are bounded
+to 128 characters. Expression IDs are bounded to 64 characters. Plans contain
+at most three contiguous one-based commands.
 
-## Model contract
-
-`CharacterMotionMappingInput` accepts only:
-
-```text
-schema_version
-fact
-source_event_type
-session_id
-turn_id
-character_id
-```
-
-Arbitrary metadata dictionaries are prohibited. IDs and source event type are
-bounded to 128 characters. This prevents an unbounded or secret-bearing
-metadata channel from being introduced by the mapper.
-
-`CharacterMotionCommand` contains:
-
-```text
-order: 1 through 3
-intent
-expression_id: optional, max 64 characters
-motion_event: optional bounded enum
-speaking: optional bool
-```
-
-Command payload validation is intent-specific:
-
-```text
-expression       requires only expression_id
-speaking_state   requires only speaking
-idle_motion      requires only motion_event=idle
-stop_motion      accepts no payload
-reset_expression accepts no payload
-```
-
-`CharacterMotionPlan` contains a mapped/ignored outcome, source fact, optional
-cue, bounded reason code, maximum three commands, and the same bounded safe
-IDs. Commands must use contiguous one-based order. Ignored plans contain no cue
-and no commands. Mapped plans contain a cue and at least one command.
-
-## Exact mapping table
+## Accepted exact mapping
 
 | Lifecycle fact | Cue | Ordered commands |
 |---|---|---|
@@ -180,7 +137,7 @@ and no commands. Mapped plans contain a cue and at least one command.
 | `unavailable` | `idle` | `stop_motion` -> `speaking_state(false)` -> `reset_expression` |
 | `unknown` | none | ignored, no commands |
 
-Stop rules:
+Accepted stop rules:
 
 ```text
 - No plan contains more than three commands.
@@ -191,7 +148,7 @@ Stop rules:
 - idle and completed restore speaking=false, reset expression, and idle motion.
 ```
 
-## Existing RealtimeState mapping
+## Accepted RealtimeState mapping
 
 ```text
 RealtimeState.IDLE          -> idle
@@ -209,151 +166,43 @@ RealtimeState.UNAVAILABLE   -> unavailable
 RealtimeState.UNKNOWN       -> unknown / ignored
 ```
 
-The existing `backend/app/models/realtime.py` is not modified. There is no
-existing `RealtimeState` equivalent for `tts_preparing`; later orchestration
-must create that app-owned fact explicitly.
+The existing `RealtimeState` model is unchanged. `tts_preparing` remains an
+app-owned fact for later orchestration.
 
-## Determinism and bounded behavior
-
-For the same validated input, `CharacterMotionMapper.map()` returns the same
-value-equivalent plan. It uses no current time, random value, generated ID,
-external configuration, environment variable, file, database, network call,
-provider callback, or mutable state.
-
-The mapper preserves only the bounded source event type, session ID, turn ID,
-and character ID. It does not copy arbitrary source payloads or metadata.
-
-## Focused test contract
-
-The RT-6b focused tests cover:
+## Exact acceptance-sync surface
 
 ```text
-- exact mapping for every mapped lifecycle fact
-- exact command order and payload
-- maximum three commands
-- recursion stop for motion_active
-- fail-closed unknown handling
-- complete existing RealtimeState mapping
-- deterministic value equality
-- safe ID preservation
-- only speaking sets speaking=true
-- stop-first terminal/failure behavior
-- extra/private metadata rejection
-- overlong ID rejection
-- ambiguous command rejection
-- non-contiguous and unbounded plan rejection
-- wrong input type rejection
-- source AST contains no FW import
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt6b_provider_neutral_motion_mapping.md
+scripts/check_v300_rt6b_provider_neutral_motion_mapping.py
 ```
 
-Generation-side verification for this candidate:
-
-```text
-focused RT-6b Backend tests: 37 passed
-Backend full tests: 241 passed
-Flutter runtime changed: false
-Flutter tests changed: false
-```
-
-These generation-side results do not replace real-checkout review, full
-Windows-host verification, explicit approval, commit, push, or clean-tree
-verification.
-
-## Dedicated gate contract
-
-The dedicated gate verifies:
-
-```text
-v300_rt6b_status: implemented-awaiting-review
-v300_rt6b_exact_change_surface: True
-v300_rt6b_change_file_count: 10
-v300_rt6b_backend_runtime_file_count: 2
-v300_rt6b_backend_test_file_count: 1
-v300_rt6b_existing_motion_demo_changed: False
-v300_rt6b_existing_realtime_models_changed: False
-v300_rt6b_api_routes_changed: False
-v300_rt6b_flutter_changed: False
-v300_rt6b_framework_changed: False
-v300_rt6b_dependencies_changed: False
-v300_rt6b_fw_imported: False
-v300_rt6b_mapping_deterministic: True
-v300_rt6b_max_commands_per_plan: 3
-v300_rt6b_recursive_motion_fact_ignored: True
-v300_rt6b_unknown_fact_ignored: True
-v300_rt6b_network_execution: False
-v300_rt6b_provider_execution: False
-v300_rt6b_vts_connection_used: False
-v300_rt6b_live2d_runtime_loaded: False
-v300_rt6c_authorized: False
-```
-
-Normal mode requires DRC HEAD/origin main at baseline
-`6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68` and a clean FW v5.4.0 checkout at
-`d313eb6acb643103fe25988720ebee5976a04f78`. Snapshot mode skips Git history
-and FW checkout checks for extracted candidate reconstruction.
-
-## Verification commands
-
-Run from the DRC repository root while RT-6b remains uncommitted:
-
-```powershell
-$env:FRAMEWORK_ROOT = "<clean AI Character Framework v5.4.0 checkout>"
-python -m compileall -q backend scripts
-python scripts\check_v300_rt6b_provider_neutral_motion_mapping.py
-python -m pytest -q backend\tests\test_character_motion_mapper.py
-python -m pytest -q
-
-cd app
-flutter analyze
-flutter test
-cd ..
-
-git -c core.whitespace=cr-at-eol diff --check
-git status --short
-git diff --stat
-git diff --name-only
-git ls-files --others --exclude-standard
-```
-
-Expected baseline and candidate results:
-
-```text
-focused RT-6b Backend: 37 passed
-Backend full: 241 passed
-Flutter analyze: No issues found
-Flutter full: 411 passed
-exact surface: 10 files
-FW execution: none
-```
+The acceptance sync changes no Backend runtime or test file. It records the
+accepted implementation and moves RT-6c only to exact-contract-review
+readiness.
 
 ## Non-actions and non-claims
 
-RT-6b changes no existing motion-demo behavior or route. The existing demo
-continues returning metadata-only `not_started`, `motion_sent=false`, and
-`vts_connection_used=false` responses.
+RT-6b and its acceptance sync do not import or execute AI Character Framework,
+create a MotionSession, add or change an API route, change Flutter, wire
+HomeScreen, open network or VTS WebSocket connections, load a Live2D runtime,
+read tokens, credentials, private paths, or model files, or change microphone,
+audio, STT, LLM, or TTS runtime.
 
-RT-6b does not:
-
-```text
-- import or call AI Character Framework
-- create or own MotionSession
-- open a network or VTS WebSocket connection
-- read VTS tokens, credentials, private paths, or model files
-- load Live2D runtime or provider SDKs
-- send motion, expression, speaking, or stop commands
-- add an API route or Flutter client/controller
-- wire HomeScreen
-- change microphone, audio, STT, LLM, or TTS runtime
-- claim real adapter support or acceptance
-- authorize RT-6c through RT-6f
-- claim v3.0.0 release readiness
-```
+The existing motion demo remains metadata-only with `not_started`,
+`motion_sent=false`, and `vts_connection_used=false`. RT-6b does not claim real
+motion execution, real Live2D/VTS support, configured mock-session acceptance,
+or v3.0.0 release readiness.
 
 ## Next action
 
 ```text
-Review the exact ten-file RT-6b candidate.
-RT-6b commit/push remains NOT_AUTHORIZED.
+Review the exact RT-6c contract separately.
 RT-6c implementation remains NOT_AUTHORIZED.
+RT-6d through RT-6f remain NOT_AUTHORIZED.
 RT-7 remains blocked on a real Live2D/VTS adapter.
 ```
