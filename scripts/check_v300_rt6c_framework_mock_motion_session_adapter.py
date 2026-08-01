@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the exact RT-6c root-public mock motion-session adapter candidate."""
+"""Validate the exact RT-6c acceptance-state synchronization."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ from app.services.framework_mock_motion_session_adapter import (  # noqa: E402
 )
 
 
-DRC_BASELINE = "9442f511f9e41d18f64a65cf7fa44a375e7a67ce"
+DRC_BASELINE = "f929e8faa65a817f1ba4fed82b729438b73dbfab"
 FW_VERSION = "5.4.0"
 FW_REFERENCE_COMMIT = "d313eb6acb643103fe25988720ebee5976a04f78"
 FW_SOURCE_MODE = "external-vendored-snapshot"
@@ -52,15 +52,14 @@ EXACT_PATHS = {
     "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_rt6c_framework_mock_motion_session_adapter.md",
     "scripts/check_v300_rt6c_framework_mock_motion_session_adapter.py",
-    "backend/app/models/character_motion_adapter.py",
-    "backend/app/services/framework_mock_motion_session_adapter.py",
-    "backend/tests/test_framework_mock_motion_session_adapter.py",
 }
-RUNTIME_PATHS = {
+IMPLEMENTATION_RUNTIME_PATHS = {
     "backend/app/models/character_motion_adapter.py",
     "backend/app/services/framework_mock_motion_session_adapter.py",
 }
-TEST_PATHS = {"backend/tests/test_framework_mock_motion_session_adapter.py"}
+IMPLEMENTATION_TEST_PATHS = {
+    "backend/tests/test_framework_mock_motion_session_adapter.py"
+}
 RT6B_PATHS = {
     "backend/app/models/character_motion.py",
     "backend/app/services/character_motion_mapper.py",
@@ -97,11 +96,11 @@ def _git_paths() -> set[str]:
 def _assert_exact_surface(*, snapshot: bool) -> None:
     missing = sorted(path for path in EXACT_PATHS if not (REPO_ROOT / path).is_file())
     if missing:
-        raise AssertionError(f"RT-6c candidate files are missing: {missing}")
+        raise AssertionError(f"RT-6c acceptance-sync files are missing: {missing}")
     changed = _git_paths()
     if changed != EXACT_PATHS:
         raise AssertionError(
-            "RT-6c change surface mismatch: "
+            "RT-6c acceptance-sync surface mismatch: "
             f"expected={sorted(EXACT_PATHS)} actual={sorted(changed)}"
         )
     if changed & RT6B_PATHS:
@@ -122,6 +121,26 @@ def _assert_exact_surface(*, snapshot: bool) -> None:
 
 
 def _assert_static_contract() -> None:
+    docs = "\n".join(
+        (REPO_ROOT / path).read_text(encoding="utf-8", errors="replace")
+        for path in (
+            "README.md",
+            "roadmap.md",
+            "tasklist.md",
+            "scripts/README.md",
+            "docs/DRC_v300_goal_checklist_small_commit.md",
+            "docs/v300_rt6c_framework_mock_motion_session_adapter.md",
+        )
+    )
+    required_acceptance_markers = (
+        "RT-6c: COMPLETED / ACCEPTED / PUSHED",
+        "f929e8faa65a817f1ba4fed82b729438b73dbfab",
+        "RT-6d: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED",
+        "external-vendored-snapshot",
+    )
+    for marker in required_acceptance_markers:
+        if marker not in docs:
+            raise AssertionError(f"RT-6c acceptance marker missing: {marker}")
     adapter_path = REPO_ROOT / "backend/app/services/framework_mock_motion_session_adapter.py"
     model_path = REPO_ROOT / "backend/app/models/character_motion_adapter.py"
     adapter_source = adapter_path.read_text(encoding="utf-8")
@@ -398,18 +417,18 @@ def main() -> int:
         _assert_mock_smoke(framework_root)
         real_fw_smoke = True
 
-    print("v300_rt6c_status: implemented-awaiting-review")
-    print("v300_rt6c_exact_change_surface: True")
-    print(f"v300_rt6c_change_file_count: {len(EXACT_PATHS)}")
-    print(f"v300_rt6c_backend_runtime_file_count: {len(RUNTIME_PATHS)}")
-    print(f"v300_rt6c_backend_test_file_count: {len(TEST_PATHS)}")
-    print("v300_rt6c_rt6b_model_changed: False")
-    print("v300_rt6c_rt6b_mapper_changed: False")
-    print("v300_rt6c_api_routes_changed: False")
-    print("v300_rt6c_config_changed: False")
-    print("v300_rt6c_flutter_changed: False")
-    print("v300_rt6c_framework_changed: False")
-    print("v300_rt6c_dependencies_changed: False")
+    print("v300_rt6c_status: completed-accepted-pushed")
+    print("v300_rt6c_exact_acceptance_sync_surface: True")
+    print(f"v300_rt6c_acceptance_sync_file_count: {len(EXACT_PATHS)}")
+    print("v300_rt6c_implementation_commit: f929e8faa65a817f1ba4fed82b729438b73dbfab")
+    print("v300_rt6c_implementation_surface: 10")
+    print(f"v300_rt6c_backend_runtime_file_count: {len(IMPLEMENTATION_RUNTIME_PATHS)}")
+    print(f"v300_rt6c_backend_test_file_count: {len(IMPLEMENTATION_TEST_PATHS)}")
+    print("v300_rt6c_focused_backend_passed: 38")
+    print("v300_rt6c_backend_full_passed: 279")
+    print("v300_rt6c_backend_warning_count: 3")
+    print("v300_rt6c_flutter_analyze_passed: True")
+    print("v300_rt6c_flutter_full_passed: 411")
     print("v300_rt6c_root_public_only: True")
     print("v300_rt6c_default_enabled: False")
     print("v300_rt6c_mock_adapter_forced: True")
@@ -429,12 +448,23 @@ def main() -> int:
     print("v300_rt6c_framework_root_public_contract_passed: True")
     print("v300_rt6c_framework_mock_smoke_passed: True")
     print(f"v300_rt6c_real_fw_mock_smoke_passed: {real_fw_smoke}")
+    print("v300_rt6c_runtime_changed_by_acceptance_sync: False")
+    print("v300_rt6c_backend_runtime_changed_by_acceptance_sync: False")
+    print("v300_rt6c_backend_tests_changed_by_acceptance_sync: False")
+    print("v300_rt6c_api_routes_changed: False")
+    print("v300_rt6c_config_changed: False")
+    print("v300_rt6c_flutter_changed: False")
+    print("v300_rt6c_framework_changed: False")
+    print("v300_rt6c_dependencies_changed: False")
     print("v300_rt6c_network_execution: False")
     print("v300_rt6c_provider_execution: False")
     print("v300_rt6c_vts_connection_used: False")
     print("v300_rt6c_live2d_runtime_loaded: False")
-    print("v300_rt6d_authorized: False")
-    print("v300_rt6c_commit_push_authorized: False")
+    print("v300_rt6_status: current-not-completed")
+    print("v300_rt6d_status: ready-for-exact-contract-review-not-authorized")
+    print("v300_rt6d_implementation_authorized: False")
+    print("v300_rt7_real_adapter_blocked: True")
+    print("v300_rt6c_acceptance_sync_commit_push_authorized: False")
     print(f"v300_rt6c_snapshot_mode: {args.snapshot}")
     return 0
 

@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6c root-public mock motion-session adapter candidate
-Current implementation step: RT-6c exact ten-file default-off FW root-public mock motion-session adapter
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-6d exact contract review
+Current implementation step: RT-6c default-off FW root-public mock motion-session adapter
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: 9442f511f9e41d18f64a65cf7fa44a375e7a67ce
-Current implementation commit: none
+Current implementation commit: `f929e8faa65a817f1ba4fed82b729438b73dbfab`
 Last accepted small commit: RT-6b provider-neutral motion mapping COMPLETED / ACCEPTED / PUSHED at 17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact ten-file RT-6c candidate; commit/push and RT-6d remain NOT_AUTHORIZED
+Next implementation action: review the exact RT-6d contract; implementation remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -2638,44 +2638,49 @@ acceptance-sync commit/push: NOT_AUTHORIZED
 Detailed accepted contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
 Historical acceptance-sync gate: `scripts/check_v300_rt6b_provider_neutral_motion_mapping.py`.
 
-## RT-6c implementation candidate
+## RT-6c accepted implementation
 
 ```text
 RT-6: CURRENT / NOT_COMPLETED
 RT-6a: COMPLETED / ACCEPTED / PUSHED
 RT-6b: COMPLETED / ACCEPTED / PUSHED
-RT-6c: IMPLEMENTED / AWAITING_REVIEW
-baseline: 9442f511f9e41d18f64a65cf7fa44a375e7a67ce
+RT-6c: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 9442f511f9e41d18f64a65cf7fa44a375e7a67ce
+implementation commit: f929e8faa65a817f1ba4fed82b729438b73dbfab
+implementation surface: exact 10 files
+acceptance-sync surface: exact 7 documentation/static-gate files
 FW baseline version: 5.4.0
 FW canonical reference commit: d313eb6acb643103fe25988720ebee5976a04f78
 FW local source mode: external-vendored-snapshot
-implementation surface: exact 10 files
-focused Backend generation result: 38 passed
+FW vendor Git identity required: false
+focused Backend: 38 passed
+Backend full: 279 passed, 3 dependency warnings
+Flutter analyze: No issues found
+Flutter full: 411 passed
+root-public contract/mock smoke: PASS
 RT-6d through RT-6f: NOT_STARTED / NOT_AUTHORIZED
+RT-6d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-- [x] Add bounded DRC-owned command and aggregate adapter results.
-- [x] Add default-off Framework root-public mock-only adapter.
-- [x] Stop disabled and ignored paths before Framework import.
-- [x] Reject missing/invalid root without exposing its value.
-- [x] Force mock adapter, real disabled, provider execution disallowed.
-- [x] Preflight exact mock capability before command execution.
-- [x] Convert all five accepted RT-6b command intents.
-- [x] Preserve order, maximum three calls, and fail-fast behavior.
-- [x] Close each newly owned session and normalize exceptions safely.
-- [x] Retain only maximum twelve event type strings.
-- [x] Expose no raw FW object, ID, metadata, exception, or private path.
-- [x] Keep RT-6b/API/config/Flutter/FW/dependencies unchanged.
-- [x] Add focused Backend coverage: 38 passed generation-side.
-- [ ] Execute compileall and normal dedicated gate in real checkouts.
-- [ ] Execute Backend full regression.
-- [ ] Execute Flutter analyze/full regression.
-- [ ] Review exact surface and changed-content privacy.
-- [ ] Obtain explicit commit approval.
-- [ ] Commit and push only after approval.
+- [x] Exact RT-6c contract reviewed and separately authorized
+- [x] Exact ten-file implementation produced
+- [x] Default-off/root-public/mock-only boundary verified
+- [x] External vendor FW v5.4.0 baseline and canonical commit recorded
+- [x] Root-public contract and local mock smoke passed
+- [x] Focused Backend 38 passed
+- [x] Backend full 279 passed with 3 dependency warnings
+- [x] Flutter analyze and 411 tests passed
+- [x] Exact surface, privacy, and CRLF-aware diff checks passed
+- [x] Explicit commit approval obtained
+- [x] Implementation commit/push and clean-tree verification completed
+- [x] RT-6c recorded as COMPLETED / ACCEPTED / PUSHED
+- [x] RT-6d moved to exact-contract-review readiness only
+- [ ] Review RT-6d exact contract separately
+- [ ] Authorize RT-6d implementation separately
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
-Dedicated candidate gate:
+Historical acceptance-sync gate:
 `scripts/check_v300_rt6c_framework_mock_motion_session_adapter.py`.

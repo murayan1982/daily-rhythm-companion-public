@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6c root-public mock motion-session adapter candidate
+Current small commit: RT-6d exact contract review
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6c root-public mock motion-session adapter candidate
+Current small commit: RT-6d exact contract review
 Last accepted small commit: RT-6b provider-neutral motion mapping COMPLETED / ACCEPTED / PUSHED at 17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6c exact ten-file default-off FW root-public mock motion-session adapter.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation: RT-6c default-off FW root-public mock motion-session adapter.
+Current implementation state: COMPLETED / ACCEPTED
 Current implementation baseline: `9442f511f9e41d18f64a65cf7fa44a375e7a67ce`
-Current implementation commit: none
+Current implementation commit: `f929e8faa65a817f1ba4fed82b729438b73dbfab`
 Current implementation boundary: exact ten files; two new Backend default-off mock-adapter runtime files, one new focused Backend test, seven documentation/static-gate files; no RT-6b, route, config, Flutter, Framework, dependency, lockfile, platform, asset, version, or release change.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
@@ -795,8 +795,8 @@ RT-5   COMPLETED / ACCEPTED  TTS output control, queue, flush, and barge-in
 RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event mapping
   RT-6a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness decision, and exact split
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
-  RT-6c  IMPLEMENTED / AWAITING_REVIEW  Guarded FW root-public mock motion-session adapter
-  RT-6d  NOT_STARTED / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
+  RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
+  RT-6d  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Flutter motion presentation model/client/controller
   RT-6e  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
   RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -8048,25 +8048,58 @@ Detailed accepted contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
 
 ## RT-6c — Guarded FW root-public mock motion-session adapter
 
+Status: **COMPLETED / ACCEPTED / PUSHED**
+
 ```text
-status: IMPLEMENTED / AWAITING_REVIEW
-baseline: 9442f511f9e41d18f64a65cf7fa44a375e7a67ce
+implementation baseline: 9442f511f9e41d18f64a65cf7fa44a375e7a67ce
+implementation commit: f929e8faa65a817f1ba4fed82b729438b73dbfab
+implementation surface: exact 10 files
+acceptance-sync surface: exact 7 documentation/static-gate files
 FW baseline version: 5.4.0
 FW canonical reference commit: d313eb6acb643103fe25988720ebee5976a04f78
 FW local source mode: external-vendored-snapshot
-change surface: exact ten files
-default enabled: false
-adapter: mock only
-real adapter enabled: false
-provider execution allowed: false
-RT-6d authorization: false
+FW vendor Git identity required: false
+root-public contract/mock smoke: PASS
+focused Backend: 38 passed
+Backend full: 279 passed, 3 dependency warnings
+Flutter analyze: No issues found
+Flutter full: 411 passed
+exact surface/privacy review: PASS
+explicit implementation approval: ACCEPTED
+implementation commit/push: COMPLETED
+DRC post-push working tree: clean
+RT-6d: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-RT-6c translates accepted bounded RT-6b commands through only the Framework
-root facade. It creates a fresh mock session per call, preflights the released
-mock capability, applies commands in order, stops on the first non-completed
-result, closes the session, and returns DRC-owned bounded results. The candidate
-adds no API/config/Flutter runtime wiring and performs no real motion execution.
+Accepted exact ten-file implementation surface:
 
-Detailed candidate contract:
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt6c_framework_mock_motion_session_adapter.md
+scripts/check_v300_rt6c_framework_mock_motion_session_adapter.py
+backend/app/models/character_motion_adapter.py
+backend/app/services/framework_mock_motion_session_adapter.py
+backend/tests/test_framework_mock_motion_session_adapter.py
+```
+
+RT-6c remains default-off and has no route, config flag, or normal runtime
+caller. It creates a fresh FW root-public mock session per execution, forces
+real/provider execution off, applies no more than three commands in order,
+fails fast, closes the owned session, and returns bounded DRC-owned normalized
+results only. The accepted external vendor verification records FW v5.4.0 and
+canonical reference commit `d313eb6acb643103fe25988720ebee5976a04f78` while testing the root-public contract and
+mock session rather than requiring Git identity from the ignored vendor copy.
+
+No Framework source, dependency, Flutter runtime, network/provider execution,
+VTS connection, Live2D runtime, credential, private path, payload, raw object,
+or operator evidence is part of the accepted change.
+
+RT-6d is **NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED**.
+Real Live2D/VTS adapter execution remains blocked in RT-7.
+
+Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.

@@ -6975,20 +6975,23 @@ historical and is not rerun against the new HEAD.
 
 Detailed accepted contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
 
-## v3.0.0 RT-6c Framework mock motion-session adapter candidate gate
+## v3.0.0 RT-6c Framework mock motion-session adapter acceptance gate
 
-RT-6c is **IMPLEMENTED / AWAITING_REVIEW** against DRC baseline
-`9442f511f9e41d18f64a65cf7fa44a375e7a67ce`. Its declared Framework baseline
-is FW v5.4.0 at canonical reference commit
-`d313eb6acb643103fe25988720ebee5976a04f78`, using the local source mode
-`external-vendored-snapshot`. It adds an exact ten-file, default-off Backend
-adapter that converts accepted RT-6b plans through only the root-public
-`create_motion_session`, `MotionRequest`, and `MotionIntent` contract. The
-adapter forces local mock execution and does not add a route, config flag,
-Flutter wiring, provider execution, network connection, VTS connection, or
-Live2D runtime.
+RT-6c is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`f929e8faa65a817f1ba4fed82b729438b73dbfab`. The historical gate now validates the exact seven-file
+acceptance-state synchronization while rechecking the accepted root-public
+mock adapter contract.
 
-Run from the DRC root while RT-6c remains uncommitted:
+Framework record:
+
+```text
+FW baseline version: 5.4.0
+FW canonical reference commit: d313eb6acb643103fe25988720ebee5976a04f78
+FW local source mode: external-vendored-snapshot
+FW vendor Git identity required: false
+```
+
+Run before the acceptance-sync commit from the DRC root:
 
 ```powershell
 $env:FRAMEWORK_ROOT = "<DRC-root>\vendor\ai-character-framework-5.4.0"
@@ -7007,36 +7010,23 @@ git -c core.whitespace=cr-at-eol diff --check
 git status --short
 git diff --stat
 git diff --name-only
-git ls-files --others --exclude-standard
 ```
 
-Expected markers include:
+Expected markers:
 
 ```text
-v300_rt6c_status: implemented-awaiting-review
-v300_rt6c_exact_change_surface: True
-v300_rt6c_change_file_count: 10
+v300_rt6c_status: completed-accepted-pushed
+v300_rt6c_exact_acceptance_sync_surface: True
+v300_rt6c_acceptance_sync_file_count: 7
+v300_rt6c_implementation_commit: f929e8faa65a817f1ba4fed82b729438b73dbfab
+v300_rt6c_implementation_surface: 10
 v300_rt6c_backend_runtime_file_count: 2
 v300_rt6c_backend_test_file_count: 1
-v300_rt6c_rt6b_model_changed: False
-v300_rt6c_rt6b_mapper_changed: False
-v300_rt6c_api_routes_changed: False
-v300_rt6c_config_changed: False
-v300_rt6c_flutter_changed: False
-v300_rt6c_framework_changed: False
-v300_rt6c_dependencies_changed: False
-v300_rt6c_root_public_only: True
-v300_rt6c_default_enabled: False
-v300_rt6c_mock_adapter_forced: True
-v300_rt6c_real_adapter_enabled: False
-v300_rt6c_provider_execution_allowed: False
-v300_rt6c_disabled_import_attempted: False
-v300_rt6c_ignored_import_attempted: False
-v300_rt6c_max_apply_calls: 3
-v300_rt6c_fail_fast: True
-v300_rt6c_session_close_guaranteed: True
-v300_rt6c_raw_framework_objects_exposed: False
-v300_rt6c_max_retained_event_types: 12
+v300_rt6c_focused_backend_passed: 38
+v300_rt6c_backend_full_passed: 279
+v300_rt6c_backend_warning_count: 3
+v300_rt6c_flutter_analyze_passed: True
+v300_rt6c_flutter_full_passed: 411
 v300_rt6c_framework_version: 5.4.0
 v300_rt6c_framework_reference_commit: d313eb6acb643103fe25988720ebee5976a04f78
 v300_rt6c_framework_source_mode: external-vendored-snapshot
@@ -7044,23 +7034,32 @@ v300_rt6c_framework_git_identity_required: False
 v300_rt6c_framework_root_public_contract_passed: True
 v300_rt6c_framework_mock_smoke_passed: True
 v300_rt6c_real_fw_mock_smoke_passed: True
+v300_rt6c_runtime_changed_by_acceptance_sync: False
+v300_rt6c_backend_runtime_changed_by_acceptance_sync: False
+v300_rt6c_backend_tests_changed_by_acceptance_sync: False
+v300_rt6c_api_routes_changed: False
+v300_rt6c_config_changed: False
+v300_rt6c_flutter_changed: False
+v300_rt6c_framework_changed: False
+v300_rt6c_dependencies_changed: False
 v300_rt6c_network_execution: False
 v300_rt6c_provider_execution: False
 v300_rt6c_vts_connection_used: False
 v300_rt6c_live2d_runtime_loaded: False
-v300_rt6d_authorized: False
-v300_rt6c_commit_push_authorized: False
+v300_rt6_status: current-not-completed
+v300_rt6d_status: ready-for-exact-contract-review-not-authorized
+v300_rt6d_implementation_authorized: False
+v300_rt7_real_adapter_blocked: True
+v300_rt6c_acceptance_sync_commit_push_authorized: False
 ```
 
-Normal mode requires DRC HEAD/origin main
-`9442f511f9e41d18f64a65cf7fa44a375e7a67ce`. The small-commit record declares
-FW v5.4.0 and canonical reference commit
-`d313eb6acb643103fe25988720ebee5976a04f78`, while the configured local source
-is an external vendored snapshot outside DRC Git history. The gate therefore
-does not require vendor Git HEAD or clean status; it requires the root-public
-symbols and runs a representative three-command plan through the supplied
-mock session. `--snapshot` uses an isolated synthetic root-public mock for
-candidate reconstruction and does not replace normal-mode vendor verification.
+Normal mode requires DRC HEAD/origin main `f929e8faa65a817f1ba4fed82b729438b73dbfab`. The configured vendor copy
+remains outside DRC Git history, so the gate does not require vendor Git HEAD
+or clean status. It verifies the declared FW v5.4.0 root-public motion symbols
+and executes the representative local mock plan. `--snapshot` uses an isolated
+synthetic root-public mock for artifact reconstruction. After the acceptance
+sync is committed, this gate becomes historical and is not rerun against the
+new HEAD.
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt6c_framework_mock_motion_session_adapter.md`.
