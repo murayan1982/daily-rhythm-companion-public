@@ -6918,3 +6918,52 @@ gate is historical and is not rerun against the new HEAD.
 
 Detailed accepted contract:
 `docs/v300_rt6a_character_motion_mapping_readiness.md`.
+
+
+## v3.0.0 RT-6b provider-neutral motion mapping gate
+
+RT-6b is an **IMPLEMENTED / AWAITING_REVIEW** exact ten-file candidate at baseline `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68`. It adds a pure DRC-owned mapping model/service and focused tests. It does not import or execute Framework, add a route, change Flutter, open network/VTS, or load Live2D.
+
+Run before commit from the DRC root:
+
+```powershell
+$env:FRAMEWORK_ROOT = "<clean AI Character Framework v5.4.0 checkout>"
+python -m compileall -q backend scripts
+python scripts\check_v300_rt6b_provider_neutral_motion_mapping.py
+python -m pytest -q backend\tests\test_character_motion_mapper.py
+python -m pytest -q
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --stat
+git diff --name-only
+git ls-files --others --exclude-standard
+```
+
+Expected markers:
+
+```text
+v300_rt6b_status: implemented-awaiting-review
+v300_rt6b_exact_change_surface: True
+v300_rt6b_change_file_count: 10
+v300_rt6b_backend_runtime_file_count: 2
+v300_rt6b_backend_test_file_count: 1
+v300_rt6b_fw_imported: False
+v300_rt6b_mapping_deterministic: True
+v300_rt6b_max_commands_per_plan: 3
+v300_rt6b_recursive_motion_fact_ignored: True
+v300_rt6b_unknown_fact_ignored: True
+v300_rt6b_focused_backend_passed: 37
+v300_rt6b_backend_full_passed: 241
+v300_rt6c_authorized: False
+v300_rt6b_commit_push_authorized: False
+```
+
+`--snapshot` skips commit/tag/FW-clean checks for extracted candidate reconstruction. Normal mode requires DRC HEAD/origin main `6ed5f2252c6c6f47fc8c50f577c4f20b7fa0cb68` and clean FW v5.4.0 `d313eb6acb643103fe25988720ebee5976a04f78`.
+
+Detailed contract: `docs/v300_rt6b_provider_neutral_motion_mapping.md`.
