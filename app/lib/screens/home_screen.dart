@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/advice_response.dart';
 import '../models/advice_source.dart';
 import '../models/character_display_presentation.dart';
+import '../models/character_motion_presentation.dart';
 import '../models/character_preset.dart';
 import '../models/chat.dart';
 import '../models/demo_status.dart';
@@ -21,6 +22,7 @@ import '../models/voice_output_demo.dart';
 import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
+import '../services/character_motion_presentation_controller.dart';
 import '../services/integrated_voice_turn_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_orchestrator.dart';
@@ -29,6 +31,7 @@ import '../services/realtime_text_stream_transcript_handoff.dart';
 import '../services/voice_output_audio_player.dart';
 import '../ui/character_asset_catalog.dart';
 import '../widgets/character_display_card.dart';
+import '../widgets/character_motion_presentation_panel.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'history_screen.dart';
@@ -42,18 +45,21 @@ class HomeScreen extends StatefulWidget {
     this.realtimeTextStreamTranscriptHandoffFactory,
     this.realtimeTerminalVoiceOutputBindingFactory,
     this.integratedVoiceTurnBindingFactory,
+    this.characterMotionPresentationControllerFactory,
   });
 
   final BackendApiClient apiClient;
   final VoiceOutputAudioEngine? voiceOutputAudioEngine;
   final RealtimeTextStreamController Function()?
-      realtimeTextStreamControllerFactory;
+  realtimeTextStreamControllerFactory;
   final RealtimeTextStreamTranscriptHandoffFactory?
-      realtimeTextStreamTranscriptHandoffFactory;
+  realtimeTextStreamTranscriptHandoffFactory;
   final RealtimeTerminalVoiceOutputHomeScreenBindingFactory?
-      realtimeTerminalVoiceOutputBindingFactory;
+  realtimeTerminalVoiceOutputBindingFactory;
   final IntegratedVoiceTurnHomeScreenBindingFactory?
-      integratedVoiceTurnBindingFactory;
+  integratedVoiceTurnBindingFactory;
+  final CharacterMotionPresentationController Function()?
+  characterMotionPresentationControllerFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -89,59 +95,60 @@ const Map<String, _MoodChoiceCopy> _defaultMoodChoiceCopy = {
   ),
 };
 
-const Map<String, Map<String, _MoodChoiceCopy>> _characterAwareMoodChoiceCopy = {
-  'gentle_mina': {
-    'energetic': _MoodChoiceCopy(
-      label: 'いい感じ',
-      supportMessage: '調子がよさそう。がんばりすぎず、いい流れを保つ提案にするね。',
-      adviceFocus: 'いい流れを保つ',
-    ),
-    'normal': _MoodChoiceCopy(
-      label: 'いつも通り',
-      supportMessage: '今日は落ち着いていけそう。生活リズムを崩さない提案にするね。',
-      adviceFocus: '穏やかに整える',
-    ),
-    'tired': _MoodChoiceCopy(
-      label: 'ちょっと休みたい',
-      supportMessage: '今日は回復優先で大丈夫。負担を減らす提案にするね。',
-      adviceFocus: '回復を優先する',
-    ),
-  },
-  'cheerful_sora': {
-    'energetic': _MoodChoiceCopy(
-      label: 'いけそう！',
-      supportMessage: '今日は勢いがありそう。楽しく進めつつ、使いすぎない提案にするよ。',
-      adviceFocus: '楽しく進める',
-    ),
-    'normal': _MoodChoiceCopy(
-      label: 'ぼちぼち',
-      supportMessage: 'いつもの調子でいけそう。小さく前に進める提案にするよ。',
-      adviceFocus: '小さく進める',
-    ),
-    'tired': _MoodChoiceCopy(
-      label: '省エネで',
-      supportMessage: '今日は省エネでOK。元気を取り戻しやすい提案にするよ。',
-      adviceFocus: '省エネで整える',
-    ),
-  },
-  'cool_rei': {
-    'energetic': _MoodChoiceCopy(
-      label: '高め',
-      supportMessage: '活動量を上げられる状態。優先度を絞って進める提案にします。',
-      adviceFocus: '優先度を絞って進める',
-    ),
-    'normal': _MoodChoiceCopy(
-      label: '標準',
-      supportMessage: '通常運転。リズム維持を中心に提案します。',
-      adviceFocus: 'リズムを維持する',
-    ),
-    'tired': _MoodChoiceCopy(
-      label: '低め',
-      supportMessage: '回復優先。今日は負荷を抑える提案にします。',
-      adviceFocus: '負荷を抑える',
-    ),
-  },
-};
+const Map<String, Map<String, _MoodChoiceCopy>> _characterAwareMoodChoiceCopy =
+    {
+      'gentle_mina': {
+        'energetic': _MoodChoiceCopy(
+          label: 'いい感じ',
+          supportMessage: '調子がよさそう。がんばりすぎず、いい流れを保つ提案にするね。',
+          adviceFocus: 'いい流れを保つ',
+        ),
+        'normal': _MoodChoiceCopy(
+          label: 'いつも通り',
+          supportMessage: '今日は落ち着いていけそう。生活リズムを崩さない提案にするね。',
+          adviceFocus: '穏やかに整える',
+        ),
+        'tired': _MoodChoiceCopy(
+          label: 'ちょっと休みたい',
+          supportMessage: '今日は回復優先で大丈夫。負担を減らす提案にするね。',
+          adviceFocus: '回復を優先する',
+        ),
+      },
+      'cheerful_sora': {
+        'energetic': _MoodChoiceCopy(
+          label: 'いけそう！',
+          supportMessage: '今日は勢いがありそう。楽しく進めつつ、使いすぎない提案にするよ。',
+          adviceFocus: '楽しく進める',
+        ),
+        'normal': _MoodChoiceCopy(
+          label: 'ぼちぼち',
+          supportMessage: 'いつもの調子でいけそう。小さく前に進める提案にするよ。',
+          adviceFocus: '小さく進める',
+        ),
+        'tired': _MoodChoiceCopy(
+          label: '省エネで',
+          supportMessage: '今日は省エネでOK。元気を取り戻しやすい提案にするよ。',
+          adviceFocus: '省エネで整える',
+        ),
+      },
+      'cool_rei': {
+        'energetic': _MoodChoiceCopy(
+          label: '高め',
+          supportMessage: '活動量を上げられる状態。優先度を絞って進める提案にします。',
+          adviceFocus: '優先度を絞って進める',
+        ),
+        'normal': _MoodChoiceCopy(
+          label: '標準',
+          supportMessage: '通常運転。リズム維持を中心に提案します。',
+          adviceFocus: 'リズムを維持する',
+        ),
+        'tired': _MoodChoiceCopy(
+          label: '低め',
+          supportMessage: '回復優先。今日は負荷を抑える提案にします。',
+          adviceFocus: '負荷を抑える',
+        ),
+      },
+    };
 
 class _HomeScreenState extends State<HomeScreen> {
   String _backendStatus = 'not checked yet';
@@ -193,13 +200,12 @@ class _HomeScreenState extends State<HomeScreen> {
       TextEditingController();
   final TextEditingController _realtimeTextStreamInputController =
       TextEditingController();
-  late final VoiceOutputAudioPlayerController
-      _voiceOutputAudioPlayerController;
+  late final VoiceOutputAudioPlayerController _voiceOutputAudioPlayerController;
   RealtimeTextStreamController? _realtimeTextStreamController;
   RealtimeTextStreamTranscriptHandoff? _realtimeTextStreamTranscriptHandoff;
   String? _realtimeTextStreamStartError;
   RealtimeTerminalVoiceOutputHomeScreenBinding?
-      _realtimeTerminalVoiceOutputBinding;
+  _realtimeTerminalVoiceOutputBinding;
   String? _realtimeTerminalVoiceOutputConfigurationCode;
   bool _realtimeTerminalVoiceOutputOptedIn = false;
   String? _realtimeTerminalVoiceOutputLastEnqueue;
@@ -213,6 +219,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _realtimeTerminalVoiceOutputFlushUiSequence = 0;
   IntegratedVoiceTurnHomeScreenBinding? _integratedVoiceTurnBinding;
   String? _integratedVoiceTurnConfigurationCode;
+  CharacterMotionPresentationController? _characterMotionController;
+  String? _characterMotionConfigurationCode;
+  bool _characterMotionOptedIn = false;
+  CharacterMotionLifecycleFact _selectedCharacterMotionFact =
+      CharacterMotionLifecycleFact.idle;
   bool _isDisposing = false;
 
   void _handleVoiceOutputPlaybackStateChanged() {
@@ -245,9 +256,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleCharacterMotionChanged() {
+    if (mounted && !_isDisposing) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     _isDisposing = true;
+    _characterMotionController?.removeListener(_handleCharacterMotionChanged);
+    _characterMotionController?.dispose();
     ++_realtimeTerminalVoiceOutputProcessUiSequence;
     ++_realtimeTerminalVoiceOutputFlushUiSequence;
     _realtimeTerminalVoiceOutputBinding?.orchestrator.removeListener(
@@ -292,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
       FitbitStatus? fitbitStatus;
 
       try {
-        providerSelectionStatus =
-            await widget.apiClient.fetchSleepProviderSelectionStatus();
+        providerSelectionStatus = await widget.apiClient
+            .fetchSleepProviderSelectionStatus();
       } catch (error) {
         providerSelectionError = _formatUserFacingError(error);
       }
@@ -376,9 +395,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
-
-
   Future<void> _startPostAdviceChat() async {
     final selectedCharacter = _selectedCharacter;
     final adviceResponse = _adviceResponse;
@@ -460,10 +476,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (!session.canSendMessage) {
       setState(() {
-        _postAdviceChatError =
-            session.outcome.userMessage.isNotEmpty
-                ? session.outcome.userMessage
-                : 'この会話は終了しています。新しい会話を始めてください。';
+        _postAdviceChatError = session.outcome.userMessage.isNotEmpty
+            ? session.outcome.userMessage
+            : 'この会話は終了しています。新しい会話を始めてください。';
       });
       return;
     }
@@ -517,7 +532,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   Future<void> _refreshDemoStatus() async {
     setState(() {
       _isRefreshingDemoStatus = true;
@@ -540,7 +554,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-
 
   Future<void> _submitVoiceInputDemoRequest() async {
     setState(() {
@@ -573,7 +586,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _submitVoiceOutputDemoRequest() async {
     final selectedCharacter = _selectedCharacter;
-    final textContent = _adviceResponse?.message ??
+    final textContent =
+        _adviceResponse?.message ??
         'Flutter voice output demo text for guarded real TTS runtime check.';
 
     await _voiceOutputAudioPlayerController.reset();
@@ -612,7 +626,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-
 
   Future<void> _submitMotionDemoRequest() async {
     final selectedCharacter = _selectedCharacter;
@@ -655,7 +668,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final connectionUx = await widget.apiClient.fetchGoogleHealthConnectionUx();
+      final connectionUx = await widget.apiClient
+          .fetchGoogleHealthConnectionUx();
 
       setState(() {
         _googleHealthConnectionUx = connectionUx;
@@ -728,14 +742,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _voiceOutputAudioPlayerController = VoiceOutputAudioPlayerController(
-      engine: widget.voiceOutputAudioEngine ??
-          AudioplayersVoiceOutputAudioEngine(),
+      engine:
+          widget.voiceOutputAudioEngine ?? AudioplayersVoiceOutputAudioEngine(),
     );
     _voiceOutputAudioPlayerController.addListener(
       _handleVoiceOutputPlaybackStateChanged,
     );
-    final realtimeTextStreamController =
-        widget.realtimeTextStreamControllerFactory?.call();
+    final realtimeTextStreamController = widget
+        .realtimeTextStreamControllerFactory
+        ?.call();
     _realtimeTextStreamController = realtimeTextStreamController;
     realtimeTextStreamController?.addListener(
       _handleRealtimeTextStreamControllerChanged,
@@ -754,15 +769,14 @@ class _HomeScreenState extends State<HomeScreen> {
     if (realtimeTextStreamController != null &&
         widget.realtimeTerminalVoiceOutputBindingFactory != null) {
       try {
-        final binding =
-            widget.realtimeTerminalVoiceOutputBindingFactory!.call();
+        final binding = widget.realtimeTerminalVoiceOutputBindingFactory!
+            .call();
         _realtimeTerminalVoiceOutputBinding = binding;
         binding.orchestrator.addListener(
           _handleRealtimeTerminalVoiceOutputChanged,
         );
       } catch (_) {
-        _realtimeTerminalVoiceOutputConfigurationCode =
-            'configuration_failed';
+        _realtimeTerminalVoiceOutputConfigurationCode = 'configuration_failed';
       }
     }
 
@@ -773,6 +787,17 @@ class _HomeScreenState extends State<HomeScreen> {
         binding.addListener(_handleIntegratedVoiceTurnChanged);
       } catch (_) {
         _integratedVoiceTurnConfigurationCode = 'configuration_failed';
+      }
+    }
+
+    if (widget.characterMotionPresentationControllerFactory != null) {
+      try {
+        final controller = widget.characterMotionPresentationControllerFactory!
+            .call();
+        _characterMotionController = controller;
+        controller.addListener(_handleCharacterMotionChanged);
+      } catch (_) {
+        _characterMotionConfigurationCode = 'configuration_failed';
       }
     }
 
@@ -788,10 +813,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Text(
           'Backend Connection',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         Row(
@@ -832,9 +854,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'まず今日の睡眠と気分を確認して、選んだキャラクターからアドバイスを受け取ります。',
-        ),
+        const Text('まず今日の睡眠と気分を確認して、選んだキャラクターからアドバイスを受け取ります。'),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
@@ -907,10 +927,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 2),
               Text(detail),
             ],
@@ -927,7 +944,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget _buildDailyLoopStatusSection(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -939,9 +955,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text(
-          '読み込み・作成・エラー時も、次に何をすればいいか見えるようにします。',
-        ),
+        const Text('読み込み・作成・エラー時も、次に何をすればいいか見えるようにします。'),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
@@ -957,13 +971,14 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildDiagnosticRow('次の操作', _formatDailyLoopNextAction()),
               _buildDiagnosticRow('Backend', _backendStatus),
               _buildDiagnosticRow('Sleep', _formatDailyLoopSleepStatus()),
-              _buildDiagnosticRow('Character', _formatDailyLoopCharacterStatus()),
+              _buildDiagnosticRow(
+                'Character',
+                _formatDailyLoopCharacterStatus(),
+              ),
               _buildDiagnosticRow('Advice', _formatDailyLoopAdviceStatus()),
               if (_errorMessage != null) ...[
                 const SizedBox(height: 8),
-                const Text(
-                  '再読み込みで復旧できる場合があります。必要ならバックエンドの起動状態を確認してください。',
-                ),
+                const Text('再読み込みで復旧できる場合があります。必要ならバックエンドの起動状態を確認してください。'),
               ],
             ],
           ),
@@ -1067,7 +1082,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return '${selectedCharacter.displayName} / ${selectedCharacter.adviceStyle}';
   }
-
 
   Widget _buildDailyLoopDemoContextSection(BuildContext context) {
     return Column(
@@ -1226,7 +1240,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return '${sleepSummary.formattedTotalSleep} / ${sleepSummary.displaySource}';
   }
 
-
   Widget _buildDemoStatusSection(BuildContext context) {
     final demoStatus = _demoStatus;
 
@@ -1283,7 +1296,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 16),
                 ...DemoStatus.orderedCapabilityKeys.map(
-                  (key) => _buildDemoCapabilityRow(key, demoStatus.capability(key)),
+                  (key) =>
+                      _buildDemoCapabilityRow(key, demoStatus.capability(key)),
                 ),
               ],
             ],
@@ -1430,9 +1444,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  String _formatRealtimeTextStreamProblem(
-    RealtimeTextStreamProblem problem,
-  ) {
+  String _formatRealtimeTextStreamProblem(RealtimeTextStreamProblem problem) {
     final compact = problem.message
         .trim()
         .split(RegExp(r'\s+'))
@@ -1474,9 +1486,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8),
         ],
         OutlinedButton(
-          key: const ValueKey(
-            'realtime-text-stream-transcript-start-button',
-          ),
+          key: const ValueKey('realtime-text-stream-transcript-start-button'),
           onPressed: _canStartRealtimeTextStreamTranscriptHandoff
               ? _startRealtimeTextStreamTranscriptHandoff
               : null,
@@ -1593,7 +1603,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   RealtimeTerminalVoiceOutputOrchestrator?
   get _realtimeTerminalVoiceOutputOrchestrator =>
       _realtimeTerminalVoiceOutputBinding?.orchestrator;
@@ -1628,9 +1637,9 @@ class _HomeScreenState extends State<HomeScreen> {
         orchestratorState == null) {
       return false;
     }
-    return controllerState.phase == RealtimeTextStreamControllerPhase.completed &&
-        orchestratorState.phase !=
-            RealtimeTerminalVoiceOutputPhase.flushing &&
+    return controllerState.phase ==
+            RealtimeTextStreamControllerPhase.completed &&
+        orchestratorState.phase != RealtimeTerminalVoiceOutputPhase.flushing &&
         orchestratorState.phase != RealtimeTerminalVoiceOutputPhase.disposed;
   }
 
@@ -1651,7 +1660,9 @@ class _HomeScreenState extends State<HomeScreen> {
       return false;
     }
     final hasWork =
-        state.pendingCount > 0 || state.activeItem != null || state.isProcessing;
+        state.pendingCount > 0 ||
+        state.activeItem != null ||
+        state.isProcessing;
     return hasWork &&
         state.phase != RealtimeTerminalVoiceOutputPhase.flushing &&
         state.phase != RealtimeTerminalVoiceOutputPhase.disposed;
@@ -1797,9 +1808,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SwitchListTile(
-                key: const ValueKey(
-                  'realtime-terminal-voice-output-opt-in',
-                ),
+                key: const ValueKey('realtime-terminal-voice-output-opt-in'),
                 contentPadding: EdgeInsets.zero,
                 value: _realtimeTerminalVoiceOutputOptedIn,
                 onChanged: _canToggleRealtimeTerminalVoiceOutputOptIn
@@ -1859,21 +1868,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 'RT-5 phase: $phase',
-                key: const ValueKey(
-                  'realtime-terminal-voice-output-phase',
-                ),
+                key: const ValueKey('realtime-terminal-voice-output-phase'),
               ),
               Text(
                 'Pending: ${orchestratorState?.pendingCount ?? 0}',
-                key: const ValueKey(
-                  'realtime-terminal-voice-output-pending',
-                ),
+                key: const ValueKey('realtime-terminal-voice-output-pending'),
               ),
               Text(
                 'Active: ${orchestratorState?.activeItem == null ? 'no' : 'yes'}',
-                key: const ValueKey(
-                  'realtime-terminal-voice-output-active',
-                ),
+                key: const ValueKey('realtime-terminal-voice-output-active'),
               ),
               Text(
                 'Last enqueue: ${_realtimeTerminalVoiceOutputLastEnqueue ?? '-'}',
@@ -1920,9 +1923,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               const Text(
                 'This section does not display terminal text, session/turn IDs, queue item IDs, audio URIs, provider payloads, or raw exceptions.',
-                key: ValueKey(
-                  'realtime-terminal-voice-output-privacy-note',
-                ),
+                key: ValueKey('realtime-terminal-voice-output-privacy-note'),
               ),
               const SizedBox(height: 4),
               const Text(
@@ -1962,7 +1963,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final bindingState = binding?.state;
     final coordinatorState = binding?.coordinator.state;
     final speechState = binding?.speechActivitySource.state;
-    final configuration = _integratedVoiceTurnConfigurationCode ??
+    final configuration =
+        _integratedVoiceTurnConfigurationCode ??
         (_isIntegratedVoiceTurnConfigured ? 'configured' : 'unconfigured');
 
     return Column(
@@ -2006,9 +2008,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 runSpacing: 8,
                 children: [
                   ElevatedButton(
-                    key: const ValueKey(
-                      'integrated-voice-turn-start-button',
-                    ),
+                    key: const ValueKey('integrated-voice-turn-start-button'),
                     onPressed: binding?.canStartVoiceTurn == true
                         ? _startIntegratedVoiceTurn
                         : null,
@@ -2028,9 +2028,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               Text(
                 'Integrated configuration: $configuration',
-                key: const ValueKey(
-                  'integrated-voice-turn-configuration',
-                ),
+                key: const ValueKey('integrated-voice-turn-configuration'),
               ),
               Text(
                 'Integrated opt-in: ${bindingState?.optedIn == true ? 'on' : 'off'}',
@@ -2058,9 +2056,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 'Interruption count: ${coordinatorState?.interruptionCount ?? 0}',
-                key: const ValueKey(
-                  'integrated-voice-turn-interruption-count',
-                ),
+                key: const ValueKey('integrated-voice-turn-interruption-count'),
               ),
               Text(
                 'Pending voice output: ${coordinatorState?.pendingVoiceOutputCount ?? 0}',
@@ -2076,9 +2072,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 'Last turn outcome: ${coordinatorState?.lastTurnOutcome?.name ?? '-'}',
-                key: const ValueKey(
-                  'integrated-voice-turn-last-turn-outcome',
-                ),
+                key: const ValueKey('integrated-voice-turn-last-turn-outcome'),
               ),
               Text(
                 'Last speech outcome: ${coordinatorState?.lastSpeechOutcome?.name ?? '-'}',
@@ -2109,10 +2103,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildDemoCapabilityRow(
-    String key,
-    DemoCapabilityStatus capability,
-  ) {
+  Widget _buildDemoCapabilityRow(String key, DemoCapabilityStatus capability) {
     final label = DemoStatus.displayCapabilityName(key);
     final message = capability.message.trim();
 
@@ -2133,7 +2124,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 
   Widget _buildVoiceInputDemoSection(BuildContext context) {
     final response = _voiceInputDemoResponse;
@@ -2310,17 +2300,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 _buildDiagnosticRow('Output mode', response.displayOutputMode),
                 _buildDiagnosticRow('Character', response.displayCharacterId),
-                _buildDiagnosticRow('Voice profile', response.displayVoiceProfileId),
-                _buildDiagnosticRow('Utterance purpose', response.displayUtterancePurpose),
+                _buildDiagnosticRow(
+                  'Voice profile',
+                  response.displayVoiceProfileId,
+                ),
+                _buildDiagnosticRow(
+                  'Utterance purpose',
+                  response.displayUtterancePurpose,
+                ),
                 _buildDiagnosticRow(
                   'Requested audio',
                   response.displayRequestedAudioFormat,
                 ),
-                _buildDiagnosticRow('Generated audio', response.displayAudioFormat),
+                _buildDiagnosticRow(
+                  'Generated audio',
+                  response.displayAudioFormat,
+                ),
                 _buildDiagnosticRow('Audio ready', response.displayAudioReady),
-                _buildDiagnosticRow('Handoff kind', response.displayAudioHandoffKind),
-                _buildDiagnosticRow('Has handoff', response.displayHasAudioHandoff),
-                _buildDiagnosticRow('Generated state', response.displayIsGenerated),
+                _buildDiagnosticRow(
+                  'Handoff kind',
+                  response.displayAudioHandoffKind,
+                ),
+                _buildDiagnosticRow(
+                  'Has handoff',
+                  response.displayHasAudioHandoff,
+                ),
+                _buildDiagnosticRow(
+                  'Generated state',
+                  response.displayIsGenerated,
+                ),
                 _buildDiagnosticRow('Audio URL', response.displayAudioUrl),
                 _buildDiagnosticRow(
                   'Audio artifact ref',
@@ -2330,9 +2338,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Playback candidate',
                   _formatVoiceOutputPlaybackCandidate(response),
                 ),
-                _buildDiagnosticRow('Framework call', response.displayFrameworkCallState),
-                _buildDiagnosticRow('Framework API', response.displayFrameworkApiName),
-                _buildDiagnosticRow('Playback', response.displayAudioPlaybackStatus),
+                _buildDiagnosticRow(
+                  'Framework call',
+                  response.displayFrameworkCallState,
+                ),
+                _buildDiagnosticRow(
+                  'Framework API',
+                  response.displayFrameworkApiName,
+                ),
+                _buildDiagnosticRow(
+                  'Playback',
+                  response.displayAudioPlaybackStatus,
+                ),
                 _buildDiagnosticRow('Evidence', response.displayEvidenceStatus),
                 _buildDiagnosticRow('Text', response.displayTextContent),
                 const SizedBox(height: 8),
@@ -2403,7 +2420,94 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  bool get _isCharacterMotionConfigured =>
+      _characterMotionController != null &&
+      _characterMotionConfigurationCode == null;
 
+  bool get _canToggleCharacterMotionOptIn {
+    final state = _characterMotionController?.state;
+    return _isCharacterMotionConfigured && state?.isClosed != true;
+  }
+
+  bool get _canApplyCharacterMotion {
+    final state = _characterMotionController?.state;
+    return _characterMotionOptedIn &&
+        _isCharacterMotionConfigured &&
+        state != null &&
+        !state.isApplying &&
+        !state.isClosed;
+  }
+
+  bool get _canResetCharacterMotion {
+    final state = _characterMotionController?.state;
+    return _isCharacterMotionConfigured &&
+        state != null &&
+        !state.isClosed &&
+        state.phase != CharacterMotionPresentationPhase.idle;
+  }
+
+  String get _characterMotionConfiguration =>
+      _characterMotionConfigurationCode ??
+      (_isCharacterMotionConfigured ? 'configured' : 'unconfigured');
+
+  void _setCharacterMotionOptIn(bool value) {
+    final controller = _characterMotionController;
+    if (!_canToggleCharacterMotionOptIn || controller == null) {
+      return;
+    }
+    if (!value) {
+      controller.reset();
+    }
+    setState(() {
+      _characterMotionOptedIn = value;
+    });
+  }
+
+  void _setSelectedCharacterMotionFact(CharacterMotionLifecycleFact? fact) {
+    if (!_characterMotionOptedIn || fact == null) {
+      return;
+    }
+    setState(() {
+      _selectedCharacterMotionFact = fact;
+    });
+  }
+
+  Future<void> _applyCharacterMotion() async {
+    final controller = _characterMotionController;
+    if (controller == null || !_canApplyCharacterMotion) {
+      return;
+    }
+    final request = CharacterMotionPresentationRequest(
+      sourceFact: _selectedCharacterMotionFact,
+      sourceEventType: 'home_screen_manual_motion',
+      characterId: _selectedCharacter?.characterId,
+    );
+    try {
+      await controller.apply(request);
+    } on CharacterMotionPresentationProblemException {
+      // The controller already publishes only a typed, public-safe state.
+    }
+  }
+
+  void _resetCharacterMotion() {
+    _characterMotionController?.reset();
+  }
+
+  Widget _buildCharacterMotionPresentationSection(BuildContext context) {
+    return CharacterMotionPresentationPanel(
+      configuration: _characterMotionConfiguration,
+      optedIn: _characterMotionOptedIn,
+      selectedFact: _selectedCharacterMotionFact,
+      state: _characterMotionController?.state,
+      canToggleOptIn: _canToggleCharacterMotionOptIn,
+      canApply: _canApplyCharacterMotion,
+      canReset: _canResetCharacterMotion,
+      onOptInChanged: _setCharacterMotionOptIn,
+      onFactChanged: _setSelectedCharacterMotionFact,
+      onApply: _applyCharacterMotion,
+      onReset: _resetCharacterMotion,
+    );
+  }
 
   Widget _buildMotionDemoSection(BuildContext context) {
     final response = _motionDemoResponse;
@@ -2476,8 +2580,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
               FilledButton.icon(
-                onPressed:
-                    _isSubmittingMotionDemo ? null : _submitMotionDemoRequest,
+                onPressed: _isSubmittingMotionDemo
+                    ? null
+                    : _submitMotionDemoRequest,
                 icon: const Icon(Icons.emoji_emotions_outlined),
                 label: Text(
                   _isSubmittingMotionDemo
@@ -2698,9 +2803,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'バックエンドで選ばれているproviderと、今回の睡眠データ元を分けて表示します。',
-        ),
+        const Text('バックエンドで選ばれているproviderと、今回の睡眠データ元を分けて表示します。'),
         const SizedBox(height: 12),
         Container(
           key: const Key('sleep-data-source-section'),
@@ -2718,26 +2821,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 12),
                 const Text('sleep provider設定を読み込み中です。'),
               ] else if (selection == null) ...[
-                const Text(
-                  '設定中のsleep providerを確認できませんでした。睡眠サマリーは引き続き利用できます。',
-                ),
+                const Text('設定中のsleep providerを確認できませんでした。睡眠サマリーは引き続き利用できます。'),
                 if (_sleepProviderSelectionError != null) ...[
                   const SizedBox(height: 8),
                   Text(_sleepProviderSelectionError!),
                 ],
                 const SizedBox(height: 8),
-                Text(
-                  '今回のデータ元: ${sleepSummary?.displaySource ?? '未確認'}',
-                ),
+                Text('今回のデータ元: ${sleepSummary?.displaySource ?? '未確認'}'),
               ] else ...[
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _buildStatusChip(
-                      '設定',
-                      selection.displayConfiguredState,
-                    ),
+                    _buildStatusChip('設定', selection.displayConfiguredState),
                     _buildStatusChip(
                       'データ種別',
                       sleepSummary?.displayDataKind ?? '読み込み中',
@@ -2754,12 +2850,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '今回のデータ元: ${sleepSummary?.displaySource ?? '未確認'}',
-                ),
-                Text(
-                  '選択方法: ${selection.displaySelectionMode}',
-                ),
+                Text('今回のデータ元: ${sleepSummary?.displaySource ?? '未確認'}'),
+                Text('選択方法: ${selection.displaySelectionMode}'),
                 const SizedBox(height: 12),
                 if (!selection.configuredProviderSupported) ...[
                   const Text(
@@ -2776,9 +2868,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
                 if (selection.changeRequiresBackendRestart) ...[
                   const SizedBox(height: 12),
-                  const Text(
-                    'provider変更はバックエンド設定の更新と再起動後に反映されます。',
-                  ),
+                  const Text('provider変更はバックエンド設定の更新と再起動後に反映されます。'),
                 ],
               ],
             ],
@@ -2884,8 +2974,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final fitbitStatus = _fitbitStatus;
     final fitbitConnectResponse = _fitbitConnectResponse;
     final sleepSummary = _sleepSummary;
-    final hasRealSleepData = sleepSummary?.isRealData == true &&
-        sleepSummary?.available == true;
+    final hasRealSleepData =
+        sleepSummary?.isRealData == true && sleepSummary?.available == true;
     final connectionState = fitbitStatus == null
         ? null
         : _formatHealthDataConnectionState(
@@ -2934,12 +3024,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(statusMessage ?? ''),
                 const SizedBox(height: 12),
                 FilledButton.tonal(
-                  onPressed:
-                      _isConnectingHealthData ? null : _connectHealthData,
+                  onPressed: _isConnectingHealthData
+                      ? null
+                      : _connectHealthData,
                   child: Text(
-                    _isConnectingHealthData
-                        ? '確認中...'
-                        : 'Fitbit接続を確認',
+                    _isConnectingHealthData ? '確認中...' : 'Fitbit接続を確認',
                   ),
                 ),
                 if (_isConnectingHealthData) ...[
@@ -3001,9 +3090,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return fitbitStatus.displayMessage;
   }
-
-
-
 
   Widget _buildGoogleHealthConnectionUxSection(BuildContext context) {
     final connectionUx = _googleHealthConnectionUx;
@@ -3149,7 +3235,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget _buildConnectionStateDetailsCard(
     BuildContext context,
     GoogleHealthConnectionUx connectionUx,
@@ -3160,17 +3245,12 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '状態の理由',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          const Text('状態の理由', style: TextStyle(fontWeight: FontWeight.bold)),
           if (connectionUx.stateStage.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text('段階: ${connectionUx.stateStage}'),
@@ -3223,19 +3303,18 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '接続ガイド',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          const Text('接続ガイド', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          for (var index = 0; index < connectionUx.recoverySteps.length; index++)
+          for (
+            var index = 0;
+            index < connectionUx.recoverySteps.length;
+            index++
+          )
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text('${index + 1}. ${connectionUx.recoverySteps[index]}'),
@@ -3255,17 +3334,12 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '開発者向け詳細',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          const Text('開発者向け詳細', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           const Text(
             '通常ユーザーには不要なready状態だけをまとめます。token / secret / path / raw command は表示しません。',
@@ -3324,7 +3398,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget _buildConnectionActionGroupCard(
     BuildContext context, {
     required String title,
@@ -3337,17 +3410,12 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text(description),
           const SizedBox(height: 8),
@@ -3395,8 +3463,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               _buildStatusChip('実行可能', _formatReady(action.enabled)),
               _buildStatusChip('安全性', action.displayRiskLevel),
-              if (action.isDestructive)
-                _buildStatusChip('注意', 'ローカル状態を変更'),
+              if (action.isDestructive) _buildStatusChip('注意', 'ローカル状態を変更'),
             ],
           ),
         ],
@@ -3653,11 +3720,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 8),
                 Text('Self-check reason: ${selfCheck.displayReason}'),
                 const SizedBox(height: 8),
-                Text('Next action: ${_firstNonEmpty([
-                  preflight.displayNextAction,
-                  diagnostics.displayNextAction,
-                  selfCheck.displayNextAction,
-                ])}'),
+                Text(
+                  'Next action: ${_firstNonEmpty([preflight.displayNextAction, diagnostics.displayNextAction, selfCheck.displayNextAction])}',
+                ),
               ],
             ],
           ),
@@ -3756,9 +3821,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 8),
                   Text('理由: ${sleepSummary.displayUnavailableReason}'),
                   const SizedBox(height: 8),
-                  const Text(
-                    '睡眠データがない場合でも、今の気分をもとにアドバイスできます。',
-                  ),
+                  const Text('睡眠データがない場合でも、今の気分をもとにアドバイスできます。'),
                 ],
               ],
             ),
@@ -3770,16 +3833,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCharacterSection(BuildContext context) {
     final selectedCharacter = _selectedCharacter;
     final selectedCharacterId = selectedCharacter?.characterId ?? '';
-    final hasRepositoryCharacterAsset = selectedCharacter != null &&
+    final hasRepositoryCharacterAsset =
+        selectedCharacter != null &&
         CharacterAssetCatalog.hasCharacterAsset(selectedCharacterId);
     final presentation = CharacterDisplayPresentation.resolve(
       character: selectedCharacter,
       moodLabel: _formatMoodLabel(_selectedMood),
       moodSupportMessage: _formatMoodSupportMessage(_selectedMood),
       advice: _adviceResponse,
-      isLoading: _isLoading ||
-          _isCreatingAdvice ||
-          _isSubmittingVoiceOutputDemo,
+      isLoading:
+          _isLoading || _isCreatingAdvice || _isSubmittingVoiceOutputDemo,
       playbackPhase: _voiceOutputAudioPlayerController.state.phase,
       hasRepositoryCharacterAsset: hasRepositoryCharacterAsset,
     );
@@ -3879,9 +3942,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'v2.0.0で受け入れ済みの背景画像とフォールバック画像を、Web UI上で確認するための表示です。',
-        ),
+        const Text('v2.0.0で受け入れ済みの背景画像とフォールバック画像を、Web UI上で確認するための表示です。'),
         const SizedBox(height: 12),
         LayoutBuilder(
           builder: (context, constraints) {
@@ -3927,10 +3988,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 72,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
-                  return _buildMissingAssetPlaceholder(
-                    width: 72,
-                    height: 72,
-                  );
+                  return _buildMissingAssetPlaceholder(width: 72, height: 72);
                 },
               );
               const description = Text(
@@ -3940,11 +3998,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (constraints.maxWidth < 420) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    image,
-                    const SizedBox(height: 8),
-                    description,
-                  ],
+                  children: [image, const SizedBox(height: 8), description],
                 );
               }
 
@@ -3973,9 +4027,7 @@ class _HomeScreenState extends State<HomeScreen> {
       height: height,
       child: const ColoredBox(
         color: Color(0x1F808080),
-        child: Center(
-          child: Icon(Icons.image_not_supported_outlined),
-        ),
+        child: Center(child: Icon(Icons.image_not_supported_outlined)),
       ),
     );
   }
@@ -4010,10 +4062,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(12),
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
+              child: Text(title, style: Theme.of(context).textTheme.titleSmall),
             ),
           ],
         ),
@@ -4057,18 +4106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _buildMoodChoiceChip(
-                    mood: 'energetic',
-                    emoji: '☀️',
-                  ),
-                  _buildMoodChoiceChip(
-                    mood: 'normal',
-                    emoji: '🌿',
-                  ),
-                  _buildMoodChoiceChip(
-                    mood: 'tired',
-                    emoji: '😪',
-                  ),
+                  _buildMoodChoiceChip(mood: 'energetic', emoji: '☀️'),
+                  _buildMoodChoiceChip(mood: 'normal', emoji: '🌿'),
+                  _buildMoodChoiceChip(mood: 'tired', emoji: '😪'),
                 ],
               ),
               const SizedBox(height: 12),
@@ -4080,10 +4120,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMoodChoiceChip({
-    required String mood,
-    required String emoji,
-  }) {
+  Widget _buildMoodChoiceChip({required String mood, required String emoji}) {
     final copy = _resolveMoodChoiceCopy(mood);
 
     return ChoiceChip(
@@ -4137,9 +4174,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Center(
           child: ElevatedButton(
             onPressed: _isCreatingAdvice ? null : _createAdvice,
-            child: Text(
-              _isCreatingAdvice ? '作成中...' : '今日のアドバイスを作る',
-            ),
+            child: Text(_isCreatingAdvice ? '作成中...' : '今日のアドバイスを作る'),
           ),
         ),
         if (_isCreatingAdvice) ...[
@@ -4162,10 +4197,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Text(
           'Advice',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text('作成結果です。必要なら気分やキャラクターを変えて、もう一度作り直せます。'),
@@ -4216,8 +4248,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
   Widget _buildReportHandoffContextCard(
     BuildContext context,
     ReportHandoffContext reportHandoff,
@@ -4228,9 +4258,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -4272,9 +4300,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -4291,7 +4317,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Chip(label: Text('Engine: ${source.displayEngine}')),
               Chip(label: Text('DRC: ${source.displayDrcCharacter}')),
               if (source.hasFrameworkMetadata) ...[
-                Chip(label: Text('FW preset: ${source.displayFrameworkPreset}')),
+                Chip(
+                  label: Text('FW preset: ${source.displayFrameworkPreset}'),
+                ),
                 Chip(
                   label: Text(
                     'FW character: ${source.displayFrameworkCharacter}',
@@ -4309,7 +4337,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 
   Widget _buildPostAdviceChatSection(BuildContext context) {
     final adviceResponse = _adviceResponse;
@@ -4359,8 +4386,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: const Text('少し話す'),
                   ),
                   OutlinedButton.icon(
-                    onPressed:
-                        _isStartingPostAdviceChat ? null : _skipPostAdviceChat,
+                    onPressed: _isStartingPostAdviceChat
+                        ? null
+                        : _skipPostAdviceChat,
                     icon: const Icon(Icons.check_circle_outline),
                     label: const Text('今日はここまで'),
                   ),
@@ -4411,18 +4439,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _buildStatusChip(
-                      '会話状態',
-                      session.lifecycle.displayState,
-                    ),
-                    _buildStatusChip(
-                      '会話回数',
-                      session.lifecycle.displayProgress,
-                    ),
-                    _buildStatusChip(
-                      '応答状態',
-                      session.outcome.displayLabel,
-                    ),
+                    _buildStatusChip('会話状態', session.lifecycle.displayState),
+                    _buildStatusChip('会話回数', session.lifecycle.displayProgress),
+                    _buildStatusChip('応答状態', session.outcome.displayLabel),
                   ],
                 ),
                 if (session.outcome.userMessage.trim().isNotEmpty) ...[
@@ -4514,7 +4533,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget _buildPostAdviceChatMessage(ChatMessage message) {
     final isUser = message.role == 'user';
     final roleLabel = isUser ? 'あなた' : 'キャラクター';
@@ -4532,17 +4550,13 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            roleLabel,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(roleLabel, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text(message.content),
         ],
       ),
     );
   }
-
 
   Widget _buildDailyRecordHandoffSection(BuildContext context) {
     final adviceResponse = _adviceResponse;
@@ -4559,9 +4573,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text(
-          '作成したアドバイスは DailyRecord として履歴に残る前提です。あとから見返す流れまで確認できます。',
-        ),
+        const Text('作成したアドバイスは DailyRecord として履歴に残る前提です。あとから見返す流れまで確認できます。'),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
@@ -4581,7 +4593,10 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildDiagnosticRow('保存ステータス', 'DailyRecord 保存対象'),
               _buildDiagnosticRow('Mood', _formatMoodLabel(_selectedMood)),
               _buildDiagnosticRow('Character', adviceResponse.characterName),
-              _buildDiagnosticRow('Sleep context', _formatAdviceReadinessSleepStatus()),
+              _buildDiagnosticRow(
+                'Sleep context',
+                _formatAdviceReadinessSleepStatus(),
+              ),
               const SizedBox(height: 12),
               Align(
                 alignment: Alignment.centerLeft,
@@ -4589,9 +4604,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => HistoryScreen(
-                          apiClient: widget.apiClient,
-                        ),
+                        builder: (_) =>
+                            HistoryScreen(apiClient: widget.apiClient),
                       ),
                     );
                   },
@@ -4605,7 +4619,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
 
   Widget _buildDailyLoopCompletionSection(BuildContext context) {
     final adviceResponse = _adviceResponse;
@@ -4622,9 +4635,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text(
-          '今日の睡眠・気分・キャラクター・アドバイス確認まで完了しました。次は履歴で振り返れます。',
-        ),
+        const Text('今日の睡眠・気分・キャラクター・アドバイス確認まで完了しました。次は履歴で振り返れます。'),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
@@ -4672,20 +4683,12 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const Text(
             'Daily loop error',
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text(
-            errorMessage,
-            style: const TextStyle(color: Colors.red),
-          ),
+          Text(errorMessage, style: const TextStyle(color: Colors.red)),
           const SizedBox(height: 8),
-          const Text(
-            '入力内容は残したまま、バックエンド情報だけ再読み込みできます。',
-          ),
+          const Text('入力内容は残したまま、バックエンド情報だけ再読み込みできます。'),
           const SizedBox(height: 8),
           OutlinedButton.icon(
             onPressed: _isLoading ? null : _loadInitialData,
@@ -4721,24 +4724,18 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text(detail),
         ],
       ),
     );
   }
-
 
   String _formatAdviceContextLabel(SleepSummary sleepSummary) {
     if (!sleepSummary.available) {
@@ -4831,9 +4828,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -5078,6 +5073,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 24),
                     _buildVoiceOutputDemoSection(context),
+                    const SizedBox(height: 24),
+                    _buildCharacterMotionPresentationSection(context),
+
                     const SizedBox(height: 32),
                     _buildMotionDemoSection(context),
 

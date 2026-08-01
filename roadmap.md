@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6e exact contract review
+Current small commit: RT-6e HomeScreen character-motion candidate
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -574,11 +574,11 @@ Status: RT-6 CURRENT / NOT_COMPLETED
 Current small commit: RT-6e exact contract review
 Last accepted small commit: RT-6c FW root-public mock motion-session adapter COMPLETED / ACCEPTED / PUSHED at f929e8faa65a817f1ba4fed82b729438b73dbfab
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6d Flutter provider-neutral motion presentation model/client/controller.
+Current implementation: RT-6e default-off HomeScreen character-motion presentation wiring.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `cd423fa2236ce16a7635f0c67460f2fa2fd210e9`
+Current implementation baseline: `8d69b539e974ba71fde5d9b15dd951d0c670b7ff`
 Current implementation commit: none
-Current implementation boundary: exact twelve files; three Flutter runtime files, two focused Flutter tests, seven documentation/static-gate files; no HomeScreen, main.dart, Backend, Framework execution, dependency, platform, asset, version, or release change.
+Current implementation boundary: exact ten files; two Flutter runtime files, one focused Flutter widget test, seven documentation/static-gate files; no main.dart, RT-6d runtime, Backend, Framework execution, dependency, platform, asset, version, or release change.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -797,8 +797,8 @@ RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
-  RT-6e  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Default-off HomeScreen character-motion wiring
-  RT-6f  NOT_STARTED / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
+  RT-6e  IMPLEMENTED / AWAITING_REVIEW  Default-off HomeScreen character-motion wiring
+  RT-6f  NOT_STARTED / BLOCKED_PENDING_RT6E_ACCEPTANCE / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
@@ -8146,3 +8146,21 @@ Detailed accepted contract:
 `docs/v300_rt6d_flutter_motion_presentation.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6d_flutter_motion_presentation.py`.
+
+## RT-6e candidate — default-off HomeScreen character-motion wiring
+
+```text
+RT-6e: IMPLEMENTED / AWAITING_REVIEW
+baseline: 8d69b539e974ba71fde5d9b15dd951d0c670b7ff
+surface: exact 10 files
+RT-6f: NOT_STARTED / BLOCKED_PENDING_RT6E_ACCEPTANCE / NOT_AUTHORIZED
+```
+
+The candidate owns an optional RT-6d controller only through an injected
+HomeScreen factory. Normal `main.dart` remains unchanged and unconfigured.
+Session-local opt-in starts off and is not persisted. Only an explicit Apply
+press performs one injected request; no lifecycle, stream, voice, TTS, or
+character-selection event is subscribed automatically.
+
+Visible state is a normalized mock-only aggregate. The static repository image
+is not animated and real Live2D/VTS execution remains blocked in RT-7.

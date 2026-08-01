@@ -7139,3 +7139,31 @@ this gate becomes historical and is not rerun against the new HEAD.
 
 Detailed accepted contract:
 `docs/v300_rt6d_flutter_motion_presentation.md`.
+
+## v3.0.0 RT-6e HomeScreen character-motion candidate gate
+
+Run from the repository root:
+
+```powershell
+python scripts\check_v300_rt6e_home_screen_character_motion_wiring.py
+```
+
+Artifact-generation mode skips only the real checkout HEAD/origin check:
+
+```powershell
+python scripts\check_v300_rt6e_home_screen_character_motion_wiring.py --snapshot
+```
+
+The gate requires the exact ten-file candidate surface, verifies the optional
+HomeScreen controller factory and one owned lifecycle, default unconfigured and
+default-off behavior, explicit one-request apply, local-only reset/opt-out,
+fixed `home_screen_manual_motion`, no source session/turn IDs, public-safe panel
+content, and the fake/in-memory focused widget contract.
+
+It rejects changes to `main.dart`, RT-6d model/client/controller, static
+character-display files, Backend, vendor/Framework, dependencies, platform
+files, and existing tests. It also rejects HTTP/WebSocket/provider/VTS markers
+and visible raw IDs, command details, event strings, responses, or exceptions.
+
+The focused file defines 16 widget tests; the expected full total is 468 after the accepted 452-test baseline. RT-6e is `IMPLEMENTED / AWAITING_REVIEW`; commit/push remains unauthorized.
+RT-6f remains blocked pending RT-6e acceptance.

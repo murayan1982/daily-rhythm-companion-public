@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6e exact contract review
-Current implementation step: RT-6d Flutter provider-neutral motion presentation model/client/controller
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation baseline: cd423fa2236ce16a7635f0c67460f2fa2fd210e9
-Current implementation commit: 0f220b792feb7ebb82c5871a794731aa1327439a
+Current small commit: RT-6e HomeScreen character-motion candidate
+Current implementation step: RT-6e exact ten-file default-off HomeScreen character-motion presentation wiring
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: 8d69b539e974ba71fde5d9b15dd951d0c670b7ff
+Current implementation commit: none
 Last accepted small commit: RT-6d Flutter motion presentation COMPLETED / ACCEPTED / PUSHED at 0f220b792feb7ebb82c5871a794731aa1327439a
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review the exact RT-6e contract; implementation remains NOT_AUTHORIZED
+Next implementation action: verify the exact RT-6e candidate; commit/push remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -96,8 +96,8 @@ RT-6a COMPLETED / ACCEPTED / PUSHED
 RT-6b COMPLETED / ACCEPTED / PUSHED
 RT-6c COMPLETED / ACCEPTED / PUSHED
 RT-6d COMPLETED / ACCEPTED / PUSHED
-RT-6e NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
-RT-6f NOT_STARTED / NOT_AUTHORIZED
+RT-6e IMPLEMENTED / AWAITING_REVIEW
+RT-6f NOT_STARTED / BLOCKED_PENDING_RT6E_ACCEPTANCE / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -2731,11 +2731,30 @@ acceptance-sync commit/push: NOT_AUTHORIZED
 - [x] Verify clean working tree after push.
 - [x] Record RT-6d as COMPLETED / ACCEPTED / PUSHED.
 - [x] Move RT-6e to exact-contract-review readiness only.
-- [ ] Review the RT-6e exact contract separately.
-- [ ] Keep RT-6e implementation unauthorized until explicit approval.
+- [x] Review the RT-6e exact contract separately.
+- [x] Authorize RT-6e implementation under the exact ten-file contract.
+- [ ] Verify and accept the RT-6e candidate.
+- [ ] Keep commit/push unauthorized until explicit approval.
 - [ ] Commit/push this acceptance sync only after separate approval.
 
 Detailed accepted contract:
 `docs/v300_rt6d_flutter_motion_presentation.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6d_flutter_motion_presentation.py`.
+
+## RT-6e implementation candidate
+
+- [x] exact ten-file surface fixed
+- [x] optional controller factory and one owned lifecycle
+- [x] default unconfigured and default opt-in false
+- [x] explicit apply only; maximum one transport call per press
+- [x] no automatic lifecycle subscription, queueing, or retry
+- [x] local reset/opt-out with stale-result invalidation
+- [x] fixed `home_screen_manual_motion` source event
+- [x] no source session/turn ID
+- [x] public-safe aggregate mock presentation panel
+- [x] static character display kept separate
+- [x] main.dart, Backend, Framework/vendor, dependencies unchanged
+- [ ] run dedicated gate, focused Flutter, and full regressions
+- [ ] complete exact-surface/privacy review
+- [ ] obtain explicit commit/push approval
