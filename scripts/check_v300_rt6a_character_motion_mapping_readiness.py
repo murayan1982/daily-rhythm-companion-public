@@ -1,4 +1,4 @@
-# Validate DRC v3.0.0 RT-6a character-motion mapping readiness candidate.
+# Validate DRC v3.0.0 RT-6a acceptance-state synchronization candidate.
 
 from __future__ import annotations
 
@@ -10,7 +10,8 @@ import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DRC_BASELINE_HEAD = "ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7"
+DRC_IMPLEMENTATION_HEAD = "cbcb218aa54d286da7515a01e899121b22d8f3fc"
+DRC_IMPLEMENTATION_PARENT = "ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7"
 FW_HEAD = "d313eb6acb643103fe25988720ebee5976a04f78"
 
 EXPECTED_PATHS = {
@@ -79,6 +80,19 @@ def changed_paths() -> set[str]:
     return paths
 
 
+def commit_paths(commit: str) -> set[str]:
+    output = run(
+        "git",
+        "diff-tree",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        commit,
+        capture=True,
+    )
+    return {line.replace("\\", "/") for line in output.splitlines() if line}
+
+
 def resolve_framework_root() -> Path:
     candidates: list[Path] = []
     for name in ("FRAMEWORK_ROOT", "FRAMEWORK_PROJECT_ROOT"):
@@ -96,24 +110,26 @@ def resolve_framework_root() -> Path:
         resolved = candidate.resolve()
         if (resolved / "framework" / "__init__.py").is_file():
             return resolved
-    raise AssertionError(
-        "Set FRAMEWORK_ROOT to the clean FW v5.4.0 checkout."
-    )
+    raise AssertionError("Set FRAMEWORK_ROOT to the clean FW v5.4.0 checkout.")
 
 
 def assert_repository_state(*, snapshot: bool) -> Path | None:
     actual = changed_paths()
     if actual != EXPECTED_PATHS:
         raise AssertionError(
-            f"RT-6a changed surface mismatch: {sorted(actual)}"
+            f"RT-6a acceptance-sync surface mismatch: {sorted(actual)}"
         )
     if snapshot:
         return None
 
-    if run("git", "rev-parse", "HEAD", capture=True) != DRC_BASELINE_HEAD:
-        raise AssertionError("Unexpected DRC baseline HEAD.")
-    if run("git", "rev-parse", "origin/main", capture=True) != DRC_BASELINE_HEAD:
+    if run("git", "rev-parse", "HEAD", capture=True) != DRC_IMPLEMENTATION_HEAD:
+        raise AssertionError("Unexpected DRC implementation HEAD.")
+    if run("git", "rev-parse", "origin/main", capture=True) != DRC_IMPLEMENTATION_HEAD:
         raise AssertionError("Unexpected DRC origin/main.")
+    if run("git", "rev-parse", "HEAD^", capture=True) != DRC_IMPLEMENTATION_PARENT:
+        raise AssertionError("Unexpected RT-6a implementation parent.")
+    if commit_paths(DRC_IMPLEMENTATION_HEAD) != EXPECTED_PATHS:
+        raise AssertionError("RT-6a implementation commit was not exact seven-file.")
 
     fw_root = resolve_framework_root()
     if run("git", "rev-parse", "HEAD", cwd=fw_root, capture=True) != FW_HEAD:
@@ -142,31 +158,19 @@ def assert_changed_content_safe() -> None:
         *sorted(EXPECTED_PATHS),
         capture=True,
     )
-    added_lines = [
+    added = "\n".join(
         line[1:]
         for line in diff.splitlines()
         if line.startswith("+") and not line.startswith("+++")
-    ]
-    untracked = set(
-        run(
-            "git",
-            "ls-files",
-            "--others",
-            "--exclude-standard",
-            capture=True,
-        ).splitlines()
     )
-    for relative in sorted(EXPECTED_PATHS & untracked):
-        added_lines.append(read(relative))
-    added = "\n".join(added_lines)
     for pattern in SENSITIVE_PATTERNS:
         if re.search(pattern, added):
             raise AssertionError(
-                f"Sensitive-looking value in RT-6a added content: {pattern}"
+                f"Sensitive-looking value in RT-6a acceptance sync: {pattern}"
             )
 
 
-def assert_docs_and_split() -> None:
+def assert_docs() -> None:
     sources = {
         "README": read("README.md"),
         "roadmap": read("roadmap.md"),
@@ -178,29 +182,31 @@ def assert_docs_and_split() -> None:
     combined = "\n".join(sources.values())
     for marker in (
         "RT-6: CURRENT / NOT_COMPLETED",
-        "RT-6a: IMPLEMENTED / AWAITING_REVIEW",
-        "RT-6b through RT-6f: NOT_STARTED / NOT_AUTHORIZED",
+        "RT-6a: COMPLETED / ACCEPTED / PUSHED",
+        "RT-6b: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED",
+        "RT-6c through RT-6f: NOT_STARTED / NOT_AUTHORIZED",
         "RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED",
-        DRC_BASELINE_HEAD,
+        DRC_IMPLEMENTATION_PARENT,
+        DRC_IMPLEMENTATION_HEAD,
         FW_HEAD,
-        "exact seven docs/static-gate files",
+        "Backend full: 204 passed, 3 dependency warnings",
+        "Flutter analyze: No issues found",
+        "Flutter full: 411 passed",
+        "acceptance-sync commit/push: NOT_AUTHORIZED",
         "READY_FOR_RT6_APP_OWNED_MOCK_SAFE_MAPPING_WORK",
         "BLOCKED_FOR_REAL_LIVE2D_VTS_EXECUTION",
-        "RT-6b — app-owned provider-neutral motion mapping contract",
-        "RT-6c — guarded FW root-public mock motion-session adapter",
-        "RT-6d — Flutter motion presentation model/client/controller",
-        "RT-6e — default-off HomeScreen character-motion wiring",
-        "RT-6f — configured local mock-motion presentation acceptance",
-        "RT-6b authorization: blocked pending RT-6a acceptance",
+        "RT-6b implementation remains NOT_AUTHORIZED",
     ):
-        require(combined, marker, f"RT-6a documentation marker {marker}")
+        require(combined, marker, f"RT-6a acceptance marker {marker}")
 
     for relative in sorted(EXPECTED_PATHS):
         require(combined, relative, f"exact path {relative}")
 
     for marker in (
-        "Current small commit: RT-5f4 acceptance-state sync awaiting review",
-        "RT-6  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED",
+        "Current implementation state: IMPLEMENTED / AWAITING_REVIEW",
+        "Current implementation commit: none",
+        "review the exact seven-file RT-6a candidate",
+        "RT-6a  IMPLEMENTED / AWAITING_REVIEW",
     ):
         forbid(sources["README"], marker, f"stale README marker {marker}")
 
@@ -244,11 +250,7 @@ def assert_existing_flutter_presentation() -> None:
     widget = read("app/lib/widgets/character_display_card.dart")
     player = read("app/lib/services/voice_output_audio_player.dart")
 
-    require(
-        presentation,
-        "enum CharacterDisplayActivityState",
-        "character display activity enum",
-    )
+    require(presentation, "enum CharacterDisplayActivityState", "activity enum")
     for marker in ("idle,", "loading,", "speaking,"):
         require(presentation, marker, f"character activity {marker}")
     require(
@@ -256,8 +258,8 @@ def assert_existing_flutter_presentation() -> None:
         "playbackPhase == VoiceOutputPlaybackPhase.playing",
         "playback speaking mapping",
     )
-    require(widget, "CharacterDisplayActivityState.speaking", "speaking widget state")
-    require(player, "enum VoiceOutputPlaybackPhase", "voice playback phase")
+    require(widget, "CharacterDisplayActivityState.speaking", "speaking widget")
+    require(player, "enum VoiceOutputPlaybackPhase", "playback phase")
 
     future_paths = (
         "app/lib/models/realtime_character_motion.dart",
@@ -267,7 +269,7 @@ def assert_existing_flutter_presentation() -> None:
     )
     existing = [path for path in future_paths if (ROOT / path).exists()]
     if existing:
-        raise AssertionError(f"Unexpected RT-6 runtime paths already exist: {existing}")
+        raise AssertionError(f"Unexpected RT-6 runtime paths exist: {existing}")
 
 
 def assert_framework_public_motion(fw_root: Path) -> None:
@@ -294,8 +296,6 @@ def assert_framework_public_motion(fw_root: Path) -> None:
     for marker in (
         'MOCK_AVAILABLE = "mock_available"',
         'NOT_IMPLEMENTED = "not_implemented"',
-        'EXPRESSION = "expression"',
-        'EMOTION = "emotion"',
         'SPEAKING_STATE = "speaking_state"',
         'IDLE_MOTION = "idle_motion"',
         'STOP_MOTION = "stop_motion"',
@@ -325,44 +325,52 @@ def main() -> None:
     parser.add_argument(
         "--snapshot",
         action="store_true",
-        help="Skip DRC/FW commit/tag/worktree checks for extracted snapshot review.",
+        help="Skip DRC/FW history and worktree checks for extracted review.",
     )
     args = parser.parse_args()
 
     fw_root = assert_repository_state(snapshot=args.snapshot)
     assert_changed_content_safe()
-    assert_docs_and_split()
+    assert_docs()
     assert_existing_drc_motion_boundary()
     assert_existing_flutter_presentation()
     if fw_root is not None:
         assert_framework_public_motion(fw_root)
 
-    print("v300_rt6a_status: implemented-awaiting-review")
-    print("v300_rt6a_exact_change_surface: True")
-    print("v300_rt6a_change_file_count: 7")
+    print("v300_rt6a_status: completed-accepted-pushed")
+    print("v300_rt6a_exact_acceptance_sync_surface: True")
+    print("v300_rt6a_acceptance_sync_file_count: 7")
+    print("v300_rt6a_implementation_commit:", DRC_IMPLEMENTATION_HEAD)
+    print("v300_rt6a_implementation_surface: 7")
+    print("v300_rt6a_runtime_changed_by_acceptance_sync: False")
     print("v300_rt6a_backend_runtime_changed: False")
     print("v300_rt6a_flutter_runtime_changed: False")
     print("v300_rt6a_existing_tests_changed: False")
     print("v300_rt6a_framework_changed: False")
     print("v300_rt6a_dependencies_changed: False")
-    print("v300_rt6a_existing_motion_demo_boundary_exists: True")
+    print("v300_rt6a_backend_full_passed: 204")
+    print("v300_rt6a_backend_warning_count: 3")
+    print("v300_rt6a_flutter_analyze_passed: True")
+    print("v300_rt6a_flutter_full_passed: 411")
     print("v300_rt6a_existing_motion_demo_is_metadata_only: True")
     print("v300_rt6a_existing_motion_send_enabled: False")
     print("v300_rt6a_existing_vts_connection_enabled: False")
     print("v300_rt6a_static_character_presentation_exists: True")
     print("v300_rt6a_realtime_motion_mapping_exists: False")
-    print("v300_rt6a_motion_controller_exists: False")
     print("v300_rt6a_fw_root_public_motion_contract_exists: True")
     print("v300_rt6a_fw_mock_motion_available: True")
     print("v300_rt6a_fw_real_motion_adapter_supported: False")
     print("v300_rt6a_fw_real_motion_adapter_implemented: False")
-    print("v300_rt6a_exact_child_split_frozen: True")
-    print("v300_rt6a_rt6b_authorized: False")
+    print("v300_rt6_status: current-not-completed")
+    print("v300_rt6b_status: ready-for-exact-contract-review-not-authorized")
+    print("v300_rt6b_implementation_authorized: False")
+    print("v300_rt7_real_adapter_blocked: True")
     print("v300_rt6a_network_execution: False")
     print("v300_rt6a_provider_execution: False")
     print("v300_rt6a_vts_connection_used: False")
     print("v300_rt6a_live2d_runtime_loaded: False")
     print("v300_rt6a_private_credential_read: False")
+    print("v300_rt6a_acceptance_sync_commit_push_authorized: False")
     print("v300_rt6a_snapshot_mode:", args.snapshot)
 
 

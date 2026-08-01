@@ -6861,52 +6861,60 @@ Detailed accepted contract:
 `docs/v300_rt5f4_configured_local_end_to_end_acceptance.md`.
 
 
-## v3.0.0 RT-6a character-motion mapping readiness gate
+## v3.0.0 RT-6a character-motion mapping acceptance-sync gate
 
-RT-6a is a docs/static-gate-only candidate against DRC `ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7` and clean
-FW v5.4.0 `d313eb6acb643103fe25988720ebee5976a04f78`. It inspects source markers only. It starts no application,
-opens no network/VTS connection, loads no Live2D runtime, reads no credential,
-and executes no microphone/audio/STT/LLM/TTS/provider operation.
+RT-6a is **COMPLETED / ACCEPTED / PUSHED** at `cbcb218aa54d286da7515a01e899121b22d8f3fc`. This historical
+acceptance-sync gate verifies the exact seven-file implementation commit and
+the current seven-file documentation/static-gate synchronization candidate
+against clean DRC and FW checkouts.
 
 Set `FRAMEWORK_ROOT` when the FW checkout cannot be discovered from the normal
-workspace layout, then run from the DRC repository root:
+workspace layout, then run from the DRC repository root before the acceptance
+sync is committed:
 
 ```powershell
 $env:FRAMEWORK_ROOT = "<clean AI Character Framework v5.4.0 checkout>"
 python -m compileall -q backend scripts
 python scripts\check_v300_rt6a_character_motion_mapping_readiness.py
-python -m pytest -q backend/tests --basetemp .pytest-tmp -p no:cacheprovider
+python -m pytest -q
 
 cd app
 flutter analyze
 flutter test
 cd ..
 
-Remove-Item -Recurse -Force .pytest-tmp
-git -c core.whitespace=cr-at-eol diff --check
-git diff --name-only
-git diff --stat
+git diff --check
 git status --short
 ```
 
-Expected candidate markers include:
+Expected markers include:
 
 ```text
-v300_rt6a_status: implemented-awaiting-review
-v300_rt6a_exact_change_surface: True
-v300_rt6a_change_file_count: 7
-v300_rt6a_existing_motion_demo_boundary_exists: True
-v300_rt6a_existing_motion_demo_is_metadata_only: True
-v300_rt6a_existing_motion_send_enabled: False
-v300_rt6a_existing_vts_connection_enabled: False
-v300_rt6a_static_character_presentation_exists: True
-v300_rt6a_realtime_motion_mapping_exists: False
-v300_rt6a_fw_root_public_motion_contract_exists: True
-v300_rt6a_fw_mock_motion_available: True
-v300_rt6a_fw_real_motion_adapter_supported: False
-v300_rt6a_rt6b_authorized: False
+v300_rt6a_status: completed-accepted-pushed
+v300_rt6a_exact_acceptance_sync_surface: True
+v300_rt6a_acceptance_sync_file_count: 7
+v300_rt6a_implementation_commit: cbcb218aa54d286da7515a01e899121b22d8f3fc
+v300_rt6a_implementation_surface: 7
+v300_rt6a_backend_full_passed: 204
+v300_rt6a_backend_warning_count: 3
+v300_rt6a_flutter_analyze_passed: True
+v300_rt6a_flutter_full_passed: 411
+v300_rt6_status: current-not-completed
+v300_rt6b_status: ready-for-exact-contract-review-not-authorized
+v300_rt6b_implementation_authorized: False
+v300_rt7_real_adapter_blocked: True
+v300_rt6a_acceptance_sync_commit_push_authorized: False
 ```
 
-The `--snapshot` option skips commit/tag/worktree checks for an extracted
-candidate snapshot. It remains static and is only for reconstruction review;
-acceptance requires the normal command against the real clean DRC/FW checkouts.
+The gate also rechecks the metadata-only DRC motion-demo boundary, static
+Flutter character presentation, FW root-public mock-safe motion contract,
+absence of real Live2D/VTS implementation, exact implementation history,
+changed-content privacy, and no runtime/dependency/FW change in the acceptance
+sync.
+
+The `--snapshot` option skips DRC/FW commit/tag/worktree checks for extracted
+snapshot reconstruction. After the acceptance-sync commit is created, this
+gate is historical and is not rerun against the new HEAD.
+
+Detailed accepted contract:
+`docs/v300_rt6a_character_motion_mapping_readiness.md`.

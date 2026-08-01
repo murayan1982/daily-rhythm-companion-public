@@ -8,45 +8,48 @@ Updated: 2026-08-01
 RT-5: COMPLETED / ACCEPTED
 RT-5f: COMPLETED / ACCEPTED
 RT-5f4 acceptance sync: COMPLETED / ACCEPTED / PUSHED
-RT-5f4 acceptance-sync commit: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 RT-6: CURRENT / NOT_COMPLETED
-RT-6a: IMPLEMENTED / AWAITING_REVIEW
-RT-6b through RT-6f: NOT_STARTED / NOT_AUTHORIZED
+RT-6a: COMPLETED / ACCEPTED / PUSHED
+RT-6a implementation baseline: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
+RT-6a implementation commit: cbcb218aa54d286da7515a01e899121b22d8f3fc
+RT-6a acceptance-sync commit/push: NOT_AUTHORIZED
+RT-6b: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-6c through RT-6f: NOT_STARTED / NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
-DRC baseline HEAD/origin: ca1bd17ed32aba1e6b7d4dfd4f8eea3f10652ef7
 FW v5.4.0 HEAD/tag: d313eb6acb643103fe25988720ebee5976a04f78
 ```
 
-## Purpose
+## Accepted result
 
-RT-6a freezes the actual accepted DRC and released FW v5.4.0 behavior before
-adding realtime character presentation or motion-event mapping. The checkpoint
-is documentation/static-gate only. It separates existing static presentation,
-existing metadata-only motion-demo endpoints, available FW mock-safe public
-contracts, missing DRC mapping/controller work, and unavailable real
-Live2D/VTube Studio execution.
-
-## Inspected DRC source
+RT-6a accepted the exact seven-file documentation/static-gate inventory and
+child split at implementation commit `cbcb218aa54d286da7515a01e899121b22d8f3fc`. Acceptance passed with the
+normal dedicated gate against the real DRC/FW checkouts, Backend full
+regression, Flutter analyze/full regression, exact-surface and privacy review,
+explicit commit approval, push, and clean-tree verification.
 
 ```text
-backend/app/api/motion_demo.py
-backend/app/models/motion_demo.py
-backend/app/services/motion_demo_service.py
-backend/app/services/motion_boundary_probe.py
-backend/app/models/realtime.py
-backend/app/services/framework_realtime_normalizer.py
-app/lib/models/character_display_presentation.dart
-app/lib/widgets/character_display_card.dart
-app/lib/services/voice_output_audio_player.dart
-app/lib/models/realtime_text_stream.dart
-app/lib/services/realtime_text_stream_controller.dart
-app/lib/services/integrated_voice_turn_home_screen_binding.dart
+compileall: PASS
+dedicated RT-6a gate: PASS
+Backend full tests: 204 passed
+Backend dependency warnings: 3
+Flutter analyze: No issues found
+Flutter full tests: 411 passed
+exact seven-file review: PASS
+changed-content privacy scan: PASS
+git diff --check: PASS
+explicit operator approval: ACCEPTED
+implementation commit/push: COMPLETED
+DRC post-push clean: true
+FW clean: true
 ```
 
-## Existing Backend motion-demo boundary
+The three Backend warnings came from installed dependency deprecations and did
+not fail the regression suite. RT-6a changed no runtime or dependency.
 
-The Backend exposes `GET /demo/motion/status` and `POST /demo/motion`. The
-service has an application-owned vocabulary:
+## Accepted DRC current behavior
+
+The Backend exposes `GET /demo/motion/status` and `POST /demo/motion`. Its
+application-owned vocabulary remains:
 
 ```text
 greeting
@@ -57,8 +60,7 @@ speaking
 idle
 ```
 
-It normalizes request metadata and reports capability status, but does not send
-a motion command. Current request responses remain conservative:
+The request boundary remains metadata-only:
 
 ```text
 accepted: false
@@ -67,14 +69,11 @@ motion_sent: false
 vts_connection_used: false
 ```
 
-The service intentionally does not import FW motion modules, connect to VTube
-Studio, load Live2D runtime dependencies, read tokens, or send expressions.
-No current DRC route constitutes a realtime lifecycle-to-motion transport.
+It does not import FW motion implementation modules, connect to VTube Studio,
+load a Live2D runtime, read a token, or send an expression/motion command.
 
-## Existing Flutter character presentation
-
-Flutter already resolves static mood/advice/fallback content and local display
-activity. The current activity states are:
+Flutter continues to provide static mood/advice/fallback character
+presentation with activity states:
 
 ```text
 idle
@@ -82,15 +81,15 @@ loading
 speaking
 ```
 
-`VoiceOutputPlaybackPhase.playing` resolves to `speaking`. This is a UI/local
-playback presentation rule. It is not an FW motion event, an animation command,
-or a realtime lifecycle mapping. There is no current motion request/result
-model, motion client, ChangeNotifier motion controller, stale motion-request
-handling, or HomeScreen motion-session ownership.
+`VoiceOutputPlaybackPhase.playing` maps to static `speaking` presentation. It
+is not an FW motion event or animation command. No realtime
+lifecycle-to-motion mapper, motion request/result model, motion client,
+ChangeNotifier motion controller, stale request handling, or HomeScreen motion
+session ownership was added by RT-6a.
 
-## Released FW v5.4.0 public motion boundary
+## Accepted FW v5.4.0 boundary
 
-The root package exports the provider-neutral motion types and factory:
+FW v5.4.0 exports the root-public provider-neutral motion types and factory:
 
 ```text
 MotionAdapterStatus
@@ -107,127 +106,49 @@ MotionSessionInfo
 create_motion_session
 ```
 
-The public intent vocabulary is:
+The mock adapter is local and credential-free. Real adapter support remains
+false and real Live2D/VTS execution remains typed not implemented. The public
+mock session opens no VTS WebSocket, reads no token, loads no private model or
+Live2D runtime, and imports no provider SDK.
 
-```text
-expression
-emotion
-speaking_state
-idle_motion
-gesture
-look_at
-stop_motion
-reset_expression
-```
-
-The mock adapter is local and credential-free. It supports expression,
-emotion, speaking-state, gesture, look-at, and stop-motion capability markers.
-Public event callbacks emit public-safe metadata and redact secret-like keys.
-
-The released real adapter boundary remains unavailable:
-
-```text
-real_adapter_supported: false
-real Live2D / VTS connection: not implemented
-VTS WebSocket: not opened
-VTS token: not read
-Live2D model/runtime: not loaded
-provider SDK: not imported by the public mock session
-```
-
-## Vocabulary mapping gap
-
-DRC event labels such as `thinking` and `tired_supportive` are not FW
-`MotionIntent` values. They must never be forwarded as accidental provider or
-adapter identifiers. RT-6b must own a pure provider-neutral mapping contract
-from accepted DRC realtime/voice-output lifecycle facts to bounded app motion
-requests.
-
-Candidate input facts for RT-6b planning:
-
-```text
-listening
-transcribing
-thinking
-responding
-TTS preparing
-TTS speaking
-soft-barge-in / interrupted
-completed
-failed
-idle
-```
-
-Candidate normalized outputs for separate exact review:
-
-```text
-expression
-emotion
-speaking_state
-idle_motion
-stop_motion
-reset_expression
-```
-
-RT-6a does not approve a concrete mapping table or add runtime code.
-
-## Readiness decision
+## Accepted readiness decision
 
 ```text
 READY_FOR_RT6_APP_OWNED_MOCK_SAFE_MAPPING_WORK
 BLOCKED_FOR_REAL_LIVE2D_VTS_EXECUTION
 ```
 
-DRC may proceed in small commits using app-owned pure mapping and the FW
-root-public mock session only. No Framework internal import, DRC custom VTS
-client, direct provider execution, token handling, or real adapter claim is
-authorized.
+DRC may proceed only through separately reviewed small commits using app-owned
+provider-neutral contracts and, later, the FW root-public mock session. Direct
+imports from `framework.motion`, `framework.motion_session`, provider modules,
+VTS libraries, or internal adapters remain prohibited.
 
-## Exact RT-6 split
+## Accepted RT-6 split
 
-### RT-6a — current behavior inventory, readiness, and exact split
+```text
+RT-6a  COMPLETED / ACCEPTED / PUSHED
+       current behavior inventory, readiness, and exact split
+RT-6b  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+       app-owned provider-neutral motion mapping contract
+RT-6c  NOT_STARTED / NOT_AUTHORIZED
+       guarded FW root-public mock motion-session adapter
+RT-6d  NOT_STARTED / NOT_AUTHORIZED
+       Flutter motion presentation model/client/controller
+RT-6e  NOT_STARTED / NOT_AUTHORIZED
+       default-off HomeScreen character-motion wiring
+RT-6f  NOT_STARTED / NOT_AUTHORIZED
+       configured local mock-motion presentation acceptance
+RT-7   BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+```
 
-Docs/static-gate only. Freeze current source facts, root-public semantics,
-exact surface, child ownership, privacy boundary, and stop rules.
+RT-6b must be pure, deterministic, provider-neutral, bounded, and fake-only.
+It may map accepted DRC lifecycle facts such as listening, transcribing,
+thinking, responding, TTS preparing/speaking, interruption, completion,
+failure, and idle to app-owned normalized motion requests. It must call no FW
+session, route, network, VTS, Live2D, audio, or provider. A concrete mapping
+table is not authorized until RT-6b exact contract review is accepted.
 
-### RT-6b — app-owned provider-neutral motion mapping contract
-
-Add a pure, deterministic mapping layer with bounded app-owned request models
-and fake-only tests. It calls no FW session, route, network, VTS, Live2D, audio,
-or provider. Unknown/stale/terminal input must fall back safely.
-
-### RT-6c — guarded FW root-public mock motion-session adapter
-
-Use only root-public symbols. Default to `adapter=mock`,
-`real_adapter_enabled=false`, and `allow_provider_execution=false`. Use an
-injectable factory, bounded ownership, typed result normalization, and
-idempotent close. Real adapters remain rejected/not implemented.
-
-### RT-6d — Flutter motion presentation model/client/controller
-
-Add Flutter app-owned presentation/request/result state with fake transport,
-sequence/stale-result protection, terminal restoration, and deterministic
-close/dispose behavior. Do not wire HomeScreen yet.
-
-### RT-6e — default-off HomeScreen character-motion wiring
-
-Connect existing stream, integrated voice-turn, and local playback state only
-through the accepted app-owned boundaries. No direct widget-to-FW call,
-background provider connection, always-on animation, or unbounded event queue.
-
-### RT-6f — configured local mock-motion presentation acceptance
-
-Accept thinking, speaking, interruption, idle restoration, repeated turn,
-failure fallback, and cleanup using mock motion. This is not real Live2D/VTS
-operator acceptance.
-
-## Root-public import boundary
-
-Future DRC FW integration may import only reviewed symbols from `framework`.
-Direct imports from `framework.motion`, `framework.motion_session`, provider
-modules, VTS libraries, or internal adapters are not authorized.
-
-## Exact RT-6a change surface
+## Exact acceptance-sync change surface
 
 ```text
 README.md
@@ -239,39 +160,29 @@ docs/v300_rt6a_character_motion_mapping_readiness.md
 scripts/check_v300_rt6a_character_motion_mapping_readiness.py
 ```
 
-## Non-actions
+The acceptance sync changes only these seven documentation/static-gate files.
+The implementation commit `cbcb218aa54d286da7515a01e899121b22d8f3fc` also changed exactly these same seven
+files.
 
-RT-6a changes no Backend/Flutter runtime, existing test, dependency, lockfile,
-platform manifest, environment profile, API route, asset, version, release
-metadata, Framework source, provider client, network execution, VTS WebSocket,
-Live2D runtime, token/credential access, private model path, microphone/audio,
-STT, LLM, TTS, screenshot, raw log, private transcript, or operator evidence.
+## Non-actions and non-claims
 
-## Stop rules
+The RT-6a implementation and acceptance sync change no Backend runtime,
+Flutter runtime, existing test, dependency, lockfile, platform manifest,
+environment profile, API route, asset, version, release metadata, Framework
+source, provider client, network execution, VTS WebSocket, Live2D runtime,
+token/credential access, private model path, microphone/audio, STT, LLM, TTS,
+screenshot, raw log, transcript, provider payload, or private operator
+evidence.
 
-Stop and return to exact contract review if any candidate requires:
+RT-6a does not claim realtime character animation, real VTS/Live2D execution,
+provider motion execution, smartphone/PC motion acceptance, or v3.0.0 release
+readiness. Mock-safe readiness does not prove real adapter behavior.
 
-```text
-- a Backend or Flutter runtime file in RT-6a
-- an existing test change in RT-6a
-- a Framework internal-module import
-- a real VTS/Live2D adapter or token
-- a direct widget-to-Framework call
-- provider/network execution in normal tests
-- private path, model, screenshot, audio, transcript, or raw payload evidence
-- a claim that mock motion proves real adapter behavior
-```
-
-## Candidate acceptance
+## Next action
 
 ```text
-compileall: pending operator execution
-dedicated RT-6a gate: pending operator execution
-Backend full tests: pending operator execution
-Flutter analyze/full tests: pending operator execution
-exact seven-file review: pending
-changed-content privacy scan: pending
-git diff --check: pending
-explicit operator approval: pending
-RT-6b authorization: blocked pending RT-6a acceptance
+Review the exact RT-6b contract separately.
+RT-6b implementation remains NOT_AUTHORIZED.
+RT-6c through RT-6f remain NOT_AUTHORIZED.
+RT-7 remains blocked.
 ```
