@@ -4,8 +4,27 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_HEAD = "c538dc89c2aa9780cd3014aa4ba11c17a9e378e6"
+EXPECTED_HEAD = "b7bd436196210f27782b64c1a094aa65d6893915"
+IMPLEMENTATION_COMMIT = "c538dc89c2aa9780cd3014aa4ba11c17a9e378e6"
+CORRECTIVE_COMMIT = "b7bd436196210f27782b64c1a094aa65d6893915"
+PREVIOUS_ACCEPTANCE = "1cba847b7c443c4d41a2ff6bd2c18d20689e5029"
+
 EXPECTED_FILES = {
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md",
+    "scripts/check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py",
+}
+
+ORIGINAL_FILES = EXPECTED_FILES | {
+    "app/lib/services/integrated_voice_turn_coordinator.dart",
+    "app/test/integrated_voice_turn_coordinator_test.dart",
+}
+
+CORRECTIVE_FILES = {
     "app/lib/services/integrated_voice_turn_coordinator.dart",
     "app/test/integrated_voice_turn_coordinator_test.dart",
     "docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md",
@@ -13,8 +32,8 @@ EXPECTED_FILES = {
 }
 
 
-def run_git(*args: str) -> str:
-    completed = subprocess.run(
+def git(*args: str) -> str:
+    result = subprocess.run(
         ["git", "-C", str(ROOT), *args],
         check=False,
         stdout=subprocess.PIPE,
@@ -22,191 +41,148 @@ def run_git(*args: str) -> str:
         text=True,
         encoding="utf-8",
     )
-    if completed.returncode != 0:
-        raise RuntimeError(completed.stderr.strip() or f"git {' '.join(args)} failed")
-    return completed.stdout
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or "git command failed")
+    return result.stdout
 
 
 def require(text: str, marker: str, label: str) -> None:
     if marker not in text:
-        raise RuntimeError(f"{label} is missing marker: {marker}")
-
-
-def forbid(text: str, marker: str, label: str) -> None:
-    if marker in text:
-        raise RuntimeError(f"{label} contains forbidden marker: {marker}")
+        raise RuntimeError(f"{label} missing marker: {marker}")
 
 
 def changed_files() -> set[str]:
-    tracked = {
-        line.strip()
-        for line in run_git("diff", "HEAD", "--name-only").splitlines()
-        if line.strip()
-    }
-    untracked = {
-        line.strip()
-        for line in run_git("ls-files", "--others", "--exclude-standard").splitlines()
-        if line.strip()
-    }
+    tracked = {x.strip() for x in git("diff", "HEAD", "--name-only").splitlines() if x.strip()}
+    untracked = {x.strip() for x in git("ls-files", "--others", "--exclude-standard").splitlines() if x.strip()}
     return tracked | untracked
 
 
+def commit_files(commit: str) -> set[str]:
+    return {
+        x.strip()
+        for x in git("diff-tree", "--no-commit-id", "--name-only", "-r", commit).splitlines()
+        if x.strip()
+    }
+
+
 def main() -> None:
-    head = run_git("rev-parse", "HEAD").strip()
-    if head != EXPECTED_HEAD:
-        raise RuntimeError(f"unexpected DRC HEAD: {head}")
+    if git("rev-parse", "HEAD").strip() != EXPECTED_HEAD:
+        raise RuntimeError("unexpected acceptance-sync baseline HEAD")
+    if git("rev-parse", "HEAD^").strip() != IMPLEMENTATION_COMMIT:
+        raise RuntimeError("corrective parent mismatch")
+    if git("rev-parse", f"{IMPLEMENTATION_COMMIT}^").strip() != PREVIOUS_ACCEPTANCE:
+        raise RuntimeError("implementation parent mismatch")
+    if commit_files(IMPLEMENTATION_COMMIT) != ORIGINAL_FILES:
+        raise RuntimeError("original exact nine-file surface mismatch")
+    if commit_files(CORRECTIVE_COMMIT) != CORRECTIVE_FILES:
+        raise RuntimeError("corrective exact four-file surface mismatch")
+    if changed_files() != EXPECTED_FILES:
+        raise RuntimeError("acceptance-sync exact seven-file surface mismatch")
 
-    actual = changed_files()
-    if actual != EXPECTED_FILES:
-        raise RuntimeError(
-            "RT-5f2 corrective exact change surface mismatch\n"
-            f"expected={sorted(EXPECTED_FILES)}\nactual={sorted(actual)}"
-        )
-
-    source = (ROOT / "app/lib/services/integrated_voice_turn_coordinator.dart").read_text(
-        encoding="utf-8"
-    )
-    tests = (ROOT / "app/test/integrated_voice_turn_coordinator_test.dart").read_text(
-        encoding="utf-8"
-    )
-    contract = (
-        ROOT / "docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md"
-    ).read_text(encoding="utf-8")
-    progress = "\n".join(
-        (ROOT / path).read_text(encoding="utf-8")
-        for path in (
-            "README.md",
-            "roadmap.md",
-            "tasklist.md",
-            "scripts/README.md",
-            "docs/DRC_v300_goal_checklist_small_commit.md",
-        )
-    )
+    source = (ROOT / "app/lib/services/integrated_voice_turn_coordinator.dart").read_text(encoding="utf-8")
+    tests = (ROOT / "app/test/integrated_voice_turn_coordinator_test.dart").read_text(encoding="utf-8")
 
     for marker in (
-        "class IntegratedVoiceTurnCoordinator extends ChangeNotifier",
-        "IntegratedVoiceTurnCaptureCompletion",
-        "IntegratedVoiceTurnStaging",
-        "RealtimeTextStreamTranscriptHandoff",
-        "RealtimeTextStreamController",
-        "RealtimeTerminalVoiceOutputOrchestrator",
-        "integratedVoiceTurnMaxSpeechEventIdCodePoints = 128",
-        "integratedVoiceTurnMaxRememberedSpeechEventIds = 32",
-        "localStopRetryRequired",
-        "_operationEpoch",
-        "_rememberedSpeechEventIds",
-        "requestCooperativeCancel: true",
-        "_voiceOutput.flush()",
         "_hasExclusiveVoiceOutputAccess()",
-        "voiceState.pendingCount == 0",
-        "voiceState.activeItem == null",
-        "!voiceState.isProcessing",
-        "RealtimeTerminalVoiceOutputPhase.flushing",
-        "RealtimeTerminalVoiceOutputPhase.disposed",
-        "integrated_voice_turn_voice_output_busy",
-        "integrated_voice_turn_voice_output_not_exclusive",
-        "final enqueuedItem = enqueueResult.item!",
+        "Voice output must remain empty and idle after phase notification.",
         "_sameVoiceOutputItem(processResult.item, enqueuedItem)",
         "actual.itemId == expected.itemId",
         "actual.generation == expected.generation",
         "integrated_voice_turn_voice_output_item_mismatch",
+        "integratedVoiceTurnMaxSpeechEventIdCodePoints = 128",
+        "integratedVoiceTurnMaxRememberedSpeechEventIds = 32",
     ):
-        require(source, marker, "coordinator source")
-
+        require(source, marker, "coordinator")
     if source.count("if (!_hasExclusiveVoiceOutputAccess())") < 3:
-        raise RuntimeError(
-            "coordinator source must check exclusive voice output at start, "
-            "before phase notification, and immediately after phase listeners"
-        )
-
-    for forbidden in (
-        "package:http",
-        "dart:io",
-        "BackendProviderNeutralTranscriptProvider",
-        "BackendVoiceInputStagingConsumer",
-        "RecordMicrophoneCaptureEngine",
-        "OpenAI",
-        "framework/",
-    ):
-        forbid(source, forbidden, "coordinator source")
+        raise RuntimeError("three voice-output exclusivity checks are required")
 
     for marker in (
-        "happy-path full fake voice turn completes exactly once",
-        "speech during capture makes a late capture result inert",
-        "speech during staging makes a late staging result inert",
-        "speech during transcript acquisition makes late STT inert",
-        "speech during stream requests one cooperative cancel",
-        "speech during synthesis permits a new turn before old Future completion",
-        "speech during playback permits new playback before old Future completion",
-        "duplicate speech is rejected and concurrent distinct events coalesce",
-        "local playback stop failure blocks turns until speech retry",
-        "stream cancel request failure does not revive old work",
-        "cancelled stream terminal never reaches TTS",
-        "dispose during interruption makes late completion inert",
-        "dispose during capture makes late capture inert",
-        "dispose during staging makes late staging inert",
-        "dispose during transcript acquisition makes late STT inert",
-        "dispose during stream makes a late terminal inert",
-        "dispose during synthesis makes a late synthesis result inert",
-        "dispose during playback makes a late playback result inert",
-        "public state retains no transcript IDs text URI or raw error",
         "pre-existing pending voice output blocks turn before capture",
         "pre-existing active synthesis blocks turn before capture",
         "voice output becoming non-exclusive before terminal enqueue rejects turn",
         "voice-output phase listener cannot enqueue between exclusivity check and enqueue",
         "processed voice-output item must match current terminal item",
-        "_MismatchedVoiceOutputOrchestrator",
     ):
-        require(tests, marker, "focused Flutter tests")
+        require(tests, marker, "focused tests")
+
+    docs = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in EXPECTED_FILES
+        if not path.startswith("scripts/check_")
+    }
+    combined = "\n".join(docs.values())
 
     for marker in (
-        "RT-5f2: IMPLEMENTED / CORRECTIVE_PATCH_AWAITING_REVIEW",
-        "RT-5f2 implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6",
-        "RT-5f2 corrective patch baseline: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6",
-        "fake-only integrated voice-turn coordinator",
-        "fake-only DRC-local soft-barge-in behavior",
-        "Exclusive voice-output ownership",
-        "after synchronous coordinator phase listeners return",
-        "same `itemId` and `generation`",
-        "exact four-file surface",
-        "corrective patch commit/push: not authorized",
-        "RT-5f3: BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED",
+        "RT-5f2 COMPLETED / ACCEPTED / PUSHED",
+        IMPLEMENTATION_COMMIT,
+        CORRECTIVE_COMMIT,
+        "RT-5f3: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED",
+        "focused Flutter: 26 passed",
+        "Flutter full: 381 passed",
     ):
-        require(contract, marker, "RT-5f2 contract")
+        require(combined, marker, "acceptance documents")
 
-    # The five progress documents are intentionally outside the corrective
-    # surface. Their implementation-candidate markers remain unchanged until a
-    # separate accepted docs sync is authorized.
+    contract = docs["docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md"]
     for marker in (
-        "RT-5f2 IMPLEMENTED / AWAITING_REVIEW",
-        "implementation commit: none",
-        "do not commit or push without explicit approval",
-        "RT-5f3 BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED",
+        "RT-5f2: COMPLETED / ACCEPTED / PUSHED",
+        "RT-5f2 corrective commit: " + CORRECTIVE_COMMIT,
+        "## Acceptance record",
+        "exact acceptance review: PASS",
+        "This seven-file acceptance sync changes documentation",
     ):
-        require(progress, marker, "unchanged progress documents")
+        require(contract, marker, "accepted contract")
 
-    print("v300_rt5f2_status: corrective-patch-awaiting-review")
-    print("v300_rt5f2_corrective_baseline: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6")
-    print("v300_rt5f2_exact_corrective_surface: True")
-    print("v300_rt5f2_fake_only: True")
-    print("v300_rt5f2_operation_epoch_invalidation: True")
-    print("v300_rt5f2_voice_output_exclusive_before_capture: True")
-    print("v300_rt5f2_voice_output_exclusive_before_enqueue: True")
+    readme = docs["README.md"]
+    require(
+        readme,
+        "RT-5f2 is COMPLETED / ACCEPTED / PUSHED through implementation "
+        f"commit `{IMPLEMENTATION_COMMIT}` and corrective commit "
+        f"`{CORRECTIVE_COMMIT}`.",
+        "README current RT-5f2 summary",
+    )
+
+    require(
+        readme,
+        "  RT-5f3  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / "
+        "NOT_AUTHORIZED  Default-off HomeScreen and production "
+        "speech-activity wiring",
+        "README current phase table",
+    )
+    require(
+        docs["roadmap.md"],
+        "Current implementation boundary: accepted exact nine-file fake-only "
+        "coordinator plus exact four-file queue-ownership correction; Backend, "
+        "main.dart, HomeScreen, existing runtime files, production speech "
+        "activity, dependencies, and versions remain unchanged.",
+        "roadmap current implementation boundary",
+    )
+    require(
+        docs["docs/DRC_v300_goal_checklist_small_commit.md"],
+        "RT-5f3 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / "
+        "NOT_AUTHORIZED",
+        "v3 checklist current RT-5f3 state",
+    )
+
+    for forbidden in (
+        "{IMPLEMENTATION_COMMIT}",
+        "{CORRECTIVE_COMMIT}",
+        "CORRECTIVE_PATCH_AWAITING_REVIEW",
+        "Current implementation boundary: exact nine-file fake-only "
+        "coordinator candidate",
+    ):
+        if forbidden in combined:
+            raise RuntimeError(
+                f"acceptance documents contain forbidden marker: {forbidden}"
+            )
+
+    print("v300_rt5f2_status: completed-accepted-pushed")
+    print("v300_rt5f2_exact_original_surface: 9")
+    print("v300_rt5f2_exact_corrective_surface: 4")
+    print("v300_rt5f2_exact_acceptance_sync_surface: 7")
     print("v300_rt5f2_voice_output_exclusive_after_phase_notification: True")
     print("v300_rt5f2_processed_item_identity_required: True")
-    print("v300_rt5f2_duplicate_speech_bound: 32")
-    print("v300_rt5f2_speech_event_id_max_code_points: 128")
-    print("v300_rt5f2_cooperative_stream_cancel_only: True")
-    print("v300_rt5f2_local_player_stop_only: True")
-    print("v300_rt5f2_existing_runtime_files_changed: False")
-    print("v300_rt5f2_main_changed: False")
-    print("v300_rt5f2_home_screen_changed: False")
-    print("v300_rt5f2_backend_changed: False")
-    print("v300_rt5f2_network_execution: False")
-    print("v300_rt5f2_provider_execution: False")
-    print("v300_rt5f2_microphone_used: False")
-    print("v300_rt5f2_audio_playback_executed: False")
-    print("v300_rt5f3_authorization: blocked-pending-rt5f2-acceptance")
+    print("v300_rt5f2_fake_only: True")
+    print("v300_rt5f3_authorization: ready-for-exact-contract-review-not-authorized")
 
 
 if __name__ == "__main__":

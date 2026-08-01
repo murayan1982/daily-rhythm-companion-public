@@ -1,18 +1,18 @@
 # Daily Rhythm Companion v3.0.0 goal checklist and small-commit plan
 
-Updated: 2026-07-31
+Updated: 2026-08-01
 ```text
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f2 fake-only integrated voice-turn coordinator
-Current implementation step: operation-epoch voice-turn and DRC-local soft-barge-in coordinator candidate
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none
-Last accepted small commit: RT-5f1 app-visible real-STT transcript source COMPLETED / ACCEPTED / PUSHED at daca3a68672eb3106e861278ebb65612380140ed
+Current small commit: none
+Current implementation step: RT-5f2 fake-only integrated voice-turn and DRC-local soft-barge-in coordinator accepted
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commits: implementation c538dc89c2aa9780cd3014aa4ba11c17a9e378e6; corrective b7bd436196210f27782b64c1a094aa65d6893915
+Last accepted small commit: RT-5f2 fake-only integrated voice-turn coordinator COMPLETED / ACCEPTED / PUSHED at b7bd436196210f27782b64c1a094aa65d6893915
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: review exact nine-file RT-5f2 candidate; do not commit or push without explicit approval
+Next implementation action: prepare a separate exact RT-5f3 contract review; RT-5f3 implementation remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -87,7 +87,8 @@ RT-5e COMPLETED / ACCEPTED / PUSHED
 RT-5f CURRENT / NOT_COMPLETED
 RT-5f0 COMPLETED / ACCEPTED / PUSHED
 RT-5f1 COMPLETED / ACCEPTED / PUSHED
-RT-5f2 IMPLEMENTED / AWAITING_REVIEW
+RT-5f2 COMPLETED / ACCEPTED / PUSHED
+RT-5f3 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -119,7 +120,7 @@ RT-5e is COMPLETED / ACCEPTED / PUSHED at implementation commit
 configured real synthesis, natural audible playback, explicit binding-owned
 playback-stop, cleanup, and clean-tree verification passed. RT-5f0 is
 COMPLETED / ACCEPTED / PUSHED at `348669884e872475aaa4242a5960a6de6fb7e10b` as the exact seven-file
-docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is ready only for a separate exact contract review and remains unimplemented and unauthorized.
+docs/test-only readiness checkpoint. RT-5f1 is COMPLETED / ACCEPTED / PUSHED at `daca3a68672eb3106e861278ebb65612380140ed` after the exact seventeen-file implementation, full synthetic verification, explicit approval, push, and clean-tree verification passed. RT-5f2 is COMPLETED / ACCEPTED / PUSHED through `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` and `b7bd436196210f27782b64c1a094aa65d6893915`. RT-5f3 is ready only for a separate exact contract review and remains unimplemented and unauthorized.
 
 
 ## RT-5f1 accepted implementation checkpoint
@@ -129,7 +130,7 @@ RT-5f1 COMPLETED / ACCEPTED / PUSHED
 implementation commit: daca3a68672eb3106e861278ebb65612380140ed
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
 change surface: exact seventeen files
-RT-5f2: IMPLEMENTED / AWAITING_REVIEW
+RT-5f2: COMPLETED / ACCEPTED / PUSHED
 ```
 
 - [x] Add default-off `VOICE_INPUT_REAL_STT_ENABLED`.
@@ -178,7 +179,7 @@ RT-5f0 COMPLETED / ACCEPTED / PUSHED
 implementation commit: 348669884e872475aaa4242a5960a6de6fb7e10b
 FW v5.4.0 HEAD: d313eb6acb643103fe25988720ebee5976a04f78
 RT-5f1 COMPLETED / ACCEPTED / PUSHED
-RT-5f2 IMPLEMENTED / AWAITING_REVIEW
+RT-5f2 COMPLETED / ACCEPTED / PUSHED
 ```
 
 - [x] Accepted RT-3d3 real STT remains private operator-only.
@@ -2418,31 +2419,32 @@ Detailed contract:
 Dedicated gate:
 `scripts/check_v300_rt4f4_configured_local_stream_acceptance.py`.
 
-## RT-5f2 implementation candidate checklist
+## RT-5f2 accepted implementation checkpoint
 
 ```text
-RT-5f2 IMPLEMENTED / AWAITING_REVIEW
-implementation commit: none
-exact surface: nine files
-RT-5f3 BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED
+RT-5f2 COMPLETED / ACCEPTED / PUSHED
+implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
+corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
+original surface: exact nine files
+corrective surface: exact four files
+RT-5f3: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-- [x] Add one Flutter-only `IntegratedVoiceTurnCoordinator`.
-- [x] Keep capture completion and staging as injected fake callbacks.
-- [x] Reuse existing transcript handoff, stream controller, RT-5c orchestrator, and queue.
-- [x] Accept only completed stream terminals for TTS.
-- [x] Increment operation epoch before interruption awaits.
-- [x] Detach old stream terminal listener before flush/cancel completion.
-- [x] Request cooperative stream cancel only.
-- [x] Request one RT-5c flush/local-player stop.
-- [x] Allow a new turn after successful stop before old Futures complete.
-- [x] Keep all late old completions inert.
-- [x] Bound speech event IDs to 128 code points and 32 remembered IDs.
-- [x] Block new turns after local-stop failure until confirmed-speech retry succeeds.
-- [x] Add focused race/privacy tests.
-- [x] Keep Backend, main.dart, HomeScreen, existing runtime, dependencies, and versions unchanged.
-- [ ] Windows Flutter analyze/focused/full validation.
-- [ ] Exact diff/privacy review.
-- [ ] Explicit commit/push approval.
+- [x] Compose fake capture, staging, transcript, stream, and RT-5c output.
+- [x] Invalidate old work with a private operation epoch.
+- [x] Bound confirmed foreground speech events and duplicate memory.
+- [x] Reuse cooperative stream cancel and local queue/player flush only.
+- [x] Block turns after local stop failure until a later speech retry succeeds.
+- [x] Require exclusive voice output before capture and terminal enqueue.
+- [x] Recheck exclusivity after synchronous phase listeners return.
+- [x] Require processed `itemId`/`generation` to match the enqueue item.
+- [x] Preserve public-state privacy and inert late completions.
+- [x] Keep Backend, main.dart, HomeScreen, FW, dependencies, and versions unchanged.
+- [x] Review exact nine-file implementation and four-file correction.
+- [x] Pass Backend 204, Flutter analyze, focused 26, and full 381.
+- [x] Pass privacy/fake-only review and `git diff --check`.
+- [x] Push implementation and corrective commits.
+- [x] Verify clean DRC/FW working trees.
 
-Do not commit or push without explicit approval.
+Detailed accepted contract:
+`docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md`.

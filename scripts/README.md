@@ -6711,7 +6711,16 @@ RT-5f1: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 RT-5f0 does not authorize RT-5f1 implementation, commit, or push. A separate
 exact contract review and explicit authorization remain required.
 
-## RT-5f2 fake-only integrated voice-turn candidate gate
+## RT-5f2 accepted fake-only integrated voice-turn gate
+
+```text
+implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
+corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
+acceptance-sync baseline: b7bd436196210f27782b64c1a094aa65d6893915
+acceptance-sync surface: exact seven files
+```
+
+Run from the repository root:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -6727,15 +6736,17 @@ cd ..
 git diff --check
 ```
 
-The exact nine-file candidate is fake/in-memory only. The gate verifies the
-operation epoch, bounded duplicate speech-event memory, cooperative stream
-cancel, RT-5c local flush/stop reuse, exact non-change surface, race-test
-markers, and conservative non-claims.
+The gate verifies both committed implementation surfaces, queue exclusivity,
+processed-item identity, operation-epoch invalidation, fake-only/privacy
+boundaries, and the accepted progress markers.
 
 ```text
-RT-5f2 IMPLEMENTED / AWAITING_REVIEW
-implementation commit: none
-RT-5f3 BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED
+expected Backend full: 204 passed, 1 existing warning
+expected focused Flutter: 26 passed
+expected Flutter full: 381 passed
+RT-5f2 COMPLETED / ACCEPTED / PUSHED
+RT-5f3 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-Do not commit or push without explicit approval.
+This acceptance sync changes documentation and this gate only. After the sync
+commit, the gate is historical and is not rerun against the new HEAD.

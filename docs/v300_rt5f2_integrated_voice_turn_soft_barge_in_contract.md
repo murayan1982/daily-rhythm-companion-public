@@ -8,14 +8,38 @@ Updated: 2026-08-01
 RT-5: CURRENT / NOT_COMPLETED
 RT-5f0: COMPLETED / ACCEPTED / PUSHED
 RT-5f1: COMPLETED / ACCEPTED / PUSHED
-RT-5f2: IMPLEMENTED / CORRECTIVE_PATCH_AWAITING_REVIEW
+RT-5f2: COMPLETED / ACCEPTED / PUSHED
 RT-5f2 implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
-RT-5f2 corrective patch baseline: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
+RT-5f2 corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
 DRC original implementation baseline: 1cba847b7c443c4d41a2ff6bd2c18d20689e5029
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-corrective patch commit/push: not authorized
-RT-5f3: BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED
+RT-5f3: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
+
+## Acceptance record
+
+```text
+exact acceptance review: PASS
+blocking findings: 0
+original implementation surface: 9 files
+corrective surface: 4 files
+Backend full tests: 204 passed, 1 existing warning
+Flutter analyze: no issues
+focused Flutter tests: 26 passed
+Flutter full tests: 381 passed
+privacy/fake-only review: passed
+git diff --check: passed
+implementation and corrective pushes: completed
+post-push DRC/FW working trees: clean
+```
+
+The first exact review identified queue ownership. The accepted correction
+requires exclusive voice output before capture, before enqueue, and after
+synchronous phase listeners, and requires matching `itemId`/`generation`.
+
+This seven-file acceptance sync changes documentation and the historical gate
+only. It changes no Flutter runtime/test, Backend, FW, private env, dependency,
+version, or release record.
 
 ## Claim boundary
 
@@ -240,8 +264,8 @@ app/test/integrated_voice_turn_coordinator_test.dart
 
 The original implementation was committed and pushed at
 `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` before exact acceptance review.
-The acceptance review identified one queue-ownership blocker. The corrective
-candidate is restricted to this exact four-file surface:
+The acceptance review identified one queue-ownership blocker. The accepted
+corrective commit `b7bd436196210f27782b64c1a094aa65d6893915` is restricted to this exact four-file surface:
 
 ```text
 app/lib/services/integrated_voice_turn_coordinator.dart
@@ -271,28 +295,27 @@ version/release metadata
 
 ## Verification
 
-```powershell
-python -m compileall -q backend scripts
-python scripts\check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py
-python -m pytest -q backend/tests
+Accepted validation:
 
-cd app
-flutter analyze
-flutter test test/integrated_voice_turn_coordinator_test.dart
-flutter test
-cd ..
-
-git diff --check
+```text
+compileall: passed
+dedicated RT-5f2 gate: passed
+Backend full tests: 204 passed, 1 existing warning
+Flutter analyze: no issues
+focused Flutter tests: 26 passed
+Flutter full tests: 381 passed
+exact original implementation surface: 9 files
+exact corrective surface: 4 files
+privacy/fake-only review: passed
+git diff --check: passed
 ```
 
-The verification is credential-free, provider-free, network-free,
-microphone-free, platform-audio-free, and real-transcript-free. Corrective
-validation must report an exact four-file change surface against
-`c538dc89c2aa9780cd3014aa4ba11c17a9e378e6`.
+The gate is now bound to acceptance-sync baseline `b7bd436196210f27782b64c1a094aa65d6893915` and the
+exact seven-file docs/gate-only surface. After the sync commit it is historical.
 
 ## Stop rule
 
-Stop before commit/push if implementation requires any real runtime, existing
-runtime-file modification, HomeScreen/main wiring, provider-specific client,
-Framework internal import, private data exposure, unbounded ID/text/history, or
-a claim broader than DRC-local soft interruption.
+RT-5f2 acceptance does not authorize RT-5f3 implementation, HomeScreen/main
+wiring, production speech activity, configured real execution, or broader
+cancellation claims. RT-5f3 requires a separate exact contract review and
+explicit authorization.

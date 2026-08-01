@@ -1,12 +1,12 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-07-31
+Updated: 2026-08-01
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-5f2 IMPLEMENTED / AWAITING_REVIEW
+Current small commit: none
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,13 +571,13 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: RT-5f2 IMPLEMENTED / AWAITING_REVIEW
-Last accepted small commit: RT-5f0 readiness and exact split COMPLETED / ACCEPTED / PUSHED at 348669884e872475aaa4242a5960a6de6fb7e10b
+Current small commit: none
+Last accepted small commit: RT-5f2 fake-only integrated voice-turn coordinator COMPLETED / ACCEPTED / PUSHED at b7bd436196210f27782b64c1a094aa65d6893915
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-5f2 fake-only integrated voice-turn and DRC-local soft-barge-in coordinator candidate.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation commit: none
-Current implementation boundary: exact nine-file fake-only coordinator candidate; Backend, main.dart, HomeScreen, existing runtime files, production speech activity, dependencies, and versions remain unchanged.
+Current implementation: RT-5f2 fake-only integrated voice-turn and DRC-local soft-barge-in coordinator accepted.
+Current implementation state: COMPLETED / ACCEPTED
+Current implementation commits: implementation `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6`; corrective `b7bd436196210f27782b64c1a094aa65d6893915`
+Current implementation boundary: accepted exact nine-file fake-only coordinator plus exact four-file queue-ownership correction; Backend, main.dart, HomeScreen, existing runtime files, production speech activity, dependencies, and versions remain unchanged.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -787,10 +787,9 @@ RT-5   CURRENT / NOT_COMPLETED  TTS output control, queue, flush, and barge-in
   RT-5e  COMPLETED / ACCEPTED / PUSHED  Configured local Backend/FW one-shot synthesis and local playback-stop operator acceptance
   RT-5f  CURRENT / NOT_COMPLETED  Speech-triggered DRC-local soft barge-in and real-STT-to-TTS integration
     RT-5f0  COMPLETED / ACCEPTED / PUSHED  Readiness decision and exact small-commit split
-    RT-5f1  COMPLETED / ACCEPTED / PUSHED
-RT-5f2  IMPLEMENTED / AWAITING_REVIEW  App-visible real-STT transcript source
-    RT-5f2  NOT_STARTED / NOT_AUTHORIZED  Fake-only integrated voice-turn and soft-barge-in coordinator
-    RT-5f3  NOT_STARTED / NOT_AUTHORIZED  Default-off HomeScreen and production speech-activity wiring
+    RT-5f1  COMPLETED / ACCEPTED / PUSHED  App-visible real-STT transcript source
+    RT-5f2  COMPLETED / ACCEPTED / PUSHED  Fake-only integrated voice-turn and soft-barge-in coordinator
+    RT-5f3  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Default-off HomeScreen and production speech-activity wiring
     RT-5f4  NOT_STARTED / NOT_AUTHORIZED  Configured local end-to-end and audible soft-barge-in acceptance
 RT-6   BLOCKED                   Realtime character presentation and motion-event mapping
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
@@ -7823,21 +7822,25 @@ Dedicated gate:
 
 ## RT-5f2 — Fake-only integrated voice-turn coordinator
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / ACCEPTED / PUSHED**
 
 ```text
-baseline: 1cba847b7c443c4d41a2ff6bd2c18d20689e5029
-implementation commit: none
-change surface: exact nine files
-RT-5f3 BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED
+implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
+corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
+original implementation surface: exact nine files
+corrective surface: exact four files
+RT-5f3: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 ```
 
-RT-5f2 composes existing app-owned capture-result, staging-result, transcript,
-stream, queue, synthesis, terminal-playback, and local-stop boundaries using
-fake/in-memory dependencies only. It adds one coordinator epoch that makes old
-turn completions inert before interruption awaits begin.
+RT-5f2 accepts the fake/in-memory integrated voice-turn and DRC-local
+soft-barge-in coordinator. Operation epochs invalidate old work. Queue
+ownership is exclusive before capture and terminal enqueue, including after
+synchronous phase listeners. `processNext()` must return the current
+`itemId`/`generation`.
 
-No HomeScreen/main wiring, production speech activity, Backend, provider,
-microphone, platform audio, dependency, version, or release surface changes.
+Acceptance passed with Backend 204, Flutter analyze, focused Flutter 26,
+Flutter full 381, exact surface/privacy review, explicit approval, both pushes,
+and clean DRC/FW working trees.
 
-Do not commit or push without explicit approval.
+RT-5f3 may proceed only to a separate exact contract review. Implementation is
+not authorized.
