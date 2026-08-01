@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6e HomeScreen character-motion candidate
+Current small commit: RT-6f exact contract review
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -797,8 +797,8 @@ RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
-  RT-6e  IMPLEMENTED / AWAITING_REVIEW  Default-off HomeScreen character-motion wiring
-  RT-6f  NOT_STARTED / BLOCKED_PENDING_RT6E_ACCEPTANCE / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
+  RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
+  RT-6f  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
@@ -8147,20 +8147,40 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6d_flutter_motion_presentation.py`.
 
-## RT-6e candidate — default-off HomeScreen character-motion wiring
+## RT-6e accepted — default-off HomeScreen character-motion wiring
 
 ```text
-RT-6e: IMPLEMENTED / AWAITING_REVIEW
-baseline: 8d69b539e974ba71fde5d9b15dd951d0c670b7ff
-surface: exact 10 files
-RT-6f: NOT_STARTED / BLOCKED_PENDING_RT6E_ACCEPTANCE / NOT_AUTHORIZED
+RT-6: CURRENT / NOT_COMPLETED
+RT-6e: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 8d69b539e974ba71fde5d9b15dd951d0c670b7ff
+implementation commit: 13343017738d0bb5fe23583467856233d62196fb
+implementation surface: exact 10 files
+acceptance-sync surface: exact 7 files
+Flutter runtime: 2 files
+focused Flutter tests: 1 file
+focused Flutter: 16 passed
+Flutter full: 468 passed
+Backend full: 279 passed, 3 dependency warnings
+FW baseline version: 5.4.0
+FW canonical reference: d313eb6acb643103fe25988720ebee5976a04f78
+source mode: external-vendored-snapshot
+FW execution: false
+RT-6f: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-The candidate owns an optional RT-6d controller only through an injected
-HomeScreen factory. Normal `main.dart` remains unchanged and unconfigured.
-Session-local opt-in starts off and is not persisted. Only an explicit Apply
-press performs one injected request; no lifecycle, stream, voice, TTS, or
-character-selection event is subscribed automatically.
+Accepted scope is limited to optional HomeScreen ownership of the RT-6d
+controller, session-local default-off opt-in, explicit manual lifecycle-fact
+apply/reset controls, a public-safe normalized mock-motion panel, and
+fake/in-memory widget coverage. Normal `main.dart` remains unconfigured.
 
-Visible state is a normalized mock-only aggregate. The static repository image
-is not animated and real Live2D/VTS execution remains blocked in RT-7.
+Acceptance passed with compileall, the dedicated gate, Backend 279, Dart
+format, Flutter analyze, 16 focused tests, 468 full tests, the lifecycle
+dropdown structural corrective, exact-surface/privacy review, CRLF-aware diff
+checking, explicit approval, push, and a clean DRC working tree.
+
+Detailed accepted contract:
+`docs/v300_rt6e_home_screen_character_motion_wiring.md`.
+Historical acceptance-sync gate:
+`scripts/check_v300_rt6e_home_screen_character_motion_wiring.py`.

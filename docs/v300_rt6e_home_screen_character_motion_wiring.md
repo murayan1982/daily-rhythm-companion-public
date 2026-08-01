@@ -2,7 +2,7 @@
 
 Updated: 2026-08-01
 
-## Candidate state
+## Accepted state
 
 ```text
 RT-6: CURRENT / NOT_COMPLETED
@@ -10,28 +10,27 @@ RT-6a: COMPLETED / ACCEPTED / PUSHED
 RT-6b: COMPLETED / ACCEPTED / PUSHED
 RT-6c: COMPLETED / ACCEPTED / PUSHED
 RT-6d: COMPLETED / ACCEPTED / PUSHED
-RT-6e: IMPLEMENTED / AWAITING_REVIEW
+RT-6e: COMPLETED / ACCEPTED / PUSHED
 implementation baseline: 8d69b539e974ba71fde5d9b15dd951d0c670b7ff
-implementation commit: none
+implementation commit: 13343017738d0bb5fe23583467856233d62196fb
 implementation surface: exact 10 files
-RT-6f: NOT_STARTED / BLOCKED_PENDING_RT6E_ACCEPTANCE / NOT_AUTHORIZED
+acceptance-sync surface: exact 7 documentation/static-gate files
+RT-6f: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
-commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-## Purpose
+## Framework baseline record
 
-RT-6e adds default-off HomeScreen ownership and visible presentation for the
-accepted RT-6d Flutter provider-neutral character-motion controller. It does
-not configure a transport in `main.dart`. Normal application startup therefore
-remains unconfigured and performs no motion request.
+```text
+Framework baseline version: 5.4.0
+Framework canonical reference commit: d313eb6acb643103fe25988720ebee5976a04f78
+Framework local source mode: external-vendored-snapshot
+Framework execution in RT-6e: false
+Framework vendor Git identity required: false
+```
 
-The candidate follows the accepted HomeScreen integration patterns used by
-RT-4f2 and RT-5d: an optional injected factory, one owned listener, session-local
-opt-in that defaults off, explicit manual action, safe visible state, and
-listener removal before owned controller disposal.
-
-## Exact implementation surface
+## Accepted exact implementation surface
 
 ```text
 README.md
@@ -53,206 +52,122 @@ Flutter focused test: 1 file
 total: exact 10 files
 ```
 
-## Optional HomeScreen ownership
+The acceptance-state sync changes only the seven documentation/static-gate
+files. The accepted two Flutter runtime files and one focused test file remain
+unchanged.
 
-`HomeScreen` accepts:
+## Accepted ownership and default-off boundary
 
-```dart
-CharacterMotionPresentationController Function()?
-    characterMotionPresentationControllerFactory
-```
+HomeScreen accepts an optional
+`CharacterMotionPresentationController Function()?` factory, invokes it at
+most once, owns one listener/controller lifecycle, removes the listener before
+disposal, and normalizes factory failure to `configuration_failed`.
 
-The factory is invoked at most once from `initState()`.
-
-```text
-factory absent: unconfigured
-factory throws: configuration_failed
-factory returns controller: configured with opt-in off
-```
-
-HomeScreen registers one listener. During disposal it marks the screen as
-disposing, removes that listener, and disposes the owned controller once. The
-RT-6d controller's operation generation rejects late completion after reset or
-dispose.
-
-## Default-off and explicit-action boundary
-
-The session-local opt-in starts false and is not persisted. Toggling it on does
-not apply a request. Initial data loading, character selection, advice creation,
-text streaming, voice capture, TTS playback, interruption, and barge-in do not
-automatically apply motion.
-
-A transport call is possible only after both explicit actions:
-
-```text
-1. Enable character motion presentation
-2. Apply selected lifecycle fact
-```
-
-One apply press creates at most one request. There is no queueing, coalescing,
-automatic retry, active replacement, or lifecycle subscription. The controller
-disables duplicate apply while one request is active.
-
-Opting out calls only local `controller.reset()`. It invalidates a delayed
-completion and returns the visible state to idle. It sends no stop-motion,
-reset-expression, Framework, provider, or network request.
-
-The explicit Reset presentation action is also local-only and performs zero
+Normal `main.dart` remains unchanged and does not inject the factory. Regular
+startup is therefore unconfigured. A configured test instance starts with a
+session-local, non-persistent opt-in set to false. Opt-in alone performs zero
 transport calls.
 
-## Manual request contract
+## Accepted explicit-action boundary
 
-The UI exposes the accepted bounded RT-6d lifecycle vocabulary:
+A request can occur only after explicit opt-in and one explicit Apply action.
+Each Apply press creates at most one bounded request. There is no automatic
+lifecycle subscription, queueing, coalescing, active replacement, or retry.
+Initial loading, character selection, advice, streaming, voice capture, TTS,
+interruption, and barge-in perform zero automatic motion requests.
 
-```text
-idle
-listening
-transcribing
-thinking
-responding
-tts_preparing
-speaking
-motion_active
-interrupted
-completed
-failed
-closed
-unavailable
-unknown
-```
+The request uses fixed `home_screen_manual_motion`, the selected bounded
+lifecycle fact, and the selected character ID. It supplies no source session ID
+or source turn ID. Reset and opt-out call only local controller reset, perform
+zero transport calls, and invalidate delayed completion. Disposal also
+invalidates delayed completion.
 
-The initial selection is `idle`. An explicit apply creates:
+## Accepted visible panel boundary
 
-```dart
-CharacterMotionPresentationRequest(
-  sourceFact: selectedFact,
-  sourceEventType: "home_screen_manual_motion",
-  characterId: selectedCharacter?.characterId,
-)
-```
+The panel displays only configuration, opt-in, selected fact, presentation
+phase, execution status/cue, aggregate command counts, normalized event-type
+count, fixed adapter/safety booleans, bounded reason code, and bounded safe
+message.
 
-The HomeScreen request does not set a source session ID or source turn ID.
+It does not display source event/session/turn/character IDs, Framework IDs,
+raw command results, command payloads, event strings, response JSON, raw
+exceptions, filesystem paths, credentials, provider payloads, private logs, or
+operator evidence.
 
-## Visible panel boundary
+The panel explicitly states that this is normalized mock motion state only.
+The repository character image remains static and no Live2D/VTS animation is
+executed or claimed.
 
-`app/lib/widgets/character_motion_presentation_panel.dart` displays only:
+## Accepted focused tests
 
-```text
-configuration
-session-local opt-in
-selected lifecycle fact
-presentation phase
-execution status
-cue
-commands requested/completed
-number of normalized event types
-fixed adapter and real/provider/network safety booleans
-bounded reason code
-bounded safe message
-```
+The focused file defines 16 widget tests covering normal unconfigured state,
+one factory call, factory failure, configured default-off state, zero-call
+opt-in, complete lifecycle-fact availability, one bounded manual request,
+duplicate apply prevention, completed/ignored/disabled/unavailable/failed
+presentation, local reset, stale completion after opt-out/dispose, one disposal,
+privacy non-display, static-character preservation, and zero automatic apply.
 
-It does not display:
-
-```text
-source event/session/turn/character IDs
-Framework request/session/result IDs
-raw command results or command payloads
-event type strings
-raw response JSON or exception text
-filesystem paths
-credentials/tokens
-provider payloads
-private logs or operator evidence
-```
-
-The panel states that it is normalized mock motion presentation only. The
-repository character image remains static and no Live2D or VTube Studio
-animation is executed.
-
-## Static character separation
-
-RT-6e does not modify:
-
-```text
-app/lib/models/character_display_presentation.dart
-app/lib/widgets/character_display_card.dart
-```
-
-The accepted static character card continues to expose its existing
-idle/loading/speaking activity and `静的表示` marker. RT-6e does not reinterpret
-those static states as Framework motion events and does not claim that the
-character image moves.
-
-## Configuration boundary
-
-RT-6e does not modify `app/lib/main.dart`. It adds no configured transport,
-Backend route, HTTP client, Framework import, provider client, VTS connection,
-Live2D runtime, token read, dependency, environment flag, or platform change.
-
-Configured local mock transport assembly, normal `main.dart` wiring, and
-operator-visible mock presentation acceptance remain RT-6f work.
-
-## Focused test contract
-
-`app/test/character_motion_home_screen_test.dart` uses fake/in-memory transport
-only and covers:
-
-```text
-normal unconfigured state
-factory called once
-factory failure normalization
-configured default-off state
-opt-in alone calls no transport
-all accepted lifecycle facts available
-one explicit bounded request
-fixed source event type and no session/turn IDs
-completed/ignored/disabled/unavailable/failed presentation
-applying state and duplicate apply prevention
-local reset without another transport call
-opt-out stale-completion invalidation
-dispose stale-completion invalidation and one disposal
-raw/private ID, command, event, response, and exception non-display
-static-character baseline preservation
-no automatic apply during initial loading
-```
+The initial dropdown assertion used a nonexistent
+`DropdownButtonFormField.items` getter. The real checkout corrective replaced
+it with a structural inspection of the descendant typed `DropdownButton` and
+its public items. The corrective remained inside the accepted focused test
+file and passed format, analyze, focused tests, and full regression.
 
 ## Exact non-actions and non-claims
 
-RT-6e changes no Backend, Framework/vendor source, API route, dependency,
-lockfile, platform manifest, asset, environment profile, version, release
-metadata, existing test, RT-6d model/client/controller, existing motion demo,
-or configured runtime.
+RT-6e changes no `main.dart`, RT-6d model/client/controller, existing static
+character display files, Backend, Framework/vendor source, API route,
+dependency, lockfile, platform manifest, asset, environment profile, version,
+release metadata, or existing test.
 
-It does not claim Backend-to-Flutter motion transport, Framework execution,
-provider execution, real adapter support, network execution, VTS/Live2D
-connection, animated character output, smartphone/PC motion acceptance, or
-v3.0.0 release readiness.
+It does not claim Backend-to-Flutter motion transport, Framework/provider
+execution, real adapter support, network execution, VTS/Live2D connection,
+animated character output, smartphone/PC motion acceptance, or v3.0.0 release
+readiness. Configured local mock transport wiring and operator-visible mock
+presentation acceptance remain RT-6f work.
 
-## Verification target
+## Accepted verification
 
 ```text
+implementation commit: 13343017738d0bb5fe23583467856233d62196fb
+implementation pushed: true
 compileall: PASS
 dedicated RT-6e gate: PASS
-Backend full: 279 passed with 3 known dependency warnings
+Backend full: 279 passed
+Backend dependency warnings: 3
 Dart format: PASS
-Flutter analyze: PASS
-focused Flutter tests: 16 passed
-Flutter full regression: 468 passed
+Flutter analyze: No issues found
+focused Flutter: 16 passed
+Flutter full: 468 passed
+lifecycle dropdown structural corrective: PASS
 exact ten-file review: PASS
-privacy review: PASS
+changed-content privacy review: PASS
 CRLF-aware git diff --check: PASS
+explicit operator commit approval: ACCEPTED
+post-push DRC working tree: clean
 ```
 
-## Candidate gate markers
+## Historical acceptance-sync gate markers
 
 ```text
-v300_rt6e_status: implemented-awaiting-review
-v300_rt6e_exact_change_surface: True
-v300_rt6e_change_file_count: 10
+v300_rt6e_status: completed-accepted-pushed
+v300_rt6e_exact_acceptance_sync_surface: True
+v300_rt6e_acceptance_sync_file_count: 7
+v300_rt6e_implementation_baseline: 8d69b539e974ba71fde5d9b15dd951d0c670b7ff
+v300_rt6e_implementation_commit: 13343017738d0bb5fe23583467856233d62196fb
+v300_rt6e_implementation_surface: 10
 v300_rt6e_flutter_runtime_file_count: 2
 v300_rt6e_flutter_test_file_count: 1
-v300_rt6e_focused_flutter_defined: 16
-v300_rt6e_flutter_full_expected: 468
+v300_rt6e_focused_flutter_passed: 16
+v300_rt6e_flutter_full_passed: 468
+v300_rt6e_backend_full_passed: 279
+v300_rt6e_backend_warning_count: 3
+v300_rt6e_dart_format_passed: True
+v300_rt6e_flutter_analyze_passed: True
+v300_rt6e_lifecycle_dropdown_corrective_passed: True
+v300_rt6e_runtime_changed_by_acceptance_sync: False
+v300_rt6e_flutter_runtime_changed_by_acceptance_sync: False
+v300_rt6e_flutter_tests_changed_by_acceptance_sync: False
 v300_rt6e_main_changed: False
 v300_rt6e_rt6d_runtime_changed: False
 v300_rt6e_character_display_changed: False
@@ -281,20 +196,24 @@ v300_rt6e_raw_result_exposed: False
 v300_rt6e_raw_exception_exposed: False
 v300_rt6e_private_ids_exposed: False
 v300_rt6e_real_http_execution: False
+v300_rt6e_framework_version: 5.4.0
+v300_rt6e_framework_reference_commit: d313eb6acb643103fe25988720ebee5976a04f78
+v300_rt6e_framework_source_mode: external-vendored-snapshot
 v300_rt6e_framework_execution: False
 v300_rt6e_provider_execution: False
 v300_rt6e_network_execution: False
 v300_rt6e_live2d_animation_claimed: False
-v300_rt6f_authorized: False
+v300_rt6_status: current-not-completed
+v300_rt6f_status: ready-for-exact-contract-review-not-authorized
+v300_rt6f_implementation_authorized: False
 v300_rt7_real_adapter_blocked: True
-v300_rt6e_commit_push_authorized: False
+v300_rt6e_acceptance_sync_commit_push_authorized: False
 ```
 
 ## Next action
 
 ```text
-Verify and review the exact RT-6e candidate.
-Do not commit or push without explicit approval.
-RT-6f remains blocked pending RT-6e acceptance.
+Review the exact RT-6f contract separately.
+RT-6f implementation remains NOT_AUTHORIZED.
 RT-7 remains blocked on a real Live2D/VTS adapter.
 ```
