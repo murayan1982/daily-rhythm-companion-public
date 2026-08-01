@@ -1,6 +1,6 @@
 # Daily Rhythm Companion v3.0.0 RT-5f2 integrated voice-turn contract
 
-Updated: 2026-07-31
+Updated: 2026-08-01
 
 ## Status
 
@@ -8,11 +8,12 @@ Updated: 2026-07-31
 RT-5: CURRENT / NOT_COMPLETED
 RT-5f0: COMPLETED / ACCEPTED / PUSHED
 RT-5f1: COMPLETED / ACCEPTED / PUSHED
-RT-5f2: IMPLEMENTED / AWAITING_REVIEW
-RT-5f2 implementation commit: none
-DRC baseline: 1cba847b7c443c4d41a2ff6bd2c18d20689e5029
+RT-5f2: IMPLEMENTED / CORRECTIVE_PATCH_AWAITING_REVIEW
+RT-5f2 implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
+RT-5f2 corrective patch baseline: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
+DRC original implementation baseline: 1cba847b7c443c4d41a2ff6bd2c18d20689e5029
 FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
-commit/push: not authorized
+corrective patch commit/push: not authorized
 RT-5f3: BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED
 ```
 
@@ -64,6 +65,31 @@ completed fake capture
 ```
 
 Cancelled, failed, closed, or inconsistent stream terminals never reach TTS.
+
+## Exclusive voice-output ownership
+
+A new turn may start only while the injected RT-5c voice-output state is
+exclusive and empty:
+
+```text
+pendingCount == 0
+activeItem == null
+isProcessing == false
+phase != flushing
+phase != disposed
+```
+
+The same condition is checked before the voice-output phase transition and
+rechecked after synchronous coordinator phase listeners return, immediately
+before the completed terminal is enqueued. If another owner adds or activates
+voice-output work while capture, staging, transcript acquisition, streaming, or
+the phase notification is in progress, the current turn fails safely before its
+own enqueue and does not consume that other work.
+
+The coordinator retains the queue item returned by
+`enqueueCompletedTerminal()`. A successful `processNext()` result is accepted
+only when its item has the same `itemId` and `generation`. Completing a different
+pre-existing or externally claimed item cannot complete the current voice turn.
 
 ## Operation epoch
 
@@ -191,6 +217,11 @@ dispose during playback
 dispose during interruption
 bounded remembered speech-event IDs
 public-state privacy
+pre-existing pending voice output blocks capture
+pre-existing active synthesis blocks capture
+voice-output exclusivity is rechecked before terminal enqueue
+synchronous voice-output phase listener cannot steal queue ownership
+processed queue item matches the current terminal item ID and generation
 ```
 
 ## Exact nine-file implementation surface
@@ -205,6 +236,18 @@ docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md
 scripts/check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py
 app/lib/services/integrated_voice_turn_coordinator.dart
 app/test/integrated_voice_turn_coordinator_test.dart
+```
+
+The original implementation was committed and pushed at
+`c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` before exact acceptance review.
+The acceptance review identified one queue-ownership blocker. The corrective
+candidate is restricted to this exact four-file surface:
+
+```text
+app/lib/services/integrated_voice_turn_coordinator.dart
+app/test/integrated_voice_turn_coordinator_test.dart
+docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md
+scripts/check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py
 ```
 
 ## Explicit non-change surface
@@ -243,7 +286,9 @@ git diff --check
 ```
 
 The verification is credential-free, provider-free, network-free,
-microphone-free, platform-audio-free, and real-transcript-free.
+microphone-free, platform-audio-free, and real-transcript-free. Corrective
+validation must report an exact four-file change surface against
+`c538dc89c2aa9780cd3014aa4ba11c17a9e378e6`.
 
 ## Stop rule
 

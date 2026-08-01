@@ -4,17 +4,12 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_HEAD = "1cba847b7c443c4d41a2ff6bd2c18d20689e5029"
+EXPECTED_HEAD = "c538dc89c2aa9780cd3014aa4ba11c17a9e378e6"
 EXPECTED_FILES = {
-    "README.md",
-    "roadmap.md",
-    "tasklist.md",
-    "scripts/README.md",
-    "docs/DRC_v300_goal_checklist_small_commit.md",
-    "docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md",
-    "scripts/check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py",
     "app/lib/services/integrated_voice_turn_coordinator.dart",
     "app/test/integrated_voice_turn_coordinator_test.dart",
+    "docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md",
+    "scripts/check_v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.py",
 }
 
 
@@ -64,7 +59,7 @@ def main() -> None:
     actual = changed_files()
     if actual != EXPECTED_FILES:
         raise RuntimeError(
-            "RT-5f2 exact change surface mismatch\n"
+            "RT-5f2 corrective exact change surface mismatch\n"
             f"expected={sorted(EXPECTED_FILES)}\nactual={sorted(actual)}"
         )
 
@@ -102,8 +97,27 @@ def main() -> None:
         "_rememberedSpeechEventIds",
         "requestCooperativeCancel: true",
         "_voiceOutput.flush()",
+        "_hasExclusiveVoiceOutputAccess()",
+        "voiceState.pendingCount == 0",
+        "voiceState.activeItem == null",
+        "!voiceState.isProcessing",
+        "RealtimeTerminalVoiceOutputPhase.flushing",
+        "RealtimeTerminalVoiceOutputPhase.disposed",
+        "integrated_voice_turn_voice_output_busy",
+        "integrated_voice_turn_voice_output_not_exclusive",
+        "final enqueuedItem = enqueueResult.item!",
+        "_sameVoiceOutputItem(processResult.item, enqueuedItem)",
+        "actual.itemId == expected.itemId",
+        "actual.generation == expected.generation",
+        "integrated_voice_turn_voice_output_item_mismatch",
     ):
         require(source, marker, "coordinator source")
+
+    if source.count("if (!_hasExclusiveVoiceOutputAccess())") < 3:
+        raise RuntimeError(
+            "coordinator source must check exclusive voice output at start, "
+            "before phase notification, and immediately after phase listeners"
+        )
 
     for forbidden in (
         "package:http",
@@ -136,32 +150,50 @@ def main() -> None:
         "dispose during synthesis makes a late synthesis result inert",
         "dispose during playback makes a late playback result inert",
         "public state retains no transcript IDs text URI or raw error",
+        "pre-existing pending voice output blocks turn before capture",
+        "pre-existing active synthesis blocks turn before capture",
+        "voice output becoming non-exclusive before terminal enqueue rejects turn",
+        "voice-output phase listener cannot enqueue between exclusivity check and enqueue",
+        "processed voice-output item must match current terminal item",
+        "_MismatchedVoiceOutputOrchestrator",
     ):
         require(tests, marker, "focused Flutter tests")
 
     for marker in (
-        "RT-5f2: IMPLEMENTED / AWAITING_REVIEW",
+        "RT-5f2: IMPLEMENTED / CORRECTIVE_PATCH_AWAITING_REVIEW",
+        "RT-5f2 implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6",
+        "RT-5f2 corrective patch baseline: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6",
         "fake-only integrated voice-turn coordinator",
         "fake-only DRC-local soft-barge-in behavior",
-        "Exact nine-file implementation surface",
-        "Explicit non-change surface",
+        "Exclusive voice-output ownership",
+        "after synchronous coordinator phase listeners return",
+        "same `itemId` and `generation`",
+        "exact four-file surface",
+        "corrective patch commit/push: not authorized",
         "RT-5f3: BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED",
-        "commit/push: not authorized",
     ):
         require(contract, marker, "RT-5f2 contract")
 
+    # The five progress documents are intentionally outside the corrective
+    # surface. Their implementation-candidate markers remain unchanged until a
+    # separate accepted docs sync is authorized.
     for marker in (
         "RT-5f2 IMPLEMENTED / AWAITING_REVIEW",
         "implementation commit: none",
         "do not commit or push without explicit approval",
         "RT-5f3 BLOCKED_PENDING_RT5F2_ACCEPTANCE / NOT_AUTHORIZED",
     ):
-        require(progress, marker, "progress documents")
+        require(progress, marker, "unchanged progress documents")
 
-    print("v300_rt5f2_status: implemented-awaiting-review")
-    print("v300_rt5f2_exact_change_surface: True")
+    print("v300_rt5f2_status: corrective-patch-awaiting-review")
+    print("v300_rt5f2_corrective_baseline: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6")
+    print("v300_rt5f2_exact_corrective_surface: True")
     print("v300_rt5f2_fake_only: True")
     print("v300_rt5f2_operation_epoch_invalidation: True")
+    print("v300_rt5f2_voice_output_exclusive_before_capture: True")
+    print("v300_rt5f2_voice_output_exclusive_before_enqueue: True")
+    print("v300_rt5f2_voice_output_exclusive_after_phase_notification: True")
+    print("v300_rt5f2_processed_item_identity_required: True")
     print("v300_rt5f2_duplicate_speech_bound: 32")
     print("v300_rt5f2_speech_event_id_max_code_points: 128")
     print("v300_rt5f2_cooperative_stream_cancel_only: True")

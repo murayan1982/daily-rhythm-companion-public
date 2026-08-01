@@ -16,6 +16,165 @@ import 'package:http/http.dart' as http;
 
 void main() {
   group('IntegratedVoiceTurnCoordinator', () {
+    test(
+      'pre-existing pending voice output blocks turn before capture',
+      () async {
+        final harness = _Harness();
+        final enqueue = harness.voiceOutput.enqueueCompletedTerminal(
+          _completedVoiceOutputState(
+            sessionId: 'preexisting-pending-session',
+            turnId: 'preexisting-pending-turn',
+            text: 'preexisting pending output',
+          ),
+        );
+
+        final result = await harness.coordinator.startNextTurn();
+
+        expect(enqueue.accepted, isTrue);
+        expect(result.outcome, IntegratedVoiceTurnOutcome.busy);
+        expect(result.technicalCode, 'integrated_voice_turn_voice_output_busy');
+        expect(harness.captureCalls, 0);
+        expect(harness.voiceOutput.state.pendingCount, 1);
+
+        harness.dispose();
+      },
+    );
+
+    test('pre-existing active synthesis blocks turn before capture', () async {
+      final harness = _Harness();
+      final synthesis = Completer<RealtimeTerminalVoiceSynthesisResult>();
+      harness.synthesisResults.add(synthesis.future);
+      final enqueue = harness.voiceOutput.enqueueCompletedTerminal(
+        _completedVoiceOutputState(
+          sessionId: 'preexisting-active-session',
+          turnId: 'preexisting-active-turn',
+          text: 'preexisting active output',
+        ),
+      );
+      final processFuture = harness.voiceOutput.processNext();
+      await _waitFor(
+        () =>
+            harness.voiceOutput.state.phase ==
+            RealtimeTerminalVoiceOutputPhase.synthesizing,
+      );
+
+      final result = await harness.coordinator.startNextTurn();
+
+      expect(enqueue.accepted, isTrue);
+      expect(result.outcome, IntegratedVoiceTurnOutcome.busy);
+      expect(harness.captureCalls, 0);
+
+      synthesis.complete(
+        const RealtimeTerminalVoiceSynthesisResult.audioReady(
+          'https://audio.test/preexisting-active.mp3',
+        ),
+      );
+      expect(
+        (await processFuture).outcome,
+        RealtimeTerminalVoiceOutputProcessOutcome.completed,
+      );
+
+      harness.dispose();
+    });
+
+    test(
+      'voice output becoming non-exclusive before terminal enqueue rejects turn',
+      () async {
+        final harness = _Harness();
+
+        final turnFuture = harness.coordinator.startNextTurn();
+        final client = await harness.waitForStreaming(0);
+        final externalEnqueue = harness.voiceOutput.enqueueCompletedTerminal(
+          _completedVoiceOutputState(
+            sessionId: 'external-pending-session',
+            turnId: 'external-pending-turn',
+            text: 'external pending output',
+          ),
+        );
+        client.emitCompleted('current terminal output');
+
+        final result = await turnFuture;
+
+        expect(externalEnqueue.accepted, isTrue);
+        expect(result.outcome, IntegratedVoiceTurnOutcome.voiceOutputRejected);
+        expect(
+          result.technicalCode,
+          'integrated_voice_turn_voice_output_not_exclusive',
+        );
+        expect(harness.synthesisCalls, 0);
+        expect(harness.voiceOutput.state.pendingCount, 1);
+
+        harness.dispose();
+      },
+    );
+
+    test(
+      'voice-output phase listener cannot enqueue between exclusivity check and enqueue',
+      () async {
+        final harness = _Harness();
+        var listenerAttempted = false;
+        RealtimeTerminalVoiceOutputEnqueueResult? listenerEnqueue;
+
+        void listener() {
+          if (listenerAttempted ||
+              harness.coordinator.state.phase !=
+                  IntegratedVoiceTurnPhase.voiceOutput) {
+            return;
+          }
+          listenerAttempted = true;
+          listenerEnqueue = harness.voiceOutput.enqueueCompletedTerminal(
+            _completedVoiceOutputState(
+              sessionId: 'listener-pending-session',
+              turnId: 'listener-pending-turn',
+              text: 'listener pending output',
+            ),
+          );
+        }
+
+        harness.coordinator.addListener(listener);
+        final turnFuture = harness.coordinator.startNextTurn();
+        final client = await harness.waitForStreaming(0);
+        client.emitCompleted('current listener-race output');
+
+        final result = await turnFuture;
+
+        expect(listenerAttempted, isTrue);
+        expect(listenerEnqueue?.accepted, isTrue);
+        expect(result.outcome, IntegratedVoiceTurnOutcome.voiceOutputRejected);
+        expect(
+          result.technicalCode,
+          'integrated_voice_turn_voice_output_not_exclusive',
+        );
+        expect(harness.synthesisCalls, 0);
+        expect(harness.voiceOutput.state.pendingCount, 1);
+
+        harness.coordinator.removeListener(listener);
+        harness.dispose();
+      },
+    );
+
+    test(
+      'processed voice-output item must match current terminal item',
+      () async {
+        final harness = _Harness(mismatchProcessedItem: true);
+
+        final turnFuture = harness.coordinator.startNextTurn();
+        final client = await harness.waitForStreaming(0);
+        client.emitCompleted('mismatched item output');
+
+        final result = await turnFuture;
+
+        expect(result.outcome, IntegratedVoiceTurnOutcome.voiceOutputFailed);
+        expect(
+          result.technicalCode,
+          'integrated_voice_turn_voice_output_item_mismatch',
+        );
+        expect(harness.captureCalls, 1);
+        expect(harness.stagingCalls, 1);
+
+        harness.dispose();
+      },
+    );
     test('happy-path full fake voice turn completes exactly once', () async {
       final harness = _Harness();
 
@@ -756,10 +915,36 @@ HostAudioHandoffResult _completedStaging() {
   );
 }
 
+RealtimeTextStreamControllerState _completedVoiceOutputState({
+  required String sessionId,
+  required String turnId,
+  required String text,
+}) {
+  final count = text.runes.length;
+  return RealtimeTextStreamControllerState(
+    phase: RealtimeTextStreamControllerPhase.completed,
+    outputText: text,
+    lastSequence: 3,
+    cancelMode: 'cooperative',
+    hardCancelSupported: false,
+    createResponse: _createResponse(sessionId: sessionId, turnId: turnId),
+    terminal: RealtimeTextStreamTerminal(
+      sequence: 3,
+      outcome: RealtimeTextStreamTerminalOutcome.completed,
+      finalText: text,
+      outputCharCount: count,
+      publicErrorCode: null,
+      safeMessage: '',
+      retryable: false,
+    ),
+  );
+}
+
 class _Harness {
   _Harness({
     this.transcriptText = 'user transcript',
     this.audioUri = 'https://audio.test/fake.mp3',
+    this.mismatchProcessedItem = false,
   }) {
     queue = VoiceOutputQueueController(
       stopLocalPlayback: () {
@@ -770,29 +955,33 @@ class _Harness {
         return Future<void>.value();
       },
     );
-    voiceOutput = RealtimeTerminalVoiceOutputOrchestrator(
-      queue: queue,
-      synthesize: (request) {
-        synthesisCalls += 1;
-        synthesizedUtterances.add(request.utterance);
-        if (synthesisResults.isNotEmpty) {
-          return synthesisResults.removeFirst();
-        }
-        return Future<RealtimeTerminalVoiceSynthesisResult>.value(
-          RealtimeTerminalVoiceSynthesisResult.audioReady(audioUri),
-        );
-      },
-      playToTerminal: (source) {
-        playbackCalls += 1;
-        playbackUris.add(source);
-        if (playbackResults.isNotEmpty) {
-          return playbackResults.removeFirst();
-        }
-        return Future<RealtimeTerminalVoicePlaybackResult>.value(
-          const RealtimeTerminalVoicePlaybackResult.completed(),
-        );
-      },
-    );
+    if (mismatchProcessedItem) {
+      voiceOutput = _MismatchedVoiceOutputOrchestrator(queue: queue);
+    } else {
+      voiceOutput = RealtimeTerminalVoiceOutputOrchestrator(
+        queue: queue,
+        synthesize: (request) {
+          synthesisCalls += 1;
+          synthesizedUtterances.add(request.utterance);
+          if (synthesisResults.isNotEmpty) {
+            return synthesisResults.removeFirst();
+          }
+          return Future<RealtimeTerminalVoiceSynthesisResult>.value(
+            RealtimeTerminalVoiceSynthesisResult.audioReady(audioUri),
+          );
+        },
+        playToTerminal: (source) {
+          playbackCalls += 1;
+          playbackUris.add(source);
+          if (playbackResults.isNotEmpty) {
+            return playbackResults.removeFirst();
+          }
+          return Future<RealtimeTerminalVoicePlaybackResult>.value(
+            const RealtimeTerminalVoicePlaybackResult.completed(),
+          );
+        },
+      );
+    }
     coordinator = IntegratedVoiceTurnCoordinator(
       captureCompleted: () {
         captureCalls += 1;
@@ -836,6 +1025,7 @@ class _Harness {
 
   final String transcriptText;
   final String audioUri;
+  final bool mismatchProcessedItem;
 
   final Queue<Future<MicrophoneCaptureResult>> captureResults =
       Queue<Future<MicrophoneCaptureResult>>();
@@ -892,6 +1082,48 @@ class _Harness {
     for (final client in clients) {
       client.disposeFake();
     }
+  }
+}
+
+class _MismatchedVoiceOutputOrchestrator
+    extends RealtimeTerminalVoiceOutputOrchestrator {
+  _MismatchedVoiceOutputOrchestrator({required super.queue})
+    : super(
+        synthesize: (_) async =>
+            const RealtimeTerminalVoiceSynthesisResult.rejected(),
+        playToTerminal: (_) async =>
+            const RealtimeTerminalVoicePlaybackResult.failed(),
+      );
+
+  static const VoiceOutputQueueItemMetadata _enqueuedItem =
+      VoiceOutputQueueItemMetadata(
+        itemId: 'tts-current-terminal',
+        generation: 1,
+        characterCount: 24,
+      );
+
+  @override
+  RealtimeTerminalVoiceOutputEnqueueResult enqueueCompletedTerminal(
+    RealtimeTextStreamControllerState terminalState,
+  ) {
+    return const RealtimeTerminalVoiceOutputEnqueueResult(
+      accepted: true,
+      item: _enqueuedItem,
+    );
+  }
+
+  @override
+  Future<RealtimeTerminalVoiceOutputProcessResult> processNext() {
+    return Future<RealtimeTerminalVoiceOutputProcessResult>.value(
+      const RealtimeTerminalVoiceOutputProcessResult(
+        outcome: RealtimeTerminalVoiceOutputProcessOutcome.completed,
+        item: VoiceOutputQueueItemMetadata(
+          itemId: 'tts-different-terminal',
+          generation: 1,
+          characterCount: 24,
+        ),
+      ),
+    );
   }
 }
 

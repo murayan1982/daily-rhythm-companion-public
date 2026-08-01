@@ -219,6 +219,12 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         technicalCode: 'integrated_voice_turn_busy',
       );
     }
+    if (!_hasExclusiveVoiceOutputAccess()) {
+      return const IntegratedVoiceTurnResult(
+        outcome: IntegratedVoiceTurnOutcome.busy,
+        technicalCode: 'integrated_voice_turn_voice_output_busy',
+      );
+    }
 
     final operation = _IntegratedVoiceTurnOperation(
       token: Object(),
@@ -398,12 +404,29 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
       );
     }
 
+    if (!_hasExclusiveVoiceOutputAccess()) {
+      return _failCurrent(
+        operation,
+        IntegratedVoiceTurnOutcome.voiceOutputRejected,
+        'integrated_voice_turn_voice_output_not_exclusive',
+        'Voice output must be empty and idle before accepting the current terminal.',
+      );
+    }
+
     _setPhase(
       IntegratedVoiceTurnPhase.voiceOutput,
       safeMessage: 'The completed fake terminal is entering voice output.',
     );
+    if (!_hasExclusiveVoiceOutputAccess()) {
+      return _failCurrent(
+        operation,
+        IntegratedVoiceTurnOutcome.voiceOutputRejected,
+        'integrated_voice_turn_voice_output_not_exclusive',
+        'Voice output must remain empty and idle after phase notification.',
+      );
+    }
     final enqueueResult = _voiceOutput.enqueueCompletedTerminal(terminalState);
-    if (!enqueueResult.accepted) {
+    if (!enqueueResult.accepted || enqueueResult.item == null) {
       return _failCurrent(
         operation,
         IntegratedVoiceTurnOutcome.voiceOutputRejected,
@@ -411,6 +434,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         'The completed fake terminal was rejected by voice output.',
       );
     }
+    final enqueuedItem = enqueueResult.item!;
 
     final processResult = await _voiceOutput.processNext();
     if (!_isCurrent(operation)) {
@@ -423,6 +447,14 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         IntegratedVoiceTurnOutcome.voiceOutputFailed,
         'integrated_voice_turn_voice_output_failed',
         'The fake voice-output lifecycle did not complete.',
+      );
+    }
+    if (!_sameVoiceOutputItem(processResult.item, enqueuedItem)) {
+      return _failCurrent(
+        operation,
+        IntegratedVoiceTurnOutcome.voiceOutputFailed,
+        'integrated_voice_turn_voice_output_item_mismatch',
+        'Voice output completed a different queue item than the current terminal.',
       );
     }
 
@@ -716,6 +748,24 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
       outcome: IntegratedVoiceTurnOutcome.invalidated,
       technicalCode: 'integrated_voice_turn_invalidated',
     );
+  }
+
+  bool _hasExclusiveVoiceOutputAccess() {
+    final voiceState = _voiceOutput.state;
+    return voiceState.pendingCount == 0 &&
+        voiceState.activeItem == null &&
+        !voiceState.isProcessing &&
+        voiceState.phase != RealtimeTerminalVoiceOutputPhase.flushing &&
+        voiceState.phase != RealtimeTerminalVoiceOutputPhase.disposed;
+  }
+
+  bool _sameVoiceOutputItem(
+    VoiceOutputQueueItemMetadata? actual,
+    VoiceOutputQueueItemMetadata expected,
+  ) {
+    return actual != null &&
+        actual.itemId == expected.itemId &&
+        actual.generation == expected.generation;
   }
 
   bool _isCurrent(_IntegratedVoiceTurnOperation operation) {
