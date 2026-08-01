@@ -6,13 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-5 CURRENT / NOT_COMPLETED
-Current small commit: none
-Current implementation step: RT-5f2 fake-only integrated voice-turn and DRC-local soft-barge-in coordinator accepted
-Current implementation state: COMPLETED / ACCEPTED
-Current implementation commits: implementation c538dc89c2aa9780cd3014aa4ba11c17a9e378e6; corrective b7bd436196210f27782b64c1a094aa65d6893915
+Current small commit: RT-5f3 default-off HomeScreen and production speech-activity wiring
+Current implementation step: RT-5f3 exact twenty-file candidate
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: 888814d09fad75039733a4a94719454e0a69db63
+Current implementation commit: none
 Last accepted small commit: RT-5f2 fake-only integrated voice-turn coordinator COMPLETED / ACCEPTED / PUSHED at b7bd436196210f27782b64c1a094aa65d6893915
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: prepare a separate exact RT-5f3 contract review; RT-5f3 implementation remains NOT_AUTHORIZED
+Next implementation action: run exact RT-5f3 verification and review; commit/push remain NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -88,7 +89,7 @@ RT-5f CURRENT / NOT_COMPLETED
 RT-5f0 COMPLETED / ACCEPTED / PUSHED
 RT-5f1 COMPLETED / ACCEPTED / PUSHED
 RT-5f2 COMPLETED / ACCEPTED / PUSHED
-RT-5f3 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-5f3 IMPLEMENTED / AWAITING_REVIEW
 ```
 
 RT-5a is docs/test-only. It inventories current DRC Backend voice-output
@@ -2427,7 +2428,7 @@ implementation commit: c538dc89c2aa9780cd3014aa4ba11c17a9e378e6
 corrective commit: b7bd436196210f27782b64c1a094aa65d6893915
 original surface: exact nine files
 corrective surface: exact four files
-RT-5f3: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-5f3: IMPLEMENTED / AWAITING_REVIEW
 ```
 
 - [x] Compose fake capture, staging, transcript, stream, and RT-5c output.
@@ -2448,3 +2449,39 @@ RT-5f3: NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 
 Detailed accepted contract:
 `docs/v300_rt5f2_integrated_voice_turn_soft_barge_in_contract.md`.
+
+
+## RT-5f3 implementation candidate checklist
+
+```text
+RT-5f3: IMPLEMENTED / AWAITING_REVIEW
+baseline: 888814d09fad75039733a4a94719454e0a69db63
+FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
+exact implementation surface: 20 files
+implementation commit: none
+commit/push: NOT_AUTHORIZED
+real operator acceptance: NOT_EXECUTED
+```
+
+- [x] Keep the configured integrated runtime default-off.
+- [x] Require both accepted configured text-stream and voice-output gates.
+- [x] Require session-local opt-in and explicit Start/Stop capture actions.
+- [x] Keep speech activity disarmed during initial capture.
+- [x] Arm only during staging, transcript acquisition, streaming, or voice output.
+- [x] Use a dedicated stream/TTS ownership graph separate from manual UI resources.
+- [x] Drain/drop PCM16 and keep amplitude/audio data out of public state and UI.
+- [x] Require three consecutive samples and one event per arming generation.
+- [x] Disarm on opt-out, background, event, terminal phase, and dispose.
+- [x] Preserve RT-5f2 queue exclusivity and processed-item identity checks.
+- [x] Add metadata-only HomeScreen presentation and synthetic focused tests.
+- [x] Add exact twenty-file contract and dedicated gate.
+- [ ] Pass the dedicated gate in the real Git checkout at the approved baseline.
+- [ ] Pass Backend full tests.
+- [ ] Pass Flutter analyze and all focused Flutter tests.
+- [ ] Pass full Flutter tests.
+- [ ] Pass exact surface, privacy, and `git diff --check` review.
+- [ ] Receive explicit commit approval.
+- [ ] Commit and push.
+
+Detailed candidate contract:
+`docs/v300_rt5f3_default_off_home_screen_speech_activity_contract.md`.

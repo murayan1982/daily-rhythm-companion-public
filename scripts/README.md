@@ -6745,8 +6745,40 @@ expected Backend full: 204 passed, 1 existing warning
 expected focused Flutter: 26 passed
 expected Flutter full: 381 passed
 RT-5f2 COMPLETED / ACCEPTED / PUSHED
-RT-5f3 NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-5f3 IMPLEMENTED / AWAITING_REVIEW
 ```
 
 This acceptance sync changes documentation and this gate only. After the sync
 commit, the gate is historical and is not rerun against the new HEAD.
+
+
+## RT-5f3 default-off HomeScreen and production speech-activity gate
+
+Candidate status:
+
+```text
+RT-5f3: IMPLEMENTED / AWAITING_REVIEW
+baseline: 888814d09fad75039733a4a94719454e0a69db63
+FW v5.4.0: d313eb6acb643103fe25988720ebee5976a04f78
+exact implementation surface: 20 files
+implementation commit: none
+commit/push: NOT_AUTHORIZED
+real operator acceptance: NOT_EXECUTED
+```
+
+Run from the DRC repository root while HEAD remains the approved baseline:
+
+```powershell
+python scripts\check_v300_rt5f3_default_off_home_screen_speech_activity_contract.py
+```
+
+The gate requires the exact twenty-file worktree surface; verifies the three
+default-off runtime gates, dedicated stream/TTS ownership, capture-phase
+disarm, bounded production detector defaults, one event per arming generation,
+metadata-only HomeScreen markers, neutral coordinator messages, focused test
+coverage, unchanged dependency files, and non-acceptance documentation. It does
+not access credentials, microphone/audio, network, providers, Framework
+runtime, synthesis, playback, or operator evidence.
+
+Detailed contract:
+`docs/v300_rt5f3_default_off_home_screen_speech_activity_contract.md`.

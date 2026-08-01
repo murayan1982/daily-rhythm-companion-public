@@ -21,6 +21,7 @@ import '../models/voice_output_demo.dart';
 import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
+import '../services/integrated_voice_turn_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_orchestrator.dart';
 import '../services/realtime_text_stream_controller.dart';
@@ -40,6 +41,7 @@ class HomeScreen extends StatefulWidget {
     this.realtimeTextStreamControllerFactory,
     this.realtimeTextStreamTranscriptHandoffFactory,
     this.realtimeTerminalVoiceOutputBindingFactory,
+    this.integratedVoiceTurnBindingFactory,
   });
 
   final BackendApiClient apiClient;
@@ -50,6 +52,8 @@ class HomeScreen extends StatefulWidget {
       realtimeTextStreamTranscriptHandoffFactory;
   final RealtimeTerminalVoiceOutputHomeScreenBindingFactory?
       realtimeTerminalVoiceOutputBindingFactory;
+  final IntegratedVoiceTurnHomeScreenBindingFactory?
+      integratedVoiceTurnBindingFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -207,6 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _realtimeTerminalVoiceOutputLastTechnicalCode;
   int _realtimeTerminalVoiceOutputProcessUiSequence = 0;
   int _realtimeTerminalVoiceOutputFlushUiSequence = 0;
+  IntegratedVoiceTurnHomeScreenBinding? _integratedVoiceTurnBinding;
+  String? _integratedVoiceTurnConfigurationCode;
   bool _isDisposing = false;
 
   void _handleVoiceOutputPlaybackStateChanged() {
@@ -233,6 +239,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleIntegratedVoiceTurnChanged() {
+    if (mounted && !_isDisposing) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     _isDisposing = true;
@@ -242,6 +254,10 @@ class _HomeScreenState extends State<HomeScreen> {
       _handleRealtimeTerminalVoiceOutputChanged,
     );
     _realtimeTerminalVoiceOutputBinding?.dispose();
+    _integratedVoiceTurnBinding?.removeListener(
+      _handleIntegratedVoiceTurnChanged,
+    );
+    _integratedVoiceTurnBinding?.dispose();
     _realtimeTextStreamTranscriptHandoff?.removeListener(
       _handleRealtimeTextStreamTranscriptHandoffChanged,
     );
@@ -747,6 +763,16 @@ class _HomeScreenState extends State<HomeScreen> {
       } catch (_) {
         _realtimeTerminalVoiceOutputConfigurationCode =
             'configuration_failed';
+      }
+    }
+
+    if (widget.integratedVoiceTurnBindingFactory != null) {
+      try {
+        final binding = widget.integratedVoiceTurnBindingFactory!.call();
+        _integratedVoiceTurnBinding = binding;
+        binding.addListener(_handleIntegratedVoiceTurnChanged);
+      } catch (_) {
+        _integratedVoiceTurnConfigurationCode = 'configuration_failed';
       }
     }
 
@@ -1904,6 +1930,177 @@ class _HomeScreenState extends State<HomeScreen> {
                 key: ValueKey(
                   'realtime-terminal-voice-output-player-separation-note',
                 ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  IntegratedVoiceTurnHomeScreenBinding?
+  get _configuredIntegratedVoiceTurnBinding => _integratedVoiceTurnBinding;
+
+  bool get _isIntegratedVoiceTurnConfigured =>
+      _configuredIntegratedVoiceTurnBinding != null &&
+      _integratedVoiceTurnConfigurationCode == null;
+
+  void _setIntegratedVoiceTurnOptIn(bool value) {
+    _configuredIntegratedVoiceTurnBinding?.setOptIn(value);
+  }
+
+  Future<void> _startIntegratedVoiceTurn() async {
+    await _configuredIntegratedVoiceTurnBinding?.startVoiceTurn();
+  }
+
+  Future<void> _stopIntegratedVoiceTurnCapture() async {
+    await _configuredIntegratedVoiceTurnBinding?.stopCapture();
+  }
+
+  Widget _buildIntegratedVoiceTurnSection(BuildContext context) {
+    final binding = _configuredIntegratedVoiceTurnBinding;
+    final bindingState = binding?.state;
+    final coordinatorState = binding?.coordinator.state;
+    final speechState = binding?.speechActivitySource.state;
+    final configuration = _integratedVoiceTurnConfigurationCode ??
+        (_isIntegratedVoiceTurnConfigured ? 'configured' : 'unconfigured');
+
+    return Column(
+      key: const ValueKey('integrated-voice-turn-section'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Integrated Voice Turn',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'RT-5f3 default-off production wiring. A session-local opt-in and one explicit start action are required. Speech activity is armed only after capture completes.',
+        ),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SwitchListTile(
+                key: const ValueKey('integrated-voice-turn-opt-in'),
+                contentPadding: EdgeInsets.zero,
+                value: bindingState?.optedIn ?? false,
+                onChanged: binding?.canToggleOptIn == true
+                    ? _setIntegratedVoiceTurnOptIn
+                    : null,
+                title: const Text('Enable integrated voice turn'),
+                subtitle: const Text(
+                  'Off by default, session-local, and not persisted. Toggling alone does not start microphone, network, provider, synthesis, or playback work.',
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton(
+                    key: const ValueKey(
+                      'integrated-voice-turn-start-button',
+                    ),
+                    onPressed: binding?.canStartVoiceTurn == true
+                        ? _startIntegratedVoiceTurn
+                        : null,
+                    child: const Text('Start voice turn'),
+                  ),
+                  OutlinedButton(
+                    key: const ValueKey(
+                      'integrated-voice-turn-stop-capture-button',
+                    ),
+                    onPressed: binding?.canStopCapture == true
+                        ? _stopIntegratedVoiceTurnCapture
+                        : null,
+                    child: const Text('Stop capture'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Integrated configuration: $configuration',
+                key: const ValueKey(
+                  'integrated-voice-turn-configuration',
+                ),
+              ),
+              Text(
+                'Integrated opt-in: ${bindingState?.optedIn == true ? 'on' : 'off'}',
+                key: const ValueKey('integrated-voice-turn-opt-in-status'),
+              ),
+              Text(
+                'Foreground: ${bindingState?.foreground == true ? 'foreground' : 'background'}',
+                key: const ValueKey('integrated-voice-turn-foreground'),
+              ),
+              Text(
+                'Coordinator phase: ${coordinatorState?.phase.name ?? 'unconfigured'}',
+                key: const ValueKey('integrated-voice-turn-phase'),
+              ),
+              Text(
+                'Speech source phase: ${speechState?.phase.name ?? 'unconfigured'}',
+                key: const ValueKey('integrated-voice-turn-speech-phase'),
+              ),
+              Text(
+                'Operation epoch: ${coordinatorState?.operationEpoch ?? 0}',
+                key: const ValueKey('integrated-voice-turn-operation-epoch'),
+              ),
+              Text(
+                'Turn generation: ${coordinatorState?.turnGeneration ?? 0}',
+                key: const ValueKey('integrated-voice-turn-generation'),
+              ),
+              Text(
+                'Interruption count: ${coordinatorState?.interruptionCount ?? 0}',
+                key: const ValueKey(
+                  'integrated-voice-turn-interruption-count',
+                ),
+              ),
+              Text(
+                'Pending voice output: ${coordinatorState?.pendingVoiceOutputCount ?? 0}',
+                key: const ValueKey(
+                  'integrated-voice-turn-pending-voice-output',
+                ),
+              ),
+              Text(
+                'Local stop retry required: ${coordinatorState?.localStopRetryRequired ?? false}',
+                key: const ValueKey(
+                  'integrated-voice-turn-local-stop-retry-required',
+                ),
+              ),
+              Text(
+                'Last turn outcome: ${coordinatorState?.lastTurnOutcome?.name ?? '-'}',
+                key: const ValueKey(
+                  'integrated-voice-turn-last-turn-outcome',
+                ),
+              ),
+              Text(
+                'Last speech outcome: ${coordinatorState?.lastSpeechOutcome?.name ?? '-'}',
+                key: const ValueKey(
+                  'integrated-voice-turn-last-speech-outcome',
+                ),
+              ),
+              Text(
+                'Last action outcome: ${bindingState?.actionOutcome.name ?? '-'}',
+                key: const ValueKey(
+                  'integrated-voice-turn-last-action-outcome',
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'This section does not display transcript text, generated response text, stream chunks, capture/staging/result/event/session/turn IDs, amplitude values, audio URLs, provider metadata, private paths, or raw exceptions.',
+                key: ValueKey('integrated-voice-turn-privacy-note'),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'The integrated runtime owns a dedicated stream controller, TTS queue, orchestrator, and local player; it does not share the manual RT-4f4 / RT-5e resources.',
+                key: ValueKey('integrated-voice-turn-ownership-note'),
               ),
             ],
           ),
@@ -4872,6 +5069,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 24),
                     _buildRealtimeTerminalVoiceOutputSection(context),
+
+                    const SizedBox(height: 24),
+                    _buildIntegratedVoiceTurnSection(context),
 
                     const SizedBox(height: 24),
                     _buildVoiceInputDemoSection(context),

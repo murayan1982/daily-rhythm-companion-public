@@ -153,11 +153,12 @@ class IntegratedVoiceTurnState {
       phase == IntegratedVoiceTurnPhase.interrupting;
 }
 
-/// Fake-only RT-5f2 coordinator.
+/// App-owned integrated voice-turn coordinator.
 ///
-/// This class composes already accepted app-owned boundaries. It does not open a
-/// microphone, read a private path, perform HTTP, import Framework code, execute
-/// providers, play platform audio, or wire HomeScreen/main.dart.
+/// Dependencies remain injected and provider-neutral. The coordinator owns no
+/// microphone, private path, HTTP client, Framework import, provider client, or
+/// platform player directly; RT-5f3 may assemble accepted production adapters
+/// behind separate default-off and session-local gates.
 class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
   IntegratedVoiceTurnCoordinator({
     required IntegratedVoiceTurnCaptureCompletion captureCompleted,
@@ -234,7 +235,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
     _activeTurn = operation;
     _setPhase(
       IntegratedVoiceTurnPhase.capturing,
-      safeMessage: 'The next bounded voice turn is acquiring fake input.',
+      safeMessage: 'The next bounded voice turn is acquiring input.',
     );
 
     MicrophoneCaptureResult captureResult;
@@ -245,7 +246,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.captureRejected,
         'integrated_voice_turn_capture_failed',
-        'The fake capture completion could not be accepted safely.',
+        'The capture completion could not be accepted safely.',
       );
     }
     if (!_isCurrent(operation)) {
@@ -256,13 +257,13 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.captureRejected,
         'integrated_voice_turn_capture_rejected',
-        'A completed fake capture is required.',
+        'A completed capture is required.',
       );
     }
 
     _setPhase(
       IntegratedVoiceTurnPhase.staging,
-      safeMessage: 'The bounded fake capture is being staged.',
+      safeMessage: 'The bounded capture is being staged.',
     );
     HostAudioHandoffResult stagingResult;
     try {
@@ -272,7 +273,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.stagingRejected,
         'integrated_voice_turn_staging_failed',
-        'The fake staging handoff failed safely.',
+        'The staging handoff failed safely.',
       );
     }
     if (!_isCurrent(operation)) {
@@ -283,7 +284,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.stagingRejected,
         'integrated_voice_turn_staging_rejected',
-        'A completed fake staging handoff is required.',
+        'A completed staging handoff is required.',
       );
     }
 
@@ -300,7 +301,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.transcriptRejected,
         'integrated_voice_turn_stream_assembly_failed',
-        'The fake transcript-to-stream assembly failed safely.',
+        'The transcript-to-stream assembly failed safely.',
       );
     }
 
@@ -313,7 +314,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.transcriptRejected,
         'integrated_voice_turn_stream_assembly_failed',
-        'The fake transcript-to-stream assembly failed safely.',
+        'The transcript-to-stream assembly failed safely.',
       );
     }
     operation.controller = controller;
@@ -329,7 +330,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.transcriptRejected,
         'integrated_voice_turn_transcript_handoff_failed',
-        'The final transcript could not start the fake stream safely.',
+        'The final transcript could not start the stream safely.',
       );
     }
     if (!_isCurrent(operation)) {
@@ -341,14 +342,14 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.transcriptRejected,
         'integrated_voice_turn_transcript_rejected',
-        'The final transcript was rejected by the fake stream handoff.',
+        'The final transcript was rejected by the stream handoff.',
       );
     }
 
     if (!controller.state.isTerminal) {
       _setPhase(
         IntegratedVoiceTurnPhase.streaming,
-        safeMessage: 'The fake text stream is active.',
+        safeMessage: 'The text stream is active.',
       );
     }
 
@@ -365,21 +366,21 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
           operation,
           IntegratedVoiceTurnOutcome.streamCancelled,
           'integrated_voice_turn_stream_cancelled',
-          'The fake text stream was cancelled.',
+          'The text stream was cancelled.',
         );
       case RealtimeTextStreamControllerPhase.failed:
         return _failCurrent(
           operation,
           IntegratedVoiceTurnOutcome.streamFailed,
           'integrated_voice_turn_stream_failed',
-          'The fake text stream failed safely.',
+          'The text stream failed safely.',
         );
       case RealtimeTextStreamControllerPhase.closed:
         return _failCurrent(
           operation,
           IntegratedVoiceTurnOutcome.streamClosed,
           'integrated_voice_turn_stream_closed',
-          'The fake text stream closed without a completed response.',
+          'The text stream closed without a completed response.',
         );
       case RealtimeTextStreamControllerPhase.idle:
       case RealtimeTextStreamControllerPhase.connecting:
@@ -389,7 +390,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
           operation,
           IntegratedVoiceTurnOutcome.terminalRejected,
           'integrated_voice_turn_terminal_invalid',
-          'The fake text stream terminal was inconsistent.',
+          'The text stream terminal was inconsistent.',
         );
     }
 
@@ -400,7 +401,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.terminalRejected,
         'integrated_voice_turn_terminal_rejected',
-        'Only a completed fake terminal can reach voice output.',
+        'Only a completed terminal can reach voice output.',
       );
     }
 
@@ -415,7 +416,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
 
     _setPhase(
       IntegratedVoiceTurnPhase.voiceOutput,
-      safeMessage: 'The completed fake terminal is entering voice output.',
+      safeMessage: 'The completed terminal is entering voice output.',
     );
     if (!_hasExclusiveVoiceOutputAccess()) {
       return _failCurrent(
@@ -431,7 +432,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.voiceOutputRejected,
         'integrated_voice_turn_voice_output_enqueue_rejected',
-        'The completed fake terminal was rejected by voice output.',
+        'The completed terminal was rejected by voice output.',
       );
     }
     final enqueuedItem = enqueueResult.item!;
@@ -446,7 +447,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         operation,
         IntegratedVoiceTurnOutcome.voiceOutputFailed,
         'integrated_voice_turn_voice_output_failed',
-        'The fake voice-output lifecycle did not complete.',
+        'The voice-output lifecycle did not complete.',
       );
     }
     if (!_sameVoiceOutputItem(processResult.item, enqueuedItem)) {
@@ -564,7 +565,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         lastTurnOutcome: _state.lastTurnOutcome,
         lastSpeechOutcome: null,
         safeMessage:
-            'Confirmed foreground speech is invalidating old fake voice work.',
+            'Confirmed foreground speech is invalidating old voice work.',
         technicalCode: null,
       ),
     );
@@ -626,7 +627,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
             lastTurnOutcome: _state.lastTurnOutcome,
             lastSpeechOutcome: IntegratedVoiceTurnSpeechOutcome.interrupted,
             safeMessage:
-                'Old fake voice work is inert and the next turn may start.',
+                'Old voice work is inert and the next turn may start.',
             technicalCode: 'integrated_voice_turn_interrupted',
           ),
         );
@@ -704,7 +705,7 @@ class IntegratedVoiceTurnCoordinator extends ChangeNotifier {
         localStopRetryRequired: false,
         lastTurnOutcome: result.outcome,
         lastSpeechOutcome: _state.lastSpeechOutcome,
-        safeMessage: 'The fake integrated voice turn completed.',
+        safeMessage: 'The integrated voice turn completed.',
         technicalCode: result.technicalCode,
       ),
     );
@@ -932,7 +933,7 @@ String _safeMessage(String value) {
       .where((part) => part.isNotEmpty)
       .join(' ');
   if (compact.isEmpty) {
-    return 'The fake integrated voice turn could not continue safely.';
+    return 'The integrated voice turn could not continue safely.';
   }
   if (compact.runes.length <= realtimeTextStreamMaxProblemMessageChars) {
     return compact;

@@ -816,6 +816,36 @@ void main() {
       },
     );
 
+    test('public coordinator messages are production-neutral', () async {
+      final harness = _Harness();
+      final capture = Completer<MicrophoneCaptureResult>();
+      harness.captureResults.add(capture.future);
+
+      final turnFuture = harness.coordinator.startNextTurn();
+      await _waitFor(
+        () =>
+            harness.coordinator.state.phase ==
+            IntegratedVoiceTurnPhase.capturing,
+      );
+
+      expect(
+        harness.coordinator.state.safeMessage.toLowerCase(),
+        isNot(contains('fake')),
+      );
+      final speechFuture = harness.coordinator.handleSpeechActivity(
+        _speech('production-neutral-message'),
+      );
+      capture.complete(_completedCapture());
+
+      await speechFuture;
+      await turnFuture;
+      expect(
+        harness.coordinator.state.safeMessage.toLowerCase(),
+        isNot(contains('fake')),
+      );
+      harness.dispose();
+    });
+
     test(
       'public state retains no transcript IDs text URI or raw error',
       () async {

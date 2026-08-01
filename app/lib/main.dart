@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
 import 'services/backend_api_client.dart';
+import 'services/configured_integrated_voice_turn_runtime.dart';
 import 'services/configured_realtime_terminal_voice_output_runtime.dart';
 import 'services/configured_realtime_text_stream_runtime.dart';
+import 'services/integrated_voice_turn_home_screen_binding.dart';
 import 'services/realtime_terminal_voice_output_home_screen_binding.dart';
 import 'services/realtime_text_stream_controller.dart';
 
@@ -16,6 +18,10 @@ void main() {
     ),
     baseUrl: apiClient.baseUrl,
   );
+  final configuredIntegratedVoiceTurnRuntime =
+      ConfiguredIntegratedVoiceTurnRuntime.fromEnvironment(
+        apiClient: apiClient,
+      );
   final configuredVoiceOutputRuntime =
       ConfiguredRealtimeTerminalVoiceOutputRuntime.fromEnvironment(
         apiClient: apiClient,
@@ -28,6 +34,8 @@ void main() {
           .buildControllerFactory(),
       realtimeTerminalVoiceOutputBindingFactory: configuredVoiceOutputRuntime
           .buildBindingFactory(),
+      integratedVoiceTurnBindingFactory: configuredIntegratedVoiceTurnRuntime
+          .buildBindingFactory(),
     ),
   );
 }
@@ -38,6 +46,7 @@ class DailyRhythmCompanionApp extends StatelessWidget {
     this.apiClient = const BackendApiClient(),
     this.realtimeTextStreamControllerFactory,
     this.realtimeTerminalVoiceOutputBindingFactory,
+    this.integratedVoiceTurnBindingFactory,
   });
 
   final BackendApiClient apiClient;
@@ -45,6 +54,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
   realtimeTextStreamControllerFactory;
   final RealtimeTerminalVoiceOutputHomeScreenBindingFactory?
   realtimeTerminalVoiceOutputBindingFactory;
+  final IntegratedVoiceTurnHomeScreenBindingFactory?
+  integratedVoiceTurnBindingFactory;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +70,7 @@ class DailyRhythmCompanionApp extends StatelessWidget {
             realtimeTextStreamControllerFactory,
         realtimeTerminalVoiceOutputBindingFactory:
             realtimeTerminalVoiceOutputBindingFactory,
+        integratedVoiceTurnBindingFactory: integratedVoiceTurnBindingFactory,
       ),
     );
   }
