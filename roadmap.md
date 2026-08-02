@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6f exact contract review
+Current small commit: RT-6f implementation review
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,14 +571,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6e exact contract review
-Last accepted small commit: RT-6c FW root-public mock motion-session adapter COMPLETED / ACCEPTED / PUSHED at f929e8faa65a817f1ba4fed82b729438b73dbfab
+Current small commit: RT-6f implementation review
+Last accepted small commit: RT-6e HomeScreen character motion wiring COMPLETED / ACCEPTED / PUSHED at 13343017738d0bb5fe23583467856233d62196fb
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6e default-off HomeScreen character-motion presentation wiring.
+Current implementation: RT-6f configured local mock-motion presentation candidate.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `8d69b539e974ba71fde5d9b15dd951d0c670b7ff`
+Current implementation baseline: `e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`
 Current implementation commit: none
-Current implementation boundary: exact ten files; two Flutter runtime files, one focused Flutter widget test, seven documentation/static-gate files; no main.dart, RT-6d runtime, Backend, Framework execution, dependency, platform, asset, version, or release change.
+Current implementation boundary: exact nineteen files; strict default-off Backend route/service/config/tests, default-off Flutter HTTP runtime and main.dart assembly, two focused Flutter tests, seven documentation/static-gate files; accepted RT-6b through RT-6e runtime remains unchanged.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -798,7 +798,7 @@ RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
-  RT-6f  NOT_STARTED / READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
+  RT-6f  IMPLEMENTED / AWAITING_REVIEW / COMMIT_NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
@@ -8184,3 +8184,28 @@ Detailed accepted contract:
 `docs/v300_rt6e_home_screen_character_motion_wiring.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6e_home_screen_character_motion_wiring.py`.
+
+## RT-6f candidate — configured local mock-motion presentation acceptance
+
+```text
+RT-6: CURRENT / NOT_COMPLETED
+RT-6f: IMPLEMENTED / AWAITING_REVIEW
+baseline: e1d4f63d71c2de485b05fbfc5dad6811b81b31fc
+implementation surface: exact 19 files
+Backend flag default: off
+Flutter flag default: off
+HomeScreen session opt-in default: off
+explicit Apply request limit: 1
+real adapter/provider/FW external network/VTS/Live2D: disabled
+commit/push: NOT_AUTHORIZED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+```
+
+RT-6f connects the accepted RT-6e manual HomeScreen presentation to the
+accepted RT-6b mapper and RT-6c root-public FW mock adapter through one strict
+local Backend endpoint and one bounded Flutter HTTP runtime. It adds no
+automatic lifecycle subscription, retry, queue, real adapter, provider
+execution, or visible animation claim.
+
+Detailed candidate contract:
+`docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.

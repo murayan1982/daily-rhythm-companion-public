@@ -7202,3 +7202,46 @@ historical and is not rerun against the new HEAD.
 
 Detailed accepted contract:
 `docs/v300_rt6e_home_screen_character_motion_wiring.md`.
+
+## v3.0.0 RT-6f configured local mock-motion candidate gate
+
+RT-6f is **IMPLEMENTED / AWAITING_REVIEW** against baseline
+`e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`. Commit and push remain
+unauthorized.
+
+Run from the real repository root before requesting commit approval:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py
+python -m pytest -q backend\tests\test_character_motion_presentation_api.py
+python -m pytest -q backend\tests
+
+cd app
+dart format --output=none --set-exit-if-changed `
+    lib\main.dart `
+    lib\services\configured_character_motion_presentation_runtime.dart `
+    test\configured_character_motion_presentation_runtime_test.dart `
+    test\main_character_motion_presentation_wiring_widget_test.dart
+flutter analyze
+flutter test test\configured_character_motion_presentation_runtime_test.dart `
+    test\main_character_motion_presentation_wiring_widget_test.dart
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+```
+
+Handoff snapshot mode, used only when the original Git object is absent:
+
+```powershell
+python scripts\check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py --snapshot
+```
+
+The gate performs no HTTP, Framework, provider, VTS, Live2D, audio, STT, LLM,
+TTS, credential, or token execution. It statically checks the exact nineteen
+files, dual default-off assembly, strict manual request, HTTP bounds, protected
+RT-6b through RT-6e files, mock-only flags, and blocked RT-7 state.
+
+Detailed candidate contract:
+`docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.

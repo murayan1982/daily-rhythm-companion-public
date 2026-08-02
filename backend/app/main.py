@@ -7,6 +7,7 @@ from app.version import APP_VERSION
 from app.api import (
     chat,
     advice,
+    character_motion_presentation,
     characters,
     daily_records,
     demo_status,
@@ -38,6 +39,7 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(character_motion_presentation.router)
 app.include_router(characters.router)
 app.include_router(sleep.router)
 app.include_router(sleep_provider_selection.router)

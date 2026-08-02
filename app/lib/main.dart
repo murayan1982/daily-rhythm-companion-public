@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
 import 'services/backend_api_client.dart';
+import 'services/character_motion_presentation_controller.dart';
+import 'services/configured_character_motion_presentation_runtime.dart';
 import 'services/configured_integrated_voice_turn_runtime.dart';
 import 'services/configured_realtime_terminal_voice_output_runtime.dart';
 import 'services/configured_realtime_text_stream_runtime.dart';
@@ -18,6 +20,10 @@ void main() {
     ),
     baseUrl: apiClient.baseUrl,
   );
+  final configuredCharacterMotionRuntime =
+      ConfiguredCharacterMotionPresentationRuntime.fromEnvironment(
+        apiClient: apiClient,
+      );
   final configuredIntegratedVoiceTurnRuntime =
       ConfiguredIntegratedVoiceTurnRuntime.fromEnvironment(
         apiClient: apiClient,
@@ -36,6 +42,8 @@ void main() {
           .buildBindingFactory(),
       integratedVoiceTurnBindingFactory: configuredIntegratedVoiceTurnRuntime
           .buildBindingFactory(),
+      characterMotionPresentationControllerFactory:
+          configuredCharacterMotionRuntime.buildControllerFactory(),
     ),
   );
 }
@@ -47,6 +55,7 @@ class DailyRhythmCompanionApp extends StatelessWidget {
     this.realtimeTextStreamControllerFactory,
     this.realtimeTerminalVoiceOutputBindingFactory,
     this.integratedVoiceTurnBindingFactory,
+    this.characterMotionPresentationControllerFactory,
   });
 
   final BackendApiClient apiClient;
@@ -56,6 +65,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
   realtimeTerminalVoiceOutputBindingFactory;
   final IntegratedVoiceTurnHomeScreenBindingFactory?
   integratedVoiceTurnBindingFactory;
+  final CharacterMotionPresentationController Function()?
+  characterMotionPresentationControllerFactory;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +82,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
         realtimeTerminalVoiceOutputBindingFactory:
             realtimeTerminalVoiceOutputBindingFactory,
         integratedVoiceTurnBindingFactory: integratedVoiceTurnBindingFactory,
+        characterMotionPresentationControllerFactory:
+            characterMotionPresentationControllerFactory,
       ),
     );
   }

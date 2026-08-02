@@ -57,6 +57,7 @@ class AppConfig:
     voice_output_artifact_max_count: int = 100
     motion_demo_enabled: bool = False
     motion_adapter_mode: str = "disabled"
+    framework_mock_motion_presentation_enabled: bool = False
     gemini_api_key: str | None = None
     xai_api_key: str | None = None
     sleep_provider: str = "mock"
@@ -287,6 +288,9 @@ def load_config() -> AppConfig:
             "MOTION_DEMO_ADAPTER_MODE",
             os.getenv("MOTION_ADAPTER_MODE", "disabled"),
         ).strip().lower() or "disabled",
+        framework_mock_motion_presentation_enabled=_env_flag(
+            "DRC_RT6_ENABLE_FRAMEWORK_MOCK_MOTION"
+        ),
         gemini_api_key=_empty_to_none(os.getenv("GEMINI_API_KEY")),
         xai_api_key=_empty_to_none(os.getenv("XAI_API_KEY")),
         sleep_provider=os.getenv("SLEEP_PROVIDER", "mock").lower(),
