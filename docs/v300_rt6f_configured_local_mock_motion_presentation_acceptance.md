@@ -1,21 +1,24 @@
 # Daily Rhythm Companion v3.0.0 RT-6f configured local mock-motion presentation
 
-Updated: 2026-08-01
+Updated: 2026-08-02
 
-## Candidate state
+## Accepted state
 
 ```text
 Source HEAD / implementation baseline: e1d4f63d71c2de485b05fbfc5dad6811b81b31fc
-RT-6: CURRENT / NOT_COMPLETED
+RT-6: COMPLETED / ACCEPTED
 RT-6e: COMPLETED / ACCEPTED / PUSHED
-RT-6f: IMPLEMENTED / AWAITING_REVIEW
-implementation commit: none
+RT-6f: COMPLETED / ACCEPTED / PUSHED
+implementation commit: fcdce38b9260604ea7c435c6de44fc129dc613f6
 implementation surface: exact 19 files
-commit/push: NOT_AUTHORIZED
+acceptance-sync surface: exact 7 documentation/static-gate files
+Framework version: 5.4.0
+Framework reference commit: d313eb6acb643103fe25988720ebee5976a04f78
+acceptance-sync commit/push: NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
 ```
 
-## Purpose
+## Accepted purpose
 
 RT-6f connects only the two accepted unconfigured boundaries left by RT-6c
 and RT-6e:
@@ -33,10 +36,10 @@ explicit HomeScreen Apply
 ```
 
 The local Flutter-to-Backend HTTP request is real local transport. The result
-field `network_execution=false` continues to mean that the Framework mock
-adapter did not use a provider, VTS, Live2D, or external network runtime.
+field `network_execution=false` means that the Framework mock adapter did not
+use a provider, VTS, Live2D, or external network runtime.
 
-## Exact implementation surface
+## Accepted exact implementation surface
 
 ```text
 README.md
@@ -71,7 +74,10 @@ Flutter tests: 2
 total: exact 19
 ```
 
-## Double default-off contract
+The acceptance synchronization changes only the seven documentation/static-gate
+files listed at the top of the implementation surface.
+
+## Accepted double default-off contract
 
 Backend execution is enabled only by:
 
@@ -91,25 +97,21 @@ Flutter runtime reuses only `DRC_BACKEND_API_BASE_URL` through
 
 With either RT-6f flag disabled, normal startup performs no Framework import,
 session creation, provider execution, motion command, or RT-6f HTTP request.
+The accepted RT-6e session-local opt-in additionally defaults off and is not
+persisted.
 
-## Backend request and execution contract
+## Accepted Backend and Flutter contract
 
-The new route is:
+The strict route remains:
 
 ```text
 POST /demo/character-motion/presentation
 ```
 
-The body is strict and extra keys are rejected:
-
-```text
-schema_version: drc.v3.character-motion-presentation-request.1
-source_fact: accepted CharacterMotionLifecycleFact
-source_event_type: home_screen_manual_motion only
-source_session_id: null only
-source_turn_id: null only
-character_id: optional, maximum 128 characters
-```
+The body accepts only schema
+`drc.v3.character-motion-presentation-request.1`, accepted lifecycle facts,
+fixed `home_screen_manual_motion`, null source session/turn IDs, and an optional
+bounded character ID. Extra keys are rejected.
 
 The service performs only:
 
@@ -121,134 +123,169 @@ strict request validation
 -> FrameworkMockMotionExecutionResult response
 ```
 
-Backend default-off returns typed HTTP 200 `disabled` without Framework
-import. Enabled requests with no usable Framework root return typed
-`unavailable`. `motion_active` and `unknown` remain mapper-owned `ignored`
-results and stop before Framework import.
+Backend default-off returns typed HTTP 200 `disabled` without Framework import.
+Enabled requests with no usable Framework root return typed `unavailable`.
+`motion_active` and `unknown` remain mapper-owned `ignored` results and stop
+before Framework import. Mapped requests use only a new root-public mock
+session with `adapter=mock`, `real_adapter_enabled=false`, and
+`allow_provider_execution=false`.
 
-A mapped request can create only a new root-public FW mock session with:
-
-```text
-adapter=mock
-real_adapter_enabled=false
-allow_provider_execution=false
-```
-
-The accepted RT-6c maximum of three synchronous commands, bounded normalized
-events/results, and mandatory close behavior remain unchanged.
-
-## Flutter configured runtime contract
-
-The runtime returns a controller factory only when the Flutter flag is true
-and the Backend base URL is an absolute HTTP(S) URL with a host, no userinfo,
-and no fragment.
-
-Runtime construction, factory lookup, controller construction, HomeScreen
-load, character selection, opt-in, reset, opt-out, and disposal perform zero
-HTTP requests. Only session-local opt-in plus one explicit Apply can send one
-POST. There is no automatic lifecycle subscription, retry, queue,
+Only session-local opt-in plus one explicit Apply can send one POST. Runtime
+construction, factory lookup, controller construction, HomeScreen load,
+character selection, opt-in, reset, opt-out, and disposal perform zero HTTP
+requests. There is no automatic lifecycle subscription, retry, queue,
 coalescing, background execution, or active-request replacement.
 
-The HTTP boundary:
+The accepted HTTP boundary is:
 
 ```text
 method: POST
 request content type: application/json; charset=utf-8
 accepted response status: 200 only
 redirect following: false
-accepted response content type: application/json
+accepted response content type: exact application/json media type
 accepted response shape: JSON object only
 maximum response body: 65536 bytes
-timeout: 10 seconds
+whole-response timeout: 10 seconds
 ```
 
-Non-200, redirect, timeout, oversized, wrong-content-type, malformed JSON, and
-non-object responses become the existing generic
-`motion_transport_failed` problem. Raw URL, response body, exception text,
-private IDs, command payloads, and provider data are not retained in public
-state.
+Failures become the existing generic `motion_transport_failed` problem. Raw
+URL, response body, exception text, private IDs, command payloads, and provider
+data are not retained in public state.
 
-Each configured controller owns one HTTP client and closes it on controller
-disposal. `main.dart` injects only the optional factory; the accepted RT-6e
-HomeScreen remains unchanged and retains default-off opt-in and local-only
-reset/opt-out invalidation.
-
-## Protected non-change surface
+## Accepted automated verification
 
 ```text
-backend/app/api/motion_demo.py
-backend/app/models/motion_demo.py
-backend/app/services/motion_demo_service.py
-backend/app/models/character_motion.py
-backend/app/models/character_motion_adapter.py
-backend/app/services/character_motion_mapper.py
-backend/app/services/framework_mock_motion_session_adapter.py
-backend/tests/test_character_motion_mapper.py
-backend/tests/test_framework_mock_motion_session_adapter.py
-
-app/lib/models/character_motion_presentation.dart
-app/lib/services/character_motion_presentation_client.dart
-app/lib/services/character_motion_presentation_controller.dart
-app/lib/screens/home_screen.dart
-app/lib/widgets/character_motion_presentation_panel.dart
-app/test/character_motion_home_screen_test.dart
-app/test/character_motion_presentation_client_test.dart
-app/test/character_motion_presentation_controller_test.dart
-
-app/lib/services/backend_api_client.dart
-app/pubspec.yaml
-app/pubspec.lock
-platform files
-assets
-versions
-release records
-Framework repository/vendor source
+Dart format: PASS
+python compileall: PASS
+dedicated RT-6f gate: PASS
+focused Backend: 10 passed
+Backend full: 289 passed
+Backend warning: 1 existing Starlette/httpx deprecation warning
+Flutter analyze: No issues found
+focused Flutter: 15 passed
+Flutter full: 483 passed
+exact implementation surface: 19 files
+changed-content privacy review: PASS
+CRLF-aware git diff --check: PASS
+implementation commit: fcdce38b9260604ea7c435c6de44fc129dc613f6
+implementation push: PASS
+post-push DRC working tree: clean
+post-push Framework working tree: clean
 ```
 
-## Candidate verification
+The corrective review fixed the whole-response timeout boundary, exact JSON
+media-type validation, the focused tests for those cases, and the executable
+Backend test path in `scripts/README.md` without expanding the exact nineteen-file
+surface.
 
-Automated Backend verification in the handoff workspace:
+## Accepted configured local controls
+
+### Control A — default-off
+
+The operator accepted normal startup with both RT-6f flags omitted:
 
 ```text
-python -m compileall -q backend/app: PASS
-focused Backend RT-6f tests: 10 passed
+configuration: unconfigured
+session opt-in: off
+automatic RT-6f request: none
 ```
 
-The focused Backend tests cover default-off, missing root, ignored facts,
-root-public mock completion, no provider/network/real-adapter flags, strict
-manual source, null session/turn IDs, schema rejection, and extra-key
-rejection.
+### Control B — configured idle
 
-Flutter formatting, analysis, focused tests, full Flutter regression, and the
-configured local operator controls must be run in the real Windows checkout
-where Flutter is installed. They are not claimed by this source-snapshot
-workspace.
-
-## Configured local acceptance controls
+The operator accepted configured startup before session opt-in:
 
 ```text
-Control A: both flags omitted -> unconfigured, HTTP 0, FW import/session 0
-Control B: both flags enabled, opt-in off -> configured idle, HTTP/FW 0
-Control C: speaking Apply -> one POST, completed, speaking cue, all mock commands completed
-Control D: unknown Apply -> one POST, ignored, command count 0, FW import/session false
-Control E: reset and opt-out -> no additional POST, delayed result invalidated
-Cleanup: both normal defaults restored, operator artifacts removed, DRC/FW trees clean
+configuration: configured
+session opt-in: off
+presentation phase: idle
+Apply unavailable while opted out
 ```
 
-## Explicit non-claims
+### Control C — speaking mock completion
+
+The accepted screen showed:
+
+```text
+selected fact: speaking
+presentation phase: completed
+execution status: completed
+cue: speaking
+commands requested: 2
+commands completed: 2
+adapter: mock
+real adapter enabled: false
+provider attempted: false
+network execution: false
+reason code: framework_mock_motion_completed
+```
+
+### Control D — unknown pre-import ignore
+
+The accepted screen showed:
+
+```text
+selected fact: unknown
+presentation phase: ignored
+execution status: ignored
+commands requested: 0
+commands completed: 0
+event type count: 0
+adapter: mock
+real adapter enabled: false
+provider attempted: false
+network execution: false
+reason code: unknown_fact_ignored
+```
+
+The UI also reported that the request was ignored before Framework import or
+session creation.
+
+### Control E — reset, opt-out, and cleanup
+
+The accepted screen after reset and opt-out showed:
+
+```text
+configuration: configured
+session opt-in: off
+presentation phase: idle
+execution status: none
+commands requested/completed: 0 / 0
+real adapter enabled: false
+provider attempted: false
+network execution: false
+```
+
+Per-Apply maximum-one-request and local-only reset/opt-out behavior are also
+covered by the focused Flutter tests. After operator execution and the
+implementation push, DRC and Framework working trees were clean. Private
+screenshots, local paths, LAN data, raw results, and operator evidence were not
+committed.
+
+## Protected non-change and non-claims
+
+RT-6f did not change the accepted RT-6b mapper, RT-6c adapter, RT-6d
+model/client/controller, or RT-6e HomeScreen/panel runtime. It did not change
+Framework source, provider code, platform files, assets, dependencies, version
+metadata, or release records.
 
 RT-6f does not implement or accept real Live2D animation, VTube Studio
 WebSocket, a real motion adapter, provider execution, credential/token reads,
 private model loading, automatic realtime lifecycle-to-motion wiring,
 automatic voice/stream/TTS-to-motion wiring, persistent opt-in, retry,
-background motion queues, smartphone/iOS/all-device motion acceptance,
+background motion queues, smartphone/iOS/all-device real-motion acceptance,
 v3.0.0 release readiness, or RT-7 authorization.
 
-## Stop rule
+## Completion and stop rule
 
 ```text
-Review the exact nineteen-file candidate and run the real-checkout validation.
-Do not commit or push without separate explicit operator approval.
-Do not mark RT-6f accepted before configured local Controls A-E and cleanup pass.
-RT-7 remains blocked on a real Live2D/VTS adapter.
+RT-6f implementation: COMPLETED / ACCEPTED / PUSHED
+parent RT-6: COMPLETED / ACCEPTED
+acceptance-sync surface: exact 7 documentation/static-gate files
+acceptance-sync commit/push: NOT_AUTHORIZED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
 ```
+
+Do not start RT-7 by substituting mock motion for a missing real Live2D/VTS
+adapter. Do not commit or push this acceptance synchronization without separate
+explicit approval.

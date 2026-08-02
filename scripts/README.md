@@ -7203,45 +7203,49 @@ historical and is not rerun against the new HEAD.
 Detailed accepted contract:
 `docs/v300_rt6e_home_screen_character_motion_wiring.md`.
 
-## v3.0.0 RT-6f configured local mock-motion candidate gate
+## v3.0.0 RT-6f configured local mock-motion acceptance-sync gate
 
-RT-6f is **IMPLEMENTED / AWAITING_REVIEW** against baseline
-`e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`. Commit and push remain
-unauthorized.
+RT-6f is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`fcdce38b9260604ea7c435c6de44fc129dc613f6` against baseline `e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`. The implementation surface is exact
+nineteen files. This acceptance synchronization changes only seven
+documentation/static-gate files and does not change runtime or tests.
 
-Run from the real repository root before requesting commit approval:
+Run from the clean implementation commit before committing the acceptance sync:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py
-python -m pytest -q backend\tests\test_character_motion_presentation_api.py
-python -m pytest -q backend\tests
-
-cd app
-dart format --output=none --set-exit-if-changed `
-    lib\main.dart `
-    lib\services\configured_character_motion_presentation_runtime.dart `
-    test\configured_character_motion_presentation_runtime_test.dart `
-    test\main_character_motion_presentation_wiring_widget_test.dart
-flutter analyze
-flutter test test\configured_character_motion_presentation_runtime_test.dart `
-    test\main_character_motion_presentation_wiring_widget_test.dart
-flutter test
-cd ..
-
 git -c core.whitespace=cr-at-eol diff --check
+git status --short
 ```
 
-Handoff snapshot mode, used only when the original Git object is absent:
+Handoff snapshot mode, used only when the implementation Git object is absent:
 
 ```powershell
 python scripts\check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py --snapshot
 ```
 
-The gate performs no HTTP, Framework, provider, VTS, Live2D, audio, STT, LLM,
-TTS, credential, or token execution. It statically checks the exact nineteen
-files, dual default-off assembly, strict manual request, HTTP bounds, protected
-RT-6b through RT-6e files, mock-only flags, and blocked RT-7 state.
+The acceptance-sync gate requires `HEAD` and `origin/main` to equal
+`fcdce38b9260604ea7c435c6de44fc129dc613f6` in normal mode and requires the working tree change surface to be the
+exact seven documentation/static-gate files. It rechecks the accepted
+Backend/Flutter implementation markers without executing HTTP, Framework,
+provider, VTS, Live2D, audio, STT, LLM, TTS, credential, or token work.
 
-Detailed candidate contract:
+Recorded accepted results:
+
+```text
+focused Backend: 10 passed
+Backend full: 289 passed, 1 dependency deprecation warning
+Flutter analyze: passed
+focused Flutter: 15 passed
+Flutter full: 483 passed
+configured local Controls A-E: passed
+implementation push: completed
+post-push DRC/FW working trees: clean
+RT-6: COMPLETED / ACCEPTED
+RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
+acceptance-sync commit/push: NOT_AUTHORIZED
+```
+
+Detailed accepted contract:
 `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.

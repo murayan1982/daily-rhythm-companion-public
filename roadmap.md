@@ -1,12 +1,12 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-08-01
+Updated: 2026-08-02
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6f implementation review
+Current small commit: RT-6f acceptance sync
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,15 +570,15 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-6 CURRENT / NOT_COMPLETED
-Current small commit: RT-6f implementation review
-Last accepted small commit: RT-6e HomeScreen character motion wiring COMPLETED / ACCEPTED / PUSHED at 13343017738d0bb5fe23583467856233d62196fb
+Status: RT-6 COMPLETED / ACCEPTED
+Current small commit: RT-6f acceptance sync
+Last accepted small commit: RT-6f configured local mock-motion presentation COMPLETED / ACCEPTED / PUSHED at fcdce38b9260604ea7c435c6de44fc129dc613f6
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6f configured local mock-motion presentation candidate.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation: RT-6f configured local mock-motion presentation acceptance.
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
 Current implementation baseline: `e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`
-Current implementation commit: none
-Current implementation boundary: exact nineteen files; strict default-off Backend route/service/config/tests, default-off Flutter HTTP runtime and main.dart assembly, two focused Flutter tests, seven documentation/static-gate files; accepted RT-6b through RT-6e runtime remains unchanged.
+Current implementation commit: `fcdce38b9260604ea7c435c6de44fc129dc613f6`
+Current implementation boundary: exact nineteen implementation files plus exact seven-file documentation/static-gate acceptance sync; accepted RT-6b through RT-6e runtime remains unchanged.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -792,13 +792,13 @@ RT-5   COMPLETED / ACCEPTED  TTS output control, queue, flush, and barge-in
     RT-5f2  COMPLETED / ACCEPTED / PUSHED  Fake-only integrated voice-turn and soft-barge-in coordinator
     RT-5f3  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen and production speech-activity wiring
     RT-5f4  COMPLETED / ACCEPTED / PUSHED  Configured local end-to-end and audible soft-barge-in acceptance
-RT-6   CURRENT / NOT_COMPLETED  Realtime character presentation and motion-event mapping
+RT-6   COMPLETED / ACCEPTED     Realtime character presentation and motion-event mapping
   RT-6a  COMPLETED / ACCEPTED / PUSHED  Current behavior inventory, readiness decision, and exact split
   RT-6b  COMPLETED / ACCEPTED / PUSHED  App-owned provider-neutral motion mapping contract
   RT-6c  COMPLETED / ACCEPTED / PUSHED  Guarded FW root-public mock motion-session adapter
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
-  RT-6f  IMPLEMENTED / AWAITING_REVIEW / COMMIT_NOT_AUTHORIZED  Configured local mock-motion presentation acceptance
+  RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
 RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
@@ -8185,27 +8185,40 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6e_home_screen_character_motion_wiring.py`.
 
-## RT-6f candidate — configured local mock-motion presentation acceptance
+## RT-6f accepted — configured local mock-motion presentation
 
 ```text
-RT-6: CURRENT / NOT_COMPLETED
-RT-6f: IMPLEMENTED / AWAITING_REVIEW
+RT-6: COMPLETED / ACCEPTED
+RT-6f: COMPLETED / ACCEPTED / PUSHED
 baseline: e1d4f63d71c2de485b05fbfc5dad6811b81b31fc
+implementation commit: fcdce38b9260604ea7c435c6de44fc129dc613f6
 implementation surface: exact 19 files
+acceptance-sync surface: exact 7 documentation/static-gate files
 Backend flag default: off
 Flutter flag default: off
 HomeScreen session opt-in default: off
 explicit Apply request limit: 1
+focused Backend: 10 passed
+Backend full: 289 passed, 1 dependency deprecation warning
+Flutter analyze: passed
+focused Flutter: 15 passed
+Flutter full: 483 passed
+configured local Controls A-E: passed
 real adapter/provider/FW external network/VTS/Live2D: disabled
-commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: NOT_AUTHORIZED
 RT-7: BLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED
 ```
 
 RT-6f connects the accepted RT-6e manual HomeScreen presentation to the
 accepted RT-6b mapper and RT-6c root-public FW mock adapter through one strict
-local Backend endpoint and one bounded Flutter HTTP runtime. It adds no
-automatic lifecycle subscription, retry, queue, real adapter, provider
-execution, or visible animation claim.
+local Backend endpoint and one bounded Flutter HTTP runtime. Controls A-E
+accepted the double-default-off behavior, configured idle state, speaking
+2/2 mock completion, unknown 0/0 pre-import ignore, and local reset/opt-out.
 
-Detailed candidate contract:
+The accepted implementation adds no automatic lifecycle subscription, retry,
+queue, real adapter, provider execution, external Framework network work, or
+visible animation claim. Completion of RT-6 does not authorize RT-7; real
+Live2D/VTS adapter execution remains blocked.
+
+Detailed accepted contract:
 `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.
