@@ -2,27 +2,50 @@
 
 Updated: 2026-08-02
 
-## Candidate state
+## Accepted state
 
 ```text
 RT-6: COMPLETED / ACCEPTED / PUSHED
 RT-7: CURRENT / NOT_COMPLETED
-RT-7a: IMPLEMENTED / AWAITING_REVIEW
+RT-7a: COMPLETED / ACCEPTED / PUSHED
 DRC baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+implementation commit: efb139b2c0b6c7cc66912a229bd674b36df82dd7
+implementation surface: exact 7 documentation/static-gate files
+acceptance-sync surface: exact 7 documentation/static-gate files
 Framework version: 5.4.0
 Framework reference commit: d313eb6acb643103fe25988720ebee5976a04f78
-change surface: exact 7 documentation/static-gate files
 readiness: BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
-commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
-## Purpose
+## Accepted result
 
 RT-7a freezes the accepted RT-6 mock-motion path and records the exact
 prerequisite for real Live2D / VTube Studio execution. It is an inventory and
 requirement checkpoint only. It does not implement or execute a real adapter.
 
-The accepted DRC path remains:
+Accepted verification:
+
+```text
+compileall: PASS
+dedicated RT-7a gate: PASS
+Backend full: 289 passed
+Backend dependency warnings: 1
+Flutter analyze: No issues found
+Flutter full: 483 passed
+exact seven-file implementation review: PASS
+changed-content privacy scan: PASS
+CRLF-aware git diff --check: PASS
+explicit implementation commit approval: ACCEPTED
+implementation commit/push: COMPLETED
+post-push DRC clean: true
+post-push Framework clean: true
+```
+
+The warning came from the installed Starlette/httpx test dependency boundary
+and did not fail the Backend regression suite.
+
+## Frozen accepted DRC path
 
 ```text
 explicit HomeScreen Apply
@@ -32,6 +55,8 @@ explicit HomeScreen Apply
 → normalized mock-only result
 → bounded Flutter presentation
 ```
+
+No accepted RT-6 runtime or test is changed by RT-7a or this acceptance sync.
 
 ## Released Framework v5.4.0 inventory
 
@@ -52,29 +77,18 @@ MotionSessionInfo
 create_motion_session
 ```
 
-The public contract already provides typed states including:
+The public contract provides typed states including `disabled`,
+`mock_available`, `not_configured`, `token_missing`,
+`provider_execution_not_allowed`, `runtime_not_installed`,
+`model_not_selected`, `not_implemented`, `unsupported_adapter`, and `closed`.
 
-```text
-disabled
-mock_available
-not_configured
-token_missing
-provider_execution_not_allowed
-runtime_not_installed
-model_not_selected
-not_implemented
-unsupported_adapter
-closed
-```
+Released v5.4.0 is intentionally mock-safe. For `live2d`, `vts`, or
+`vtube_studio`, real adapter support remains false and an explicitly enabled
+provider path resolves to a typed not-implemented capability/result. The
+session does not connect to VTube Studio, open a VTS WebSocket, read a token,
+load a private model or Live2D runtime, or import provider SDK modules.
 
-The released implementation is intentionally mock-safe. The mock adapter is
-local and credential-free. For `live2d`, `vts`, or `vtube_studio`, real adapter
-support remains false and an explicitly enabled provider path resolves to a
-typed not-implemented capability/result. The session does not connect to VTube
-Studio, open a WebSocket, read a token, load a private model or Live2D runtime,
-or import provider SDK modules.
-
-## Readiness decision
+## Accepted readiness decision
 
 ```text
 READY_AND_FROZEN:
@@ -93,10 +107,8 @@ DECISION:
 BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
 ```
 
-DRC cannot make the missing capability real by importing
-`framework.motion`, `framework.motion_session`, internal/provider modules, or a
-VTS library directly. DRC also cannot add a provider-specific VTS client that
-bypasses the Framework root-public boundary.
+DRC cannot make the missing capability real through a Framework
+internal/provider import or a DRC-owned VTS/provider bypass.
 
 ## Minimum released Framework real-adapter contract required by DRC
 
@@ -137,13 +149,11 @@ Until a released Framework version satisfies the real-adapter contract:
 - keep RT-7 runtime implementation blocked.
 ```
 
-After a released Framework update, DRC must perform a separate exact-contract
-reassessment before any runtime change. That future review may consider a
-default-off Backend root-public real-adapter assembly, bounded typed API
-responses, reuse of the accepted Flutter presentation path, and configured PC
-operator acceptance. Smartphone end-to-end evidence remains RT-8 work.
+After a released Framework update, DRC requires a separate exact-contract
+reassessment before any runtime change. Smartphone end-to-end evidence remains
+RT-8 work.
 
-## Exact implementation surface
+## Exact implementation and acceptance-sync surface
 
 ```text
 README.md
@@ -155,39 +165,21 @@ docs/v300_rt7a_real_motion_adapter_readiness.md
 scripts/check_v300_rt7a_real_motion_adapter_readiness.py
 ```
 
-No Backend runtime, Flutter runtime, existing test, dependency, lockfile,
-platform manifest, environment profile, asset, version, release record, or
-Framework source file is changed.
-
-## Verification contract
-
-```text
-python -m compileall -q backend scripts
-python scripts/check_v300_rt7a_real_motion_adapter_readiness.py
-python -m pytest -q backend/tests
-cd app
-flutter analyze
-flutter test
-cd ..
-git -c core.whitespace=cr-at-eol diff --check
-git status --short
-```
-
-Normal mode requires DRC `HEAD` and `origin/main` at `c3c78316fd2bcd4f9939dcaadc32134a704374cf`, a clean FW v5.4.0
-checkout at `d313eb6acb643103fe25988720ebee5976a04f78`, and an exact seven-file DRC candidate surface. Snapshot mode
-skips Git identity checks but preserves documentation and DRC source checks.
+Both the implementation and acceptance-state synchronization use the same
+seven documentation/static-gate files. The acceptance sync changes no Backend
+runtime, Flutter runtime, existing test, dependency, lockfile, platform
+manifest, environment profile, asset, version, release record, or Framework
+source file.
 
 ## Non-actions and non-claims
 
 RT-7a performs no HTTP, provider, network, WebSocket, VTS, Live2D, token,
 credential, private model, microphone, audio, STT, LLM, TTS, screenshot, or
-operator execution. It changes no runtime or existing test and does not
-indicate that a real adapter is available.
+operator execution. It does not indicate that a real adapter is available.
 
 ## Next action
 
 ```text
-Review and verify the exact seven-file RT-7a candidate.
-Commit/push remains NOT_AUTHORIZED.
+Commit/push the exact seven-file acceptance sync only after separate approval.
 RT-7 real runtime remains blocked pending a released Framework adapter.
 ```

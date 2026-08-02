@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-7 CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
-Current small commit: RT-7a real-motion adapter readiness candidate
-Current implementation step: RT-7a real Live2D / VTS adapter prerequisite and Framework requirement inventory
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-7a acceptance sync
+Current implementation step: RT-7a real-motion adapter readiness acceptance
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
 Current implementation baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
-Current implementation commit: none
-Last accepted small commit: RT-6f configured local mock-motion presentation COMPLETED / ACCEPTED / PUSHED at fcdce38b9260604ea7c435c6de44fc129dc613f6
+Current implementation commit: efb139b2c0b6c7cc66912a229bd674b36df82dd7
+Last accepted small commit: RT-7a real-motion adapter readiness COMPLETED / ACCEPTED / PUSHED at efb139b2c0b6c7cc66912a229bd674b36df82dd7
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify the exact seven-file RT-7a candidate; commit/push remains NOT_AUTHORIZED
+Next implementation action: record the exact seven-file RT-7a acceptance sync; RT-7 runtime remains blocked pending a released Framework real-motion adapter
 ```
 
 ## Source of truth
@@ -2834,37 +2834,43 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py`.
 
-## RT-7a implementation candidate
+## RT-7a accepted implementation checkpoint
 
 ```text
 RT-6: COMPLETED / ACCEPTED / PUSHED
-RT-7: CURRENT / NOT_COMPLETED
-RT-7a: IMPLEMENTED / AWAITING_REVIEW
-baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+RT-7: CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+RT-7a: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+implementation commit: efb139b2c0b6c7cc66912a229bd674b36df82dd7
 exact implementation surface: 7 documentation/static-gate files
+acceptance-sync surface: exact 7 documentation/static-gate files
 Framework v5.4.0 reference: d313eb6acb643103fe25988720ebee5976a04f78
-readiness: BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
 DRC runtime changed: false
 existing tests changed: false
 Framework source changed: false
 real adapter execution: false
-commit/push: NOT_AUTHORIZED
+acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
 - [x] Freeze accepted RT-6 mock-motion mapping, adapter, Flutter, HomeScreen, and configured acceptance.
 - [x] Inventory released FW root-public motion symbols and factory.
-- [x] Record current real adapter support as false and real execution as typed not implemented.
+- [x] Record real adapter support as false and real execution as typed not implemented.
 - [x] Define the minimum released FW real-adapter contract required by DRC.
 - [x] Preserve root-public-only integration and prohibit DRC provider bypass.
 - [x] Preserve explicit default-off, capability reporting, safe errors, and close ownership requirements.
-- [x] Add exact seven-file documentation/static-gate candidate.
-- [ ] Run compileall and the dedicated RT-7a gate in real DRC/FW checkouts.
-- [ ] Run Backend full regression and Flutter analyze/full regression.
-- [ ] Complete exact-surface and changed-content privacy review.
-- [ ] Obtain explicit commit approval before commit/push.
+- [x] Add exact seven-file documentation/static-gate implementation.
+- [x] Pass compileall and the dedicated RT-7a gate in real DRC/FW checkouts.
+- [x] Pass Backend full: 289 passed, 1 dependency warning.
+- [x] Pass Flutter analyze and full Flutter: 483 passed.
+- [x] Pass exact-surface, changed-content privacy, and CRLF-aware diff review.
+- [x] Obtain explicit implementation commit and push approvals.
+- [x] Commit and push implementation `efb139b2c0b6c7cc66912a229bd674b36df82dd7`.
+- [x] Verify post-push DRC/FW clean working trees.
+- [x] Mark RT-7a COMPLETED / ACCEPTED / PUSHED.
+- [ ] Commit/push this acceptance sync only after separate approval.
 - [ ] Keep RT-7 runtime implementation blocked pending a released Framework real-motion adapter.
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt7a_real_motion_adapter_readiness.md`.
-Candidate gate:
+Historical acceptance-sync gate:
 `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.

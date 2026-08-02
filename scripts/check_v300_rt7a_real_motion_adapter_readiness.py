@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the exact RT-7a real-motion adapter readiness candidate."""
+"""Validate the exact RT-7a acceptance-state synchronization."""
 
 from __future__ import annotations
 
@@ -10,7 +10,8 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-DRC_BASELINE = "c3c78316fd2bcd4f9939dcaadc32134a704374cf"
+IMPLEMENTATION_BASELINE = "c3c78316fd2bcd4f9939dcaadc32134a704374cf"
+IMPLEMENTATION_COMMIT = "efb139b2c0b6c7cc66912a229bd674b36df82dd7"
 FW_VERSION = "5.4.0"
 FW_REFERENCE_COMMIT = "d313eb6acb643103fe25988720ebee5976a04f78"
 
@@ -61,13 +62,8 @@ SENSITIVE_PATTERNS = (
 
 def run(*args: str, cwd: Path = ROOT, capture: bool = False) -> str:
     completed = subprocess.run(
-        list(args),
-        cwd=cwd,
-        check=True,
-        text=True,
-        encoding="utf-8",
-        errors="surrogateescape",
-        capture_output=capture,
+        list(args), cwd=cwd, check=True, text=True, encoding="utf-8",
+        errors="surrogateescape", capture_output=capture,
     )
     return completed.stdout.rstrip("\r\n") if capture else ""
 
@@ -76,14 +72,9 @@ def read(relative: str, *, root: Path = ROOT) -> str:
     return (root / relative).read_text(encoding="utf-8", errors="replace")
 
 
-def require(text: str, needle: str, label: str) -> None:
-    if needle not in text:
-        raise AssertionError(f"Missing {label}: {needle!r}")
-
-
-def forbid(text: str, needle: str, label: str) -> None:
-    if needle in text:
-        raise AssertionError(f"Unexpected {label}: {needle!r}")
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
 
 
 def changed_paths() -> set[str]:
@@ -94,11 +85,7 @@ def changed_paths() -> set[str]:
         ("git", "ls-files", "--others", "--exclude-standard"),
     ):
         output = run(*command, capture=True)
-        paths.update(
-            line.strip().replace("\\", "/")
-            for line in output.splitlines()
-            if line.strip()
-        )
+        paths.update(line.strip().replace("\\", "/") for line in output.splitlines() if line.strip())
     return paths
 
 
@@ -108,13 +95,11 @@ def resolve_framework_root() -> Path:
         value = os.environ.get(name, "").strip()
         if value:
             candidates.append(Path(value).expanduser())
-    candidates.extend(
-        (
-            ROOT.parent.parent / "AI-Character-Framework" / "Development",
-            ROOT.parent / "AI-Character-Framework" / "Development",
-            ROOT.parent / "ai-character-framework",
-        )
-    )
+    candidates.extend((
+        ROOT.parent.parent / "AI-Character-Framework" / "Development",
+        ROOT.parent / "AI-Character-Framework" / "Development",
+        ROOT.parent / "ai-character-framework",
+    ))
     for candidate in candidates:
         resolved = candidate.resolve()
         if (resolved / "framework" / "__init__.py").is_file():
@@ -123,66 +108,40 @@ def resolve_framework_root() -> Path:
 
 
 def assert_surface(*, snapshot: bool) -> Path | None:
-    missing = sorted(path for path in EXACT_PATHS if not (ROOT / path).is_file())
-    if missing:
-        raise AssertionError(f"RT-7a files missing: {missing}")
-
+    missing = sorted(path for path in EXACT_PATHS | PROTECTED_RT6_PATHS if not (ROOT / path).is_file())
+    require(not missing, f"RT-7a files missing: {missing}")
     changed = changed_paths()
-    if changed != EXACT_PATHS:
-        raise AssertionError(
-            "RT-7a exact surface mismatch: "
-            f"expected={sorted(EXACT_PATHS)} actual={sorted(changed)}"
-        )
-    if changed & PROTECTED_RT6_PATHS:
-        raise AssertionError("RT-7a changed accepted RT-6 runtime/tests")
-
+    require(changed == EXACT_PATHS, f"RT-7a acceptance surface mismatch: expected={sorted(EXACT_PATHS)} actual={sorted(changed)}")
+    require(not (changed & PROTECTED_RT6_PATHS), "RT-7a acceptance sync changed accepted RT-6 runtime/tests")
     if snapshot:
         return None
-
     head = run("git", "rev-parse", "HEAD", capture=True)
     origin = run("git", "rev-parse", "origin/main", capture=True)
-    if head != DRC_BASELINE or origin != DRC_BASELINE:
-        raise AssertionError(
-            f"Unexpected DRC baseline: head={head} origin/main={origin} expected={DRC_BASELINE}"
-        )
-
+    require(head == IMPLEMENTATION_COMMIT and origin == IMPLEMENTATION_COMMIT,
+            f"RT-7a implementation baseline mismatch: head={head} origin/main={origin} expected={IMPLEMENTATION_COMMIT}")
     fw_root = resolve_framework_root()
     fw_head = run("git", "rev-parse", "HEAD", cwd=fw_root, capture=True)
-    if fw_head != FW_REFERENCE_COMMIT:
-        raise AssertionError(
-            f"Unexpected FW HEAD: {fw_head}; expected {FW_REFERENCE_COMMIT}"
-        )
-    if run(
-        "git",
-        "status",
-        "--porcelain",
-        "--untracked-files=all",
-        cwd=fw_root,
-        capture=True,
-    ):
-        raise AssertionError("FW working tree is not clean.")
+    require(fw_head == FW_REFERENCE_COMMIT, f"Unexpected FW HEAD: {fw_head}; expected {FW_REFERENCE_COMMIT}")
+    require(not run("git", "status", "--porcelain", "--untracked-files=all", cwd=fw_root, capture=True),
+            "FW working tree is not clean.")
     return fw_root
 
 
 def assert_docs() -> None:
-    sources = {
-        "README": read("README.md"),
-        "roadmap": read("roadmap.md"),
-        "tasklist": read("tasklist.md"),
-        "scripts README": read("scripts/README.md"),
-        "checklist": read("docs/DRC_v300_goal_checklist_small_commit.md"),
-        "contract": read("docs/v300_rt7a_real_motion_adapter_readiness.md"),
-    }
-    combined = "\n".join(sources.values())
-
+    combined = "\n".join(read(path) for path in sorted(EXACT_PATHS) if path.endswith(".md"))
     required = (
-        "RT-7a: IMPLEMENTED / AWAITING_REVIEW",
+        "RT-7a: COMPLETED / ACCEPTED / PUSHED",
         "RT-7: CURRENT / NOT_COMPLETED",
         "BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED",
-        DRC_BASELINE,
+        IMPLEMENTATION_BASELINE,
+        IMPLEMENTATION_COMMIT,
         FW_VERSION,
         FW_REFERENCE_COMMIT,
-        "exact 7 documentation/static-gate files",
+        "implementation surface: exact 7 documentation/static-gate files",
+        "acceptance-sync surface: exact 7 documentation/static-gate files",
+        "Backend full: 289 passed",
+        "Flutter analyze: No issues found",
+        "Flutter full: 483 passed",
         "real_adapter_supported=false",
         "not_implemented",
         "create_motion_session()",
@@ -194,129 +153,75 @@ def assert_docs() -> None:
         "DRC runtime changed: false",
         "Framework source changed: false",
         "real motion executed: false",
-        "commit/push: NOT_AUTHORIZED",
+        "implementation commit/push: COMPLETED",
+        "acceptance-sync commit/push: NOT_AUTHORIZED",
     )
     for marker in required:
-        require(combined, marker, f"RT-7a marker {marker}")
-
-    for relative in sorted(EXACT_PATHS):
-        require(combined, relative, f"exact path {relative}")
-
+        require(marker in combined, f"RT-7a acceptance documentation marker missing: {marker}")
     forbidden = (
-        "RT-7a: COMPLETED / ACCEPTED",
-        "RT-7a implementation commit:",
-        "real adapter execution: true",
-        "VTS WebSocket opened: true",
-        "commit/push: AUTHORIZED",
+        "RT-7a: IMPLEMENTED / AWAITING_REVIEW",
+        "Current implementation commit: none",
     )
     for marker in forbidden:
-        forbid(combined, marker, f"premature RT-7a marker {marker}")
+        require(marker not in combined, f"stale RT-7a candidate marker remains: {marker}")
 
 
 def assert_drc_rt6_frozen() -> None:
-    for path in PROTECTED_RT6_PATHS:
-        if not (ROOT / path).is_file():
-            raise AssertionError(f"Accepted RT-6 path missing: {path}")
-
     adapter = read("backend/app/services/framework_mock_motion_session_adapter.py")
     route = read("backend/app/api/character_motion_presentation.py")
     runtime = read("app/lib/services/configured_character_motion_presentation_runtime.dart")
-
-    for marker in (
-        "create_motion_session",
-        'adapter="mock"',
-        "real_adapter_enabled=False",
-        "allow_provider_execution=False",
-    ):
-        require(adapter, marker, f"accepted mock adapter marker {marker}")
-    require(route, '"/demo/character-motion/presentation"', "accepted presentation route")
-    require(runtime, "DRC_RT6_ENABLE_CONFIGURED_MOCK_MOTION", "accepted Flutter mock flag")
+    for marker in ("create_motion_session", 'adapter="mock"', "real_adapter_enabled=False", "allow_provider_execution=False"):
+        require(marker in adapter, f"accepted mock adapter marker missing: {marker}")
+    require('/demo/character-motion/presentation' in route, "accepted presentation route missing")
+    require("DRC_RT6_ENABLE_CONFIGURED_MOCK_MOTION" in runtime, "accepted Flutter mock flag missing")
 
 
 def assert_framework_boundary(fw_root: Path | None) -> None:
     if fw_root is None:
         return
-
     public_init = read("framework/__init__.py", root=fw_root)
     motion = read("framework/motion.py", root=fw_root)
     session = read("framework/motion_session.py", root=fw_root)
-
-    for marker in (
-        "MotionAdapterStatus",
-        "MotionCapability",
-        "MotionRequest",
-        "MotionResult",
-        "MotionSession",
-        "MotionSessionInfo",
-        "create_motion_session",
-    ):
-        require(public_init, marker, f"FW root-public export {marker}")
-
-    for marker in (
-        'NOT_IMPLEMENTED = "not_implemented"',
-        'TOKEN_MISSING = "token_missing"',
-        'RUNTIME_NOT_INSTALLED = "runtime_not_installed"',
-        'MODEL_NOT_SELECTED = "model_not_selected"',
-        "supports_real_adapter: bool = False",
-    ):
-        require(motion, marker, f"FW motion contract marker {marker}")
-
-    for marker in (
-        "real_adapter_supported=capability.supports_real_adapter",
-        'adapter not in {"mock", "live2d", "vts", "vtube_studio"}',
-        "Real motion adapter is not implemented yet.",
-        "This skeleton performs no real Live2D or VTS operation.",
-        "result = MotionResult.not_implemented",
-    ):
-        require(session, marker, f"FW mock-safe session marker {marker}")
+    for marker in ("MotionAdapterStatus", "MotionCapability", "MotionRequest", "MotionResult", "MotionSession", "MotionSessionInfo", "create_motion_session"):
+        require(marker in public_init, f"FW root-public export missing: {marker}")
+    for marker in ('NOT_IMPLEMENTED = "not_implemented"', 'TOKEN_MISSING = "token_missing"', 'RUNTIME_NOT_INSTALLED = "runtime_not_installed"', 'MODEL_NOT_SELECTED = "model_not_selected"', "supports_real_adapter: bool = False"):
+        require(marker in motion, f"FW motion contract marker missing: {marker}")
+    for marker in ("real_adapter_supported=capability.supports_real_adapter", 'adapter not in {"mock", "live2d", "vts", "vtube_studio"}', "Real motion adapter is not implemented yet.", "This skeleton performs no real Live2D or VTS operation.", "result = MotionResult.not_implemented"):
+        require(marker in session, f"FW mock-safe session marker missing: {marker}")
 
 
 def assert_changed_content_safe() -> None:
-    diff = run(
-        "git",
-        "diff",
-        "HEAD",
-        "--unified=0",
-        "--",
-        *sorted(EXACT_PATHS),
-        capture=True,
-    )
-    added = "\n".join(
-        line[1:]
-        for line in diff.splitlines()
-        if line.startswith("+") and not line.startswith("+++")
-    )
+    diff = run("git", "diff", "HEAD", "--unified=0", "--", *sorted(EXACT_PATHS), capture=True)
+    added = "\n".join(line[1:] for line in diff.splitlines() if line.startswith("+") and not line.startswith("+++"))
     for pattern in SENSITIVE_PATTERNS:
-        if re.search(pattern, added):
-            raise AssertionError(f"Sensitive-looking value in RT-7a candidate: {pattern}")
+        require(re.search(pattern, added) is None, f"Sensitive-looking value in RT-7a acceptance sync: {pattern}")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--snapshot", action="store_true")
     args = parser.parse_args()
-
     fw_root = assert_surface(snapshot=args.snapshot)
     assert_docs()
     assert_drc_rt6_frozen()
     assert_framework_boundary(fw_root)
     assert_changed_content_safe()
-
     values = (
-        ("v300_rt7a_status", "implemented-awaiting-review"),
-        (
-            "v300_rt7_status",
-            "current-not-completed-blocked-framework-real-motion-adapter-release-required",
-        ),
-        ("v300_rt7a_exact_change_surface", "True"),
-        ("v300_rt7a_change_file_count", "7"),
-        ("v300_rt7a_drc_baseline", DRC_BASELINE),
-        ("v300_rt7a_framework_version", FW_VERSION),
-        ("v300_rt7a_framework_reference_commit", FW_REFERENCE_COMMIT),
-        ("v300_rt7a_rt6_runtime_changed", "False"),
-        ("v300_rt7a_backend_runtime_changed", "False"),
-        ("v300_rt7a_flutter_runtime_changed", "False"),
-        ("v300_rt7a_existing_tests_changed", "False"),
+        ("v300_rt7a_status", "completed-accepted-pushed"),
+        ("v300_rt7_status", "current-not-completed-blocked-framework-real-motion-adapter-release-required"),
+        ("v300_rt7a_exact_acceptance_sync_surface", "True"),
+        ("v300_rt7a_acceptance_sync_file_count", "7"),
+        ("v300_rt7a_implementation_baseline", IMPLEMENTATION_BASELINE),
+        ("v300_rt7a_implementation_commit", IMPLEMENTATION_COMMIT),
+        ("v300_rt7a_implementation_surface", "7"),
+        ("v300_rt7a_backend_full_passed", "289"),
+        ("v300_rt7a_backend_warning_count", "1"),
+        ("v300_rt7a_flutter_analyze_passed", "True"),
+        ("v300_rt7a_flutter_full_passed", "483"),
+        ("v300_rt7a_rt6_runtime_changed_by_acceptance_sync", "False"),
+        ("v300_rt7a_backend_runtime_changed_by_acceptance_sync", "False"),
+        ("v300_rt7a_flutter_runtime_changed_by_acceptance_sync", "False"),
+        ("v300_rt7a_existing_tests_changed_by_acceptance_sync", "False"),
         ("v300_rt7a_framework_source_changed", "False"),
         ("v300_rt7a_vts_connection_opened", "False"),
         ("v300_rt7a_token_read", "False"),
@@ -324,7 +229,8 @@ def main() -> int:
         ("v300_rt7a_real_motion_executed", "False"),
         ("v300_rt7a_drc_provider_bypass_allowed", "False"),
         ("v300_rt7a_framework_update_required", "True"),
-        ("v300_rt7a_commit_push_authorized", "False"),
+        ("v300_rt7a_implementation_push_completed", "True"),
+        ("v300_rt7a_acceptance_sync_commit_push_authorized", "False"),
         ("v300_rt7a_snapshot_mode", str(args.snapshot)),
     )
     for key, value in values:
