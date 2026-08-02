@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6f acceptance sync
+Current small commit: RT-7a real-motion adapter readiness candidate
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,15 +570,15 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-6 COMPLETED / ACCEPTED
-Current small commit: RT-6f acceptance sync
+Status: RT-7 CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+Current small commit: RT-7a real-motion adapter readiness candidate
 Last accepted small commit: RT-6f configured local mock-motion presentation COMPLETED / ACCEPTED / PUSHED at fcdce38b9260604ea7c435c6de44fc129dc613f6
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-6f configured local mock-motion presentation acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`
-Current implementation commit: `fcdce38b9260604ea7c435c6de44fc129dc613f6`
-Current implementation boundary: exact nineteen implementation files plus exact seven-file documentation/static-gate acceptance sync; accepted RT-6b through RT-6e runtime remains unchanged.
+Current implementation: RT-7a real Live2D / VTS adapter prerequisite and Framework requirement inventory.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `c3c78316fd2bcd4f9939dcaadc32134a704374cf`
+Current implementation commit: none
+Current implementation boundary: exact seven documentation/static-gate files; no DRC runtime, existing test, dependency, platform, release, or Framework source change.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
 
@@ -799,7 +799,8 @@ RT-6   COMPLETED / ACCEPTED     Realtime character presentation and motion-event
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
   RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
-RT-7   BLOCKED                   Configured Live2D / VTS adapter execution
+RT-7   CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED  Configured Live2D / VTS adapter execution
+  RT-7a  IMPLEMENTED / AWAITING_REVIEW  Real motion adapter prerequisite and Framework requirement inventory
 RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
 ```
@@ -8222,3 +8223,44 @@ Live2D/VTS adapter execution remains blocked.
 
 Detailed accepted contract:
 `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.
+
+## RT-7a candidate — real motion adapter prerequisite and Framework requirement inventory
+
+RT-7a is a docs/static-gate-only readiness checkpoint against DRC baseline
+`c3c78316fd2bcd4f9939dcaadc32134a704374cf` and Framework v5.4.0 reference commit `d313eb6acb643103fe25988720ebee5976a04f78`.
+
+Readiness decision:
+
+```text
+DRC_ACCEPTED_MOCK_MOTION_PATH: READY_AND_FROZEN
+REAL_LIVE2D_VTS_EXECUTION: BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+DRC_REAL_ADAPTER_RUNTIME_IMPLEMENTATION: NOT_AUTHORIZED
+```
+
+The current Framework root-public surface exports provider-neutral motion
+requests, results, capability/status models, `MotionSession`, and
+`create_motion_session()`. Its released v5.4.0 implementation remains mock-safe:
+real adapter support is false, configured real adapters resolve to typed
+`not_implemented`, and no VTS WebSocket, token, private model, Live2D runtime,
+or provider SDK is used.
+
+A future released Framework update must own the real adapter, explicit
+default-off provider execution, typed VTS/token/runtime/model preflight,
+connection/resource lifecycle, bounded public-safe results, and root-public
+factory compatibility. DRC must continue to prohibit Framework internal imports
+and a DRC-owned VTS/provider bypass.
+
+Exact RT-7a surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt7a_real_motion_adapter_readiness.md
+scripts/check_v300_rt7a_real_motion_adapter_readiness.py
+```
+
+RT-7a performs no runtime execution. After RT-7a acceptance, RT-7 remains
+blocked until a released Framework real-motion adapter can be reassessed.

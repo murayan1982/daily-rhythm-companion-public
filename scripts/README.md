@@ -7249,3 +7249,59 @@ acceptance-sync commit/push: NOT_AUTHORIZED
 
 Detailed accepted contract:
 `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.
+
+## v3.0.0 RT-7a real-motion adapter readiness candidate gate
+
+RT-7a is a docs/static-gate-only candidate against DRC baseline
+`c3c78316fd2bcd4f9939dcaadc32134a704374cf` and Framework v5.4.0 reference commit `d313eb6acb643103fe25988720ebee5976a04f78`.
+
+Run from the clean DRC baseline after applying the exact seven-file candidate:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7a_real_motion_adapter_readiness.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+```
+
+Handoff snapshot mode:
+
+```powershell
+python scripts\check_v300_rt7a_real_motion_adapter_readiness.py --snapshot
+```
+
+Expected candidate markers:
+
+```text
+v300_rt7a_status: implemented-awaiting-review
+v300_rt7_status: current-not-completed-blocked-framework-real-motion-adapter-release-required
+v300_rt7a_exact_change_surface: True
+v300_rt7a_change_file_count: 7
+v300_rt7a_rt6_runtime_changed: False
+v300_rt7a_backend_runtime_changed: False
+v300_rt7a_flutter_runtime_changed: False
+v300_rt7a_existing_tests_changed: False
+v300_rt7a_framework_source_changed: False
+v300_rt7a_vts_connection_opened: False
+v300_rt7a_token_read: False
+v300_rt7a_private_model_loaded: False
+v300_rt7a_real_motion_executed: False
+v300_rt7a_drc_provider_bypass_allowed: False
+v300_rt7a_framework_update_required: True
+v300_rt7a_commit_push_authorized: False
+```
+
+The gate is static and credential-free. It does not import a provider adapter,
+open a VTS WebSocket, read a token, load a private model, execute Live2D,
+perform motion dispatch, or change DRC/FW runtime. It verifies the released FW
+root-public source only in normal checkout mode.
+
+Detailed candidate contract:
+`docs/v300_rt7a_real_motion_adapter_readiness.md`.

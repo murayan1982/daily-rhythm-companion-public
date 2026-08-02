@@ -12,12 +12,12 @@ release / annotated tag: DRC_v2.1.0
 v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
-current parent phase: RT-6 COMPLETED / ACCEPTED
-current small commit: RT-6f acceptance sync
-current implementation step: RT-6f configured local mock-motion presentation acceptance
-current implementation state: COMPLETED / ACCEPTED / PUSHED
-current implementation baseline: e1d4f63d71c2de485b05fbfc5dad6811b81b31fc
-current implementation commit: fcdce38b9260604ea7c435c6de44fc129dc613f6
+current parent phase: RT-7 CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+current small commit: RT-7a real-motion adapter readiness candidate
+current implementation step: RT-7a real Live2D / VTS adapter prerequisite and Framework requirement inventory
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+current implementation commit: none
 last accepted small commit: RT-6f configured local mock-motion presentation COMPLETED / ACCEPTED / PUSHED at fcdce38b9260604ea7c435c6de44fc129dc613f6
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
@@ -2884,3 +2884,34 @@ RT-7 real adapter: blocked
 - [ ] RT-7 real Live2D/VTS adapterは未実装のためblockedを維持
 
 詳細: `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`。
+
+## RT-7a — Real motion adapter prerequisite and Framework requirement inventory
+
+```text
+RT-6: COMPLETED / ACCEPTED / PUSHED
+RT-7: CURRENT / NOT_COMPLETED
+RT-7a: IMPLEMENTED / AWAITING_REVIEW
+baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+change surface: exact 7 documentation/static-gate files
+Framework version: 5.4.0
+Framework reference commit: d313eb6acb643103fe25988720ebee5976a04f78
+readiness: BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+commit/push: NOT_AUTHORIZED
+```
+
+- [x] accepted RT-6 mock-motion execution and presentation pathをfreeze
+- [x] FW v5.4.0 root-public motion exportsをinventory
+- [x] `real_adapter_supported=false`とtyped `not_implemented`を確認
+- [x] VTS WebSocket/token/private model/Live2D runtime/provider SDK未使用を記録
+- [x] DRCのFW internal importと独自VTS/provider bypass禁止を維持
+- [x] FW real adapterに必要なminimum root-public contractを定義
+- [x] released FW update前のDRC runtime実装stop ruleを固定
+- [x] exact seven-file docs/static-gate candidateを追加
+- [ ] dedicated gate、Backend full、Flutter analyze/fullを実checkoutで実行
+- [ ] exact surface/privacy/CRLF-aware diffをレビュー
+- [ ] 明示的なcommit承認を取得
+- [ ] commit/pushは承認後のみ実行
+- [ ] RT-7 real runtimeはreleased Framework adapterまでblockedを維持
+
+詳細: `docs/v300_rt7a_real_motion_adapter_readiness.md`。
+専用gate: `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`。

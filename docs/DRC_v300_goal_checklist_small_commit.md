@@ -5,15 +5,15 @@ Updated: 2026-08-02
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-6 COMPLETED / ACCEPTED
-Current small commit: RT-6f acceptance sync
-Current implementation step: RT-6f configured local mock-motion presentation acceptance
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: e1d4f63d71c2de485b05fbfc5dad6811b81b31fc
-Current implementation commit: fcdce38b9260604ea7c435c6de44fc129dc613f6
+Current parent phase: RT-7 CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+Current small commit: RT-7a real-motion adapter readiness candidate
+Current implementation step: RT-7a real Live2D / VTS adapter prerequisite and Framework requirement inventory
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+Current implementation commit: none
 Last accepted small commit: RT-6f configured local mock-motion presentation COMPLETED / ACCEPTED / PUSHED at fcdce38b9260604ea7c435c6de44fc129dc613f6
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: record the exact seven-file acceptance sync; RT-7 remains blocked
+Next implementation action: verify the exact seven-file RT-7a candidate; commit/push remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -61,6 +61,8 @@ docs/v300_rt5c_realtime_terminal_voice_output_orchestration_contract.md
 scripts/check_v300_rt5c_realtime_terminal_voice_output_orchestration_contract.py
 docs/v300_rt5d_home_screen_voice_output_controls.md
 scripts/check_v300_rt5d_home_screen_voice_output_controls.py
+docs/v300_rt7a_real_motion_adapter_readiness.md
+scripts/check_v300_rt7a_real_motion_adapter_readiness.py
 ```
 
 Historical release sources remain immutable:
@@ -2831,3 +2833,38 @@ Detailed accepted contract:
 `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py`.
+
+## RT-7a implementation candidate
+
+```text
+RT-6: COMPLETED / ACCEPTED / PUSHED
+RT-7: CURRENT / NOT_COMPLETED
+RT-7a: IMPLEMENTED / AWAITING_REVIEW
+baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+exact implementation surface: 7 documentation/static-gate files
+Framework v5.4.0 reference: d313eb6acb643103fe25988720ebee5976a04f78
+readiness: BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+DRC runtime changed: false
+existing tests changed: false
+Framework source changed: false
+real adapter execution: false
+commit/push: NOT_AUTHORIZED
+```
+
+- [x] Freeze accepted RT-6 mock-motion mapping, adapter, Flutter, HomeScreen, and configured acceptance.
+- [x] Inventory released FW root-public motion symbols and factory.
+- [x] Record current real adapter support as false and real execution as typed not implemented.
+- [x] Define the minimum released FW real-adapter contract required by DRC.
+- [x] Preserve root-public-only integration and prohibit DRC provider bypass.
+- [x] Preserve explicit default-off, capability reporting, safe errors, and close ownership requirements.
+- [x] Add exact seven-file documentation/static-gate candidate.
+- [ ] Run compileall and the dedicated RT-7a gate in real DRC/FW checkouts.
+- [ ] Run Backend full regression and Flutter analyze/full regression.
+- [ ] Complete exact-surface and changed-content privacy review.
+- [ ] Obtain explicit commit approval before commit/push.
+- [ ] Keep RT-7 runtime implementation blocked pending a released Framework real-motion adapter.
+
+Detailed candidate contract:
+`docs/v300_rt7a_real_motion_adapter_readiness.md`.
+Candidate gate:
+`scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.

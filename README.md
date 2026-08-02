@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-6f acceptance sync
-Current implementation: RT-6f configured local mock-motion presentation acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `e1d4f63d71c2de485b05fbfc5dad6811b81b31fc`
-Current implementation commit: `fcdce38b9260604ea7c435c6de44fc129dc613f6`
+Current small commit: RT-7a real-motion adapter readiness candidate
+Current implementation: RT-7a real Live2D / VTS adapter prerequisite and Framework requirement inventory.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `c3c78316fd2bcd4f9939dcaadc32134a704374cf`
+Current implementation commit: none
 Last accepted small commit: RT-6f configured local mock-motion presentation (**COMPLETED / ACCEPTED / PUSHED**) at `fcdce38b9260604ea7c435c6de44fc129dc613f6`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
-Current realtime phase: RT-6 (**COMPLETED / ACCEPTED**)
-Current realtime action: record the exact seven-file RT-6f acceptance sync; RT-7 remains blocked on a real Live2D/VTS adapter
+Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED**)
+Current realtime action: verify the exact seven-file RT-7a docs/static-gate candidate; commit/push remains NOT_AUTHORIZED
 
 Current phase state:
 
@@ -89,7 +89,8 @@ RT-6  COMPLETED / ACCEPTED  Realtime character presentation and motion-event map
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
   RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
-RT-7  BLOCKED  Configured Live2D / VTS adapter execution
+RT-7  CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED  Configured Live2D / VTS adapter execution
+  RT-7a  IMPLEMENTED / AWAITING_REVIEW  Real motion adapter prerequisite and Framework requirement inventory
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
 T-1  COMPLETED / ACCEPTED
@@ -5558,3 +5559,43 @@ Detailed accepted contract:
 `docs/v300_rt6f_configured_local_mock_motion_presentation_acceptance.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt6f_configured_local_mock_motion_presentation_acceptance.py`.
+
+## v3.0.0 RT-7a real-motion adapter readiness candidate
+
+RT-7a is **IMPLEMENTED / AWAITING_REVIEW** against DRC baseline
+`c3c78316fd2bcd4f9939dcaadc32134a704374cf` under the exact seven-file documentation/static-gate contract.
+It freezes the accepted RT-6 mock-motion path, records the released Framework
+v5.4.0 real-motion limitation, and defines the minimum root-public real-adapter
+contract required before DRC runtime work may begin.
+
+```text
+RT-6: COMPLETED / ACCEPTED / PUSHED
+RT-7: CURRENT / NOT_COMPLETED
+RT-7a: IMPLEMENTED / AWAITING_REVIEW
+readiness: BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
+DRC baseline: c3c78316fd2bcd4f9939dcaadc32134a704374cf
+Framework version: 5.4.0
+Framework reference commit: d313eb6acb643103fe25988720ebee5976a04f78
+change surface: exact 7 documentation/static-gate files
+DRC runtime changed: false
+Flutter runtime changed: false
+existing tests changed: false
+Framework source changed: false
+real motion executed: false
+VTS WebSocket opened: false
+token read: false
+private model loaded: false
+commit/push: NOT_AUTHORIZED
+```
+
+The released root-public Framework motion types and `create_motion_session()`
+remain available, but real adapters report not implemented and
+`real_adapter_supported=false`. DRC must not compensate by importing Framework
+internals or adding a DRC-owned VTS/provider client. A released Framework update
+with a real root-public adapter is required before a DRC real-adapter contract
+can be reviewed.
+
+Detailed candidate contract:
+`docs/v300_rt7a_real_motion_adapter_readiness.md`.
+Candidate gate:
+`scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.
