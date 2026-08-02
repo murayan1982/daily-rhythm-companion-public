@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7a acceptance sync
-Current implementation: RT-7a real-motion adapter readiness acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `c3c78316fd2bcd4f9939dcaadc32134a704374cf`
-Current implementation commit: `efb139b2c0b6c7cc66912a229bd674b36df82dd7`
+Current small commit: RT-7b vendored FW v5.5.0 readiness candidate
+Current implementation: RT-7b vendored Framework v5.5.0 provenance and root-public readiness.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `8413c2f08879b34f83496441c6a7e20181486469`
+Current implementation commit: none
 Last accepted small commit: RT-7a real-motion adapter readiness (**COMPLETED / ACCEPTED / PUSHED**) at `efb139b2c0b6c7cc66912a229bd674b36df82dd7`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
-Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED**)
-Current realtime action: record the exact seven-file RT-7a acceptance sync; RT-7 runtime remains blocked pending a released Framework real-motion adapter
+Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED**)
+Current realtime action: verify the exact eight-file RT-7b vendored FW v5.5.0 readiness candidate; RT-7c runtime composition remains NOT_AUTHORIZED
 
 Current phase state:
 
@@ -89,8 +89,9 @@ RT-6  COMPLETED / ACCEPTED  Realtime character presentation and motion-event map
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
   RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
-RT-7  CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED  Configured Live2D / VTS adapter execution
+RT-7  CURRENT / NOT_COMPLETED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
+  RT-7b  IMPLEMENTED / AWAITING_REVIEW / COMMIT_NOT_AUTHORIZED  Vendored FW v5.5.0 provenance and root-public readiness
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
 T-1  COMPLETED / ACCEPTED
@@ -5618,3 +5619,55 @@ Detailed accepted contract:
 `docs/v300_rt7a_real_motion_adapter_readiness.md`.
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.
+
+<!-- RT-7b-VENDORED-FW-v5.5.0:BEGIN -->
+## v3.0.0 RT-7b vendored Framework v5.5.0 readiness candidate
+
+RT-7b is **IMPLEMENTED / AWAITING_REVIEW** against DRC baseline
+`8413c2f08879b34f83496441c6a7e20181486469` under the exact eight-file
+contract. It fixes the only permitted local Framework source as
+`vendor/ai-character-framework-5.5.0`, records Framework release `v5.5.0` at
+`f56697b6de066b062794ac7bb01330d2d9e91759`, and verifies the released
+root-public motion API without provider execution.
+
+The Framework development checkout is outside this DRC contract. DRC source,
+checks, and later runtime composition must import `framework` from the fixed
+vendor directory and verify the imported module origin. No checkout-relative or
+current-working-directory fallback is allowed.
+
+Candidate verification is source-safe and confirms the fixed vendor keyset,
+required release files, no embedded Git metadata, no private token/configuration
+or evidence artifacts, root-public exports, mock compatibility, motion API
+`5.5.0`, and closed-guard stop before `pyvts`, network, or real motion.
+
+Final RT-7b acceptance additionally requires explicit byte-for-byte comparison
+of the vendor tree with the deterministic v5.5.0 release ZIP and SHA-256
+sidecar. Those local artifacts are verification inputs only and are not tracked
+by DRC.
+
+```text
+RT-7: CURRENT / NOT_COMPLETED
+RT-7a: COMPLETED / ACCEPTED / PUSHED
+RT-7b: IMPLEMENTED / AWAITING_REVIEW
+DRC baseline: 8413c2f08879b34f83496441c6a7e20181486469
+Framework release: v5.5.0
+Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
+Framework local source: vendor/ai-character-framework-5.5.0
+change surface: exact 8 files
+Backend runtime changed: false
+Flutter runtime changed: false
+existing tests changed: false
+Framework vendor changed: false
+pyvts imported: false
+network execution: false
+real motion executed: false
+strict release ZIP/vendor byte match: pending operator input
+RT-7c runtime composition: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+Detailed candidate contract:
+`docs/v300_rt7b_vendored_fw_v550_readiness.md`.
+Candidate gate:
+`scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
+<!-- RT-7b-VENDORED-FW-v5.5.0:END -->

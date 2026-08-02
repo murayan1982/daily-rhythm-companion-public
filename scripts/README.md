@@ -7309,3 +7309,52 @@ Live2D, performing motion dispatch, or changing DRC/FW runtime.
 
 Detailed accepted contract:
 `docs/v300_rt7a_real_motion_adapter_readiness.md`.
+
+## v3.0.0 RT-7b vendored Framework v5.5.0 readiness gate
+
+Detailed contract:
+`docs/v300_rt7b_vendored_fw_v550_readiness.md`.
+
+The gate imports Framework only from:
+
+```text
+vendor/ai-character-framework-5.5.0
+```
+
+It does not discover or import a Framework development checkout. Candidate mode
+checks the exact eight-file change surface, vendor privacy and keyset, required
+release files, root-public origin/API/exports, mock compatibility, and the
+closed provider guard without `pyvts`, network, or real motion.
+
+Run from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py
+git diff --check
+```
+
+Strict release-artifact provenance requires explicit operator-local paths:
+
+```powershell
+python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py `
+  --require-release-artifact `
+  --release-zip <local-fixed-v5.5.0-zip> `
+  --release-sidecar <local-fixed-v5.5.0-sha256-sidecar>
+```
+
+Strict mode compares the sidecar digest, ZIP integrity and duplicate state,
+exact release-eligible member set, and every ZIP member byte with the vendor
+copy. The ZIP, sidecar, private configuration, and output evidence remain
+outside Git.
+
+RT-7c runtime composition, private VTube Studio configuration, provider
+execution, commit, and push remain separately unauthorized.

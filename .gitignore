@@ -49,6 +49,7 @@ backend/env_profiles/*token*
 # Local copy of AI Character Conversation Framework.
 # Keep this outside Git history; configure the path with FRAMEWORK_PROJECT_ROOT.
 vendor/AI-Character-Framework*/
+vendor/ai-character-framework-*/
 external/AI-Character-Framework*/
 
 
