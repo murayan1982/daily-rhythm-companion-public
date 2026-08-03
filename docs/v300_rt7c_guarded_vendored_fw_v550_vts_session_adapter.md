@@ -2,17 +2,22 @@
 
 Updated: 2026-08-03
 
-## Candidate state
+## Corrective candidate state
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7a: COMPLETED / ACCEPTED / PUSHED
 RT-7b: COMPLETED / ACCEPTED / PUSHED
-RT-7c: IMPLEMENTED / AWAITING_REVIEW
+RT-7c implementation: COMPLETED / VERIFIED / PUSHED
+RT-7c implementation acceptance: CORRECTIVE_REQUIRED / NOT_ACCEPTED
+RT-7c strict-boolean corrective: IMPLEMENTED / AWAITING_REVIEW
+RT-7c acceptance sync: BLOCKED / NOT_STARTED
 RT-7d: NOT_AUTHORIZED
 RT-7e: NOT_AUTHORIZED
 implementation baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
-implementation commit: none
+implementation commit: 4a2374854801791caefdf0be8cd246e5a2e9278e
+corrective baseline: 4a2374854801791caefdf0be8cd246e5a2e9278e
+corrective surface: exact 4 files
 Framework release: v5.5.0
 Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
 Framework local source: vendor/ai-character-framework-5.5.0
@@ -20,7 +25,7 @@ Framework development checkout: PROHIBITED
 Framework internal import: PROHIBITED
 pyvts direct import: PROHIBITED
 real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+corrective commit / push: NOT_AUTHORIZED
 ```
 
 ## Purpose
@@ -55,6 +60,20 @@ Backend runtime core: 2 files
 focused Backend test: 1 file
 total: exact 11 files
 ```
+
+The pushed implementation is retained as the historical exact eleven-file
+surface. The strict-boolean corrective is limited to the following exact four
+files:
+
+```text
+backend/app/services/framework_vts_motion_session_adapter.py
+backend/tests/test_framework_vts_motion_session_adapter.py
+docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md
+scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
+```
+
+No dependency, model, API, Flutter, RT-6, vendor, release, roadmap, tasklist, or
+private configuration source is changed by the corrective.
 
 ## Fixed Framework source
 
@@ -125,9 +144,12 @@ request_timeout_seconds
 close_timeout_seconds
 ```
 
-It performs no environment or filesystem read. Endpoint, port, token, and
-hotkey values are excluded from dataclass `repr`. The adapter does not place
-them in DRC results, events, logs, exceptions, metadata, or test output.
+It performs no environment or filesystem read. The four execution-safety flags
+accept literal Python `bool` values only. Strings such as `"true"` or `"false"`,
+integers, `None`, and arbitrary objects raise a fixed `TypeError`; implicit
+truthiness conversion is prohibited. Endpoint, port, token, and hotkey values
+are excluded from dataclass `repr`. The adapter does not place them in DRC
+results, events, logs, exceptions, metadata, or test output.
 
 A separately reviewed RT-7d configuration loader may construct this object
 later. RT-7c does not modify `backend/.env.example` or `backend/app/config.py`.
@@ -143,7 +165,8 @@ allow_provider_execution=True
 
 Disabled and provider-disallowed results return before vendor resolution,
 Framework import, session creation, pyvts import, provider execution, network,
-or real motion.
+or real motion. The double opt-in cannot be enabled through non-boolean
+truthiness.
 
 When execution is enabled but configuration is incomplete, the adapter may
 create a root-public VTS session and call `preflight()`. Framework v5.5.0 must
@@ -196,7 +219,9 @@ reset_expression
 ```
 
 Every command is checked with the public capability before
-`apply_motion()`.
+`apply_motion()`. `supports_motion_session`, `supports_real_adapter`,
+`supports_intent(...)`, and the per-intent fallback attributes are affirmative
+only when their value is literal `True`. Non-boolean truthy values fail closed.
 
 An unsupported required intent returns a typed `unsupported` aggregate and is
 not applied. Unsupported `stop_motion` is an optional safe skip and does not
@@ -233,7 +258,7 @@ aggregate status
 command count
 command order and intent
 allowlisted outcome/state/adapter status/public error code
-retryable and optional-skip booleans
+retryable and optional-skip booleans (`retryable` is true only for literal `True`)
 bounded fixed safe message
 allowlisted bounded event type strings
 Framework import/session-created/session-closed booleans
@@ -294,6 +319,10 @@ allowlisted execution booleans only
 private config/result non-exposure
 contiguous command ordering
 no cwd or Framework sys.path workaround
+non-boolean private execution flags rejected
+non-boolean readiness capability fails closed before apply
+non-boolean callable and attribute intent capability treated unsupported
+retryable requires literal True
 ```
 
 All focused tests use injected root-public fake sessions. They import no pyvts,
@@ -319,22 +348,30 @@ git -c core.whitespace=cr-at-eol diff --check
 git status --short
 ```
 
-Expected candidate boundary:
+Expected corrective boundary:
 
 ```text
-exact change surface: 11
-focused RT-7c tests: all passed
-Backend full baseline: 289 plus RT-7c tests
+implementation baseline → implementation commit: exact 11 files
+corrective working-tree surface: exact 4 files
+focused RT-7c tests: 31 passed
+Backend full: 320 passed, 1 existing warning
 Flutter analyze: no issues
-Flutter full baseline: 483
+Flutter full: 483 passed
+non-boolean config flags rejected: true
+non-boolean readiness flags fail closed: true
+non-boolean intent capability fails closed: true
+retryable requires literal true: true
 pyvts imported by gate: false
 provider execution attempted by gate: false
 network execution attempted by gate: false
 real motion executed by gate: false
 ```
 
-Actual checkout results remain pending until the generated candidate is applied
-and verified.
+The implementation commit already passed its dedicated gate, focused Backend
+27 tests, Backend full 316 tests with one existing warning, Flutter analyze,
+Flutter full 483 tests, exact eleven-file review, push, and clean-tree check.
+The corrective must pass the complete verification set before separate commit
+approval.
 
 ## Protected non-change surface
 
@@ -372,12 +409,13 @@ RT-7c does not:
 - execute a provider, network operation, or real motion during verification;
 - collect private operator evidence;
 - authorize RT-7d or RT-7e;
-- commit or push itself.
+- commit or push the corrective without separate approval.
 
 ## Next boundary
 
 ```text
-RT-7c acceptance: pending review
+RT-7c strict-boolean corrective acceptance: pending review
+RT-7c acceptance sync: BLOCKED / NOT_STARTED
 RT-7d default-off configured Backend/API/Flutter manual VTS wiring:
 NOT_AUTHORIZED
 RT-7e private configured local VTS execution and acceptance:

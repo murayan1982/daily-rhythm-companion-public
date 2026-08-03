@@ -722,6 +722,126 @@ def test_execution_markers_are_copied_only_as_booleans(
     assert "must-not-escape" not in result.model_dump_json()
 
 
+def test_private_config_rejects_non_boolean_execution_flags() -> None:
+    invalid_values: tuple[Any, ...] = (
+        "false",
+        "true",
+        1,
+        0,
+        None,
+        object(),
+    )
+    for field_name in (
+        "enabled",
+        "allow_provider_execution",
+        "runtime_available",
+        "model_selected",
+    ):
+        for invalid in invalid_values:
+            with pytest.raises(
+                TypeError,
+                match=rf"^{field_name} must be a literal bool$",
+            ):
+                FrameworkVtsMotionPrivateConfig(**{field_name: invalid})
+
+
+def test_non_boolean_readiness_capability_fails_closed_before_apply(
+    tmp_path: Path,
+) -> None:
+    cases = (
+        ("supports_motion_session", "false"),
+        ("supports_real_adapter", "false"),
+    )
+    for index, (field_name, value) in enumerate(cases):
+        case_root = tmp_path / str(index)
+        vendor_root, framework_init = _vendor(case_root)
+        capability = FakeCapability()
+        setattr(capability, field_name, value)
+        module = FakeFrameworkModule(
+            module_file=framework_init,
+            session_factory=lambda capability=capability: FakeSession(
+                capability=capability
+            ),
+        )
+
+        result = FrameworkVtsMotionSessionAdapter(
+            _config(),
+            _module_context_factory=_module_context(module),
+            _vendor_root=vendor_root,
+        ).execute(_commands())
+
+        session = module.sessions[0]
+        assert result.status is FrameworkVtsMotionExecutionStatus.UNAVAILABLE
+        assert session.applied == []
+        assert session.close_calls == 1
+        assert result.session_closed is True
+
+
+def test_non_boolean_intent_capability_is_not_supported(
+    tmp_path: Path,
+) -> None:
+    class CallableCapability(FakeCapability):
+        def supports_intent(self, intent: FakeMotionIntent) -> Any:
+            del intent
+            return "false"
+
+    class AttributeCapability(FakeCapability):
+        supports_intent = None
+        supports_expression = "false"
+
+    for index, capability in enumerate(
+        (CallableCapability(), AttributeCapability())
+    ):
+        case_root = tmp_path / str(index)
+        vendor_root, framework_init = _vendor(case_root)
+        module = FakeFrameworkModule(
+            module_file=framework_init,
+            session_factory=lambda capability=capability: FakeSession(
+                capability=capability
+            ),
+        )
+
+        result = FrameworkVtsMotionSessionAdapter(
+            _config(),
+            _module_context_factory=_module_context(module),
+            _vendor_root=vendor_root,
+        ).execute([_commands()[0]])
+
+        session = module.sessions[0]
+        assert result.status is FrameworkVtsMotionExecutionStatus.UNSUPPORTED
+        assert session.applied == []
+        assert result.command_results[0].outcome == "unsupported"
+
+
+def test_retryable_requires_literal_true(tmp_path: Path) -> None:
+    for index, (raw_retryable, expected) in enumerate(
+        (("false", False), (True, True))
+    ):
+        case_root = tmp_path / str(index)
+        vendor_root, framework_init = _vendor(case_root)
+        module = FakeFrameworkModule(
+            module_file=framework_init,
+            session_factory=lambda raw_retryable=raw_retryable: FakeSession(
+                results=[
+                    FakeMotionResult(
+                        outcome="failed",
+                        public_error_code="provider_error",
+                        retryable=raw_retryable,
+                    )
+                ]
+            ),
+        )
+
+        result = FrameworkVtsMotionSessionAdapter(
+            _config(),
+            _module_context_factory=_module_context(module),
+            _vendor_root=vendor_root,
+        ).execute([_commands()[0]])
+
+        assert result.status is FrameworkVtsMotionExecutionStatus.FAILED
+        assert result.command_results[0].retryable is expected
+
+
 def test_private_config_repr_and_result_do_not_expose_values(
     tmp_path: Path,
 ) -> None:

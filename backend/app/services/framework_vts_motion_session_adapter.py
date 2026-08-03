@@ -154,6 +154,17 @@ class FrameworkVtsMotionPrivateConfig:
     def __post_init__(self) -> None:
         """Normalize without reading environment, filesystem, or provider state."""
 
+        for field_name in (
+            "enabled",
+            "allow_provider_execution",
+            "runtime_available",
+            "model_selected",
+        ):
+            value = getattr(self, field_name)
+            if type(value) is not bool:
+                raise TypeError(f"{field_name} must be a literal bool")
+            object.__setattr__(self, field_name, value)
+
         endpoint_host = str(self.endpoint_host or "").strip()
         authentication_token = str(self.authentication_token or "").strip()
 
@@ -202,18 +213,6 @@ class FrameworkVtsMotionPrivateConfig:
                 raise ValueError(f"{field_name} must be finite and positive")
             object.__setattr__(self, field_name, value)
 
-        object.__setattr__(self, "enabled", bool(self.enabled))
-        object.__setattr__(
-            self,
-            "allow_provider_execution",
-            bool(self.allow_provider_execution),
-        )
-        object.__setattr__(
-            self,
-            "runtime_available",
-            bool(self.runtime_available),
-        )
-        object.__setattr__(self, "model_selected", bool(self.model_selected))
         object.__setattr__(self, "endpoint_host", endpoint_host)
         object.__setattr__(self, "endpoint_port", port)
         object.__setattr__(
@@ -724,8 +723,8 @@ def _is_ready_real_vts_capability(capability: Any) -> bool:
     return (
         _enum_text(getattr(capability, "adapter_status", ""))
         == "configured"
-        and bool(getattr(capability, "supports_motion_session", False))
-        and bool(getattr(capability, "supports_real_adapter", False))
+        and getattr(capability, "supports_motion_session", False) is True
+        and getattr(capability, "supports_real_adapter", False) is True
     )
 
 
@@ -761,7 +760,7 @@ def _supports_command(
 
     supports_intent = getattr(capability, "supports_intent", None)
     if callable(supports_intent):
-        return bool(supports_intent(public_intent))
+        return supports_intent(public_intent) is True
 
     attribute = {
         FrameworkVtsMotionIntent.EXPRESSION: "supports_expression",
@@ -771,7 +770,7 @@ def _supports_command(
             "supports_reset_expression",
         FrameworkVtsMotionIntent.STOP_MOTION: "supports_stop_motion",
     }[intent]
-    return bool(getattr(capability, attribute, False))
+    return getattr(capability, attribute, False) is True
 
 
 def _unsupported_command_result(
@@ -826,7 +825,7 @@ def _normalize_command_result(
             allowed=_ALLOWED_ERROR_CODES,
             fallback="provider_error",
         ),
-        retryable=bool(getattr(raw_result, "retryable", False)),
+        retryable=getattr(raw_result, "retryable", False) is True,
         skipped=False,
         safe_message=safe_message,
     )

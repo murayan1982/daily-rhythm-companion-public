@@ -1,9 +1,10 @@
-"""RT-7c guarded fixed-vendor FW v5.5.0 VTS adapter candidate gate.
+"""RT-7c strict-boolean corrective gate.
 
-The gate is credential-free and network-free. It verifies the exact eleven-file
-candidate, fixed vendor/root-public loading, model vocabulary, dependency pins,
-closed guards, and an incomplete-config preflight that stops before pyvts,
-WebSocket, provider execution, or real motion.
+The gate is credential-free and network-free. It verifies the pushed exact
+eleven-file implementation, the exact four-file corrective surface, fixed
+vendor/root-public loading, strict literal-boolean safety boundaries, closed
+guards, and an incomplete-config preflight that stops before pyvts, WebSocket,
+provider execution, or real motion.
 """
 
 from __future__ import annotations
@@ -12,6 +13,7 @@ import argparse
 import ast
 import importlib
 from pathlib import Path
+from types import SimpleNamespace
 import re
 import subprocess
 import sys
@@ -19,14 +21,15 @@ from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_HEAD = "35582f06ca037401b2cef8d97cfc5fc26cd40654"
+IMPLEMENTATION_BASELINE = "35582f06ca037401b2cef8d97cfc5fc26cd40654"
+EXPECTED_HEAD = "4a2374854801791caefdf0be8cd246e5a2e9278e"
 FRAMEWORK_RELEASE = "v5.5.0"
 FRAMEWORK_RELEASE_COMMIT = "f56697b6de066b062794ac7bb01330d2d9e91759"
 FRAMEWORK_VENDOR_RELATIVE = Path("vendor/ai-character-framework-5.5.0")
 FRAMEWORK_VENDOR = ROOT / FRAMEWORK_VENDOR_RELATIVE
 FRAMEWORK_RELEASE_ELIGIBLE_FILES = 328
 
-EXACT_PATHS = {
+IMPLEMENTATION_PATHS = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
@@ -40,7 +43,21 @@ EXACT_PATHS = {
     "backend/tests/test_framework_vts_motion_session_adapter.py",
 }
 
+EXACT_PATHS = {
+    "backend/app/services/framework_vts_motion_session_adapter.py",
+    "backend/tests/test_framework_vts_motion_session_adapter.py",
+    "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md",
+    "scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py",
+}
+
 PROTECTED_PATHS = {
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "backend/requirements.txt",
+    "backend/app/models/framework_vts_motion.py",
     "backend/.env.example",
     "backend/app/config.py",
     "backend/app/main.py",
@@ -57,11 +74,6 @@ PROTECTED_PATHS = {
 }
 
 DOC_PATHS = {
-    "README.md",
-    "roadmap.md",
-    "tasklist.md",
-    "scripts/README.md",
-    "docs/DRC_v300_goal_checklist_small_commit.md",
     "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md",
 }
 
@@ -87,7 +99,7 @@ UNSUPPORTED_ASSUMPTIONS = {
 
 
 class GateError(RuntimeError):
-    """Raised when the exact RT-7c candidate contract is not satisfied."""
+    """Raised when the exact RT-7c corrective contract is not satisfied."""
 
 
 def _run(*args: str, check: bool = True) -> str:
@@ -187,25 +199,42 @@ def _private_vendor_hits(paths: Iterable[Path]) -> tuple[str, ...]:
 
 
 def _assert_git_surface(snapshot: bool) -> set[str]:
+    implementation = {
+        line.strip().replace("\\", "/")
+        for line in _git(
+            "diff",
+            "--name-only",
+            IMPLEMENTATION_BASELINE,
+            EXPECTED_HEAD,
+        ).splitlines()
+        if line.strip()
+    }
+    if implementation != IMPLEMENTATION_PATHS:
+        raise GateError(
+            "RT-7c pushed implementation surface mismatch: "
+            f"expected={sorted(IMPLEMENTATION_PATHS)}, "
+            f"actual={sorted(implementation)}"
+        )
+
     changed = _status_paths()
     if changed != EXACT_PATHS:
         raise GateError(
-            "RT-7c exact change surface mismatch: "
+            "RT-7c corrective exact change surface mismatch: "
             f"expected={sorted(EXACT_PATHS)}, actual={sorted(changed)}"
         )
     if changed & PROTECTED_PATHS:
-        raise GateError("RT-7c changed a protected RT-6/API/config path")
+        raise GateError("RT-7c corrective changed a protected path")
     if any(path.startswith("app/") for path in changed):
-        raise GateError("RT-7c changed Flutter files")
+        raise GateError("RT-7c corrective changed Flutter files")
     if any(path.startswith("vendor/") for path in changed):
-        raise GateError("RT-7c changed tracked vendor files")
+        raise GateError("RT-7c corrective changed tracked vendor files")
 
     if not snapshot:
         head = _git("rev-parse", "HEAD").strip()
         origin = _git("rev-parse", "origin/main").strip()
         if head != EXPECTED_HEAD or origin != EXPECTED_HEAD:
             raise GateError(
-                "DRC baseline mismatch: "
+                "DRC corrective baseline mismatch: "
                 f"head={head}, origin/main={origin}, expected={EXPECTED_HEAD}"
             )
     return changed
@@ -214,36 +243,40 @@ def _assert_git_surface(snapshot: bool) -> set[str]:
 def _assert_docs() -> None:
     markers = (
         "RT-7c",
+        "CORRECTIVE_REQUIRED / NOT_ACCEPTED",
         "IMPLEMENTED / AWAITING_REVIEW",
+        IMPLEMENTATION_BASELINE,
         EXPECTED_HEAD,
+        "corrective surface: exact 4 files",
         "vendor/ai-character-framework-5.5.0",
-        "exact 11",
-        "RT-7d",
-        "NOT_AUTHORIZED",
+        "RT-7d: NOT_AUTHORIZED",
+        "RT-7e: NOT_AUTHORIZED",
+        "RT-7c acceptance sync: BLOCKED / NOT_STARTED",
     )
     for relative in DOC_PATHS:
-        text = _text(relative)
+        contract = _text(relative)
         for marker in markers:
-            if marker not in text:
+            if marker not in contract:
                 raise GateError(f"{relative} is missing marker: {marker}")
 
-    contract = _text(
-        "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md"
-    )
     required_contract = (
         "Framework development checkout: PROHIBITED",
         "Framework internal import: PROHIBITED",
         "pyvts direct import: PROHIBITED",
         "real VTube Studio execution: NOT_AUTHORIZED",
-        "RT-7d: NOT_AUTHORIZED",
-        "RT-7e: NOT_AUTHORIZED",
+        "truthiness conversion is prohibited",
+        "literal `True`",
         "backend/app/services/framework_vts_motion_session_adapter.py",
+        "backend/tests/test_framework_vts_motion_session_adapter.py",
         "pyvts==0.3.3",
         "websockets==16.0",
     )
+    contract = _text(
+        "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md"
+    )
     for marker in required_contract:
         if marker not in contract:
-            raise GateError(f"RT-7c contract is missing marker: {marker}")
+            raise GateError(f"RT-7c corrective contract is missing marker: {marker}")
 
 
 def _assert_requirements() -> None:
@@ -335,6 +368,9 @@ def _assert_service_static_contract() -> None:
         "supports_intent",
         "COMPLETED_WITH_OPTIONAL_SKIP",
         "repr=False",
+        "type(value) is not bool",
+        "supports_intent(public_intent) is True",
+        'getattr(raw_result, "retryable", False) is True',
     )
     for marker in required_source_markers:
         if marker not in source:
@@ -356,6 +392,8 @@ def _assert_service_static_contract() -> None:
     for marker in prohibited_source:
         if marker in source:
             raise GateError(f"RT-7c service contains prohibited marker: {marker}")
+    if "bool(" in source:
+        raise GateError("RT-7c service contains implicit bool conversion")
 
 
 def _assert_model_contract() -> None:
@@ -409,6 +447,10 @@ def _assert_test_contract() -> None:
         "test_apply_exception_is_normalized_and_session_closes",
         "test_close_exception_returns_fixed_cleanup_failure",
         "test_private_config_repr_and_result_do_not_expose_values",
+        "test_private_config_rejects_non_boolean_execution_flags",
+        "test_non_boolean_readiness_capability_fails_closed_before_apply",
+        "test_non_boolean_intent_capability_is_not_supported",
+        "test_retryable_requires_literal_true",
     )
     for marker in required:
         if marker not in source:
@@ -493,6 +535,124 @@ def _assert_vendor() -> int:
             f"{private_hits[:3]}"
         )
     return len(release_files)
+
+
+def _strict_boolean_smoke() -> dict[str, bool]:
+    sys.path.insert(0, str(ROOT / "backend"))
+    try:
+        model = importlib.import_module("app.models.framework_vts_motion")
+        service = importlib.import_module(
+            "app.services.framework_vts_motion_session_adapter"
+        )
+
+        invalid_values = ("false", "true", 1, 0, None, object())
+        for field_name in (
+            "enabled",
+            "allow_provider_execution",
+            "runtime_available",
+            "model_selected",
+        ):
+            for invalid in invalid_values:
+                try:
+                    service.FrameworkVtsMotionPrivateConfig(
+                        **{field_name: invalid}
+                    )
+                except TypeError as error:
+                    expected = f"{field_name} must be a literal bool"
+                    if str(error) != expected:
+                        raise GateError(
+                            "RT-7c strict config returned unexpected error: "
+                            f"{error}"
+                        ) from error
+                else:
+                    raise GateError(
+                        "RT-7c accepted a non-boolean execution flag: "
+                        f"field={field_name}, value_type={type(invalid).__name__}"
+                    )
+
+        readiness_cases = (
+            SimpleNamespace(
+                adapter_status="configured",
+                supports_motion_session="false",
+                supports_real_adapter=True,
+            ),
+            SimpleNamespace(
+                adapter_status="configured",
+                supports_motion_session=True,
+                supports_real_adapter="false",
+            ),
+        )
+        if any(
+            service._is_ready_real_vts_capability(capability)
+            for capability in readiness_cases
+        ):
+            raise GateError("RT-7c non-boolean readiness capability did not fail closed")
+
+        public_intent = SimpleNamespace(
+            EXPRESSION=object(),
+            EMOTION=object(),
+            GESTURE=object(),
+            RESET_EXPRESSION=object(),
+            STOP_MOTION=object(),
+        )
+        public_api = SimpleNamespace(motion_intent=public_intent)
+        callable_capability = SimpleNamespace(
+            supports_intent=lambda intent: "false"
+        )
+        attribute_capability = SimpleNamespace(
+            supports_intent=None,
+            supports_expression="false",
+        )
+        for capability in (callable_capability, attribute_capability):
+            if service._supports_command(
+                public_api,
+                capability,
+                model.FrameworkVtsMotionIntent.EXPRESSION,
+            ):
+                raise GateError(
+                    "RT-7c non-boolean intent capability did not fail closed"
+                )
+
+        command = model.FrameworkVtsMotionCommand(
+            order=1,
+            intent=model.FrameworkVtsMotionIntent.RESET_EXPRESSION,
+        )
+        normalized = service._normalize_command_result(
+            command,
+            SimpleNamespace(
+                outcome="failed",
+                state="error",
+                adapter_status="configured",
+                public_error_code="provider_error",
+                retryable="false",
+            ),
+        )
+        if normalized.retryable:
+            raise GateError("RT-7c non-boolean retryable value was accepted")
+        literal_true = service._normalize_command_result(
+            command,
+            SimpleNamespace(
+                outcome="failed",
+                state="error",
+                adapter_status="configured",
+                public_error_code="provider_error",
+                retryable=True,
+            ),
+        )
+        if literal_true.retryable is not True:
+            raise GateError("RT-7c literal True retryable value was not retained")
+
+        return {
+            "config_flags_rejected": True,
+            "readiness_failed_closed": True,
+            "intent_failed_closed": True,
+            "retryable_literal_true_only": True,
+        }
+    finally:
+        try:
+            sys.path.remove(str(ROOT / "backend"))
+        except ValueError:
+            pass
 
 
 def _safe_runtime_smoke() -> dict[str, object]:
@@ -602,13 +762,23 @@ def main() -> int:
         _assert_test_contract()
         _assert_changed_content_privacy()
         vendor_files = _assert_vendor()
+        strict = _strict_boolean_smoke()
         smoke = _safe_runtime_smoke()
 
-        print("v300_rt7c_status: implemented-awaiting-review")
+        print("v300_rt7c_status: corrective-implemented-awaiting-review")
+        print("v300_rt7c_implementation_status: completed-verified-pushed")
+        print("v300_rt7c_acceptance_status: corrective-required-not-accepted")
         print("v300_rt7_status: current-not-completed")
-        print("v300_rt7c_exact_change_surface: True")
-        print(f"v300_rt7c_change_file_count: {len(changed)}")
-        print(f"v300_rt7c_implementation_baseline: {EXPECTED_HEAD}")
+        print("v300_rt7c_exact_implementation_surface: True")
+        print("v300_rt7c_implementation_change_file_count: 11")
+        print("v300_rt7c_exact_corrective_surface: True")
+        print(f"v300_rt7c_corrective_change_file_count: {len(changed)}")
+        print(
+            "v300_rt7c_implementation_baseline: "
+            f"{IMPLEMENTATION_BASELINE}"
+        )
+        print(f"v300_rt7c_implementation_commit: {EXPECTED_HEAD}")
+        print(f"v300_rt7c_corrective_baseline: {EXPECTED_HEAD}")
         print(f"v300_rt7c_framework_release: {FRAMEWORK_RELEASE}")
         print(
             "v300_rt7c_framework_release_commit: "
@@ -634,6 +804,22 @@ def main() -> int:
         print("v300_rt7c_speaking_state_assumed: False")
         print("v300_rt7c_idle_motion_assumed: False")
         print("v300_rt7c_look_at_assumed: False")
+        print(
+            "v300_rt7c_non_boolean_config_flags_rejected: "
+            f"{strict['config_flags_rejected']}"
+        )
+        print(
+            "v300_rt7c_non_boolean_readiness_fails_closed: "
+            f"{strict['readiness_failed_closed']}"
+        )
+        print(
+            "v300_rt7c_non_boolean_intent_fails_closed: "
+            f"{strict['intent_failed_closed']}"
+        )
+        print(
+            "v300_rt7c_retryable_requires_literal_true: "
+            f"{strict['retryable_literal_true_only']}"
+        )
         print(f"v300_rt7c_disabled_smoke_status: {smoke['disabled']}")
         print(
             "v300_rt7c_closed_guard_status: "
@@ -676,7 +862,8 @@ def main() -> int:
         print("v300_rt7d_authorized: False")
         print("v300_rt7e_authorized: False")
         print("v300_rt7c_real_vts_operator_execution_authorized: False")
-        print("v300_rt7c_commit_push_authorized: False")
+        print("v300_rt7c_acceptance_sync_authorized: False")
+        print("v300_rt7c_corrective_commit_push_authorized: False")
         return 0
     except (GateError, OSError, ValueError, SyntaxError) as error:
         print(f"v300_rt7c_gate_error: {error}", file=sys.stderr)
