@@ -8,49 +8,75 @@ Updated: 2026-08-03
 RT-7: CURRENT / NOT_COMPLETED
 RT-7d: COMPLETED / ACCEPTED / PUSHED
 RT-7e Stage 1: COMPLETED / VERIFIED / PUSHED
-RT-7e operator corrective: IMPLEMENTED / AWAITING_REVIEW
-RT-7e corrective baseline: c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f
-RT-7e corrective surface: exact 4 files
+RT-7e operator corrective: COMPLETED / VERIFIED / COMMITTED / PUSHED
+RT-7e operator corrective commit: 84429683d5ea26e5480bff17f5e29ad201b6ee71
 Control A: PASS
-Control B first attempt: NOT_ACCEPTED
-Control B corrective attempt: NOT_ACCEPTED
-manual VTube Studio hotkey verification: PASS
-private binding rewritten: PASS / execution flags closed
-additional real VTube Studio execution: NOT_AUTHORIZED
+Control B: PASS / ACCEPTED
+Control B exactly-one POST: PASS
+Control B process cleanup: PASS
+Control C contract corrective: IMPLEMENTED / AWAITING_REVIEW
+Control C execution: NOT_AUTHORIZED
+Control D: BLOCKED_PENDING_CONTROL_C_PASS
+Control E: BLOCKED_PENDING_CONTROLS_C_AND_D
 RT-7e acceptance sync: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+Control C corrective commit / push: NOT_AUTHORIZED
 ```
 
-## Corrective purpose
+## Control B accepted result
 
-The Stage 1 runner required the Backend response to claim
-`real_motion_executed: true` before asking the operator whether physical motion
-was visible. That contract does not match the fixed Framework v5.5.0 transport.
+Control B used the corrected operator contract and completed exactly one Backend
+POST. The Backend returned a completed one-command result, closed the Framework
+session, and reported provider and network execution. The fixed Framework
+transport and Backend correctly kept `real_motion_executed: false`.
 
-The fixed transport can verify that the provider hotkey request completed and
-that the configured hotkey name resolved, but it intentionally keeps physical
-motion claims false. Physical motion is accepted only when the operator watches
-the VTube Studio model and types exactly `ACCEPT` after observing the configured
-gesture.
+The operator watched the VTube Studio model, visibly observed the configured
+acceptance gesture caused by that request, and typed exactly `ACCEPT`. Only that
+operator observation promoted the final Control B real-motion acceptance.
 
-This corrective therefore requires Backend `real_motion_executed: false` before
-the prompt. Successful operator confirmation promotes the final real-motion
-acceptance in the runner only; it does not rewrite the Backend response.
+Afterward, the Backend was stopped, process-local real-execution flags were
+restored to zero, private process values were removed, and no additional
+provider or motion execution occurred.
 
-## Exact corrective surface
+## Why Control C needs a separate contract corrective
+
+The earlier Stage 2 wording expected Flutter to display
+`real_motion_executed: true` after explicit Apply. That expectation is
+incompatible with the accepted fixed Framework v5.5.0 contract.
+
+The fixed Framework can verify that the provider hotkey request completed, but
+it does not claim that a physical Live2D change was visible. The Backend
+therefore returns `real_motion_executed: false` even on a completed provider
+request. Flutter parses that Backend boolean and displays it without promoting
+or rewriting it.
+
+Control C must consequently separate these two facts:
 
 ```text
-scripts/run_v300_rt7e_private_configured_local_vts_operator.py
-backend/tests/test_v300_rt7e_private_configured_local_vts_operator.py
-scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py
+Backend / Flutter transport fact:
+real_motion_executed: false
+
+Operator-observed physical fact:
+configured gesture visibly occurred after the one explicit Flutter Apply
+```
+
+The operator observation promotes final Control C acceptance outside the
+Backend response and outside the Flutter result model. No Backend or Flutter
+runtime field is rewritten.
+
+## Exact Control C contract-corrective surface
+
+```text
 docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md
+scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py
 ```
 
 Protected and unchanged:
 
 ```text
 backend/app/**
-app/**
+backend/tests/**
+app/lib/**
+app/test/**
 vendor/**
 backend/.env.example
 backend/requirements*.txt
@@ -65,16 +91,21 @@ private token files
 VTube Studio model and hotkey configuration
 ```
 
-The corrective changes no Backend runtime, Flutter runtime, fixed vendored
+This corrective changes no Backend runtime, Flutter runtime, fixed vendored
 Framework, dependency, private configuration, release artifact, tag, or GitHub
-Release.
+Release. It performs no HTTP request, provider import, WebSocket connection,
+VTube Studio operation, or real motion.
 
 ## Accepted runtime reused without modification
 
-RT-7e continues to reuse the accepted RT-7d path:
+Control C reuses the accepted RT-7d Flutter path:
 
 ```text
-explicit HomeScreen Apply
+explicit Flutter compile-time enablement
+→ HomeScreen session-local opt-in
+→ intent gesture
+→ public selector alias rt7e_acceptance_gesture
+→ Apply one VTS command exactly once
 → POST /demo/character-motion/vts/presentation
 → one bounded gesture command
 → private Backend configuration loader
@@ -83,125 +114,101 @@ explicit HomeScreen Apply
 → local VTube Studio
 ```
 
-The fixed request remains:
-
-```json
-{
-  "schema_version": "drc.v3.framework-vts-motion-presentation-request.1",
-  "command": {
-    "order": 1,
-    "intent": "gesture",
-    "expression": null,
-    "emotion": null,
-    "gesture": "rt7e_acceptance_gesture",
-    "character_id": null
-  }
-}
-```
-
-Transport remains one POST, no redirect, no retry, no loop, a 10-second timeout,
-JSON only, and at most 65536 response bytes.
-
-## Corrected Backend response contract
-
-Before any visual confirmation, the runner requires all of the following:
+Flutter configuration remains default off through:
 
 ```text
-schema_version: drc.v3.framework-vts-motion-execution.1
-status: completed
-commands_requested: 1
-commands_applied: 1
-commands_completed: 1
-optional_commands_skipped: 0
-framework_import_attempted: true
-session_created: true
-session_closed: true
-real_adapter_enabled: true
-provider_execution_allowed: true
-provider_execution_attempted: true
-network_execution_attempted: true
-Backend real_motion_executed: false
-command_results: exactly one
-command intent: gesture
-command outcome: completed
-command skipped: false
+DRC_RT7_ENABLE_CONFIGURED_VTS_MOTION=false
 ```
 
-`Backend real_motion_executed: false` is mandatory. A Backend value of `true`
-before visual confirmation fails closed because it would claim physical motion
-without operator evidence.
-
-After the Backend contract passes, the runner prints:
+Control C requires explicit compile-time enablement:
 
 ```text
-v300_rt7e_operator_backend_contract_valid: True
-v300_rt7e_operator_backend_real_motion_executed: False
+--dart-define=DRC_RT7_ENABLE_CONFIGURED_VTS_MOTION=true
 ```
 
-It then asks exactly once whether the configured gesture was visibly observed.
-Only an exact `ACCEPT` succeeds. The operator confirmation promotes the final
-real-motion acceptance and produces:
+The Flutter runtime uses one POST, disables redirects, applies a 10-second
+timeout, accepts JSON only, and limits the response to 65536 bytes.
+
+## Correct Control C execution contract
+
+Control C is separately authorized only after this exact two-file corrective
+passes review, verification, commit, push, and clean-tree checks.
+
+The operator must:
 
 ```text
-v300_rt7e_operator_visible_motion_confirmed: True
-v300_rt7e_operator_real_motion_executed: True
+1. Start the Backend with private values loaded process-locally.
+2. Set DRC_SKIP_BACKEND_DOTENV=1 so backend/.env cannot override them.
+3. Open Backend real-adapter and provider-execution flags only in that process.
+4. Start Flutter with DRC_RT7_ENABLE_CONFIGURED_VTS_MOTION=true.
+5. Confirm the Configured VTS Motion panel reports Configuration: configured.
+6. Turn the session-local VTS motion opt-in on.
+7. Select intent gesture.
+8. Enter the public alias rt7e_acceptance_gesture.
+9. Return the VTube Studio model to its normal pre-gesture state.
+10. Press Apply one VTS command exactly once.
+11. Do not press Apply again.
 ```
 
-`ACCEPT` must be entered only while watching the VTube Studio model and only
-when the configured gesture is visibly performed by that request.
-
-## Allowlisted safe diagnostics
-
-A non-completed or malformed semantic result fails closed. The runner never
-prints raw response JSON. For a structured failed Backend result, it may print
-only these allowlisted safe diagnostics:
+The Flutter UI must show the completed Backend result:
 
 ```text
-status
-reason_code
-commands_requested
-commands_applied
-commands_completed
-session_created
-session_closed
-provider_execution_attempted
-network_execution_attempted
-Backend real_motion_executed
-command intent
-command outcome
-command public_error_code
-command retryable
+Configuration: configured
+Opt-in: on
+Intent: gesture
+Phase: completed
+Status: completed
+Reason: framework_vts_motion_completed
+Commands requested: 1
+Commands applied: 1
+Commands completed: 1
+Optional skips: 0
+Command outcome: completed
+Framework import attempted: true
+Session created: true
+Session closed: true
+Provider attempted: true
+Network attempted: true
+Real motion executed: false
 ```
 
-String values are checked against fixed public allowlists. Counts must be
-bounded integers and booleans must be literal booleans; otherwise the diagnostic
-value becomes `unrecognized`.
+`Real motion executed: false` is mandatory and correct at the Backend/Flutter
+boundary. A value of `true` would claim a physical observation that neither the
+fixed Framework nor Flutter can establish.
 
-The runner must not display or derive the private token, endpoint, hotkey name,
-hotkey identifier, model identity, provider payload, WebSocket payload, raw
-response, raw exception, private path, LAN IP, screenshot, VTS log, or operator
-evidence file.
+While the Apply request is executing, the operator must watch the VTube Studio
+model. Control C final real motion is accepted only when the configured gesture
+is visibly observed as a result of that single Apply.
 
-## Corrective focused tests
-
-The exact nine credential-free tests verify:
+The Control C record may therefore state:
 
 ```text
-1. no explicit flag performs zero requests
-2. non-fixed or non-loopback Backend URL is rejected
-3. the fixed gesture performs exactly one POST and requires operator acceptance
-4. redirects are never followed
-5. the response is bounded to 65536 bytes
-6. Backend real-motion must remain false before operator confirmation
-7. negative visual confirmation never promotes real motion
-8. failed results print only allowlisted safe diagnostics
-9. successful output never echoes private or raw response fields
+Flutter Backend contract: completed / 1-1-1 / session closed
+Flutter Backend real_motion_executed: false
+operator visible motion confirmed: true
+Control C final real motion accepted: true
+Flutter Apply count: exactly 1
 ```
+
+No raw Backend JSON, provider payload, WebSocket payload, token, endpoint,
+hotkey name, hotkey identifier, model identity, private path, LAN IP,
+screenshot, VTS log, or operator evidence file may be displayed, pasted, or
+committed.
+
+## Control D and Control E after Control C
+
+Control D remains blocked until Control C passes. It must verify that Reset local state, turning opt-in off, and Flutter disposal produce no additional
+Backend request, provider execution, network execution, or visible motion.
+
+Control E remains blocked until Controls C and D pass. It must restore every
+process-local real-execution flag to zero, remove private process values, stop
+Backend and Flutter processes, and verify the DRC working tree is clean.
 
 ## Corrective verification
 
 Run from the DRC repository root while all private execution flags remain
-closed and no Backend or VTube Studio provider operation is started:
+closed and no Backend, Flutter runtime, or VTube Studio provider operation is
+started:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -220,41 +227,30 @@ git status --short
 git diff --name-only
 ```
 
-Expected corrective gate state:
+Expected Control C contract-corrective gate state:
 
 ```text
-corrective status: implemented-awaiting-review
+Control C contract corrective status: implemented-awaiting-review
+baseline: 84429683d5ea26e5480bff17f5e29ad201b6ee71
 exact change surface: true
-change file count: 4
+change file count: 2
+Control B accepted: true
 Backend runtime changed: false
 Flutter runtime changed: false
 vendor Framework changed: false
+Flutter compile flag explicit: true
+Flutter session opt-in required: true
+Flutter explicit Apply exactly one: true
+Flutter Backend real-motion marker required false: true
+operator visual confirmation promotes Control C real motion: true
 private configuration read: false
 provider execution attempted: false
 network execution attempted: false
 real motion executed: false
-Backend real-motion marker required false: true
-operator confirmation promotes real motion: true
-allowlisted safe diagnostics: true
-additional real execution authorized: false
+Control C execution authorized: false
 acceptance sync authorized: false
 commit / push authorized: false
 ```
 
-## Stage 2 state after corrective review
-
-The corrective implementation does not authorize another provider request.
-After the exact four-file candidate passes review, tests, commit, push, and
-clean-tree verification, Control B may be separately authorized for one new
-attempt using the rewritten private binding.
-
-```text
-Control A: PASS
-Control B: BLOCKED_PENDING_CORRECTIVE_ACCEPTANCE
-Control C: BLOCKED_PENDING_CONTROL_B_PASS
-Control D: BLOCKED_PENDING_CONTROL_C_PASS
-Control E: BLOCKED_PENDING_CONTROLS_B_TO_D
-```
-
 RT-7e acceptance sync remains a separate later authorization and is not part of
-this corrective commit.
+this corrective.
