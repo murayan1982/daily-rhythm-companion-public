@@ -5,9 +5,11 @@ import 'services/backend_api_client.dart';
 import 'services/character_motion_presentation_controller.dart';
 import 'services/configured_character_motion_presentation_runtime.dart';
 import 'services/configured_integrated_voice_turn_runtime.dart';
+import 'services/configured_framework_vts_motion_presentation_runtime.dart';
 import 'services/configured_realtime_terminal_voice_output_runtime.dart';
 import 'services/configured_realtime_text_stream_runtime.dart';
 import 'services/integrated_voice_turn_home_screen_binding.dart';
+import 'services/framework_vts_motion_presentation_controller.dart';
 import 'services/realtime_terminal_voice_output_home_screen_binding.dart';
 import 'services/realtime_text_stream_controller.dart';
 
@@ -22,6 +24,10 @@ void main() {
   );
   final configuredCharacterMotionRuntime =
       ConfiguredCharacterMotionPresentationRuntime.fromEnvironment(
+        apiClient: apiClient,
+      );
+  final configuredFrameworkVtsMotionRuntime =
+      ConfiguredFrameworkVtsMotionPresentationRuntime.fromEnvironment(
         apiClient: apiClient,
       );
   final configuredIntegratedVoiceTurnRuntime =
@@ -44,6 +50,8 @@ void main() {
           .buildBindingFactory(),
       characterMotionPresentationControllerFactory:
           configuredCharacterMotionRuntime.buildControllerFactory(),
+      frameworkVtsMotionPresentationControllerFactory:
+          configuredFrameworkVtsMotionRuntime.buildControllerFactory(),
     ),
   );
 }
@@ -56,6 +64,7 @@ class DailyRhythmCompanionApp extends StatelessWidget {
     this.realtimeTerminalVoiceOutputBindingFactory,
     this.integratedVoiceTurnBindingFactory,
     this.characterMotionPresentationControllerFactory,
+    this.frameworkVtsMotionPresentationControllerFactory,
   });
 
   final BackendApiClient apiClient;
@@ -67,6 +76,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
   integratedVoiceTurnBindingFactory;
   final CharacterMotionPresentationController Function()?
   characterMotionPresentationControllerFactory;
+  final FrameworkVtsMotionPresentationController Function()?
+  frameworkVtsMotionPresentationControllerFactory;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +95,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
         integratedVoiceTurnBindingFactory: integratedVoiceTurnBindingFactory,
         characterMotionPresentationControllerFactory:
             characterMotionPresentationControllerFactory,
+        frameworkVtsMotionPresentationControllerFactory:
+            frameworkVtsMotionPresentationControllerFactory,
       ),
     );
   }

@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+import json
 import os
 from pathlib import Path
 
@@ -58,6 +59,17 @@ class AppConfig:
     motion_demo_enabled: bool = False
     motion_adapter_mode: str = "disabled"
     framework_mock_motion_presentation_enabled: bool = False
+    framework_vts_motion_enabled: bool = False
+    framework_vts_motion_allow_provider_execution: bool = False
+    framework_vts_motion_runtime_available: bool = False
+    framework_vts_motion_model_selected: bool = False
+    framework_vts_motion_endpoint_host: str = field(default="", repr=False)
+    framework_vts_motion_endpoint_port: int | None = field(default=None, repr=False)
+    framework_vts_motion_authentication_token: str = field(default="", repr=False)
+    framework_vts_motion_hotkey_bindings: dict[str, str] = field(
+        default_factory=dict, repr=False
+    )
+    framework_vts_motion_configuration_error: str | None = None
     gemini_api_key: str | None = None
     xai_api_key: str | None = None
     sleep_provider: str = "mock"
@@ -160,6 +172,41 @@ def _env_float(name: str, default: float) -> float:
         return default
 
 
+
+def _env_vts_private_configuration() -> tuple[str, int | None, str, dict[str, str], str | None]:
+    """Load bounded private VTS values without exposing them in errors."""
+
+    host = os.getenv("DRC_RT7_VTS_ENDPOINT_HOST", "").strip()
+    token = os.getenv("DRC_RT7_VTS_AUTHENTICATION_TOKEN", "").strip()
+    raw_port = os.getenv("DRC_RT7_VTS_ENDPOINT_PORT", "").strip()
+    raw_bindings = os.getenv("DRC_RT7_VTS_HOTKEY_BINDINGS_JSON", "{}").strip()
+    if len(host) > 4096 or len(token) > 4096 or len(raw_bindings) > 16384:
+        return "", None, "", {}, "private_value_oversized"
+    port: int | None = None
+    if raw_port:
+        try:
+            port = int(raw_port)
+        except ValueError:
+            return "", None, "", {}, "invalid_endpoint_port"
+        if not 1 <= port <= 65535:
+            return "", None, "", {}, "invalid_endpoint_port"
+    try:
+        decoded = json.loads(raw_bindings or "{}")
+    except json.JSONDecodeError:
+        return "", None, "", {}, "invalid_hotkey_bindings"
+    if not isinstance(decoded, dict) or len(decoded) > 32:
+        return "", None, "", {}, "invalid_hotkey_bindings"
+    bindings: dict[str, str] = {}
+    for key, value in decoded.items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            return "", None, "", {}, "invalid_hotkey_bindings"
+        key = key.strip()
+        value = value.strip()
+        if not key or not value or len(key) > 4096 or len(value) > 4096:
+            return "", None, "", {}, "invalid_hotkey_bindings"
+        bindings[key] = value
+    return host, port, token, bindings, None
+
 def _load_backend_dotenv() -> None:
     """
     Load backend/.env when it exists.
@@ -182,6 +229,14 @@ def _load_backend_dotenv() -> None:
 def load_config() -> AppConfig:
     """Load backend configuration from environment variables."""
     _load_backend_dotenv()
+
+    (
+        vts_endpoint_host,
+        vts_endpoint_port,
+        vts_authentication_token,
+        vts_hotkey_bindings,
+        vts_configuration_error,
+    ) = _env_vts_private_configuration()
 
     return AppConfig(
         conversation_engine=os.getenv("CONVERSATION_ENGINE", "mock").lower(),
@@ -291,6 +346,23 @@ def load_config() -> AppConfig:
         framework_mock_motion_presentation_enabled=_env_flag(
             "DRC_RT6_ENABLE_FRAMEWORK_MOCK_MOTION"
         ),
+        framework_vts_motion_enabled=_env_flag(
+            "DRC_RT7_ENABLE_FRAMEWORK_VTS_MOTION"
+        ),
+        framework_vts_motion_allow_provider_execution=_env_flag(
+            "DRC_RT7_ALLOW_VTS_PROVIDER_EXECUTION"
+        ),
+        framework_vts_motion_runtime_available=_env_flag(
+            "DRC_RT7_VTS_RUNTIME_AVAILABLE"
+        ),
+        framework_vts_motion_model_selected=_env_flag(
+            "DRC_RT7_VTS_MODEL_SELECTED"
+        ),
+        framework_vts_motion_endpoint_host=vts_endpoint_host,
+        framework_vts_motion_endpoint_port=vts_endpoint_port,
+        framework_vts_motion_authentication_token=vts_authentication_token,
+        framework_vts_motion_hotkey_bindings=vts_hotkey_bindings,
+        framework_vts_motion_configuration_error=vts_configuration_error,
         gemini_api_key=_empty_to_none(os.getenv("GEMINI_API_KEY")),
         xai_api_key=_empty_to_none(os.getenv("XAI_API_KEY")),
         sleep_provider=os.getenv("SLEEP_PROVIDER", "mock").lower(),

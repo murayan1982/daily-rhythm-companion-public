@@ -4,6 +4,7 @@ import '../models/advice_response.dart';
 import '../models/advice_source.dart';
 import '../models/character_display_presentation.dart';
 import '../models/character_motion_presentation.dart';
+import '../models/framework_vts_motion_presentation.dart';
 import '../models/character_preset.dart';
 import '../models/chat.dart';
 import '../models/demo_status.dart';
@@ -23,6 +24,7 @@ import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
 import '../services/character_motion_presentation_controller.dart';
+import '../services/framework_vts_motion_presentation_controller.dart';
 import '../services/integrated_voice_turn_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_orchestrator.dart';
@@ -32,6 +34,7 @@ import '../services/voice_output_audio_player.dart';
 import '../ui/character_asset_catalog.dart';
 import '../widgets/character_display_card.dart';
 import '../widgets/character_motion_presentation_panel.dart';
+import '../widgets/framework_vts_motion_presentation_panel.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'history_screen.dart';
@@ -46,6 +49,7 @@ class HomeScreen extends StatefulWidget {
     this.realtimeTerminalVoiceOutputBindingFactory,
     this.integratedVoiceTurnBindingFactory,
     this.characterMotionPresentationControllerFactory,
+    this.frameworkVtsMotionPresentationControllerFactory,
   });
 
   final BackendApiClient apiClient;
@@ -60,6 +64,8 @@ class HomeScreen extends StatefulWidget {
   integratedVoiceTurnBindingFactory;
   final CharacterMotionPresentationController Function()?
   characterMotionPresentationControllerFactory;
+  final FrameworkVtsMotionPresentationController Function()?
+  frameworkVtsMotionPresentationControllerFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -224,6 +230,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _characterMotionOptedIn = false;
   CharacterMotionLifecycleFact _selectedCharacterMotionFact =
       CharacterMotionLifecycleFact.idle;
+  FrameworkVtsMotionPresentationController? _frameworkVtsMotionController;
+  String? _frameworkVtsMotionConfigurationCode;
+  bool _frameworkVtsMotionOptedIn = false;
+  FrameworkVtsMotionIntent _selectedFrameworkVtsMotionIntent =
+      FrameworkVtsMotionIntent.expression;
+  String _frameworkVtsMotionSelectorValue = 'smile';
   bool _isDisposing = false;
 
   void _handleVoiceOutputPlaybackStateChanged() {
@@ -256,6 +268,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleFrameworkVtsMotionChanged() {
+    if (mounted && !_isDisposing) {
+      setState(() {});
+    }
+  }
+
   void _handleCharacterMotionChanged() {
     if (mounted && !_isDisposing) {
       setState(() {});
@@ -265,6 +283,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _isDisposing = true;
+    _frameworkVtsMotionController?.removeListener(
+      _handleFrameworkVtsMotionChanged,
+    );
+    _frameworkVtsMotionController?.dispose();
     _characterMotionController?.removeListener(_handleCharacterMotionChanged);
     _characterMotionController?.dispose();
     ++_realtimeTerminalVoiceOutputProcessUiSequence;
@@ -787,6 +809,18 @@ class _HomeScreenState extends State<HomeScreen> {
         binding.addListener(_handleIntegratedVoiceTurnChanged);
       } catch (_) {
         _integratedVoiceTurnConfigurationCode = 'configuration_failed';
+      }
+    }
+
+    if (widget.frameworkVtsMotionPresentationControllerFactory != null) {
+      try {
+        final controller = widget
+            .frameworkVtsMotionPresentationControllerFactory!
+            .call();
+        _frameworkVtsMotionController = controller;
+        controller.addListener(_handleFrameworkVtsMotionChanged);
+      } catch (_) {
+        _frameworkVtsMotionConfigurationCode = 'configuration_failed';
       }
     }
 
@@ -2506,6 +2540,106 @@ class _HomeScreenState extends State<HomeScreen> {
       onFactChanged: _setSelectedCharacterMotionFact,
       onApply: _applyCharacterMotion,
       onReset: _resetCharacterMotion,
+    );
+  }
+
+  bool get _isFrameworkVtsMotionConfigured =>
+      _frameworkVtsMotionController != null &&
+      _frameworkVtsMotionConfigurationCode == null;
+
+  bool get _canToggleFrameworkVtsMotionOptIn {
+    final state = _frameworkVtsMotionController?.state;
+    return _isFrameworkVtsMotionConfigured && state?.isClosed != true;
+  }
+
+  bool get _canApplyFrameworkVtsMotion {
+    final state = _frameworkVtsMotionController?.state;
+    final selectorReady =
+        !_selectedFrameworkVtsMotionIntent.requiresSelector ||
+        _frameworkVtsMotionSelectorValue.trim().isNotEmpty;
+    return _frameworkVtsMotionOptedIn &&
+        _isFrameworkVtsMotionConfigured &&
+        selectorReady &&
+        state != null &&
+        !state.isApplying &&
+        !state.isClosed;
+  }
+
+  bool get _canResetFrameworkVtsMotion {
+    final state = _frameworkVtsMotionController?.state;
+    return _isFrameworkVtsMotionConfigured &&
+        state != null &&
+        !state.isClosed &&
+        (state.phase != FrameworkVtsMotionPresentationPhase.idle ||
+            _frameworkVtsMotionSelectorValue != 'smile' ||
+            _selectedFrameworkVtsMotionIntent !=
+                FrameworkVtsMotionIntent.expression);
+  }
+
+  String get _frameworkVtsMotionConfiguration =>
+      _frameworkVtsMotionConfigurationCode ??
+      (_isFrameworkVtsMotionConfigured ? 'configured' : 'unconfigured');
+
+  void _setFrameworkVtsMotionOptIn(bool value) {
+    final controller = _frameworkVtsMotionController;
+    if (!_canToggleFrameworkVtsMotionOptIn || controller == null) return;
+    if (!value) controller.reset();
+    setState(() => _frameworkVtsMotionOptedIn = value);
+  }
+
+  void _setFrameworkVtsMotionIntent(FrameworkVtsMotionIntent? intent) {
+    if (!_frameworkVtsMotionOptedIn || intent == null) return;
+    setState(() {
+      _selectedFrameworkVtsMotionIntent = intent;
+      if (!intent.requiresSelector) _frameworkVtsMotionSelectorValue = '';
+    });
+  }
+
+  void _setFrameworkVtsMotionSelector(String value) {
+    if (!_frameworkVtsMotionOptedIn) return;
+    setState(() => _frameworkVtsMotionSelectorValue = value);
+  }
+
+  Future<void> _applyFrameworkVtsMotion() async {
+    final controller = _frameworkVtsMotionController;
+    if (controller == null || !_canApplyFrameworkVtsMotion) return;
+    final request = FrameworkVtsMotionPresentationRequest(
+      intent: _selectedFrameworkVtsMotionIntent,
+      selectorValue: _selectedFrameworkVtsMotionIntent.requiresSelector
+          ? _frameworkVtsMotionSelectorValue
+          : null,
+      characterId: _selectedCharacter?.characterId,
+    );
+    try {
+      await controller.apply(request);
+    } on FrameworkVtsMotionPresentationProblemException {
+      // Controller publishes a bounded public-safe state.
+    }
+  }
+
+  void _resetFrameworkVtsMotion() {
+    _frameworkVtsMotionController?.reset();
+    setState(() {
+      _selectedFrameworkVtsMotionIntent = FrameworkVtsMotionIntent.expression;
+      _frameworkVtsMotionSelectorValue = 'smile';
+    });
+  }
+
+  Widget _buildFrameworkVtsMotionPresentationSection(BuildContext context) {
+    return FrameworkVtsMotionPresentationPanel(
+      configuration: _frameworkVtsMotionConfiguration,
+      optedIn: _frameworkVtsMotionOptedIn,
+      selectedIntent: _selectedFrameworkVtsMotionIntent,
+      selectorValue: _frameworkVtsMotionSelectorValue,
+      state: _frameworkVtsMotionController?.state,
+      canToggleOptIn: _canToggleFrameworkVtsMotionOptIn,
+      canApply: _canApplyFrameworkVtsMotion,
+      canReset: _canResetFrameworkVtsMotion,
+      onOptInChanged: _setFrameworkVtsMotionOptIn,
+      onIntentChanged: _setFrameworkVtsMotionIntent,
+      onSelectorChanged: _setFrameworkVtsMotionSelector,
+      onApply: _applyFrameworkVtsMotion,
+      onReset: _resetFrameworkVtsMotion,
     );
   }
 
@@ -5075,6 +5209,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildVoiceOutputDemoSection(context),
                     const SizedBox(height: 24),
                     _buildCharacterMotionPresentationSection(context),
+
+                    const SizedBox(height: 24),
+                    _buildFrameworkVtsMotionPresentationSection(context),
 
                     const SizedBox(height: 32),
                     _buildMotionDemoSection(context),

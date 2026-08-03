@@ -7462,3 +7462,37 @@ automatically by this docs/static-gate sync.
 Detailed accepted contract:
 `docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->
+
+
+<!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:BEGIN -->
+## RT-7d default-off configured VTS manual wiring candidate
+
+```text
+RT-7: CURRENT / NOT_COMPLETED
+RT-7c: COMPLETED / ACCEPTED / PUSHED
+RT-7d: IMPLEMENTED / AWAITING_REVIEW
+baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+surface: exact 28 files
+provider/network/real motion verification execution: false
+RT-7e: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+- [x] Add a separate one-command VTS request route and service.
+- [x] Add bounded private environment loading with public-safe invalid configuration.
+- [x] Keep Backend adapter and provider execution default off.
+- [x] Add a compile-time-default-off Flutter HTTP runtime.
+- [x] Add session-local opt-in and explicit Apply-only HomeScreen controls.
+- [x] Keep RT-6 mapper, mock route, runtime, UI, and tests unchanged.
+- [x] Add focused Backend and Flutter tests plus an exact static gate.
+- [ ] Run the candidate in the real DRC checkout.
+- [ ] Run full Backend and Flutter regressions.
+- [ ] Complete exact-surface, privacy, and diff review.
+- [ ] Commit/push only after separate explicit approval.
+- [ ] Keep RT-7e and real VTube Studio execution not authorized.
+
+Detailed candidate contract:
+`docs/v300_rt7d_default_off_configured_vts_manual_wiring.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
+<!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->

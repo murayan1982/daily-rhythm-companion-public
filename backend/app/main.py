@@ -12,6 +12,7 @@ from app.api import (
     daily_records,
     demo_status,
     fitbit,
+    framework_vts_motion_presentation,
     google_health,
     health,
     motion_demo,
@@ -40,6 +41,7 @@ app.add_middleware(
 
 app.include_router(health.router)
 app.include_router(character_motion_presentation.router)
+app.include_router(framework_vts_motion_presentation.router)
 app.include_router(characters.router)
 app.include_router(sleep.router)
 app.include_router(sleep_provider_selection.router)

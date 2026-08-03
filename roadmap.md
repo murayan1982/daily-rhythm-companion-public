@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7c acceptance sync
+Current small commit: RT-7d default-off configured VTS manual wiring candidate
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,15 +571,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7c acceptance sync
-Last accepted small commit: RT-7b vendored FW v5.5.0 readiness COMPLETED / ACCEPTED / PUSHED at c766610ce66a539efaabf4e4026a7c12ad2887c9
+Current small commit: RT-7d default-off configured VTS manual wiring candidate
+Last accepted small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter COMPLETED / ACCEPTED / PUSHED at 2a5e3b035bcfdd273a7d056d59af01235e2459f5
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `35582f06ca037401b2cef8d97cfc5fc26cd40654`
-Current implementation commit: `4a2374854801791caefdf0be8cd246e5a2e9278e`
-Current corrective commit: `484ba17245d24a98407907984b28995b247581fa`
-Current implementation boundary: accepted exact 11-file implementation plus exact 4-file strict-boolean corrective; acceptance sync is exact 7 documentation/static-gate files; no API, Flutter, existing RT-6 runtime/test, vendor, release, or private configuration source change.
+Current implementation: RT-7d default-off configured Backend/API/Flutter manual VTS wiring.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `2a5e3b035bcfdd273a7d056d59af01235e2459f5`
+Current implementation commit: none
+Current implementation boundary: exact 28 files; separate manual VTS API/config/service and default-off Flutter runtime/panel; existing RT-6 and accepted RT-7c adapter remain protected; provider/network/real motion verification execution is false.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: fixed released v5.5.0 vendor at `f56697b6de066b062794ac7bb01330d2d9e91759`
 
@@ -8365,3 +8364,37 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py`.
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->
+
+
+<!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:BEGIN -->
+## RT-7d default-off configured VTS manual wiring candidate
+
+```text
+RT-7: CURRENT / NOT_COMPLETED
+RT-7c: COMPLETED / ACCEPTED / PUSHED
+RT-7d: IMPLEMENTED / AWAITING_REVIEW
+baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+surface: exact 28 files
+provider/network/real motion verification execution: false
+RT-7e: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+- [x] Add a separate one-command VTS request route and service.
+- [x] Add bounded private environment loading with public-safe invalid configuration.
+- [x] Keep Backend adapter and provider execution default off.
+- [x] Add a compile-time-default-off Flutter HTTP runtime.
+- [x] Add session-local opt-in and explicit Apply-only HomeScreen controls.
+- [x] Keep RT-6 mapper, mock route, runtime, UI, and tests unchanged.
+- [x] Add focused Backend and Flutter tests plus an exact static gate.
+- [ ] Run the candidate in the real DRC checkout.
+- [ ] Run full Backend and Flutter regressions.
+- [ ] Complete exact-surface, privacy, and diff review.
+- [ ] Commit/push only after separate explicit approval.
+- [ ] Keep RT-7e and real VTube Studio execution not authorized.
+
+Detailed candidate contract:
+`docs/v300_rt7d_default_off_configured_vts_manual_wiring.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
+<!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->

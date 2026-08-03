@@ -9,16 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7c acceptance sync
-Current implementation: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `35582f06ca037401b2cef8d97cfc5fc26cd40654`
-Current implementation commit: `4a2374854801791caefdf0be8cd246e5a2e9278e`
-Current corrective commit: `484ba17245d24a98407907984b28995b247581fa`
-Last accepted small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter (**COMPLETED / ACCEPTED / PUSHED**) at `484ba17245d24a98407907984b28995b247581fa`
+Current small commit: RT-7d default-off configured VTS manual wiring candidate
+Current implementation: RT-7d default-off configured Backend/API/Flutter manual VTS wiring.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `2a5e3b035bcfdd273a7d056d59af01235e2459f5`
+Current implementation commit: none
+Last accepted small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter (**COMPLETED / ACCEPTED / PUSHED**) at `2a5e3b035bcfdd273a7d056d59af01235e2459f5`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: record the exact seven-file RT-7c acceptance sync; RT-7d is ready for exact contract review, while RT-7d implementation, RT-7e, and real VTube Studio execution remain NOT_AUTHORIZED
+Current realtime action: verify the exact 28-file RT-7d candidate; RT-7e, real VTube Studio execution, and commit/push remain NOT_AUTHORIZED
 
 Current phase state:
 
@@ -94,7 +93,7 @@ RT-7  CURRENT / NOT_COMPLETED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
   RT-7b  COMPLETED / ACCEPTED / PUSHED  Vendored FW v5.5.0 provenance and root-public readiness
   RT-7c  COMPLETED / ACCEPTED / PUSHED  Guarded fixed-vendor FW v5.5.0 VTS session adapter core
-  RT-7d  NOT_STARTED / NOT_AUTHORIZED  Default-off configured Backend/API/Flutter manual VTS wiring
+  RT-7d  IMPLEMENTED / AWAITING_REVIEW  Default-off configured Backend/API/Flutter manual VTS wiring
   RT-7e  NOT_STARTED / NOT_AUTHORIZED  Private configured local VTS operator execution and acceptance
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
@@ -5753,3 +5752,37 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py`.
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->
+
+
+<!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:BEGIN -->
+## RT-7d default-off configured VTS manual wiring candidate
+
+```text
+RT-7: CURRENT / NOT_COMPLETED
+RT-7c: COMPLETED / ACCEPTED / PUSHED
+RT-7d: IMPLEMENTED / AWAITING_REVIEW
+baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+surface: exact 28 files
+provider/network/real motion verification execution: false
+RT-7e: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+- [x] Add a separate one-command VTS request route and service.
+- [x] Add bounded private environment loading with public-safe invalid configuration.
+- [x] Keep Backend adapter and provider execution default off.
+- [x] Add a compile-time-default-off Flutter HTTP runtime.
+- [x] Add session-local opt-in and explicit Apply-only HomeScreen controls.
+- [x] Keep RT-6 mapper, mock route, runtime, UI, and tests unchanged.
+- [x] Add focused Backend and Flutter tests plus an exact static gate.
+- [ ] Run the candidate in the real DRC checkout.
+- [ ] Run full Backend and Flutter regressions.
+- [ ] Complete exact-surface, privacy, and diff review.
+- [ ] Commit/push only after separate explicit approval.
+- [ ] Keep RT-7e and real VTube Studio execution not authorized.
+
+Detailed candidate contract:
+`docs/v300_rt7d_default_off_configured_vts_manual_wiring.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
+<!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
