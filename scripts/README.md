@@ -7465,34 +7465,83 @@ Detailed accepted contract:
 
 
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:BEGIN -->
-## RT-7d default-off configured VTS manual wiring candidate
+## RT-7d default-off configured VTS manual wiring acceptance
+
+RT-7d is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2` against baseline
+`2a5e3b035bcfdd273a7d056d59af01235e2459f5` under the exact 28-file contract.
+
+Accepted verification:
+
+```text
+compileall: PASS
+dedicated RT-7d gate: PASS before and after regressions
+focused Backend: 16 passed, 1 existing dependency warning
+Backend full: 336 passed, 1 existing dependency warning
+Dart focused format: PASS
+Flutter analyze: No issues found
+focused Flutter: 16 passed
+Flutter full: 499 passed
+exact implementation surface: 28 files
+CRLF-aware git diff --check: PASS
+provider execution attempted: false
+network execution attempted: false
+real motion executed: false
+implementation commit / push: COMPLETED
+post-push HEAD / origin/main: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+post-push working tree: clean
+```
+
+The accepted wiring keeps the RT-6 mock route unchanged and adds a separate
+one-command manual VTS route. Flutter compile-time enablement, HomeScreen
+session-local opt-in, Backend adapter enablement, and Backend provider opt-in
+remain independently default off. Startup, construction, opt-in, opt-out,
+reset, and disposal perform no transport or motion execution.
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7c: COMPLETED / ACCEPTED / PUSHED
-RT-7d: IMPLEMENTED / AWAITING_REVIEW
-baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
-surface: exact 28 files
-provider/network/real motion verification execution: false
-RT-7e: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+RT-7d: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+implementation commit: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+implementation surface: exact 28 files
+acceptance-sync surface: exact 7 documentation/static-gate files
+existing RT-6 route preserved: true
+one-command manual boundary: true
+Flutter default off: true
+Backend default off: true
+session opt-in default off: true
+Framework development checkout referenced: false
+Framework internal import: false
+pyvts direct import: false
+websockets direct import: false
+provider/network/real motion execution: false
+RT-7e exact contract review: READY
+RT-7e implementation: NOT_AUTHORIZED
+real VTube Studio execution: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-- [x] Add a separate one-command VTS request route and service.
-- [x] Add bounded private environment loading with public-safe invalid configuration.
-- [x] Keep Backend adapter and provider execution default off.
-- [x] Add a compile-time-default-off Flutter HTTP runtime.
-- [x] Add session-local opt-in and explicit Apply-only HomeScreen controls.
-- [x] Keep RT-6 mapper, mock route, runtime, UI, and tests unchanged.
-- [x] Add focused Backend and Flutter tests plus an exact static gate.
-- [ ] Run the candidate in the real DRC checkout.
-- [ ] Run full Backend and Flutter regressions.
-- [ ] Complete exact-surface, privacy, and diff review.
-- [ ] Commit/push only after separate explicit approval.
-- [ ] Keep RT-7e and real VTube Studio execution not authorized.
+Run the historical acceptance-sync gate from the DRC repository root while the
+exact seven files are modified against implementation commit `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`:
 
-Detailed candidate contract:
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7d_default_off_configured_vts_manual_wiring.py
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --name-only
+```
+
+The gate rechecks the exact 28-file implementation history, the current exact
+7-file acceptance-sync surface, default-off Backend and Flutter boundaries,
+one-command manual request contract, preserved RT-6 route, fixed-vendor
+root-public adapter path, and closed provider/network/real-motion markers. It
+reads no private VTS configuration, imports no `pyvts`, opens no WebSocket, and
+executes no real motion.
+
+Detailed accepted contract:
 `docs/v300_rt7d_default_off_configured_vts_manual_wiring.md`.
-Dedicated candidate gate:
+Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->

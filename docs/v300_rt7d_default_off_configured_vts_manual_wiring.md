@@ -2,17 +2,21 @@
 
 Updated: 2026-08-03
 
-## Candidate state
+## Accepted state
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7c: COMPLETED / ACCEPTED / PUSHED
-RT-7d: IMPLEMENTED / AWAITING_REVIEW
-RT-7d baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
-RT-7d surface: exact 28 files
-RT-7e: NOT_AUTHORIZED
+RT-7d: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+implementation commit: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+implementation surface: exact 28 files
+acceptance-sync surface: exact 7 documentation/static-gate files
+RT-7d acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-7e exact contract review: READY
+RT-7e implementation: NOT_AUTHORIZED
 real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
 ## Purpose
@@ -162,22 +166,35 @@ development checkout, all RT-6 runtime/models/tests, existing RT-6 Flutter
 stack and tests, versions, release records, fixed ZIPs, tags, and GitHub
 Releases are unchanged.
 
-## Verification
+## Accepted verification
 
 ```text
-compileall
-RT-7d dedicated gate before and after regression
-focused Backend configuration/API tests
-Backend full regression
-Dart format check
-Flutter analyze
-five focused Flutter test files
-Flutter full regression
-exact 28-file review
-privacy scan
-CRLF-aware diff check
+compileall: PASS
+RT-7d dedicated gate before and after regression: PASS
+focused Backend configuration/API tests: 16 passed
+Backend full regression: 336 passed, 1 existing dependency warning
+Dart focused format: PASS
+Flutter analyze: No issues found
+five focused Flutter test files: 16 passed
+Flutter full regression: 499 passed
+exact implementation surface: 28 files
+privacy scan: PASS
+CRLF-aware diff check: PASS
+implementation commit / push: COMPLETED
+post-push HEAD / origin/main: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+post-push working tree: clean
 ```
 
-Provider execution, network execution, and real VTube Studio execution remain
-false throughout RT-7d verification. RT-7e and commit/push require separate
-approval.
+Provider execution, network execution, and real VTube Studio execution remained
+false throughout RT-7d verification. No private endpoint, token, hotkey value,
+provider payload, WebSocket payload, private path, or raw exception was added to
+tracked evidence or public results.
+
+## Acceptance-sync boundary
+
+The acceptance sync changes only the exact seven documentation/static-gate
+files. It changes no Backend or Flutter runtime, tests, dependencies, vendor,
+RT-6 path, version metadata, release record, fixed ZIP, tag, or GitHub Release.
+RT-7e is ready for a separate exact contract review, but RT-7e implementation,
+private operator configuration, provider/network execution, and real VTube
+Studio motion remain not authorized.

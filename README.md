@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7d default-off configured VTS manual wiring candidate
-Current implementation: RT-7d default-off configured Backend/API/Flutter manual VTS wiring.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-7d acceptance sync
+Current implementation: RT-7d default-off configured Backend/API/Flutter manual VTS wiring acceptance.
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
 Current implementation baseline: `2a5e3b035bcfdd273a7d056d59af01235e2459f5`
-Current implementation commit: none
-Last accepted small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter (**COMPLETED / ACCEPTED / PUSHED**) at `2a5e3b035bcfdd273a7d056d59af01235e2459f5`
+Current implementation commit: `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`
+Last accepted small commit: RT-7d default-off configured VTS manual wiring (**COMPLETED / ACCEPTED / PUSHED**) at `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: verify the exact 28-file RT-7d candidate; RT-7e, real VTube Studio execution, and commit/push remain NOT_AUTHORIZED
+Current realtime action: record the exact seven-file RT-7d acceptance sync; RT-7e exact contract review is ready, while RT-7e implementation and real VTube Studio execution remain NOT_AUTHORIZED
 
 Current phase state:
 
@@ -93,7 +93,7 @@ RT-7  CURRENT / NOT_COMPLETED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
   RT-7b  COMPLETED / ACCEPTED / PUSHED  Vendored FW v5.5.0 provenance and root-public readiness
   RT-7c  COMPLETED / ACCEPTED / PUSHED  Guarded fixed-vendor FW v5.5.0 VTS session adapter core
-  RT-7d  IMPLEMENTED / AWAITING_REVIEW  Default-off configured Backend/API/Flutter manual VTS wiring
+  RT-7d  COMPLETED / ACCEPTED / PUSHED  Default-off configured Backend/API/Flutter manual VTS wiring
   RT-7e  NOT_STARTED / NOT_AUTHORIZED  Private configured local VTS operator execution and acceptance
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
@@ -5755,34 +5755,83 @@ Historical acceptance-sync gate:
 
 
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:BEGIN -->
-## RT-7d default-off configured VTS manual wiring candidate
+## RT-7d default-off configured VTS manual wiring acceptance
+
+RT-7d is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2` against baseline
+`2a5e3b035bcfdd273a7d056d59af01235e2459f5` under the exact 28-file contract.
+
+Accepted verification:
+
+```text
+compileall: PASS
+dedicated RT-7d gate: PASS before and after regressions
+focused Backend: 16 passed, 1 existing dependency warning
+Backend full: 336 passed, 1 existing dependency warning
+Dart focused format: PASS
+Flutter analyze: No issues found
+focused Flutter: 16 passed
+Flutter full: 499 passed
+exact implementation surface: 28 files
+CRLF-aware git diff --check: PASS
+provider execution attempted: false
+network execution attempted: false
+real motion executed: false
+implementation commit / push: COMPLETED
+post-push HEAD / origin/main: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+post-push working tree: clean
+```
+
+The accepted wiring keeps the RT-6 mock route unchanged and adds a separate
+one-command manual VTS route. Flutter compile-time enablement, HomeScreen
+session-local opt-in, Backend adapter enablement, and Backend provider opt-in
+remain independently default off. Startup, construction, opt-in, opt-out,
+reset, and disposal perform no transport or motion execution.
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7c: COMPLETED / ACCEPTED / PUSHED
-RT-7d: IMPLEMENTED / AWAITING_REVIEW
-baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
-surface: exact 28 files
-provider/network/real motion verification execution: false
-RT-7e: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+RT-7d: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+implementation commit: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+implementation surface: exact 28 files
+acceptance-sync surface: exact 7 documentation/static-gate files
+existing RT-6 route preserved: true
+one-command manual boundary: true
+Flutter default off: true
+Backend default off: true
+session opt-in default off: true
+Framework development checkout referenced: false
+Framework internal import: false
+pyvts direct import: false
+websockets direct import: false
+provider/network/real motion execution: false
+RT-7e exact contract review: READY
+RT-7e implementation: NOT_AUTHORIZED
+real VTube Studio execution: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-- [x] Add a separate one-command VTS request route and service.
-- [x] Add bounded private environment loading with public-safe invalid configuration.
-- [x] Keep Backend adapter and provider execution default off.
-- [x] Add a compile-time-default-off Flutter HTTP runtime.
-- [x] Add session-local opt-in and explicit Apply-only HomeScreen controls.
-- [x] Keep RT-6 mapper, mock route, runtime, UI, and tests unchanged.
-- [x] Add focused Backend and Flutter tests plus an exact static gate.
-- [ ] Run the candidate in the real DRC checkout.
-- [ ] Run full Backend and Flutter regressions.
-- [ ] Complete exact-surface, privacy, and diff review.
-- [ ] Commit/push only after separate explicit approval.
-- [ ] Keep RT-7e and real VTube Studio execution not authorized.
+Run the historical acceptance-sync gate from the DRC repository root while the
+exact seven files are modified against implementation commit `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`:
 
-Detailed candidate contract:
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7d_default_off_configured_vts_manual_wiring.py
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --name-only
+```
+
+The gate rechecks the exact 28-file implementation history, the current exact
+7-file acceptance-sync surface, default-off Backend and Flutter boundaries,
+one-command manual request contract, preserved RT-6 route, fixed-vendor
+root-public adapter path, and closed provider/network/real-motion markers. It
+reads no private VTS configuration, imports no `pyvts`, opens no WebSocket, and
+executes no real motion.
+
+Detailed accepted contract:
 `docs/v300_rt7d_default_off_configured_vts_manual_wiring.md`.
-Dedicated candidate gate:
+Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
