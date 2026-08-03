@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7b acceptance sync
-Current implementation: RT-7b vendored Framework v5.5.0 readiness acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `8413c2f08879b34f83496441c6a7e20181486469`
-Current implementation commit: `c766610ce66a539efaabf4e4026a7c12ad2887c9`
+Current small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
+Current implementation: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter core.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `35582f06ca037401b2cef8d97cfc5fc26cd40654`
+Current implementation commit: none
 Last accepted small commit: RT-7b vendored FW v5.5.0 readiness (**COMPLETED / ACCEPTED / PUSHED**) at `c766610ce66a539efaabf4e4026a7c12ad2887c9`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: record the exact seven-file RT-7b acceptance sync; RT-7c is ready for exact contract review but runtime composition remains NOT_AUTHORIZED
+Current realtime action: verify the exact 11-file RT-7c candidate; commit/push, RT-7d, RT-7e, and real VTube Studio execution remain NOT_AUTHORIZED
 
 Current phase state:
 
@@ -92,6 +92,9 @@ RT-6  COMPLETED / ACCEPTED  Realtime character presentation and motion-event map
 RT-7  CURRENT / NOT_COMPLETED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
   RT-7b  COMPLETED / ACCEPTED / PUSHED  Vendored FW v5.5.0 provenance and root-public readiness
+  RT-7c  IMPLEMENTED / AWAITING_REVIEW  Guarded fixed-vendor FW v5.5.0 VTS session adapter core
+  RT-7d  NOT_STARTED / NOT_AUTHORIZED  Default-off configured Backend/API/Flutter manual VTS wiring
+  RT-7e  NOT_STARTED / NOT_AUTHORIZED  Private configured local VTS operator execution and acceptance
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
 T-1  COMPLETED / ACCEPTED
@@ -5680,3 +5683,37 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
+
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:BEGIN -->
+## v3.0.0 RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
+
+RT-7c is **IMPLEMENTED / AWAITING_REVIEW** against
+`35582f06ca037401b2cef8d97cfc5fc26cd40654` under the exact 11-file contract.
+
+```text
+Framework release: v5.5.0
+Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
+Framework local source: vendor/ai-character-framework-5.5.0
+Framework development checkout referenced: False
+root-public-only adapter: True
+required intents: expression / emotion / gesture / reset_expression
+stop_motion: optional
+speaking_state / idle_motion / look_at assumed: False
+Backend API/config changed: False
+Flutter changed: False
+provider/network/real motion verification execution: False
+RT-7d: NOT_AUTHORIZED
+RT-7e: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+The candidate adds a separate bounded VTS result model, explicit private
+configuration value object, guarded fixed-vendor root-public session adapter,
+focused fake-session tests, exact dependency pins, and a source gate. It does
+not change the accepted RT-6 mock route or presentation path.
+
+Detailed candidate contract:
+`docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py`.
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->

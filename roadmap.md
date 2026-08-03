@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7b acceptance sync
+Current small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,17 +570,17 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-7 CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED
-Current small commit: RT-7a acceptance sync
-Last accepted small commit: RT-7a real-motion adapter readiness COMPLETED / ACCEPTED / PUSHED at efb139b2c0b6c7cc66912a229bd674b36df82dd7
+Status: RT-7 CURRENT / NOT_COMPLETED
+Current small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
+Last accepted small commit: RT-7b vendored FW v5.5.0 readiness COMPLETED / ACCEPTED / PUSHED at c766610ce66a539efaabf4e4026a7c12ad2887c9
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-7a real-motion adapter readiness acceptance.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `c3c78316fd2bcd4f9939dcaadc32134a704374cf`
-Current implementation commit: `efb139b2c0b6c7cc66912a229bd674b36df82dd7`
-Current implementation boundary: exact seven documentation/static-gate files; no DRC runtime, existing test, dependency, platform, release, or Framework source change.
+Current implementation: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter core.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `35582f06ca037401b2cef8d97cfc5fc26cd40654`
+Current implementation commit: none
+Current implementation boundary: exact 11 files; separate Backend VTS model/adapter core, focused fake tests, exact dependency pins, and docs/static gate; no API, Flutter, existing RT-6 runtime/test, vendor, release, or private config change.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
-Framework baseline: clean v5.4.0 at d313eb6acb643103fe25988720ebee5976a04f78
+Framework baseline: fixed released v5.5.0 vendor at `f56697b6de066b062794ac7bb01330d2d9e91759`
 
 Goal:
 
@@ -8310,3 +8310,35 @@ RT-7 remains current and not completed. RT-7c is ready for a separate exact
 contract review, but runtime composition and real VTube Studio execution remain
 not authorized.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
+
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:BEGIN -->
+## RT-7c — Guarded fixed-vendor FW v5.5.0 VTS adapter core
+
+```text
+status: IMPLEMENTED / AWAITING_REVIEW
+baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
+Framework release: v5.5.0
+Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
+Framework local source: vendor/ai-character-framework-5.5.0
+surface: exact 11 files
+Backend adapter/model: 2 files
+focused Backend test: 1 file
+dependency manifest: 1 file
+docs/static gate: 7 files
+RT-7d: NOT_AUTHORIZED
+RT-7e: NOT_AUTHORIZED
+real VTube Studio execution: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+RT-7c introduces a new real-adapter-specific core rather than changing the
+accepted RT-6 mock result contract. The adapter uses only the fixed vendored
+Framework root facade, explicit double opt-in, per-intent capability checks,
+bounded public-safe result normalization, and guaranteed close orchestration.
+
+Normal Backend/API/Flutter behavior is unchanged. Candidate verification is
+credential-free, network-free, and real-motion-free.
+
+Detailed candidate contract:
+`docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->

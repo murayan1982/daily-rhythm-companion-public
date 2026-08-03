@@ -3,3 +3,9 @@ uvicorn
 python-dotenv
 pydantic
 httpx
+
+# RT-7c fixed Framework v5.5.0 VTS runtime pin.
+pyvts==0.3.3
+
+# RT-7c fixed Framework v5.5.0 VTS runtime pin.
+websockets==16.0

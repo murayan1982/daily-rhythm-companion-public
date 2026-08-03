@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7b acceptance sync
-Current implementation step: RT-7b vendored Framework v5.5.0 readiness acceptance
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: 8413c2f08879b34f83496441c6a7e20181486469
-Current implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
+Current small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
+Current implementation step: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter core
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
+Current implementation commit: none
 Last accepted small commit: RT-7b vendored FW v5.5.0 readiness COMPLETED / ACCEPTED / PUSHED at c766610ce66a539efaabf4e4026a7c12ad2887c9
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: record the exact seven-file RT-7b acceptance sync; RT-7c is ready for exact contract review but runtime composition remains NOT_AUTHORIZED
+Next implementation action: verify the exact 11-file RT-7c candidate; commit/push, RT-7d, RT-7e, and real VTube Studio execution remain NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -65,6 +65,8 @@ docs/v300_rt7a_real_motion_adapter_readiness.md
 scripts/check_v300_rt7a_real_motion_adapter_readiness.py
 docs/v300_rt7b_vendored_fw_v550_readiness.md
 scripts/check_v300_rt7b_vendored_fw_v550_readiness.py
+docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md
+scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
 ```
 
 Historical release sources remain immutable:
@@ -2925,3 +2927,41 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
+
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:BEGIN -->
+## RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
+
+```text
+RT-7: CURRENT / NOT_COMPLETED
+RT-7a: COMPLETED / ACCEPTED / PUSHED
+RT-7b: COMPLETED / ACCEPTED / PUSHED
+RT-7c: IMPLEMENTED / AWAITING_REVIEW
+baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
+Framework local source: vendor/ai-character-framework-5.5.0
+surface: exact 11 files
+RT-7d: NOT_AUTHORIZED
+RT-7e: NOT_AUTHORIZED
+real VTube Studio execution: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+- [x] Add separate VTS command/result models without changing RT-6 mock types.
+- [x] Accept only expression, emotion, gesture, reset_expression, stop_motion.
+- [x] Reject speaking_state, idle_motion, and look_at assumptions.
+- [x] Load Framework only from the fixed v5.5.0 vendor root facade.
+- [x] Add explicit disabled and provider-execution guards before Framework use.
+- [x] Add preflight-before-apply and per-intent capability checks.
+- [x] Treat unsupported stop_motion as optional safe degradation.
+- [x] Normalize only bounded allowlisted public fields and execution booleans.
+- [x] Keep endpoint/token/hotkey/model/provider/raw values outside results.
+- [x] Close every created session and normalize cleanup failures.
+- [x] Add exact dependency pins and fake/injected focused tests.
+- [x] Add the exact 11-file dedicated candidate gate.
+- [ ] Run the candidate in the real DRC checkout.
+- [ ] Review exact diff, privacy, dependencies, and regression output.
+- [ ] Commit/push only after separate explicit approval.
+- [ ] Review RT-7d and RT-7e separately.
+
+Detailed candidate contract:
+`docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->

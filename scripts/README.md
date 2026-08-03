@@ -7412,3 +7412,45 @@ The gate imports Framework only from
 import `pyvts`, connect to VTube Studio, or execute real motion. RT-7c remains
 not authorized.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
+
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:BEGIN -->
+## v3.0.0 RT-7c guarded vendored FW v5.5.0 VTS adapter candidate gate
+
+RT-7c is **IMPLEMENTED / AWAITING_REVIEW** against
+`35582f06ca037401b2cef8d97cfc5fc26cd40654` under the exact 11-file contract.
+
+```text
+Framework local source: vendor/ai-character-framework-5.5.0
+RT-7d: NOT_AUTHORIZED
+RT-7e: NOT_AUTHORIZED
+real VTube Studio execution: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+Run from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
+python -m pytest -q backend\tests\test_framework_vts_motion_session_adapter.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+```
+
+The gate verifies exact surface, fixed vendor provenance, root-public-only
+loading, API version 5.5.0, exact dependency pins, intent vocabulary, static
+prohibitions, closed guards, and an incomplete-config preflight. It does not
+read private configuration, import pyvts, open a WebSocket, execute network
+operations, or execute real motion.
+
+Detailed candidate contract:
+`docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
+<!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->
