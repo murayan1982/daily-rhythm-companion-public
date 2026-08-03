@@ -7358,3 +7358,57 @@ outside Git.
 
 RT-7c runtime composition, private VTube Studio configuration, provider
 execution, commit, and push remain separately unauthorized.
+
+<!-- RT-7b-VENDORED-FW-v5.5.0:BEGIN -->
+## v3.0.0 RT-7b accepted vendored Framework v5.5.0 readiness gate
+
+Detailed accepted contract:
+`docs/v300_rt7b_vendored_fw_v550_readiness.md`.
+
+Run from the DRC repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py
+git -c core.whitespace=cr-at-eol diff --check
+```
+
+Accepted implementation:
+
+```text
+RT-7b: COMPLETED / ACCEPTED / PUSHED
+implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
+Framework release: v5.5.0
+Framework local source: vendor/ai-character-framework-5.5.0
+official ZIP SHA-256: d6603003ea33abd5d543d85d4437f71e00571a86a9ed06a902506e6be3a9b5fe
+official ZIP files: 328
+Backend full: 289 passed
+Flutter analyze: PASS
+Flutter full: 483 passed
+```
+
+The normal acceptance-sync gate does not download or rebuild a release
+artifact. It verifies the accepted fixed-vendor/root-public boundary and records
+the completed strict provenance evidence. Optional local strict re-verification
+remains available:
+
+```powershell
+python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py `
+  --require-release-artifact `
+  --release-zip "<official ZIP path>" `
+  --release-sidecar "<official sidecar path>"
+```
+
+The gate imports Framework only from
+`vendor/ai-character-framework-5.5.0`. It does not read private configuration,
+import `pyvts`, connect to VTube Studio, or execute real motion. RT-7c remains
+not authorized.
+<!-- RT-7b-VENDORED-FW-v5.5.0:END -->

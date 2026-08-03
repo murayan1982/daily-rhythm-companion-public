@@ -1,121 +1,86 @@
 # Daily Rhythm Companion v3.0.0 RT-7b vendored Framework v5.5.0 readiness
 
-Updated: 2026-08-02
+Updated: 2026-08-03
 
-## Candidate state
+## Accepted state
 
 ```text
 RT-6: COMPLETED / ACCEPTED / PUSHED
 RT-7: CURRENT / NOT_COMPLETED
 RT-7a: COMPLETED / ACCEPTED / PUSHED
-RT-7b: IMPLEMENTED / AWAITING_REVIEW
-DRC baseline: 8413c2f08879b34f83496441c6a7e20181486469
+RT-7b: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 8413c2f08879b34f83496441c6a7e20181486469
+implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
+implementation surface: exact 8 documentation/static-gate/ignore files
+acceptance-sync surface: exact 7 documentation/static-gate files
 Framework release: v5.5.0
 Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
 Framework local source: vendor/ai-character-framework-5.5.0
-change surface: exact 8 documentation/static-gate/ignore files
-runtime composition: NOT_AUTHORIZED
+RT-7c exact contract review: READY
+RT-7c runtime composition: NOT_AUTHORIZED
 real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-## Purpose
+## Accepted result
 
-RT-7b fixes the local Framework source boundary that DRC may use for the later
-RT-7 real-motion integration. It does not add a Backend real-motion route,
-private configuration loader, VTube Studio session, Flutter behavior, provider
-execution, operator evidence, or real motion.
-
-The only allowed local Framework source is the extracted fixed release under:
+RT-7b fixes and accepts the only local Framework source boundary that DRC may
+use for the later RT-7 real-motion integration:
 
 ```text
 vendor/ai-character-framework-5.5.0
 ```
 
-A Framework development checkout, moving branch, checkout-relative import,
-current-working-directory workaround, or ad-hoc `sys.path` fallback is outside
-the DRC integration contract. DRC code and verification must resolve
-`framework` from the fixed vendor directory and verify the imported module
-origin.
+The fixed vendor was rehydrated from the official Framework v5.5.0 GitHub
+Release asset. The official ZIP and sidecar were verification inputs only and
+remain outside tracked DRC source.
 
-## Accepted precondition audit
+The accepted implementation does not add a Backend real-motion route, private
+configuration loader, VTube Studio session, Flutter behavior, provider
+execution, operator evidence, or real motion.
 
-The read-only precondition and corrective audits established:
+## Accepted verification
 
 ```text
-DRC HEAD / origin/main: 8413c2f08879b34f83496441c6a7e20181486469
-vendor exists: true
-vendor reparse point: false
-vendor Git metadata count: 0
-required public/release files: 14 / 14
-vendor total file count before exclusion: informational / may include generated local cache files
-release-eligible vendor file count after exclusion: 328
+Python compileall: PASS
+dedicated RT-7b gate before regression: PASS
+Backend full: 289 passed
+Backend dependency warnings: 1 existing Starlette/httpx deprecation warning
+Flutter analyze: No issues found
+Flutter full: 483 passed
+dedicated RT-7b gate after regression: PASS
+exact implementation surface: 8 files
+CRLF-aware git diff --check: PASS
+explicit implementation commit approval: ACCEPTED
+implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
+implementation push: COMPLETED
+post-push HEAD / origin/main: c766610ce66a539efaabf4e4026a7c12ad2887c9
+post-push DRC working tree: clean
+```
+
+The dependency warning did not fail the Backend regression suite.
+
+## Official release provenance accepted
+
+```text
+Framework release: v5.5.0
+Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
+official ZIP: ai-character-framework_v5.5.0.zip
+official ZIP SHA-256: d6603003ea33abd5d543d85d4437f71e00571a86a9ed06a902506e6be3a9b5fe
+official ZIP size: 681335 bytes
+official ZIP file count: 328
+official sidecar digest: matched
+ZIP integrity: PASS
+duplicate ZIP members: absent
+vendor / ZIP membership: exact
+vendor / ZIP file bytes: exact
 private artifact hits: 0
-framework origin is vendor: true
-motion API version: 5.5.0
-root-public exports complete: true
-mock motion completed: true
-closed execution guard status: provider_execution_not_allowed
-closed guard real adapter supported: false
-pyvts imported: false
-network execution: false
-real motion execution: false
-DRC working tree clean: true
+vendor Git metadata: absent
 ```
 
-The first audit used an obsolete generic `MotionRequest(value=...)` assumption.
-The corrective audit used the released intent-specific contract through
-`MotionRequest.emotion_update(...)` and passed. The initial exception was an
-audit-script issue, not a Framework release failure.
-
-## Candidate key-file observation
-
-The precondition audit recorded SHA-256 values for selected public-boundary
-files from the pre-existing local vendor copy. Those values are diagnostic only
-and are not the final provenance authority because text files may differ in
-working-copy line endings. RT-7b acceptance does not freeze a local total file
-count or accept those observed hashes as a substitute for the official release
-artifact.
-
-The authoritative provenance condition is the explicit official v5.5.0 release
-ZIP and sidecar comparison below. In strict mode, every release-eligible vendor
-member, including the selected key files, must match the corresponding ZIP bytes.
-
-## Release-artifact provenance condition
-
-The root-public API version, required files, privacy scan, and runtime-safe
-audit establish a bounded candidate readiness check. Final RT-7b
-acceptance additionally requires the original deterministic release ZIP and its
-SHA-256 sidecar to be supplied explicitly to the gate.
-
-Strict verification must confirm:
-
-```text
-sidecar digest equals ZIP digest
-sidecar filename equals the supplied ZIP filename
-ZIP integrity passes
-ZIP duplicate entries are absent
-ZIP member set equals the vendor release-eligible file set
-all ZIP member bytes equal the corresponding vendor file bytes
-selected vendor key files therefore match the official artifact
-private token/configuration/evidence paths are absent
-```
-
-The ZIP and sidecar are local verification inputs only. They must not be copied
-into the tracked DRC source tree or committed.
-
-The total number of files physically present below the vendor directory is
-informational because local Python imports may create excluded `__pycache__` or
-`.pyc` files. The fixed membership contract is the 328 release-eligible files;
-excluded generated files neither satisfy nor invalidate artifact membership.
-
-Until strict ZIP/sidecar comparison passes:
-
-```text
-RT-7b implementation review may proceed
-RT-7b acceptance remains pending provenance evidence
-RT-7c runtime composition remains NOT_AUTHORIZED
-```
+The physical vendor file count is informational because excluded local Python
+cache files may appear after later imports. The release-eligible membership
+contract remains 328 files.
 
 ## Root-public-only Framework boundary
 
@@ -123,6 +88,7 @@ DRC may import motion APIs only from the Framework root:
 
 ```python
 from framework import (
+    MotionAdapterExecutionConfig,
     MotionAdapterStatus,
     MotionCapability,
     MotionErrorCode,
@@ -134,39 +100,20 @@ from framework import (
     MotionSession,
     MotionSessionInfo,
     create_motion_session,
+    get_motion_adapter_execution_capability,
+    resolve_motion_adapter_execution_config,
 )
 ```
 
-The readiness audit verifies the additional v5.5.0 root-public execution
-configuration symbols:
+DRC must not import Framework submodules, provider transports, `pyvts`,
+WebSocket classes, or private implementation modules. Checkout-relative,
+current-working-directory, moving-branch, and ad-hoc fallback imports remain
+outside the accepted contract.
 
-```text
-MotionAdapterExecutionConfig
-get_motion_adapter_execution_capability
-resolve_motion_adapter_execution_config
-```
+## Accepted request and capability boundary
 
-DRC must not import Framework submodules, internal VTube Studio composition,
-transport modules, `live2d`, provider plugins, `pyvts`, or WebSocket classes.
-
-## Released request shape
-
-`MotionRequest` uses intent-specific fields rather than a generic value field.
-DRC must prefer the released factories where available:
-
-```python
-MotionRequest.emotion_update("happy")
-MotionRequest.expression_change("smile")
-MotionRequest.stop_motion()
-```
-
-Gesture and reset-expression requests must use the released public constructor
-shape and remain provider-neutral. DRC must not expose configured hotkey names or
-identifiers as public app data.
-
-## Capability handoff
-
-The accepted required v5.5.0 real-motion scope is:
+`MotionRequest` uses intent-specific public fields and factories. The accepted
+required real-motion intent vocabulary is:
 
 ```text
 expression
@@ -175,20 +122,34 @@ gesture
 reset_expression
 ```
 
-Capability reporting is authoritative. DRC must branch from
-`capability.supports_intent(...)` and typed result fields.
-
-The following are not required capabilities:
+The following remain outside the required capability set:
 
 ```text
-stop_motion: optional; accepted Framework model reported false
-speaking_state: do not assume support
-idle_motion: do not assume support
-look_at: do not assume support
+stop_motion: optional
+speaking_state: support must not be assumed
+idle_motion: support must not be assumed
+look_at: support must not be assumed
 ```
 
-Unsupported or unavailable intents must degrade through typed Framework
-capabilities/results. They must not trigger a DRC-owned provider workaround.
+Capability reporting and typed results are authoritative. Unsupported or
+unavailable intents must remain provider-neutral and must not trigger a
+DRC-owned provider workaround.
+
+## Closed-guard acceptance
+
+The accepted source-safe audit confirmed:
+
+```text
+Framework origin is below vendor/ai-character-framework-5.5.0
+Motion API version is 5.5.0
+root-public exports are complete
+mock emotion motion completes
+closed provider-execution guard reports provider_execution_not_allowed
+closed guard reports real adapter unsupported
+pyvts is not imported
+network execution is false
+real motion execution is false
+```
 
 ## Ownership boundary
 
@@ -199,15 +160,15 @@ lifecycle-to-motion intent selection
 app-level character presentation policy
 provider-neutral MotionRequest construction
 bounded public status presentation
-session creation/close orchestration
-safe fallback for unsupported or unavailable intent
+session creation and close orchestration
+safe fallback for unsupported or unavailable intents
 ```
 
 Framework owns:
 
 ```text
 real-adapter guard evaluation
-pyvts dependency and client construction
+provider dependency and client construction
 loopback WebSocket lifecycle
 authentication and token use
 model and hotkey inventory
@@ -215,46 +176,36 @@ configured selector-to-hotkey resolution
 timeout and single-flight behavior
 provider exception normalization
 public capability/result/event normalization
-idempotent transport cleanup
+transport cleanup
 ```
 
 ## Private local configuration boundary
 
-RT-7b does not define or read private VTube Studio values. A later separately
-reviewed stage must provide any required endpoint, authentication material, and
-configured binding values without placing them in:
+RT-7b reads no private VTube Studio values. Any later configuration stage must
+keep endpoint values, authentication material, private model identifiers, raw
+provider payloads, screenshots, and operator evidence outside tracked source,
+API responses, Flutter responses, logs, and release artifacts.
 
-```text
-tracked source
-documentation output
-test output
-API response
-Flutter response
-log output
-operator evidence committed to Git
-release artifacts
-```
+The vendor directory must not contain private token, configuration, or evidence
+artifacts.
 
-The vendor directory itself must not contain private token, configuration, or
-operator evidence artifacts.
+## Portable vendor boundary
 
-## Portable ignore rule
-
-The repository-shared `.gitignore` must include:
+The repository-shared ignore rule remains:
 
 ```gitignore
 vendor/ai-character-framework-*/
 ```
 
-A local Git exclude rule is not sufficient as the project contract. The vendor
-release stays outside Git history while remaining available to explicit local
-verification and runtime composition.
+The vendor release stays outside Git history while remaining available to
+explicit local verification and later separately authorized runtime
+composition.
 
 ## Exact implementation surface
 
 ```text
-README.md
 .gitignore
+README.md
 roadmap.md
 tasklist.md
 scripts/README.md
@@ -263,79 +214,51 @@ docs/v300_rt7b_vendored_fw_v550_readiness.md
 scripts/check_v300_rt7b_vendored_fw_v550_readiness.py
 ```
 
-Total:
+No Backend runtime, Flutter runtime, existing test, dependency, or tracked
+Framework vendor file changed.
+
+## Exact acceptance-sync surface
 
 ```text
-exact 8 files
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt7b_vendored_fw_v550_readiness.md
+scripts/check_v300_rt7b_vendored_fw_v550_readiness.py
 ```
 
-## Explicit non-change surface
+`.gitignore` is not changed by the acceptance sync because the portable vendor
+rule was already accepted in the RT-7b implementation commit.
 
-RT-7b must not change:
+## Explicit non-actions
+
+This acceptance sync does not:
+
+- access or infer a Framework development checkout;
+- download or rebuild the official release artifact;
+- read a private token, configuration, model, or evidence file;
+- import `pyvts` or open a WebSocket;
+- execute network or real motion;
+- add Backend or Flutter runtime behavior;
+- authorize RT-7c implementation;
+- commit or push itself.
+
+## Next boundary
 
 ```text
-backend runtime
-backend tests
-Flutter runtime
-Flutter tests
-application dependencies
-Framework vendor files
-Framework release ZIP or sidecar
-private configuration
-operator evidence
-release metadata
-```
-
-RT-7b must not:
-
-```text
-import pyvts during root import or closed-guard verification
-open a WebSocket
-connect to VTube Studio
-read a real token
-read private endpoint or binding values
-load a private model
-trigger a hotkey
-execute real motion
-create a DRC-owned VTS client
-```
-
-## Verification
-
-Candidate source verification:
-
-```powershell
-python -m compileall -q backend scripts
-python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py
-python -m pytest -q backend/tests
-
-cd app
-flutter analyze
-flutter test
-cd ..
-
-python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py
-git diff --check
-```
-
-Strict release-artifact comparison:
-
-```powershell
-python scripts\check_v300_rt7b_vendored_fw_v550_readiness.py `
-  --require-release-artifact `
-  --release-zip <local-fixed-v5.5.0-zip> `
-  --release-sidecar <local-fixed-v5.5.0-sha256-sidecar>
-```
-
-The strict paths are operator-local inputs and must not be written into tracked
-files or command-output evidence committed to the repository.
-
-## Stage decision
-
-```text
-RT-7b: IMPLEMENTED / AWAITING_REVIEW
-RT-7b acceptance: PENDING_STRICT_RELEASE_ARTIFACT_PROVENANCE
-RT-7c runtime composition: NOT_AUTHORIZED
+RT-7: CURRENT / NOT_COMPLETED
+RT-7b: COMPLETED / ACCEPTED / PUSHED
+RT-7c exact contract review: READY
+RT-7c runtime implementation: NOT_AUTHORIZED
 real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+```
+
+Detailed historical implementation and accepted evidence remain represented by
+this file and the dedicated gate:
+
+```text
+docs/v300_rt7b_vendored_fw_v550_readiness.md
+scripts/check_v300_rt7b_vendored_fw_v550_readiness.py
 ```

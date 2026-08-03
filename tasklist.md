@@ -1,6 +1,6 @@
 # Daily Rhythm Companion post-v2.0.0 task list
 
-更新日: 2026-08-02
+更新日: 2026-08-03
 ## 1. 現在地
 
 ```text
@@ -13,12 +13,12 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-7 CURRENT / NOT_COMPLETED
-current small commit: RT-7b vendored FW v5.5.0 readiness candidate
-current implementation step: RT-7b vendored Framework v5.5.0 provenance and root-public readiness
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current small commit: RT-7b acceptance sync
+current implementation step: RT-7b vendored Framework v5.5.0 readiness acceptance
+current implementation state: COMPLETED / ACCEPTED / PUSHED
 current implementation baseline: 8413c2f08879b34f83496441c6a7e20181486469
-current implementation commit: none
-last accepted small commit: RT-7a real-motion adapter readiness COMPLETED / ACCEPTED / PUSHED at efb139b2c0b6c7cc66912a229bd674b36df82dd7
+current implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
+last accepted small commit: RT-7b vendored FW v5.5.0 readiness COMPLETED / ACCEPTED / PUSHED at c766610ce66a539efaabf4e4026a7c12ad2887c9
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
@@ -2924,49 +2924,34 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`。
 
 <!-- RT-7b-VENDORED-FW-v5.5.0:BEGIN -->
-## RT-7b — vendored FW v5.5.0 readiness candidate
+## RT-7b — vendored FW v5.5.0 readiness acceptance
 
 ```text
-RT-7: CURRENT / NOT_COMPLETED
-RT-7a: COMPLETED / ACCEPTED / PUSHED
-RT-7b: IMPLEMENTED / AWAITING_REVIEW
-baseline: 8413c2f08879b34f83496441c6a7e20181486469
-Framework release: v5.5.0
-Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
+status: COMPLETED / ACCEPTED / PUSHED
+implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
 Framework local source: vendor/ai-character-framework-5.5.0
-exact surface: 8 files
-commit / push: NOT_AUTHORIZED
+official release ZIP SHA-256: d6603003ea33abd5d543d85d4437f71e00571a86a9ed06a902506e6be3a9b5fe
+official release ZIP files: 328
+implementation surface: exact 8 files
+acceptance-sync surface: exact 7 files
 ```
 
-実装済み候補:
+受け入れ済み:
 
-- [x] Framework開発checkoutをDRC依存境界から除外する。
-- [x] ローカルFramework参照を固定vendorディレクトリだけにする。
-- [x] 小文字vendor名を共有`.gitignore`で除外する。
-- [x] vendorの必須14ファイル、Git metadata不在、private artifact不在を確認する。
-- [x] 固定public/release key file SHA-256をgate化する。
-- [x] `framework` root import originとmotion API `5.5.0`を確認する。
-- [x] released root-public motion exportsを確認する。
-- [x] `MotionRequest.emotion_update(...)`でmock互換を確認する。
-- [x] closed provider guardで`provider_execution_not_allowed`を確認する。
-- [x] closed guardで`pyvts`、network、real motionが起きないことを確認する。
-- [x] required intentsをexpression/emotion/gesture/reset_expressionに固定する。
-- [x] stop_motionをoptional、speaking/idle/look-atを非仮定とする。
-- [ ] final release ZIPとsidecarを明示入力し、vendorとの全member byte matchを通す。
-- [ ] Backend full、Flutter analyze/full、exact diff、privacy reviewを通す。
-- [ ] explicit commit approvalを得る。
-- [ ] commit/pushする。
+- 公式v5.5.0 ZIPとsidecarのdigest、size、integrity、duplicate不在を確認
+- 公式ZIPとvendorの328ファイルmembershipおよび全byte一致を確認
+- Framework root-public import originをvendor配下へ固定
+- motion API 5.5.0、root-public exports、mock motionを確認
+- closed provider guardが`provider_execution_not_allowed`で停止
+- `pyvts` import、network、real motion、private artifact readなし
+- Backend 289、Flutter analyze、Flutter 483、exact surface、diff review通過
+- implementation commit `c766610ce66a539efaabf4e4026a7c12ad2887c9` をmainへpush
+- post-push HEAD / origin/main一致、DRC working tree clean
 
 未承認:
 
-- RT-7c private local configuration/runtime composition
-- Backend real-motion route
-- HomeScreen real-motion切替
-- token、endpoint、bindingの読込
-- VTube Studio接続またはreal motion
-
-Detailed contract:
-`docs/v300_rt7b_vendored_fw_v550_readiness.md`.
-Candidate gate:
-`scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
+- RT-7c runtime composition
+- private VTS configuration handoff
+- provider executionおよびreal VTube Studio motion
+- acceptance-sync commit / push
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->

@@ -1,12 +1,12 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-08-02
+Updated: 2026-08-03
 Current released version: v2.1.0 (**RELEASED**)
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7b vendored FW v5.5.0 readiness candidate
+Current small commit: RT-7b acceptance sync
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -8284,45 +8284,29 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.
 
 <!-- RT-7b-VENDORED-FW-v5.5.0:BEGIN -->
-## RT-7b — Vendored Framework v5.5.0 provenance and root-public readiness
+## RT-7b — Accepted vendored Framework v5.5.0 readiness
 
 ```text
-status: IMPLEMENTED / AWAITING_REVIEW
-baseline: 8413c2f08879b34f83496441c6a7e20181486469
+status: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 8413c2f08879b34f83496441c6a7e20181486469
+implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
 Framework release: v5.5.0
 Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
-local Framework source: vendor/ai-character-framework-5.5.0
-surface: exact 8 files
-runtime composition: NOT_AUTHORIZED
-real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+Framework local source: vendor/ai-character-framework-5.5.0
+official ZIP SHA-256: d6603003ea33abd5d543d85d4437f71e00571a86a9ed06a902506e6be3a9b5fe
+official ZIP members: 328
+vendor / official ZIP membership and bytes: exact
+implementation surface: exact 8 files
+acceptance-sync surface: exact 7 files
 ```
 
-RT-7b replaces the historical Framework-release blocker with a fixed local
-release-artifact boundary. It does not implement RT-7 runtime behavior. The
-Framework development checkout is not a DRC dependency; only the extracted
-vendor release may be imported locally.
+RT-7b accepted the fixed-vendor provenance and root-public motion boundary
+without changing Backend runtime, Flutter runtime, existing tests, dependencies,
+or tracked Framework source. Backend 289, Flutter analyze, and Flutter 483
+passed. Closed-guard verification stopped before `pyvts`, network, or real
+motion.
 
-Readiness requirements:
-
-- portable `.gitignore` coverage for `vendor/ai-character-framework-*/`;
-- fixed v5.5.0 release commit and vendor path;
-- root-public import origin verification;
-- released `MotionRequest` intent-specific shape;
-- existing mock-motion compatibility;
-- closed execution guard before `pyvts` or network;
-- required capability scope limited to expression, emotion, gesture, and
-  reset-expression;
-- optional/unsupported capabilities handled from typed capability results;
-- no token, endpoint, hotkey, private model, raw payload, or evidence exposure;
-- strict release ZIP/sidecar membership and byte comparison before acceptance.
-
-RT-7c remains separately reviewable only after RT-7b acceptance. It may define
-private local configuration loading and default-off root-public session
-composition, but it is not authorized by this checkpoint.
-
-Detailed contract:
-`docs/v300_rt7b_vendored_fw_v550_readiness.md`.
-Dedicated gate:
-`scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
+RT-7 remains current and not completed. RT-7c is ready for a separate exact
+contract review, but runtime composition and real VTube Studio execution remain
+not authorized.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->

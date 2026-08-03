@@ -1,19 +1,19 @@
 # Daily Rhythm Companion v3.0.0 goal checklist and small-commit plan
 
-Updated: 2026-08-02
+Updated: 2026-08-03
 ```text
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7b vendored FW v5.5.0 readiness candidate
-Current implementation step: RT-7b vendored Framework v5.5.0 provenance and root-public readiness
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-7b acceptance sync
+Current implementation step: RT-7b vendored Framework v5.5.0 readiness acceptance
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
 Current implementation baseline: 8413c2f08879b34f83496441c6a7e20181486469
-Current implementation commit: none
-Last accepted small commit: RT-7a real-motion adapter readiness COMPLETED / ACCEPTED / PUSHED at efb139b2c0b6c7cc66912a229bd674b36df82dd7
+Current implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
+Last accepted small commit: RT-7b vendored FW v5.5.0 readiness COMPLETED / ACCEPTED / PUSHED at c766610ce66a539efaabf4e4026a7c12ad2887c9
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify the exact eight-file RT-7b candidate against the fixed v5.5.0 vendor; RT-7c runtime composition remains NOT_AUTHORIZED
+Next implementation action: record the exact seven-file RT-7b acceptance sync; RT-7c is ready for exact contract review but runtime composition remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -2878,44 +2878,50 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.
 
 <!-- RT-7b-VENDORED-FW-v5.5.0:BEGIN -->
-## RT-7b vendored Framework v5.5.0 readiness candidate
+## RT-7b accepted implementation checkpoint
 
 ```text
-RT-7 CURRENT / NOT_COMPLETED
-RT-7a COMPLETED / ACCEPTED / PUSHED
-RT-7b IMPLEMENTED / AWAITING_REVIEW
+RT-7: CURRENT / NOT_COMPLETED
+RT-7a: COMPLETED / ACCEPTED / PUSHED
+RT-7b: COMPLETED / ACCEPTED / PUSHED
 implementation baseline: 8413c2f08879b34f83496441c6a7e20181486469
+implementation commit: c766610ce66a539efaabf4e4026a7c12ad2887c9
 Framework release: v5.5.0
 Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
 Framework local source: vendor/ai-character-framework-5.5.0
-exact implementation surface: 8 files
-Backend runtime changed: false
-Flutter runtime changed: false
-existing tests changed: false
-Framework vendor changed: false
-commit / push: NOT_AUTHORIZED
+implementation surface: exact 8 files
+acceptance-sync surface: exact 7 files
+RT-7c exact contract review: READY
+RT-7c runtime composition: NOT_AUTHORIZED
 ```
 
-- [x] Accept the read-only precondition and corrected root-public audit.
-- [x] Fix the only permitted local Framework source to the v5.5.0 vendor directory.
-- [x] Prohibit DRC dependency on a Framework development checkout or moving branch.
-- [x] Add the portable lowercase vendor ignore rule.
-- [x] Freeze required vendor files and fixed key-file SHA-256 values.
-- [x] Verify Framework root import resolves inside the vendor directory.
-- [x] Verify motion API version 5.5.0 and root-public exports.
-- [x] Verify existing root-public mock motion remains compatible.
-- [x] Verify the closed provider guard stops before pyvts/network/real motion.
-- [x] Freeze required four intents and optional/unsupported capability policy.
-- [x] Add exact eight-file docs/static-gate candidate.
-- [ ] Supply the fixed v5.5.0 ZIP and sidecar to strict gate mode.
-- [ ] Verify ZIP integrity, duplicates, membership, and every vendor file byte.
-- [ ] Run Backend full regression and Flutter analyze/full regression.
-- [ ] Complete exact-surface, privacy, and diff review.
-- [ ] Obtain explicit commit approval before commit/push.
-- [ ] Keep RT-7c and real VTube Studio execution unauthorized.
+- [x] Fix the local Framework source to `vendor/ai-character-framework-5.5.0`.
+- [x] Add the repository-shared lower-case vendor ignore rule.
+- [x] Verify required Framework v5.5.0 release files and no Git metadata.
+- [x] Verify no private token, configuration, or evidence artifacts.
+- [x] Verify Framework root-public import origin and API version 5.5.0.
+- [x] Verify root-public motion exports and mock-motion compatibility.
+- [x] Verify the closed provider guard stops before `pyvts`, network, or motion.
+- [x] Verify required intent vocabulary: expression, emotion, gesture, reset_expression.
+- [x] Preserve optional/non-assumed intent boundaries.
+- [x] Download the official v5.5.0 release ZIP and sidecar outside the repository.
+- [x] Verify official ZIP SHA-256 `d6603003ea33abd5d543d85d4437f71e00571a86a9ed06a902506e6be3a9b5fe`.
+- [x] Rehydrate the vendor from the official release ZIP.
+- [x] Verify exact 328-member membership and byte equality.
+- [x] Pass compileall and the dedicated RT-7b gate.
+- [x] Pass Backend full: 289 passed with one existing dependency warning.
+- [x] Pass Flutter analyze and full Flutter: 483 passed.
+- [x] Pass exact eight-file, privacy, and CRLF-aware diff review.
+- [x] Obtain explicit implementation commit and push approvals.
+- [x] Commit and push `c766610ce66a539efaabf4e4026a7c12ad2887c9`.
+- [x] Verify post-push HEAD / origin/main and clean DRC working tree.
+- [x] Mark RT-7b COMPLETED / ACCEPTED / PUSHED.
+- [ ] Commit/push this exact seven-file acceptance sync only after separate approval.
+- [ ] Review RT-7c under a separate exact contract.
+- [ ] Keep RT-7c runtime composition and real VTS execution not authorized.
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt7b_vendored_fw_v550_readiness.md`.
-Candidate gate:
+Historical acceptance-sync gate:
 `scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->

@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7b vendored FW v5.5.0 readiness candidate
-Current implementation: RT-7b vendored Framework v5.5.0 provenance and root-public readiness.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-7b acceptance sync
+Current implementation: RT-7b vendored Framework v5.5.0 readiness acceptance.
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
 Current implementation baseline: `8413c2f08879b34f83496441c6a7e20181486469`
-Current implementation commit: none
-Last accepted small commit: RT-7a real-motion adapter readiness (**COMPLETED / ACCEPTED / PUSHED**) at `efb139b2c0b6c7cc66912a229bd674b36df82dd7`
+Current implementation commit: `c766610ce66a539efaabf4e4026a7c12ad2887c9`
+Last accepted small commit: RT-7b vendored FW v5.5.0 readiness (**COMPLETED / ACCEPTED / PUSHED**) at `c766610ce66a539efaabf4e4026a7c12ad2887c9`
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
 Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: verify the exact eight-file RT-7b vendored FW v5.5.0 readiness candidate; RT-7c runtime composition remains NOT_AUTHORIZED
+Current realtime action: record the exact seven-file RT-7b acceptance sync; RT-7c is ready for exact contract review but runtime composition remains NOT_AUTHORIZED
 
 Current phase state:
 
@@ -91,7 +91,7 @@ RT-6  COMPLETED / ACCEPTED  Realtime character presentation and motion-event map
   RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
 RT-7  CURRENT / NOT_COMPLETED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
-  RT-7b  IMPLEMENTED / AWAITING_REVIEW / COMMIT_NOT_AUTHORIZED  Vendored FW v5.5.0 provenance and root-public readiness
+  RT-7b  COMPLETED / ACCEPTED / PUSHED  Vendored FW v5.5.0 provenance and root-public readiness
 RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
 T-1  COMPLETED / ACCEPTED
@@ -5621,53 +5621,62 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt7a_real_motion_adapter_readiness.py`.
 
 <!-- RT-7b-VENDORED-FW-v5.5.0:BEGIN -->
-## v3.0.0 RT-7b vendored Framework v5.5.0 readiness candidate
+## v3.0.0 RT-7b vendored Framework v5.5.0 readiness acceptance
 
-RT-7b is **IMPLEMENTED / AWAITING_REVIEW** against DRC baseline
-`8413c2f08879b34f83496441c6a7e20181486469` under the exact eight-file
-contract. It fixes the only permitted local Framework source as
-`vendor/ai-character-framework-5.5.0`, records Framework release `v5.5.0` at
-`f56697b6de066b062794ac7bb01330d2d9e91759`, and verifies the released
-root-public motion API without provider execution.
+RT-7b is **COMPLETED / ACCEPTED / PUSHED** at implementation commit
+`c766610ce66a539efaabf4e4026a7c12ad2887c9` against baseline
+`8413c2f08879b34f83496441c6a7e20181486469`.
 
-The Framework development checkout is outside this DRC contract. DRC source,
-checks, and later runtime composition must import `framework` from the fixed
-vendor directory and verify the imported module origin. No checkout-relative or
-current-working-directory fallback is allowed.
+The accepted implementation fixes the only local Framework source as
+`vendor/ai-character-framework-5.5.0`. The vendor was rehydrated from the
+official v5.5.0 GitHub Release asset and matched all 328 ZIP members
+byte-for-byte. The official ZIP SHA-256 is
+`d6603003ea33abd5d543d85d4437f71e00571a86a9ed06a902506e6be3a9b5fe`.
 
-Candidate verification is source-safe and confirms the fixed vendor keyset,
-required release files, no embedded Git metadata, no private token/configuration
-or evidence artifacts, root-public exports, mock compatibility, motion API
-`5.5.0`, and closed-guard stop before `pyvts`, network, or real motion.
+Accepted verification:
 
-Final RT-7b acceptance additionally requires explicit byte-for-byte comparison
-of the vendor tree with the deterministic v5.5.0 release ZIP and SHA-256
-sidecar. Those local artifacts are verification inputs only and are not tracked
-by DRC.
+```text
+compileall: PASS
+dedicated RT-7b gate: PASS before and after regression
+Backend full: 289 passed, 1 existing dependency warning
+Flutter analyze: No issues found
+Flutter full: 483 passed
+exact implementation surface: 8 files
+official ZIP integrity / duplicates / membership / bytes: PASS
+CRLF-aware git diff --check: PASS
+implementation commit / push: COMPLETED
+post-push HEAD / origin/main: c766610ce66a539efaabf4e4026a7c12ad2887c9
+post-push DRC working tree: clean
+```
+
+The accepted source-safe boundary imports Framework root-public symbols only
+from the fixed vendor. It does not access another Framework checkout, import
+`pyvts`, open a network connection, read private configuration, or execute real
+motion.
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7a: COMPLETED / ACCEPTED / PUSHED
-RT-7b: IMPLEMENTED / AWAITING_REVIEW
-DRC baseline: 8413c2f08879b34f83496441c6a7e20181486469
+RT-7b: COMPLETED / ACCEPTED / PUSHED
 Framework release: v5.5.0
 Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
 Framework local source: vendor/ai-character-framework-5.5.0
-change surface: exact 8 files
+implementation surface: exact 8 files
+acceptance-sync surface: exact 7 files
 Backend runtime changed: false
 Flutter runtime changed: false
 existing tests changed: false
-Framework vendor changed: false
+tracked Framework vendor changed: false
 pyvts imported: false
 network execution: false
 real motion executed: false
-strict release ZIP/vendor byte match: pending operator input
+RT-7c exact contract review: READY
 RT-7c runtime composition: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt7b_vendored_fw_v550_readiness.md`.
-Candidate gate:
+Historical acceptance-sync gate:
 `scripts/check_v300_rt7b_vendored_fw_v550_readiness.py`.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
