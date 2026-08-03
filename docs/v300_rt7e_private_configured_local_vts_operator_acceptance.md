@@ -14,12 +14,18 @@ Control A: PASS
 Control B: PASS / ACCEPTED
 Control B exactly-one POST: PASS
 Control B process cleanup: PASS
-Control C contract corrective: IMPLEMENTED / AWAITING_REVIEW
-Control C execution: NOT_AUTHORIZED
-Control D: BLOCKED_PENDING_CONTROL_C_PASS
-Control E: BLOCKED_PENDING_CONTROLS_C_AND_D
+Control C contract corrective: COMPLETED / VERIFIED / COMMITTED / PUSHED
+Control C contract corrective commit: a26d027fcd40d6734cb8919059a4683c322f55da
+Control C first attempt: FAILED / NOT_ACCEPTED
+Control C private selector corrective: COMPLETED / VERIFIED
+Control C retry: PASS / ACCEPTED
+Control C retry exactly-one Apply: PASS
+Control C retry cleanup: PASS
+Control D docs/test-only corrective: IMPLEMENTED / AWAITING_REVIEW
+Control D acceptance: NOT_AUTHORIZED
+Control E: BLOCKED_PENDING_CONTROL_D_PASS
 RT-7e acceptance sync: NOT_AUTHORIZED
-Control C corrective commit / push: NOT_AUTHORIZED
+Control D corrective commit / push: NOT_AUTHORIZED
 ```
 
 ## Control B accepted result
@@ -195,14 +201,146 @@ hotkey name, hotkey identifier, model identity, private path, LAN IP,
 screenshot, VTS log, or operator evidence file may be displayed, pasted, or
 committed.
 
-## Control D and Control E after Control C
+## Control C accepted chronology
 
-Control D remains blocked until Control C passes. It must verify that Reset local state, turning opt-in off, and Flutter disposal produce no additional
-Backend request, provider execution, network execution, or visible motion.
+Control C used two separately bounded attempts.
 
-Control E remains blocked until Controls C and D pass. It must restore every
-process-local real-execution flag to zero, remove private process values, stop
-Backend and Flutter processes, and verify the DRC working tree is clean.
+```text
+first attempt:
+exactly one Flutter Apply
+failed before Framework session creation
+provider execution attempted: false
+network execution attempted: false
+visible motion accepted: false
+
+private selector corrective:
+bare private selector rejected by fixed FW v5.5.0
+correct private selector: gesture:rt7e_acceptance_gesture
+public Flutter selector remains: rt7e_acceptance_gesture
+private hotkey value preserved
+private execution flags remained closed
+
+retry attempt:
+separately authorized
+exactly one Flutter Apply
+completed / 1-1-1
+Framework session created and closed
+provider execution attempted: true
+network execution attempted: true
+Backend real_motion_executed: false
+operator-visible motion confirmed: true
+final Control C real motion accepted: true
+
+cleanup:
+recognized RT-7e Backend listener stopped
+port 8000 closed
+private execution flags closed
+additional Apply count: 0
+additional provider/network/real-motion execution: false
+working tree clean
+```
+
+No private endpoint, token, hotkey value, provider payload, raw response,
+exception, private path, model identity, or operator evidence file is recorded.
+
+## Why Control D needs a docs/test-only corrective
+
+The accepted Flutter instance was disposed during the verified Control C
+cleanup before Reset local state and opt-in OFF were separately observed.
+Those actions cannot be claimed retroactively.
+
+A second real VTube Studio provider execution is unnecessary. The accepted
+Flutter runtime already makes these lifecycle actions local-only:
+
+```text
+Reset local state:
+FrameworkVtsMotionPresentationController.reset()
+increments the local operation token and publishes idle state
+
+opt-in OFF:
+HomeScreen calls controller.reset()
+then updates only the session-local opt-in boolean
+
+HomeScreen disposal:
+removes the listener and disposes the controller
+without calling the presentation client
+```
+
+Only explicit Apply calls the presentation client. Control D therefore uses a
+deterministic widget test with a fake transport to prove that the complete
+post-Apply lifecycle does not create a second transport call.
+
+## Exact Control D docs/test-only corrective surface
+
+```text
+docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md
+app/test/framework_vts_motion_home_screen_test.dart
+scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py
+```
+
+Protected and unchanged:
+
+```text
+backend/app/**
+backend/tests/**
+app/lib/**
+all other app/test/**
+vendor/**
+backend/.env.example
+backend/requirements*.txt
+release/**
+version metadata
+fixed ZIPs
+tags
+GitHub Releases
+Framework development checkout
+private environment files
+private token files
+VTube Studio model and hotkey configuration
+```
+
+The corrective changes no Backend runtime, Flutter runtime, fixed Framework,
+dependency, private configuration, release artifact, tag, or GitHub Release.
+It performs no HTTP request, private configuration read, provider import,
+WebSocket connection, VTube Studio operation, or real motion.
+
+## Deterministic Control D verification contract
+
+The focused HomeScreen widget test must execute this sequence:
+
+```text
+1. Build a configured HomeScreen with a fake presentation transport.
+2. Turn the session-local opt-in ON.
+3. Press Apply exactly once.
+4. Confirm transport call count is exactly one.
+5. Confirm the completed result is displayed.
+6. Press Reset local state.
+7. Confirm transport call count remains exactly one.
+8. Confirm phase returns to idle and result fields are cleared.
+9. Turn opt-in OFF.
+10. Confirm transport call count remains exactly one.
+11. Confirm opt-in is off.
+12. Dispose HomeScreen.
+13. Confirm transport call count remains exactly one.
+```
+
+This proves:
+
+```text
+Reset local state additional Backend request: false
+opt-in OFF additional Backend request: false
+Flutter disposal additional Backend request: false
+additional provider execution: false
+additional network execution: false
+additional visible motion: false
+```
+
+Control D does not authorize or require another real provider execution.
+Control D acceptance remains separate until this exact corrective passes review,
+verification, commit, push, and clean-tree checks.
+
+Control E remains blocked until Control D passes. The already completed Control
+C cleanup evidence is preserved for the later aggregate acceptance sync.
 
 ## Corrective verification
 
@@ -218,6 +356,7 @@ python -m pytest -q backend\tests
 
 cd app
 flutter analyze
+flutter test test/framework_vts_motion_home_screen_test.dart
 flutter test
 cd ..
 
@@ -227,27 +366,28 @@ git status --short
 git diff --name-only
 ```
 
-Expected Control C contract-corrective gate state:
+Expected Control D docs/test-only corrective gate state:
 
 ```text
-Control C contract corrective status: implemented-awaiting-review
-baseline: 84429683d5ea26e5480bff17f5e29ad201b6ee71
+Control D docs/test-only corrective status: implemented-awaiting-review
+baseline: a26d027fcd40d6734cb8919059a4683c322f55da
 exact change surface: true
-change file count: 2
-Control B accepted: true
+change file count: 3
+Control C retry accepted: true
+Control C retry cleanup passed: true
 Backend runtime changed: false
 Flutter runtime changed: false
 vendor Framework changed: false
-Flutter compile flag explicit: true
-Flutter session opt-in required: true
-Flutter explicit Apply exactly one: true
-Flutter Backend real-motion marker required false: true
-operator visual confirmation promotes Control C real motion: true
+Control D completed-result fixture exists: true
+Control D Reset local state remains local: true
+Control D opt-in OFF remains local: true
+Control D HomeScreen disposal remains local: true
+Control D transport call count remains exactly one: true
 private configuration read: false
 provider execution attempted: false
 network execution attempted: false
 real motion executed: false
-Control C execution authorized: false
+Control D acceptance authorized: false
 acceptance sync authorized: false
 commit / push authorized: false
 ```

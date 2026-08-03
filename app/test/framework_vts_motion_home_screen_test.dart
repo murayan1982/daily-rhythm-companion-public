@@ -78,6 +78,85 @@ void main() {
     expect(calls, 1);
     expect(_detailText(tester, 'framework-vts-motion-status'), 'disabled');
   });
+
+  testWidgets(
+    'Control D reset opt-out and disposal stay local after one completed Apply',
+    (tester) async {
+      var calls = 0;
+      final controller = FrameworkVtsMotionPresentationController(
+        client: FrameworkVtsMotionPresentationClient(
+          transport: (request) async {
+            calls += 1;
+            expect(request.intent, FrameworkVtsMotionIntent.expression);
+            expect(request.selectorValue, 'smile');
+            return _completedVtsResult();
+          },
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: HomeScreen(
+            apiClient: const _FakeBackendApiClient(),
+            frameworkVtsMotionPresentationControllerFactory: () => controller,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final optIn = find.byKey(
+        const ValueKey('framework-vts-motion-opt-in'),
+      );
+      await tester.ensureVisible(optIn);
+      await tester.tap(optIn);
+      await tester.pumpAndSettle();
+      expect(calls, 0);
+
+      final apply = find.byKey(
+        const ValueKey('framework-vts-motion-apply-button'),
+      );
+      await tester.ensureVisible(apply);
+      await tester.tap(apply);
+      await tester.pumpAndSettle();
+
+      expect(calls, 1);
+      expect(_detailText(tester, 'framework-vts-motion-phase'), 'completed');
+      expect(_detailText(tester, 'framework-vts-motion-status'), 'completed');
+      expect(
+        _detailText(tester, 'framework-vts-motion-commands-requested'),
+        '1',
+      );
+
+      final reset = find.byKey(
+        const ValueKey('framework-vts-motion-reset-button'),
+      );
+      await tester.ensureVisible(reset);
+      await tester.tap(reset);
+      await tester.pumpAndSettle();
+
+      expect(calls, 1, reason: 'Reset local state must not call transport.');
+      expect(_detailText(tester, 'framework-vts-motion-phase'), 'idle');
+      expect(_detailText(tester, 'framework-vts-motion-status'), '-');
+      expect(
+        _detailText(tester, 'framework-vts-motion-commands-requested'),
+        '0',
+      );
+      expect(_detailText(tester, 'framework-vts-motion-opt-in-status'), 'on');
+
+      await tester.ensureVisible(optIn);
+      await tester.tap(optIn);
+      await tester.pumpAndSettle();
+
+      expect(calls, 1, reason: 'Opt-in OFF must not call transport.');
+      expect(_detailText(tester, 'framework-vts-motion-opt-in-status'), 'off');
+      expect(_detailText(tester, 'framework-vts-motion-phase'), 'idle');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
+
+      expect(calls, 1, reason: 'HomeScreen disposal must not call transport.');
+    },
+  );
 }
 
 ButtonStyleButton _button(WidgetTester tester, String key) =>
@@ -92,6 +171,40 @@ String _detailText(WidgetTester tester, String key) {
       .toList();
   return texts.last;
 }
+
+Map<String, Object?> _completedVtsResult() => <String, Object?>{
+  'schema_version': 'drc.v3.framework-vts-motion-execution.1',
+  'status': 'completed',
+  'commands_requested': 1,
+  'commands_applied': 1,
+  'commands_completed': 1,
+  'optional_commands_skipped': 0,
+  'command_results': <Object?>[
+    <String, Object?>{
+      'order': 1,
+      'intent': 'expression',
+      'outcome': 'completed',
+      'state': 'idle',
+      'adapter_status': 'configured',
+      'public_error_code': 'none',
+      'retryable': false,
+      'skipped': false,
+      'safe_message': '',
+    },
+  ],
+  'event_types': <Object?>[],
+  'framework_import_attempted': true,
+  'session_created': true,
+  'session_closed': true,
+  'adapter': 'vts',
+  'real_adapter_enabled': true,
+  'provider_execution_allowed': true,
+  'provider_execution_attempted': true,
+  'network_execution_attempted': true,
+  'real_motion_executed': false,
+  'reason_code': 'framework_vts_motion_completed',
+  'safe_message': 'Framework VTS motion commands completed.',
+};
 
 Map<String, Object?> _vtsResult() => <String, Object?>{
   'schema_version': 'drc.v3.framework-vts-motion-execution.1',
