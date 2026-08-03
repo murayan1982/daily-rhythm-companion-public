@@ -5,15 +5,15 @@ Updated: 2026-08-03
 Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
-Current parent phase: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7e private configured local VTS operator tooling
-Current implementation step: RT-7e credential-free private local VTS operator tooling
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
-Current implementation commit: none
-Last accepted small commit: RT-7d default-off configured VTS manual wiring COMPLETED / ACCEPTED / PUSHED at 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
-Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify the exact nine-file RT-7e operator-tooling candidate; real VTS execution, private token/hotkey read, acceptance sync, and commit/push remain NOT_AUTHORIZED
+Current parent phase: RT-7 COMPLETED / ACCEPTED
+Current small commit: RT-7e Control E acceptance sync
+Current implementation step: RT-7e Controls A-E aggregate acceptance and cleanup synchronization
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
+Current implementation baseline: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Current implementation commit: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Last accepted small commit: RT-7e configured local VTS operator acceptance COMPLETED / ACCEPTED / PUSHED
+Accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
+Next implementation action: RT-8 exact contract review; RT-8 implementation remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -3069,39 +3069,44 @@ Historical acceptance-sync gate:
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
 
 <!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:BEGIN -->
-## RT-7e private configured local VTS operator tooling
+## RT-7e configured local VTS operator acceptance
 
 ```text
-RT-7: CURRENT / NOT_COMPLETED
-RT-7d: COMPLETED / ACCEPTED / PUSHED
-RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW
-baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
-surface: exact 9 files
-real VTube Studio operator execution: NOT_AUTHORIZED
-private token / hotkey read: NOT_AUTHORIZED
-RT-7e acceptance sync: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+RT-7: COMPLETED / ACCEPTED
+RT-7e: COMPLETED / ACCEPTED / PUSHED
+Stage 1 commit: c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f
+operator corrective commit: 84429683d5ea26e5480bff17f5e29ad201b6ee71
+Control C contract corrective commit: a26d027fcd40d6734cb8919059a4683c322f55da
+Control D docs/test-only corrective commit: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Control A: PASS / ACCEPTED
+Control B: PASS / ACCEPTED
+Control C: PASS / ACCEPTED
+Control D: PASS / ACCEPTED
+Control E: PASS / ACCEPTED
+Backend / Flutter real_motion_executed: false
+operator-visible physical motion confirmed: true
+Control E additional execution: false
+RT-8 exact contract review: READY
+RT-8 implementation: NOT_AUTHORIZED
 ```
 
-- [x] Add an inert-by-default operator runner requiring `--execute-real-vts`.
-- [x] Restrict the runner to exactly `http://127.0.0.1:8000`.
-- [x] Fix the request to one `gesture:rt7e_acceptance_gesture` command.
-- [x] Disable redirect, retry, loop, and background execution.
-- [x] Bound timeout to 10 seconds and response to 65536 bytes.
-- [x] Print only allowlisted public-safe acceptance markers.
-- [x] Require exact completed markers and visible-motion confirmation.
-- [x] Add exact eight credential-free focused tests.
-- [x] Keep Backend/Flutter runtime and accepted RT-7d tests unchanged.
-- [ ] Run Stage 1 regressions and exact-surface/privacy review.
-- [ ] Commit/push only after separate explicit approval.
-- [ ] Keep private configuration read and real VTS execution unauthorized.
-- [ ] Authorize Stage 2 only after Stage 1 push and clean-tree verification.
+- [x] Keep the operator runner inert unless `--execute-real-vts` is explicit.
+- [x] Accept Control B exactly-one POST and operator-visible motion.
+- [x] Preserve the failed first Control C attempt as NOT_ACCEPTED.
+- [x] Correct the private selector without exposing private values.
+- [x] Accept the separately authorized Control C exactly-one Flutter Apply retry.
+- [x] Keep Backend/Flutter `real_motion_executed` false.
+- [x] Accept operator-visible physical motion only as operator evidence.
+- [x] Prove Reset local state, opt-in OFF, and disposal are local-only.
+- [x] Stop recognized local processes and close process-local execution flags.
+- [x] Remove private process values and retain no operator evidence files.
+- [x] Verify synchronized HEAD/origin/main and a clean DRC working tree.
+- [x] Complete RT-7e and parent RT-7 without changing runtime or dependencies.
+- [ ] Start RT-8 implementation only after a separate exact contract review and authorization.
 
-Stage 1 verification keeps provider execution attempted: false, network
-execution attempted: false, and real motion executed: false.
-
-Detailed contract:
-`docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md`.
-Dedicated gate:
-`scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py`.
+The historical Control E gate verifies the four accepted RT-7e commit surfaces,
+the exact seven-file documentation/static-gate synchronization, protected
+runtime files, public-safe wording, and inert default runner behavior. It does
+not read private configuration, import a provider, open a WebSocket, call the
+Backend, or execute motion.
 <!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:END -->

@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7e private configured local VTS operator tooling
+Current small commit: RT-7e Control E acceptance sync
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -570,15 +570,15 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 
 ## v3.0.0 - Realtime multimodal character runtime
 
-Status: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7d default-off configured VTS manual wiring candidate
-Last accepted small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter COMPLETED / ACCEPTED / PUSHED at 2a5e3b035bcfdd273a7d056d59af01235e2459f5
+Status: RT-7 COMPLETED / ACCEPTED
+Current small commit: RT-7e Control E acceptance sync
+Last accepted small commit: RT-7e configured local VTS operator acceptance COMPLETED / ACCEPTED / PUSHED
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Current implementation: RT-7d default-off configured Backend/API/Flutter manual VTS wiring.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `2a5e3b035bcfdd273a7d056d59af01235e2459f5`
-Current implementation commit: none
-Current implementation boundary: exact 28 files; separate manual VTS API/config/service and default-off Flutter runtime/panel; existing RT-6 and accepted RT-7c adapter remain protected; provider/network/real motion verification execution is false.
+Current implementation: RT-7e Controls A-E aggregate acceptance and cleanup synchronization.
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
+Current implementation baseline: `ddd392c24907eae4d8c91850d84b31a7b84e760f`
+Current implementation commit: `ddd392c24907eae4d8c91850d84b31a7b84e760f`
+Current implementation boundary: exact 7 documentation/static-gate files; accepted RT-7d runtime, Control D test, fixed vendor, dependencies, versions, and releases remain protected; Control E performs no provider, network, or real-motion execution.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: fixed released v5.5.0 vendor at `f56697b6de066b062794ac7bb01330d2d9e91759`
 
@@ -799,9 +799,13 @@ RT-6   COMPLETED / ACCEPTED     Realtime character presentation and motion-event
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
   RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
-RT-7   CURRENT / NOT_COMPLETED / BLOCKED_FRAMEWORK_REAL_MOTION_ADAPTER_RELEASE_REQUIRED  Configured Live2D / VTS adapter execution
+RT-7   COMPLETED / ACCEPTED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
-RT-8   BLOCKED                   PC and smartphone realtime acceptance evidence
+  RT-7b  COMPLETED / ACCEPTED / PUSHED  Vendored FW v5.5.0 provenance and root-public readiness
+  RT-7c  COMPLETED / ACCEPTED / PUSHED  Guarded fixed-vendor FW v5.5.0 VTS session adapter core
+  RT-7d  COMPLETED / ACCEPTED / PUSHED  Default-off configured Backend/API/Flutter manual VTS wiring
+  RT-7e  COMPLETED / ACCEPTED / PUSHED  Private configured local VTS operator execution and acceptance
+RT-8   READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  PC and smartphone realtime acceptance evidence
 RT-9   BLOCKED                   Security, cleanup, aggregate readiness, and release
 ```
 
@@ -8450,24 +8454,29 @@ Historical acceptance-sync gate:
 
 ---
 
-## v3.0.0 RT-7e private configured local VTS operator tooling policy
+## v3.0.0 RT-7e configured local VTS operator acceptance
 
-RT-7e Stage 1 is `IMPLEMENTED / AWAITING_REVIEW` against baseline
-`715b28a97f46260efc0bd76e59828d46c8749dbd` under an exact 9-file
-credential-free docs/operator-script/test/static-gate surface.
+RT-7e and parent RT-7 are `COMPLETED / ACCEPTED`. The accepted path combines
+an inert credential-free operator runner, one explicitly authorized bounded
+operator POST, one explicitly authorized bounded Flutter Apply retry, and a
+deterministic local-only lifecycle corrective.
 
 ```text
-RT-7d: COMPLETED / ACCEPTED / PUSHED
-RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW
-real VTube Studio operator execution: NOT_AUTHORIZED
-private token / hotkey read: NOT_AUTHORIZED
-RT-7e acceptance sync: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+Stage 1 commit: c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f
+operator corrective commit: 84429683d5ea26e5480bff17f5e29ad201b6ee71
+Control C contract corrective commit: a26d027fcd40d6734cb8919059a4683c322f55da
+Control D docs/test-only corrective commit: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Controls A-E: PASS / ACCEPTED
+Backend / Flutter real_motion_executed: false
+operator-visible physical motion confirmed: true
+Control E additional provider/network/real-motion execution: false
+RT-8 exact contract review: READY
+RT-8 implementation: NOT_AUTHORIZED
 ```
 
-The operator runner is inert unless `--execute-real-vts` is supplied. Stage 1
-verification performs no private configuration read, provider execution,
-network execution, or real motion. The later private operator run requires a
-separate explicit authorization and remains limited to one local fixed gesture,
-one POST, no redirect, no retry, a 10-second timeout, and at most 65536 response
-bytes.
+The physical VTube Studio observation remains private operator evidence. No
+private token, endpoint, hotkey value, model identity, provider payload, raw
+response, screenshot, private path, or LAN address is committed. Control E
+changes only seven documentation/static-gate files and does not start Backend,
+Flutter, Framework, provider, network, WebSocket, VTube Studio, or motion
+execution.

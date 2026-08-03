@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7e private configured local VTS operator tooling
-Current implementation: RT-7e credential-free private local VTS operator tooling.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `715b28a97f46260efc0bd76e59828d46c8749dbd`
-Current implementation commit: none
-Last accepted small commit: RT-7d default-off configured VTS manual wiring (**COMPLETED / ACCEPTED / PUSHED**) at `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`
+Current small commit: RT-7e Control E acceptance sync
+Current implementation: RT-7e Controls A-E aggregate acceptance and cleanup synchronization.
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
+Current implementation baseline: `ddd392c24907eae4d8c91850d84b31a7b84e760f`
+Current implementation commit: `ddd392c24907eae4d8c91850d84b31a7b84e760f`
+Last accepted small commit: RT-7e configured local VTS operator acceptance (**COMPLETED / ACCEPTED / PUSHED**)
 Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
-Current realtime phase: RT-7 (**CURRENT / NOT_COMPLETED**)
-Current realtime action: verify the exact nine-file RT-7e credential-free operator-tooling candidate; real VTube Studio execution, private token/hotkey read, acceptance sync, and commit/push remain NOT_AUTHORIZED
+Current realtime phase: RT-7 (**COMPLETED / ACCEPTED**)
+Current realtime action: RT-8 exact contract review is ready; RT-8 implementation remains NOT_AUTHORIZED
 
 Current phase state:
 
@@ -89,13 +89,13 @@ RT-6  COMPLETED / ACCEPTED  Realtime character presentation and motion-event map
   RT-6d  COMPLETED / ACCEPTED / PUSHED  Flutter motion presentation model/client/controller
   RT-6e  COMPLETED / ACCEPTED / PUSHED  Default-off HomeScreen character-motion wiring
   RT-6f  COMPLETED / ACCEPTED / PUSHED  Configured local mock-motion presentation acceptance
-RT-7  CURRENT / NOT_COMPLETED  Configured Live2D / VTS adapter execution
+RT-7  COMPLETED / ACCEPTED  Configured Live2D / VTS adapter execution
   RT-7a  COMPLETED / ACCEPTED / PUSHED  Real motion adapter prerequisite and Framework requirement inventory
   RT-7b  COMPLETED / ACCEPTED / PUSHED  Vendored FW v5.5.0 provenance and root-public readiness
   RT-7c  COMPLETED / ACCEPTED / PUSHED  Guarded fixed-vendor FW v5.5.0 VTS session adapter core
   RT-7d  COMPLETED / ACCEPTED / PUSHED  Default-off configured Backend/API/Flutter manual VTS wiring
-  RT-7e  OPERATOR_TOOLING_IMPLEMENTED / AWAITING_REVIEW  Private configured local VTS operator execution and acceptance
-RT-8  BLOCKED  PC and smartphone realtime acceptance evidence
+  RT-7e  COMPLETED / ACCEPTED / PUSHED  Private configured local VTS operator execution and acceptance
+RT-8  READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  PC and smartphone realtime acceptance evidence
 RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
@@ -5837,40 +5837,45 @@ Historical acceptance-sync gate:
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
 
 <!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:BEGIN -->
-## RT-7e private configured local VTS operator tooling candidate
+## RT-7e configured local VTS operator acceptance
 
 ```text
-RT-7: CURRENT / NOT_COMPLETED
+RT-7: COMPLETED / ACCEPTED
 RT-7d: COMPLETED / ACCEPTED / PUSHED
-RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW
-baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
-surface: exact 9 files
-private configuration read: false
-provider execution attempted: false
-network execution attempted: false
-real motion executed: false
-real VTube Studio operator execution: NOT_AUTHORIZED
-private token / hotkey read: NOT_AUTHORIZED
-RT-7e acceptance sync: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+RT-7e: COMPLETED / ACCEPTED / PUSHED
+Stage 1 commit: c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f
+operator corrective commit: 84429683d5ea26e5480bff17f5e29ad201b6ee71
+Control C contract corrective commit: a26d027fcd40d6734cb8919059a4683c322f55da
+Control D docs/test-only corrective commit: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Control A: PASS / ACCEPTED
+Control B: PASS / ACCEPTED
+Control C: PASS / ACCEPTED
+Control D: PASS / ACCEPTED
+Control E: PASS / ACCEPTED
+Backend / Flutter real_motion_executed: false
+operator-visible physical motion confirmed: true
+additional Control E provider/network/real-motion execution: false
+RT-8 exact contract review: READY
+RT-8 implementation: NOT_AUTHORIZED
+v3.0.0 release: NOT_RELEASED
 ```
 
-RT-7e Stage 1 adds an inert-by-default local operator runner, exact eight
-credential-free tests, documentation, and a static gate. It changes no Backend
-runtime, Flutter runtime, accepted RT-7d route, fixed vendor Framework,
-dependency, version, or release artifact.
+RT-7e accepted one bounded operator-runner POST and one bounded Flutter Apply
+retry through the accepted RT-7d route and fixed vendored FW v5.5.0 root-public
+VTS session boundary. The operator visibly confirmed the configured local VTube
+Studio gesture. Backend and Flutter correctly retained
+`real_motion_executed: false`; the physical observation remains operator-only
+evidence and is not promoted into a runtime field.
 
-Without `--execute-real-vts`, the runner performs zero HTTP, Framework,
-provider, network, or motion operations. A separately authorized Stage 2 may
-send exactly one fixed `gesture:rt7e_acceptance_gesture` command through
-`http://127.0.0.1:8000`; it follows no redirect, retries nothing, bounds the
-response to 65536 bytes, prints no raw JSON or private values, and requires an
-explicit visible-motion confirmation.
+Control D proves with a deterministic fake transport that Reset local state,
+turning session opt-in off, and HomeScreen disposal remain local after one
+completed Apply. Control E adds no request or execution. It aggregates the
+accepted Controls A-D cleanup evidence, closed process-local execution flags,
+removed private process values, stopped local processes, synchronized
+HEAD/origin/main, and a clean DRC working tree.
 
-Detailed contract:
+Detailed accepted contract:
 `docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md`.
-Dedicated gate:
+Historical Control E acceptance-sync gate:
 `scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py`.
-Operator runner:
-`scripts/run_v300_rt7e_private_configured_local_vts_operator.py`.
 <!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:END -->

@@ -7546,11 +7546,10 @@ Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
 
-## v3.0.0 RT-7e private configured local VTS operator tooling gate
+## v3.0.0 RT-7e Control E acceptance-sync gate
 
-RT-7e Stage 1 is `IMPLEMENTED / AWAITING_REVIEW` against
-`715b28a97f46260efc0bd76e59828d46c8749dbd` with an exact 9-file
-credential-free surface.
+The historical gate validates the final exact seven-file documentation/static-
+gate synchronization against accepted Control D commit `ddd392c24907eae4d8c91850d84b31a7b84e760f`.
 
 ```powershell
 python -m compileall -q backend scripts
@@ -7560,6 +7559,7 @@ python -m pytest -q backend\tests
 
 cd app
 flutter analyze
+flutter test test\framework_vts_motion_home_screen_test.dart
 flutter test
 cd ..
 
@@ -7569,19 +7569,31 @@ git status --short
 git diff --name-only
 ```
 
-The gate invokes the operator runner only in its inert default mode and verifies
-request zero. It reads no private configuration and performs no provider,
-network, WebSocket, VTube Studio, or real-motion execution.
-
-The later command below is documented but remains separately unauthorized:
+For an extracted tracked-source snapshot without Git history:
 
 ```powershell
-python scripts\run_v300_rt7e_private_configured_local_vts_operator.py `
-  --execute-real-vts
+python scripts\check_v300_rt7e_private_configured_local_vts_operator_acceptance.py --snapshot
 ```
 
-Stage 2 uses one fixed local gesture, one POST, no redirect, no retry, a
-10-second timeout, 65536-byte response bound, allowlisted markers only, and an
-explicit visible-motion confirmation. Real VTube Studio operator execution:
-NOT_AUTHORIZED. Private token / hotkey read: NOT_AUTHORIZED. RT-7e acceptance
-sync: NOT_AUTHORIZED. Commit / push: NOT_AUTHORIZED.
+Normal mode verifies:
+
+```text
+HEAD and origin/main: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Stage 1 exact 9 files: 715b28a97f46260efc0bd76e59828d46c8749dbd..c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f
+operator corrective exact 4 files: c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f..84429683d5ea26e5480bff17f5e29ad201b6ee71
+Control C corrective exact 2 files: 84429683d5ea26e5480bff17f5e29ad201b6ee71..a26d027fcd40d6734cb8919059a4683c322f55da
+Control D corrective exact 3 files: a26d027fcd40d6734cb8919059a4683c322f55da..ddd392c24907eae4d8c91850d84b31a7b84e760f
+Control E worktree exact 7 files
+Controls A-E accepted markers
+RT-7 completed and RT-8 review-ready markers
+protected runtime/test/vendor/dependency/release boundaries
+```
+
+Snapshot mode validates source content and protected boundaries only. It does
+not claim that Git history, origin/main synchronization, or the current exact
+worktree surface were independently verified.
+
+The gate invokes the operator runner only in inert default mode. It reads no
+private configuration, sends no HTTP request, imports no provider, opens no
+WebSocket, starts no VTube Studio operation, and executes no real motion. The
+gate never authorizes commit/push by itself.
