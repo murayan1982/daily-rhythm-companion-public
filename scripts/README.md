@@ -7545,3 +7545,43 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
+
+## v3.0.0 RT-7e private configured local VTS operator tooling gate
+
+RT-7e Stage 1 is `IMPLEMENTED / AWAITING_REVIEW` against
+`715b28a97f46260efc0bd76e59828d46c8749dbd` with an exact 9-file
+credential-free surface.
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt7e_private_configured_local_vts_operator_acceptance.py
+python -m pytest -q backend\tests\test_v300_rt7e_private_configured_local_vts_operator.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v300_rt7e_private_configured_local_vts_operator_acceptance.py
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --name-only
+```
+
+The gate invokes the operator runner only in its inert default mode and verifies
+request zero. It reads no private configuration and performs no provider,
+network, WebSocket, VTube Studio, or real-motion execution.
+
+The later command below is documented but remains separately unauthorized:
+
+```powershell
+python scripts\run_v300_rt7e_private_configured_local_vts_operator.py `
+  --execute-real-vts
+```
+
+Stage 2 uses one fixed local gesture, one POST, no redirect, no retry, a
+10-second timeout, 65536-byte response bound, allowlisted markers only, and an
+explicit visible-motion confirmation. Real VTube Studio operator execution:
+NOT_AUTHORIZED. Private token / hotkey read: NOT_AUTHORIZED. RT-7e acceptance
+sync: NOT_AUTHORIZED. Commit / push: NOT_AUTHORIZED.

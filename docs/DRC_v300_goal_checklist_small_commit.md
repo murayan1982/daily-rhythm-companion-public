@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7d acceptance sync
-Current implementation step: RT-7d default-off configured Backend/API/Flutter manual VTS wiring acceptance
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
-Current implementation commit: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+Current small commit: RT-7e private configured local VTS operator tooling
+Current implementation step: RT-7e credential-free private local VTS operator tooling
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
+Current implementation commit: none
 Last accepted small commit: RT-7d default-off configured VTS manual wiring COMPLETED / ACCEPTED / PUSHED at 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: record the exact seven-file RT-7d acceptance sync; RT-7e exact contract review is ready, but implementation and real VTS execution remain NOT_AUTHORIZED
+Next implementation action: verify the exact nine-file RT-7e operator-tooling candidate; real VTS execution, private token/hotkey read, acceptance sync, and commit/push remain NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -3067,3 +3067,41 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
+
+<!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:BEGIN -->
+## RT-7e private configured local VTS operator tooling
+
+```text
+RT-7: CURRENT / NOT_COMPLETED
+RT-7d: COMPLETED / ACCEPTED / PUSHED
+RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW
+baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
+surface: exact 9 files
+real VTube Studio operator execution: NOT_AUTHORIZED
+private token / hotkey read: NOT_AUTHORIZED
+RT-7e acceptance sync: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+- [x] Add an inert-by-default operator runner requiring `--execute-real-vts`.
+- [x] Restrict the runner to exactly `http://127.0.0.1:8000`.
+- [x] Fix the request to one `gesture:rt7e_acceptance_gesture` command.
+- [x] Disable redirect, retry, loop, and background execution.
+- [x] Bound timeout to 10 seconds and response to 65536 bytes.
+- [x] Print only allowlisted public-safe acceptance markers.
+- [x] Require exact completed markers and visible-motion confirmation.
+- [x] Add exact eight credential-free focused tests.
+- [x] Keep Backend/Flutter runtime and accepted RT-7d tests unchanged.
+- [ ] Run Stage 1 regressions and exact-surface/privacy review.
+- [ ] Commit/push only after separate explicit approval.
+- [ ] Keep private configuration read and real VTS execution unauthorized.
+- [ ] Authorize Stage 2 only after Stage 1 push and clean-tree verification.
+
+Stage 1 verification keeps provider execution attempted: false, network
+execution attempted: false, and real motion executed: false.
+
+Detailed contract:
+`docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md`.
+Dedicated gate:
+`scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py`.
+<!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:END -->

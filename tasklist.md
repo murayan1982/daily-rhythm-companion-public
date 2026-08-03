@@ -13,11 +13,11 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-7 CURRENT / NOT_COMPLETED
-current small commit: RT-7d acceptance sync
-current implementation step: RT-7d default-off configured Backend/API/Flutter manual VTS wiring acceptance
-current implementation state: COMPLETED / ACCEPTED / PUSHED
-current implementation baseline: 2a5e3b035bcfdd273a7d056d59af01235e2459f5
-current implementation commit: 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
+current small commit: RT-7e private configured local VTS operator tooling
+current implementation step: RT-7e credential-free private local VTS operator tooling
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
+current implementation commit: none
 last accepted small commit: RT-7d default-off configured VTS manual wiring COMPLETED / ACCEPTED / PUSHED at 37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2
 accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
 strategic target: v3.0.0
@@ -3094,3 +3094,21 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
+
+## RT-7e — private configured local VTS operator tooling
+
+```text
+RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW
+baseline: 715b28a97f46260efc0bd76e59828d46c8749dbd
+surface: exact 9 files
+real VTube Studio operator execution: NOT_AUTHORIZED
+private token / hotkey read: NOT_AUTHORIZED
+RT-7e acceptance sync: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+Stage 1はdocs／operator runner／focused test／static gateのみ。Backend runtime、
+Flutter runtime、accepted RT-7d route、vendor、dependencyは変更しない。
+`--execute-real-vts`なしではrequest zero。provider execution attempted:
+false、network execution attempted: false、real motion executed: falseを維持する。
+Stage 2のprivate local operator executionは別承認まで開始しない。

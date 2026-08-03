@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7d acceptance sync
+Current small commit: RT-7e private configured local VTS operator tooling
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -8447,3 +8447,27 @@ Detailed accepted contract:
 Historical acceptance-sync gate:
 `scripts/check_v300_rt7d_default_off_configured_vts_manual_wiring.py`.
 <!-- RT-7d-DEFAULT-OFF-CONFIGURED-VTS:END -->
+
+---
+
+## v3.0.0 RT-7e private configured local VTS operator tooling policy
+
+RT-7e Stage 1 is `IMPLEMENTED / AWAITING_REVIEW` against baseline
+`715b28a97f46260efc0bd76e59828d46c8749dbd` under an exact 9-file
+credential-free docs/operator-script/test/static-gate surface.
+
+```text
+RT-7d: COMPLETED / ACCEPTED / PUSHED
+RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW
+real VTube Studio operator execution: NOT_AUTHORIZED
+private token / hotkey read: NOT_AUTHORIZED
+RT-7e acceptance sync: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+```
+
+The operator runner is inert unless `--execute-real-vts` is supplied. Stage 1
+verification performs no private configuration read, provider execution,
+network execution, or real motion. The later private operator run requires a
+separate explicit authorization and remains limited to one local fixed gesture,
+one POST, no redirect, no retry, a 10-second timeout, and at most 65536 response
+bytes.
