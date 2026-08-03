@@ -161,3 +161,45 @@ def test_error_output_never_echoes_private_value_or_path() -> None:
     assert secret not in output
     assert "private" not in output.lower()
     assert output == "v300_rt8_manifest_error: sensitive_value_detected"
+
+def test_rt8b1_schema_version_is_v2() -> None:
+    assert validator.SCHEMA_VERSION == "drc.v3.rt8-platform-acceptance.2"
+
+
+def test_rt8b1_v1_schema_is_rejected() -> None:
+    data = validator.expected_manifest_for_stage("pc_windows", pc_head=PC_SHA)
+    data["schema_version"] = "drc.v3.rt8-platform-acceptance.1"
+    with pytest.raises(validator.ValidationError) as exc:
+        validator.validate_manifest_data(data, "pc-windows")
+    assert_code(exc, "value_mismatch")
+
+
+def test_rt8b1_pc_counts_are_exact() -> None:
+    data = validator.expected_manifest_for_stage("pc_windows", pc_head=PC_SHA)
+    pc = data["pc_windows"]
+    assert pc["manual_stream_start_count"] == 3
+    assert pc["completed_stream_terminal_count"] == 2
+    assert pc["cancelled_stream_terminal_count"] == 1
+    assert pc["cooperative_cancel_request_count"] == 1
+    assert pc["explicit_tts_enqueue_count"] == 2
+    assert pc["explicit_tts_process_count"] == 2
+    assert pc["explicit_flush_count"] == 1
+
+
+def test_rt8b1_incorrect_stream_split_is_rejected() -> None:
+    data = validator.expected_manifest_for_stage("pc_windows", pc_head=PC_SHA)
+    data["pc_windows"]["manual_stream_start_count"] = 2
+    data["pc_windows"]["completed_stream_terminal_count"] = 1
+    data["pc_windows"]["cancelled_stream_terminal_count"] = 1
+    with pytest.raises(validator.ValidationError) as exc:
+        validator.validate_manifest_data(data, "pc-windows")
+    assert_code(exc, "value_mismatch")
+
+
+def test_rt8b1_incorrect_tts_counts_are_rejected() -> None:
+    for key in ("explicit_tts_enqueue_count", "explicit_tts_process_count"):
+        data = validator.expected_manifest_for_stage("pc_windows", pc_head=PC_SHA)
+        data["pc_windows"][key] = 1
+        with pytest.raises(validator.ValidationError) as exc:
+            validator.validate_manifest_data(data, "pc-windows")
+        assert_code(exc, "value_mismatch")

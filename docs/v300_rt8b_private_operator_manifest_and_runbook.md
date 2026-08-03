@@ -2,17 +2,18 @@
 
 Updated: 2026-08-03
 
-## Candidate state
+## RT-8b1 candidate state
 
 ```text
 RT-8: CURRENT / NOT_COMPLETED
 RT-8a: COMPLETED / ACCEPTED / PUSHED
-RT-8a commit: a3af4fae002c1425fdfb61b46f66e35e2443ad17
-RT-8b: IMPLEMENTED / AWAITING_REVIEW
-RT-8b baseline: a3af4fae002c1425fdfb61b46f66e35e2443ad17
-RT-8b surface: exact 10 files
-readiness: READY_FOR_BOUNDED_PRIVATE_RT8_OPERATOR_MANIFEST_AND_NETWORK_FREE_VALIDATION
-RT-8c exact contract review: READY_AFTER_RT8B_ACCEPTANCE
+RT-8b: COMPLETED / ACCEPTED / PUSHED
+RT-8b commit: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
+RT-8b1: IMPLEMENTED / AWAITING_REVIEW
+RT-8b1 baseline: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
+RT-8b1 surface: exact 10 files
+schema: drc.v3.rt8-platform-acceptance.2
+RT-8c exact contract review: READY_AFTER_RT8B1_ACCEPTANCE
 RT-8c implementation: NOT_AUTHORIZED
 RT-8d implementation: NOT_AUTHORIZED
 RT-8e implementation: NOT_AUTHORIZED
@@ -107,7 +108,7 @@ Every manifest uses the exact envelope below. Unknown, missing, and duplicate
 JSON keys are rejected.
 
 ```text
-schema_version: drc.v3.rt8-platform-acceptance.1
+schema_version: drc.v3.rt8-platform-acceptance.2
 manifest_kind: private_rt8_pc_android_realtime_acceptance
 stage: example | pc_windows | android | aggregate
 status: example_not_accepted | accepted
@@ -589,3 +590,72 @@ After automated verification:
 - do not start RT-8c, RT-8d, RT-8e, or RT-9;
 - do not commit or push without separate explicit approval.
 ```
+
+## RT-8b1 strict PC execution-count corrective
+
+RT-8b was accepted and pushed at `eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5`. Before any RT-8c execution,
+exact contract review found that schema `.1` could not represent both the
+natural-playback and active-playback-flush controls while also retaining a
+separate cooperative-cancel control.
+
+```text
+RT-8b: COMPLETED / ACCEPTED / PUSHED
+RT-8b commit: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
+RT-8b1: IMPLEMENTED / AWAITING_REVIEW
+RT-8b1 baseline: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
+schema version: drc.v3.rt8-platform-acceptance.2
+RT-8c implementation: NOT_AUTHORIZED
+private manifest created: false
+private manifest read: false
+```
+
+Schema `.2` is the only schema accepted for RT-8c and later. Schema `.1`
+remains historical pre-execution evidence only.
+
+### Exact PC execution counts
+
+```text
+manual_stream_start_count: 3
+completed_stream_terminal_count: 2
+cancelled_stream_terminal_count: 1
+cooperative_cancel_request_count: 1
+explicit_tts_enqueue_count: 2
+explicit_tts_process_count: 2
+explicit_flush_count: 1
+app_owned_motion_presentation_count: 1
+manual_vts_apply_count: 1
+```
+
+Control mapping:
+
+```text
+PC-B: stream start 1 -> completed terminal 1
+PC-C: stream start 2 -> cooperative cancel 1 -> cancelled terminal 1
+PC-D: enqueue/process 1 -> natural audible playback completion
+PC-E: stream start 3 -> completed terminal 2 -> enqueue/process 2
+      -> flush 1 during active playback
+PC-F: app-owned motion presentation 1
+PC-G: manual VTS Apply 1
+```
+
+RT-8b1 changes no Android count contract. Android turn-count review remains an
+RT-8d exact-contract responsibility.
+
+Exact corrective surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt8b_private_operator_manifest_and_runbook.md
+docs/operator_evidence_templates/v300_rt8_pc_android_realtime_acceptance.example.json
+scripts/validate_v300_rt8_private_operator_manifest.py
+scripts/check_v300_rt8b_private_operator_manifest_and_runbook.py
+backend/tests/test_v300_rt8_private_operator_manifest.py
+```
+
+No private manifest is created or read. No private configuration, Backend,
+Flutter, provider, network, microphone, STT, TTS, playback, VTS, or physical
+motion is executed. Commit and push remain separately authorized.

@@ -1,5 +1,5 @@
 {
-  "schema_version": "drc.v3.rt8-platform-acceptance.1",
+  "schema_version": "drc.v3.rt8-platform-acceptance.2",
   "manifest_kind": "private_rt8_pc_android_realtime_acceptance",
   "stage": "example",
   "status": "example_not_accepted",
@@ -40,7 +40,10 @@
     "real_execution_flags_closed": false,
     "private_process_values_removed": false,
     "manual_stream_start_count": 0,
+    "completed_stream_terminal_count": 0,
+    "cancelled_stream_terminal_count": 0,
     "cooperative_cancel_request_count": 0,
+    "explicit_tts_enqueue_count": 0,
     "explicit_tts_process_count": 0,
     "explicit_flush_count": 0,
     "pending_after_flush": 0,

@@ -19,7 +19,7 @@ import sys
 from typing import Any, Callable, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_VERSION = "drc.v3.rt8-platform-acceptance.1"
+SCHEMA_VERSION = "drc.v3.rt8-platform-acceptance.2"
 MANIFEST_KIND = "private_rt8_pc_android_realtime_acceptance"
 EXAMPLE_HEAD = "REPLACE_WITH_40_LOWERCASE_HEX"
 EXAMPLE_MANIFEST = ROOT / "docs" / "operator_evidence_templates" / "v300_rt8_pc_android_realtime_acceptance.example.json"
@@ -61,7 +61,10 @@ PC_BOOLEAN_KEYS = (
 )
 PC_COUNT_KEYS = (
     "manual_stream_start_count",
+    "completed_stream_terminal_count",
+    "cancelled_stream_terminal_count",
     "cooperative_cancel_request_count",
+    "explicit_tts_enqueue_count",
     "explicit_tts_process_count",
     "explicit_flush_count",
     "pending_after_flush",
@@ -292,9 +295,12 @@ def _accepted_pc() -> dict[str, Any]:
     ):
         result[key] = True
     result.update(
-        manual_stream_start_count=1,
+        manual_stream_start_count=3,
+        completed_stream_terminal_count=2,
+        cancelled_stream_terminal_count=1,
         cooperative_cancel_request_count=1,
-        explicit_tts_process_count=1,
+        explicit_tts_enqueue_count=2,
+        explicit_tts_process_count=2,
         explicit_flush_count=1,
         pending_after_flush=0,
         app_owned_motion_presentation_count=1,

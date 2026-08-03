@@ -13,12 +13,12 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-8 CURRENT / NOT_COMPLETED
-current small commit: RT-8b private operator manifest, validator, and runbook
-current implementation step: RT-8b credential-free private operator manifest schema, validator, and runbook
+current small commit: RT-8b1 strict PC execution-count contract corrective
+current implementation step: RT-8b1 schema .2 and exact PC stream/TTS execution counts
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: a3af4fae002c1425fdfb61b46f66e35e2443ad17
+current implementation baseline: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
 current implementation commit: none
-last accepted small commit: RT-8a PC/Android realtime acceptance readiness COMPLETED / ACCEPTED / PUSHED at a3af4fae002c1425fdfb61b46f66e35e2443ad17
+last accepted small commit: RT-8b private operator manifest tooling COMPLETED / ACCEPTED / PUSHED at eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
 accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
@@ -3314,3 +3314,50 @@ Validator:
 Dedicated candidate gate:
 `scripts/check_v300_rt8b_private_operator_manifest_and_runbook.py`.
 <!-- RT-8b-PRIVATE-OPERATOR-MANIFEST:END -->
+
+<!-- RT-8b1-STRICT-PC-COUNT-CORRECTIVE:BEGIN -->
+## RT-8b1 strict PC execution-count contract corrective
+
+```text
+RT-8: CURRENT / NOT_COMPLETED
+RT-8a: COMPLETED / ACCEPTED / PUSHED
+RT-8b: COMPLETED / ACCEPTED / PUSHED
+RT-8b commit: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
+RT-8b1: IMPLEMENTED / AWAITING_REVIEW
+RT-8b1 baseline: eedc32a6293b99435d1d2e60b4a4a6e7c519c8d5
+RT-8b1 surface: exact 10 files
+schema: drc.v3.rt8-platform-acceptance.2
+RT-8c: BLOCKED_PENDING_RT8B1_ACCEPTANCE / NOT_AUTHORIZED
+private manifest created: false
+private manifest read: false
+private configuration read: false
+provider execution attempted: false
+network execution attempted: false
+microphone used: false
+real TTS executed: false
+real motion executed: false
+commit / push: NOT_AUTHORIZED
+```
+
+RT-8b1 corrects only the strict PC execution-count schema before any configured
+PC run. The bounded PC sequence requires three manual stream starts: two
+completed terminals and one cancelled terminal. The two completed terminals
+feed two explicit TTS enqueue/process actions; the second playback is stopped by
+one explicit local flush.
+
+```text
+manual_stream_start_count: 3
+completed_stream_terminal_count: 2
+cancelled_stream_terminal_count: 1
+cooperative_cancel_request_count: 1
+explicit_tts_enqueue_count: 2
+explicit_tts_process_count: 2
+explicit_flush_count: 1
+app_owned_motion_presentation_count: 1
+manual_vts_apply_count: 1
+```
+
+The public example remains `example_not_accepted`. RT-8b1 creates and reads no
+private manifest and performs no Backend, Flutter, provider, network,
+microphone, STT, TTS, playback, VTS, or physical-motion operation.
+<!-- RT-8b1-STRICT-PC-COUNT-CORRECTIVE:END -->
