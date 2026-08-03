@@ -5,13 +5,17 @@ The default invocation is inert. Real local execution requires the explicit
 Backend route on ``http://127.0.0.1:8000``. The runner never reads private
 configuration itself and never prints raw response JSON, provider payloads,
 private paths, tokens, or hotkey identifiers.
+
+The fixed Framework v5.5.0 transport reports a completed provider hotkey
+request while keeping ``real_motion_executed`` false. Physical motion is
+accepted only after the operator visibly observes the configured gesture and
+types exactly ``ACCEPT``.
 """
 
 from __future__ import annotations
 
 import argparse
-from collections.abc import Callable
-import io
+from collections.abc import Callable, Mapping
 import json
 import sys
 from typing import Any, BinaryIO, Protocol, TextIO
@@ -32,6 +36,70 @@ MAX_RESPONSE_BYTES = 65536
 ACCEPTANCE_GESTURE_ALIAS = "rt7e_acceptance_gesture"
 REQUEST_SCHEMA_VERSION = "drc.v3.framework-vts-motion-presentation-request.1"
 RESULT_SCHEMA_VERSION = "drc.v3.framework-vts-motion-execution.1"
+
+_ALLOWED_STATUSES = frozenset(
+    {
+        "completed",
+        "completed_with_optional_skip",
+        "disabled",
+        "provider_execution_not_allowed",
+        "unavailable",
+        "unsupported",
+        "failed",
+    }
+)
+_ALLOWED_REASON_CODES = frozenset(
+    {
+        "framework_vts_configuration_invalid",
+        "framework_vts_motion_disabled",
+        "provider_execution_not_allowed",
+        "framework_v550_vendor_missing",
+        "framework_vts_preflight_unavailable",
+        "framework_vts_optional_stop_unsupported",
+        "framework_vts_required_intent_unsupported",
+        "framework_vts_motion_non_completed",
+        "framework_vts_motion_failed",
+        "framework_vts_motion_close_failed",
+        "framework_vts_motion_completed",
+    }
+)
+_ALLOWED_INTENTS = frozenset(
+    {
+        "expression",
+        "emotion",
+        "gesture",
+        "reset_expression",
+        "stop_motion",
+    }
+)
+_ALLOWED_OUTCOMES = frozenset(
+    {
+        "completed",
+        "unsupported",
+        "unavailable",
+        "not_configured",
+        "not_implemented",
+        "interrupted",
+        "failed",
+        "closed",
+    }
+)
+_ALLOWED_PUBLIC_ERROR_CODES = frozenset(
+    {
+        "none",
+        "unavailable",
+        "unsupported",
+        "not_configured",
+        "token_missing",
+        "provider_execution_not_allowed",
+        "runtime_not_installed",
+        "model_not_selected",
+        "not_implemented",
+        "interrupted",
+        "session_closed",
+        "provider_error",
+    }
+)
 
 
 class _Response(Protocol):
@@ -151,8 +219,8 @@ def _validate_result(payload: Any) -> tuple[bool, str]:
             _strict_bool(payload.get("network_execution_attempted"), True),
         ),
         (
-            "real_motion_executed",
-            _strict_bool(payload.get("real_motion_executed"), True),
+            "backend_real_motion_executed",
+            _strict_bool(payload.get("real_motion_executed"), False),
         ),
     )
     for marker, passed in checks:
@@ -172,6 +240,89 @@ def _validate_result(payload: Any) -> tuple[bool, str]:
     if type(command.get("skipped")) is not bool or command.get("skipped") is not False:
         return False, "marker_failed:command_skipped"
     return True, "completed"
+
+
+def _safe_text(value: Any, *, allowed: frozenset[str]) -> str:
+    return value if isinstance(value, str) and value in allowed else "unrecognized"
+
+
+def _safe_count(value: Any) -> str:
+    if type(value) is int and 0 <= value <= 5:
+        return str(value)
+    return "unrecognized"
+
+
+def _safe_bool(value: Any) -> str:
+    if type(value) is bool:
+        return str(value)
+    return "unrecognized"
+
+
+def _safe_failure_diagnostic_lines(payload: Any) -> tuple[str, ...]:
+    """Return only bounded, allowlisted public fields from a failed result."""
+
+    if not isinstance(payload, Mapping):
+        return ()
+
+    command: Mapping[str, Any] = {}
+    command_results = payload.get("command_results")
+    if (
+        isinstance(command_results, list)
+        and len(command_results) == 1
+        and isinstance(command_results[0], Mapping)
+    ):
+        command = command_results[0]
+
+    values = (
+        (
+            "status",
+            _safe_text(payload.get("status"), allowed=_ALLOWED_STATUSES),
+        ),
+        (
+            "reason_code",
+            _safe_text(
+                payload.get("reason_code"),
+                allowed=_ALLOWED_REASON_CODES,
+            ),
+        ),
+        ("commands_requested", _safe_count(payload.get("commands_requested"))),
+        ("commands_applied", _safe_count(payload.get("commands_applied"))),
+        ("commands_completed", _safe_count(payload.get("commands_completed"))),
+        ("session_created", _safe_bool(payload.get("session_created"))),
+        ("session_closed", _safe_bool(payload.get("session_closed"))),
+        (
+            "provider_execution_attempted",
+            _safe_bool(payload.get("provider_execution_attempted")),
+        ),
+        (
+            "network_execution_attempted",
+            _safe_bool(payload.get("network_execution_attempted")),
+        ),
+        (
+            "backend_real_motion_executed",
+            _safe_bool(payload.get("real_motion_executed")),
+        ),
+        (
+            "command_intent",
+            _safe_text(command.get("intent"), allowed=_ALLOWED_INTENTS),
+        ),
+        (
+            "command_outcome",
+            _safe_text(command.get("outcome"), allowed=_ALLOWED_OUTCOMES),
+        ),
+        (
+            "command_public_error_code",
+            _safe_text(
+                command.get("public_error_code"),
+                allowed=_ALLOWED_PUBLIC_ERROR_CODES,
+            ),
+        ),
+        ("command_retryable", _safe_bool(command.get("retryable"))),
+    )
+    return tuple(
+        f"v300_rt7e_operator_diagnostic_{name}: {value}\n"
+        for name, value in values
+    )
 
 
 def _read_json_response(response: _Response) -> Any:
@@ -258,7 +409,12 @@ def run_operator(
     valid, reason = _validate_result(payload)
     if not valid:
         stderr.write(f"v300_rt7e_operator_error: {reason}\n")
+        for line in _safe_failure_diagnostic_lines(payload):
+            stderr.write(line)
         return 3
+
+    stdout.write("v300_rt7e_operator_backend_contract_valid: True\n")
+    stdout.write("v300_rt7e_operator_backend_real_motion_executed: False\n")
 
     confirmation = confirm_visible_motion
     if confirmation is None:
@@ -277,8 +433,8 @@ def run_operator(
     stdout.write("v300_rt7e_operator_session_closed: True\n")
     stdout.write("v300_rt7e_operator_provider_execution_attempted: True\n")
     stdout.write("v300_rt7e_operator_network_execution_attempted: True\n")
-    stdout.write("v300_rt7e_operator_real_motion_executed: True\n")
     stdout.write("v300_rt7e_operator_visible_motion_confirmed: True\n")
+    stdout.write("v300_rt7e_operator_real_motion_executed: True\n")
     return 0
 
 

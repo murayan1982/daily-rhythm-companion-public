@@ -1,41 +1,31 @@
-"""Credential-free RT-7e Stage 1 operator-tooling verification."""
+"""Credential-free RT-7e operator-contract corrective verification."""
 
 from __future__ import annotations
 
 import argparse
 import io
+import json
 from pathlib import Path
 import re
 import subprocess
 import sys
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-BASELINE = "715b28a97f46260efc0bd76e59828d46c8749dbd"
+BASELINE = "c4455fb6d14d5a6e31f2ff782e364c0eb92d2f4f"
 EXPECTED = {
-    "README.md",
-    "roadmap.md",
-    "tasklist.md",
-    "scripts/README.md",
-    "docs/DRC_v300_goal_checklist_small_commit.md",
-    "docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md",
-    "scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py",
     "scripts/run_v300_rt7e_private_configured_local_vts_operator.py",
     "backend/tests/test_v300_rt7e_private_configured_local_vts_operator.py",
-}
-DOCS = {
-    "README.md",
-    "roadmap.md",
-    "tasklist.md",
-    "scripts/README.md",
-    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py",
     "docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md",
 }
+DOC = "docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md"
 RUNNER = "scripts/run_v300_rt7e_private_configured_local_vts_operator.py"
 TEST = "backend/tests/test_v300_rt7e_private_configured_local_vts_operator.py"
 
 
 def fail(message: str) -> None:
-    raise SystemExit(f"v300_rt7e_gate_error: {message}")
+    raise SystemExit(f"v300_rt7e_corrective_gate_error: {message}")
 
 
 def git(*args: str) -> str:
@@ -90,54 +80,43 @@ def forbid(text: str, marker: str, label: str) -> None:
 def validate_scope(snapshot: bool) -> None:
     missing = sorted(path for path in EXPECTED if not (ROOT / path).is_file())
     if missing:
-        fail(f"missing Stage 1 files: {missing}")
+        fail(f"missing corrective files: {missing}")
     if snapshot:
         return
     if git("rev-parse", "HEAD") != BASELINE:
-        fail("HEAD is not the accepted RT-7d acceptance baseline")
+        fail("HEAD is not the accepted RT-7e Stage 1 baseline")
     actual = changed_paths()
     if actual != EXPECTED:
         fail(
-            "exact change surface mismatch: "
+            "exact corrective change surface mismatch: "
             f"expected={sorted(EXPECTED)}, actual={sorted(actual)}"
         )
 
 
-def validate_docs() -> None:
-    texts = {path: read(path) for path in DOCS}
-    combined = "\n".join(texts.values())
+def validate_doc() -> None:
+    text = read(DOC)
     for marker in (
-        "RT-7e operator tooling: IMPLEMENTED / AWAITING_REVIEW",
+        "RT-7e operator corrective: IMPLEMENTED / AWAITING_REVIEW",
         BASELINE,
-        "exact 9 files",
-        "real VTube Studio operator execution: NOT_AUTHORIZED",
-        "private token / hotkey read: NOT_AUTHORIZED",
+        "exact 4 files",
+        "Control A: PASS",
+        "Control B first attempt: NOT_ACCEPTED",
+        "Control B corrective attempt: NOT_ACCEPTED",
+        "manual VTube Studio hotkey verification: PASS",
+        "private binding rewritten",
+        "additional real VTube Studio execution: NOT_AUTHORIZED",
         "RT-7e acceptance sync: NOT_AUTHORIZED",
         "commit / push: NOT_AUTHORIZED",
-        "--execute-real-vts",
-        "rt7e_acceptance_gesture",
-        "http://127.0.0.1:8000",
-        "provider execution attempted: false",
-        "network execution attempted: false",
-        "real motion executed: false",
-    ):
-        require(combined, marker, "RT-7e Stage 1 documentation")
-
-    detailed = texts[
-        "docs/v300_rt7e_private_configured_local_vts_operator_acceptance.md"
-    ]
-    for marker in (
-        "Stage 1: credential-free operator tooling implementation and tests",
-        "Stage 2: private configured local VTube Studio execution and acceptance",
+        "Backend `real_motion_executed: false`",
+        "operator confirmation promotes real motion",
+        "allowlisted safe diagnostics",
         "backend/app/**",
-        "app/lib/**",
+        "app/**",
+        "vendor/**",
         "one POST, no redirect, no retry, no loop",
         "at most 65536 response bytes",
-        "operator tooling: implemented-awaiting-review",
-        "Control A: private local VTube Studio readiness",
-        "Control E: restore all real flags to zero and verify clean tree",
     ):
-        require(detailed, marker, "RT-7e detailed contract")
+        require(text, marker, "RT-7e corrective documentation")
 
     private_patterns = {
         "credential-shaped value": r"\b(?:sk|sess)-[A-Za-z0-9_-]{16,}\b",
@@ -149,8 +128,8 @@ def validate_docs() -> None:
         "Windows private path": r"[A-Za-z]:\\(?:Users|work|private|temp)\\",
     }
     for label, pattern in private_patterns.items():
-        if re.search(pattern, combined, flags=re.IGNORECASE):
-            fail(f"Stage 1 documents contain {label}")
+        if re.search(pattern, text, flags=re.IGNORECASE):
+            fail(f"corrective document contains {label}")
 
 
 def validate_runner_source() -> None:
@@ -168,11 +147,16 @@ def validate_runner_source() -> None:
         "if not execute_real_vts:",
         "if not _valid_fixed_base_url(base_url):",
         "response.read(MAX_RESPONSE_BYTES + 1)",
+        '"backend_real_motion_executed"',
+        '_strict_bool(payload.get("real_motion_executed"), False)',
+        "def _safe_failure_diagnostic_lines",
+        "v300_rt7e_operator_backend_contract_valid: True",
+        "v300_rt7e_operator_backend_real_motion_executed: False",
         "if confirmation() is not True:",
-        "v300_rt7e_operator_http_post_count: 1",
+        "v300_rt7e_operator_visible_motion_confirmed: True",
         "v300_rt7e_operator_real_motion_executed: True",
     ):
-        require(runner, marker, "RT-7e operator runner")
+        require(runner, marker, "RT-7e corrective operator runner")
 
     for marker in (
         "os.environ",
@@ -187,35 +171,41 @@ def validate_runner_source() -> None:
         "print(response",
         "json.dumps(payload",
     ):
-        forbid(runner, marker, "RT-7e operator runner")
+        forbid(runner, marker, "RT-7e corrective operator runner")
 
     test_text = read(TEST)
     test_names = re.findall(r"^def (test_[A-Za-z0-9_]+)\(", test_text, flags=re.MULTILINE)
-    if len(test_names) != 8:
-        fail(f"focused test count must remain exactly 8, got {len(test_names)}")
+    if len(test_names) != 9:
+        fail(f"focused corrective test count must remain exactly 9, got {len(test_names)}")
     for marker in (
         "test_without_explicit_flag_performs_zero_requests",
         "test_non_loopback_or_changed_backend_url_is_rejected",
-        "test_fixed_gesture_request_uses_exactly_one_post",
+        "test_fixed_gesture_request_uses_exactly_one_post_and_operator_acceptance",
         "test_redirect_handler_never_follows_redirects",
         "test_response_is_bounded_to_65536_bytes",
-        "test_missing_completed_marker_fails_closed",
-        "test_visible_motion_confirmation_false_fails",
-        "test_output_never_echoes_private_or_raw_response_fields",
+        "test_backend_real_motion_must_remain_false_before_operator_confirmation",
+        "test_visible_motion_confirmation_false_never_promotes_real_motion",
+        "test_non_completed_response_prints_only_allowlisted_safe_diagnostics",
+        "test_success_output_never_echoes_private_or_raw_response_fields",
     ):
-        require(test_text, marker, "RT-7e focused tests")
+        require(test_text, marker, "RT-7e corrective focused tests")
 
 
-def validate_inert_runtime() -> None:
+def _import_runner() -> Any:
     if str(ROOT / "scripts") not in sys.path:
         sys.path.insert(0, str(ROOT / "scripts"))
     import run_v300_rt7e_private_configured_local_vts_operator as runner
 
+    return runner
+
+
+def validate_inert_runtime() -> None:
+    runner = _import_runner()
     attempted: list[object] = []
 
     def forbidden_open(request: object, timeout: float) -> object:
         attempted.append((request, timeout))
-        raise AssertionError("inert Stage 1 gate attempted HTTP")
+        raise AssertionError("corrective gate attempted HTTP")
 
     stdout = io.StringIO()
     stderr = io.StringIO()
@@ -226,7 +216,7 @@ def validate_inert_runtime() -> None:
         stderr=stderr,
     )
     if code != 2 or attempted:
-        fail("default operator runner did not remain transport-inert")
+        fail("default corrective runner did not remain transport-inert")
     output = stdout.getvalue()
     for marker in (
         "v300_rt7e_operator_execution_authorized: False",
@@ -235,14 +225,86 @@ def validate_inert_runtime() -> None:
         "v300_rt7e_operator_network_execution_attempted: False",
         "v300_rt7e_operator_real_motion_executed: False",
     ):
-        require(output, marker, "inert runner output")
+        require(output, marker, "inert corrective runner output")
     if stderr.getvalue():
-        fail("inert runner wrote unexpected stderr output")
+        fail("inert corrective runner wrote unexpected stderr output")
+
+
+def validate_corrected_runtime_contract() -> None:
+    runner = _import_runner()
+
+    payload = {
+        "schema_version": runner.RESULT_SCHEMA_VERSION,
+        "status": "completed",
+        "commands_requested": 1,
+        "commands_applied": 1,
+        "commands_completed": 1,
+        "optional_commands_skipped": 0,
+        "command_results": [
+            {
+                "intent": "gesture",
+                "outcome": "completed",
+                "skipped": False,
+            }
+        ],
+        "framework_import_attempted": True,
+        "session_created": True,
+        "session_closed": True,
+        "real_adapter_enabled": True,
+        "provider_execution_allowed": True,
+        "provider_execution_attempted": True,
+        "network_execution_attempted": True,
+        "real_motion_executed": False,
+        "reason_code": "framework_vts_motion_completed",
+    }
+    encoded = json.dumps(payload).encode("utf-8")
+
+    class FakeResponse:
+        status = 200
+        headers = {
+            "content-type": "application/json",
+            "content-length": str(len(encoded)),
+        }
+
+        def read(self, amount: int = -1) -> bytes:
+            return encoded if amount < 0 else encoded[:amount]
+
+        def __enter__(self) -> "FakeResponse":
+            return self
+
+        def __exit__(self, exc_type: Any, exc: Any, traceback: Any) -> None:
+            return None
+
+    requests: list[object] = []
+
+    def fake_open(request: object, timeout: float) -> FakeResponse:
+        requests.append((request, timeout))
+        return FakeResponse()
+
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    code = runner.run_operator(
+        execute_real_vts=True,
+        open_request=fake_open,
+        confirm_visible_motion=lambda: True,
+        stdout=stdout,
+        stderr=stderr,
+    )
+    if code != 0 or len(requests) != 1 or stderr.getvalue():
+        fail("corrected fake acceptance path did not complete exactly once")
+    output = stdout.getvalue()
+    for marker in (
+        "v300_rt7e_operator_backend_contract_valid: True",
+        "v300_rt7e_operator_backend_real_motion_executed: False",
+        "v300_rt7e_operator_visible_motion_confirmed: True",
+        "v300_rt7e_operator_real_motion_executed: True",
+    ):
+        require(output, marker, "corrected fake acceptance output")
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
-        description="Validate RT-7e credential-free Stage 1 operator tooling"
+        description="Validate the RT-7e operator-contract corrective"
     )
     parser.add_argument(
         "--snapshot",
@@ -252,27 +314,29 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     validate_scope(args.snapshot)
-    validate_docs()
+    validate_doc()
     validate_runner_source()
     validate_inert_runtime()
+    validate_corrected_runtime_contract()
 
-    print("v300_rt7e_status: operator-tooling-implemented-awaiting-review")
-    print("v300_rt7e_baseline:", BASELINE)
-    print("v300_rt7e_exact_change_surface: True")
-    print("v300_rt7e_change_file_count: 9")
-    print("v300_rt7d_runtime_changed: False")
+    print("v300_rt7e_corrective_status: implemented-awaiting-review")
+    print("v300_rt7e_corrective_baseline:", BASELINE)
+    print("v300_rt7e_corrective_exact_change_surface: True")
+    print("v300_rt7e_corrective_change_file_count: 4")
     print("v300_rt7e_backend_runtime_changed: False")
     print("v300_rt7e_flutter_runtime_changed: False")
-    print("v300_rt7e_existing_tests_changed: False")
+    print("v300_rt7e_vendor_framework_changed: False")
     print("v300_rt7e_private_configuration_read: False")
     print("v300_rt7e_provider_execution_attempted: False")
     print("v300_rt7e_network_execution_attempted: False")
     print("v300_rt7e_real_motion_executed: False")
-    print("v300_rt7e_real_operator_execution_authorized: False")
-    print("v300_rt7e_private_token_hotkey_read_authorized: False")
+    print("v300_rt7e_backend_real_motion_marker_required_false: True")
+    print("v300_rt7e_operator_confirmation_promotes_real_motion: True")
+    print("v300_rt7e_allowlisted_failure_diagnostics: True")
+    print("v300_rt7e_additional_real_execution_authorized: False")
     print("v300_rt7e_acceptance_sync_authorized: False")
     print("v300_rt7e_commit_push_authorized: False")
-    print("v300_rt7e_snapshot_mode:", args.snapshot)
+    print("v300_rt7e_corrective_snapshot_mode:", args.snapshot)
 
 
 if __name__ == "__main__":

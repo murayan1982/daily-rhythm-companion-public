@@ -74,7 +74,8 @@ def completed_payload() -> dict[str, object]:
         "provider_execution_allowed": True,
         "provider_execution_attempted": True,
         "network_execution_attempted": True,
-        "real_motion_executed": True,
+        # Fixed FW v5.5.0 intentionally leaves physical motion unclaimed.
+        "real_motion_executed": False,
         "reason_code": "framework_vts_motion_completed",
         "safe_message": "Framework VTS motion commands completed.",
     }
@@ -120,8 +121,9 @@ def test_non_loopback_or_changed_backend_url_is_rejected() -> None:
     assert stderr.getvalue() == "v300_rt7e_operator_error: backend_url_not_allowed\n"
 
 
-def test_fixed_gesture_request_uses_exactly_one_post() -> None:
+def test_fixed_gesture_request_uses_exactly_one_post_and_operator_acceptance() -> None:
     calls: list[tuple[Request, float]] = []
+    stdout = io.StringIO()
 
     def open_request(request: Request, timeout: float) -> FakeResponse:
         calls.append((request, timeout))
@@ -131,7 +133,7 @@ def test_fixed_gesture_request_uses_exactly_one_post() -> None:
         execute_real_vts=True,
         open_request=open_request,
         confirm_visible_motion=lambda: True,
-        stdout=io.StringIO(),
+        stdout=stdout,
         stderr=io.StringIO(),
     )
     assert code == 0
@@ -141,6 +143,11 @@ def test_fixed_gesture_request_uses_exactly_one_post() -> None:
     assert request.get_method() == "POST"
     assert timeout == runner.REQUEST_TIMEOUT_SECONDS
     assert json.loads(request.data.decode("utf-8")) == runner._fixed_request_body()
+    output = stdout.getvalue()
+    assert "backend_contract_valid: True" in output
+    assert "backend_real_motion_executed: False" in output
+    assert "visible_motion_confirmed: True" in output
+    assert "v300_rt7e_operator_real_motion_executed: True" in output
 
 
 def test_redirect_handler_never_follows_redirects() -> None:
@@ -178,9 +185,72 @@ def test_response_is_bounded_to_65536_bytes() -> None:
     assert stderr.getvalue() == "v300_rt7e_operator_error: bounded_request_failed\n"
 
 
-def test_missing_completed_marker_fails_closed() -> None:
+def test_backend_real_motion_must_remain_false_before_operator_confirmation() -> None:
     payload = completed_payload()
-    payload["real_motion_executed"] = False
+    payload["real_motion_executed"] = True
+    confirmed: list[bool] = []
+    stderr = io.StringIO()
+    code = runner.run_operator(
+        execute_real_vts=True,
+        open_request=lambda request, timeout: response_for(payload),
+        confirm_visible_motion=lambda: confirmed.append(True) or True,
+        stdout=io.StringIO(),
+        stderr=stderr,
+    )
+    assert code == 3
+    assert confirmed == []
+    assert stderr.getvalue().startswith(
+        "v300_rt7e_operator_error: "
+        "marker_failed:backend_real_motion_executed\n"
+    )
+
+
+def test_visible_motion_confirmation_false_never_promotes_real_motion() -> None:
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    code = runner.run_operator(
+        execute_real_vts=True,
+        open_request=lambda request, timeout: response_for(completed_payload()),
+        confirm_visible_motion=lambda: False,
+        stdout=stdout,
+        stderr=stderr,
+    )
+    assert code == 3
+    assert "backend_contract_valid: True" in stdout.getvalue()
+    assert "backend_real_motion_executed: False" in stdout.getvalue()
+    assert "v300_rt7e_operator_real_motion_executed: True" not in stdout.getvalue()
+    assert stderr.getvalue() == (
+        "v300_rt7e_operator_error: visible_motion_not_confirmed\n"
+    )
+
+
+def test_non_completed_response_prints_only_allowlisted_safe_diagnostics() -> None:
+    payload = completed_payload()
+    payload.update(
+        {
+            "status": "failed",
+            "commands_applied": 0,
+            "commands_completed": 0,
+            "session_created": True,
+            "session_closed": True,
+            "provider_execution_attempted": True,
+            "network_execution_attempted": True,
+            "real_motion_executed": False,
+            "reason_code": "framework_vts_motion_non_completed",
+            "authentication_token": "private-token-should-not-appear",
+            "hotkey_id": "private-hotkey-should-not-appear",
+            "provider_payload": {"raw": "private-provider-payload"},
+        }
+    )
+    payload["command_results"] = [
+        {
+            "intent": "gesture",
+            "outcome": "not_configured",
+            "public_error_code": "not_configured",
+            "retryable": False,
+            "private_name": "private-hotkey-should-not-appear",
+        }
+    ]
     stderr = io.StringIO()
     code = runner.run_operator(
         execute_real_vts=True,
@@ -190,27 +260,38 @@ def test_missing_completed_marker_fails_closed() -> None:
         stderr=stderr,
     )
     assert code == 3
-    assert stderr.getvalue() == (
-        "v300_rt7e_operator_error: marker_failed:real_motion_executed\n"
-    )
+    rendered = stderr.getvalue()
+    assert "v300_rt7e_operator_error: marker_failed:status" in rendered
+    for expected in (
+        "diagnostic_status: failed",
+        "diagnostic_reason_code: framework_vts_motion_non_completed",
+        "diagnostic_commands_requested: 1",
+        "diagnostic_commands_applied: 0",
+        "diagnostic_commands_completed: 0",
+        "diagnostic_session_created: True",
+        "diagnostic_session_closed: True",
+        "diagnostic_provider_execution_attempted: True",
+        "diagnostic_network_execution_attempted: True",
+        "diagnostic_backend_real_motion_executed: False",
+        "diagnostic_command_intent: gesture",
+        "diagnostic_command_outcome: not_configured",
+        "diagnostic_command_public_error_code: not_configured",
+        "diagnostic_command_retryable: False",
+    ):
+        assert expected in rendered
+    for forbidden in (
+        "private-token-should-not-appear",
+        "private-hotkey-should-not-appear",
+        "private-provider-payload",
+        "authentication_token",
+        "hotkey_id",
+        "provider_payload",
+        "private_name",
+    ):
+        assert forbidden not in rendered
 
 
-def test_visible_motion_confirmation_false_fails() -> None:
-    stderr = io.StringIO()
-    code = runner.run_operator(
-        execute_real_vts=True,
-        open_request=lambda request, timeout: response_for(completed_payload()),
-        confirm_visible_motion=lambda: False,
-        stdout=io.StringIO(),
-        stderr=stderr,
-    )
-    assert code == 3
-    assert stderr.getvalue() == (
-        "v300_rt7e_operator_error: visible_motion_not_confirmed\n"
-    )
-
-
-def test_output_never_echoes_private_or_raw_response_fields() -> None:
+def test_success_output_never_echoes_private_or_raw_response_fields() -> None:
     payload = completed_payload()
     payload["authentication_token"] = "private-token-should-not-appear"
     payload["hotkey_id"] = "private-hotkey-should-not-appear"
