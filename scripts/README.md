@@ -7597,3 +7597,65 @@ The gate invokes the operator runner only in inert default mode. It reads no
 private configuration, sends no HTTP request, imports no provider, opens no
 WebSocket, starts no VTube Studio operation, and executes no real motion. The
 gate never authorizes commit/push by itself.
+
+<!-- RT-8a-PC-ANDROID-READINESS:BEGIN -->
+## v3.0.0 RT-8a PC/Android realtime acceptance readiness gate
+
+RT-8a is an exact seven-file docs/static-gate checkpoint against accepted
+Control E commit `0440aa28fa7d1f49a8e15fd056de8735c83ce2ae`. It verifies the current source-level platform
+matrix and freezes RT-8b through RT-8e without starting any real execution.
+
+Run from the repository root before the RT-8a commit:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt8_pc_android_realtime_acceptance_readiness.py
+python -m pytest -q backend\tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v300_rt8_pc_android_realtime_acceptance_readiness.py
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --name-only
+```
+
+For an extracted tracked-source snapshot without authoritative Git history:
+
+```powershell
+python scripts\check_v300_rt8_pc_android_realtime_acceptance_readiness.py --snapshot
+```
+
+Normal mode verifies:
+
+```text
+HEAD and origin/main: 0440aa28fa7d1f49a8e15fd056de8735c83ce2ae
+Control E parent: ddd392c24907eae4d8c91850d84b31a7b84e760f
+Control E committed surface: exact 7 files
+RT-8a worktree surface: exact 7 files
+mobile integrated voice support: native Android/iOS only
+PC Windows integrated real voice support: false
+PC manual stream/TTS/VTS evidence path: ready for later bounded execution
+Android integrated voice plus manual VTS evidence path: ready for later bounded execution
+identical cross-platform voice claim: false
+automatic voice-motion synchronization claim: false
+runtime/test/vendor/dependency/release changes: false
+private/provider/network/microphone/VTS execution: false
+```
+
+Snapshot mode validates tracked source content, documentation markers, source
+platform boundaries, protected files, and changed-content safety. It does not
+claim authoritative Git-history or origin/main verification when those are not
+available.
+
+The gate never starts Backend or Flutter, reads private configuration, opens a
+microphone, sends HTTP/provider/network traffic, imports a provider, opens a
+VTS WebSocket, performs TTS/playback, or executes real motion. It does not
+authorize commit/push or RT-8b implementation.
+
+Detailed candidate contract:
+`docs/v300_rt8_pc_android_realtime_acceptance_readiness.md`.
+<!-- RT-8a-PC-ANDROID-READINESS:END -->

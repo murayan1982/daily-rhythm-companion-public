@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-7e Control E acceptance sync
-Current implementation: RT-7e Controls A-E aggregate acceptance and cleanup synchronization.
-Current implementation state: COMPLETED / ACCEPTED / PUSHED
-Current implementation baseline: `ddd392c24907eae4d8c91850d84b31a7b84e760f`
-Current implementation commit: `ddd392c24907eae4d8c91850d84b31a7b84e760f`
-Last accepted small commit: RT-7e configured local VTS operator acceptance (**COMPLETED / ACCEPTED / PUSHED**)
-Accepted RT-4c implementation: `72622cab2e73699adaff4b628cfbc4b14323a23a`
-Current realtime phase: RT-7 (**COMPLETED / ACCEPTED**)
-Current realtime action: RT-8 exact contract review is ready; RT-8 implementation remains NOT_AUTHORIZED
+Current small commit: RT-8a PC/Android realtime acceptance readiness
+Current implementation: RT-8a platform-appropriate PC Windows and Android acceptance inventory and exact split.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `0440aa28fa7d1f49a8e15fd056de8735c83ce2ae`
+Current implementation commit: none
+Last accepted small commit: RT-7e Control E acceptance sync (**COMPLETED / ACCEPTED / PUSHED**) at `0440aa28fa7d1f49a8e15fd056de8735c83ce2ae`
+Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
+Current realtime phase: RT-8 (**CURRENT / NOT_COMPLETED**)
+Current realtime action: verify the exact seven-file RT-8a docs/static-gate candidate; RT-8b and all real PC/Android execution remain NOT_AUTHORIZED
 
 Current phase state:
 
@@ -95,8 +95,13 @@ RT-7  COMPLETED / ACCEPTED  Configured Live2D / VTS adapter execution
   RT-7c  COMPLETED / ACCEPTED / PUSHED  Guarded fixed-vendor FW v5.5.0 VTS session adapter core
   RT-7d  COMPLETED / ACCEPTED / PUSHED  Default-off configured Backend/API/Flutter manual VTS wiring
   RT-7e  COMPLETED / ACCEPTED / PUSHED  Private configured local VTS operator execution and acceptance
-RT-8  READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  PC and smartphone realtime acceptance evidence
-RT-9  BLOCKED  Security, cleanup, aggregate readiness, and release
+RT-8  CURRENT / NOT_COMPLETED  Platform-appropriate PC Windows and Android realtime acceptance evidence
+  RT-8a  IMPLEMENTED / AWAITING_REVIEW  PC/Android acceptance readiness inventory and exact split
+  RT-8b  BLOCKED_PENDING_RT8A_ACCEPTANCE / NOT_AUTHORIZED  Private operator manifest, validator, and runbook
+  RT-8c  BLOCKED_PENDING_RT8B_ACCEPTANCE / NOT_AUTHORIZED  Configured PC Windows realtime acceptance
+  RT-8d  BLOCKED_PENDING_RT8C_ACCEPTANCE / NOT_AUTHORIZED  Configured Android smartphone realtime acceptance
+  RT-8e  BLOCKED_PENDING_RT8C_AND_RT8D / NOT_AUTHORIZED  Aggregate cleanup and RT-8 acceptance sync
+RT-9  BLOCKED_PENDING_RT8  Security, cleanup, aggregate readiness, and release
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -5879,3 +5884,107 @@ Detailed accepted contract:
 Historical Control E acceptance-sync gate:
 `scripts/check_v300_rt7e_private_configured_local_vts_operator_acceptance.py`.
 <!-- RT-7e-PRIVATE-CONFIGURED-LOCAL-VTS:END -->
+
+<!-- RT-8a-PC-ANDROID-READINESS:BEGIN -->
+## RT-8a PC/Android realtime acceptance readiness
+
+```text
+RT-7: COMPLETED / ACCEPTED
+RT-7e Control E commit: 0440aa28fa7d1f49a8e15fd056de8735c83ce2ae
+RT-8: CURRENT / NOT_COMPLETED
+RT-8a: IMPLEMENTED / AWAITING_REVIEW
+RT-8a baseline: 0440aa28fa7d1f49a8e15fd056de8735c83ce2ae
+RT-8a surface: exact 7 documentation/static-gate files
+readiness: READY_FOR_PLATFORM_APPROPRIATE_PC_WINDOWS_AND_ANDROID_REALTIME_ACCEPTANCE
+PC Windows integrated real voice turn supported: false
+Android integrated real voice turn supported: true
+identical cross-platform voice-runtime claim: false
+automatic voice/stream/TTS-to-VTS synchronization claim: false
+RT-8b exact contract review: BLOCKED_PENDING_RT8A_ACCEPTANCE
+RT-8b implementation: NOT_AUTHORIZED
+RT-9: BLOCKED_PENDING_RT8
+private configuration read: false
+provider execution attempted: false
+microphone used: false
+network execution attempted: false
+real motion executed: false
+commit / push: NOT_AUTHORIZED
+```
+
+RT-8a is a docs/static-gate-only readiness checkpoint. It freezes a
+platform-appropriate final-evidence matrix instead of requiring an identical
+voice runtime on PC and smartphone.
+
+```text
+PC Windows candidate evidence:
+- configured manual incremental text streaming and completed terminal;
+- cooperative stream cancellation, not provider-level hard cancel;
+- explicit real TTS synthesis, audible local playback, and explicit local flush;
+- explicit app-owned motion presentation;
+- explicit manual VTS Apply and operator-visible physical motion.
+
+Android smartphone candidate evidence:
+- bounded real microphone capture and private staging cleanup;
+- Framework root-public real STT and provider-neutral transcript handoff;
+- incremental text stream and completed terminal-to-TTS handoff;
+- real TTS, audible local playback, silent negative control, and DRC-local soft interruption;
+- inert old work and a completed explicit recovery turn;
+- explicit manual VTS Apply and operator-visible physical motion.
+```
+
+The mobile integrated voice runtime remains native Android/iOS only. RT-8 does
+not claim PC microphone/STT/soft-barge-in, identical cross-platform voice
+support, automatic voice-to-motion synchronization, provider-level hard
+cancellation, Framework unified realtime runtime, or release readiness.
+
+Accepted exact split:
+
+```text
+RT-8a  readiness inventory and exact split; docs/static-gate only
+RT-8b  private operator manifest, validator, and runbook; no real execution
+RT-8c  configured PC Windows acceptance
+RT-8d  configured Android smartphone acceptance
+RT-8e  aggregate cleanup and RT-8 acceptance synchronization
+```
+
+Exact RT-8a surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt8_pc_android_realtime_acceptance_readiness.md
+scripts/check_v300_rt8_pc_android_realtime_acceptance_readiness.py
+```
+
+Protected and unchanged:
+
+```text
+backend/**
+app/lib/**
+app/test/**
+vendor/**
+dependencies and lockfiles
+platform declarations and generated registration
+assets
+version metadata
+release/**
+release_notes/**
+fixed ZIPs, tags, and GitHub Releases
+Framework development checkout
+private environment/token/endpoint/hotkey/model/evidence files
+```
+
+RT-8a performs no Backend/Flutter startup, microphone permission or capture,
+audio staging, STT, LLM, TTS, playback, HTTP/provider/network/WebSocket/VTS
+operation, screenshot capture, private-manifest creation, or physical motion.
+RT-8b remains blocked until RT-8a passes verification, exact diff review,
+privacy review, explicit approval, commit, push, and clean-tree verification.
+
+Detailed candidate contract:
+`docs/v300_rt8_pc_android_realtime_acceptance_readiness.md`.
+Dedicated candidate gate:
+`scripts/check_v300_rt8_pc_android_realtime_acceptance_readiness.py`.
+<!-- RT-8a-PC-ANDROID-READINESS:END -->
