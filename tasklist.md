@@ -13,19 +13,19 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-8 CURRENT / NOT_COMPLETED
-current small commit: RT-8c Stage 1 PC Windows operator tooling
-current implementation step: RT-8c Stage 1 credential-free preflight and strict PC manifest recorder
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current small commit: RT-8c Stage 3 PC Windows acceptance sync
+current implementation step: RT-8c configured PC Windows realtime acceptance
+current implementation state: COMPLETED / ACCEPTED / PUSHED
 current implementation baseline: 4815403d4c94b05551df03678e9c2c4e1dfe754e
-current implementation commit: none
-last accepted small commit: RT-8b1 strict PC execution-count corrective COMPLETED / ACCEPTED / PUSHED at 4815403d4c94b05551df03678e9c2c4e1dfe754e
+current implementation commit: fa39065130a4a4689c2e54195f231a5e79c62a35
+last accepted small commit: RT-8c Stage 1 PC Windows operator tooling COMPLETED / ACCEPTED / PUSHED at fa39065130a4a4689c2e54195f231a5e79c62a35
 accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 
-その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはCOMPLETED / ACCEPTEDで、RT-4f1はdocs/test-only inventoryとしてCOMPLETED / ACCEPTED / PUSHED、RT-4f2はCOMPLETED / ACCEPTED / PUSHED、RT-4f3はCOMPLETED / ACCEPTED / PUSHED、RT-4f4は実装コミット`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5aはdocs/test-only inventoryとして実装コミット`1cf77774dca75b9875099c2b6c6c03992456d80f`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5はCURRENT / NOT_COMPLETED。RT-5bはFlutter-only fake/in-memory実装として実装コミット`c48238256cb0b17c925f8063c3b636d3b4ccf533`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5cは別のexact contract reviewで承認され、exact nine-file fake-only実装コミット`f00214cd7e75b28c041728bca6ffc3b180face80`がCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5dは別のexact ten-file fake-only HomeScreen contractで承認され、実装コミット`eff46a3b4de771aa37a48ea9ef5959918e407200`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5eは別のexact contract reviewで承認され、exact thirteen-file実装commit`ef5f96337b5f601277a9bcc38b9e6fedc520b0a6`がCOMPLETED / ACCEPTED / PUSHEDとなった。configured local operator acceptance、natural audible playback、explicit playback-stop、cleanup、clean-tree verificationも通過した。RT-5f0はexact seven-file docs/test-only readiness checkpointとして実装コミット`348669884e872475aaa4242a5960a6de6fb7e10b`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5f1はexact seventeen-file実装コミット`daca3a68672eb3106e861278ebb65612380140ed`としてCOMPLETED / ACCEPTED / PUSHEDとなった。専用gate、focused Backend 12件、Backend全204件、Flutter analyze、focused Flutter 12件、Flutter全355件、exact surface、privacy review、明示承認、push、clean-tree verificationが通過した。private credential read、provider/network execution、real STT、HomeScreen wiring、operator acceptanceは実施していない。RT-5f2はimplementation `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` とcorrective `b7bd436196210f27782b64c1a094aa65d6893915`でCOMPLETED / ACCEPTED / PUSHEDとなった。Backend 204件、Flutter focused 26件、全381件、exact review、両push、clean-tree verificationが通過した。RT-5f3はexact twenty-file実装commit`75504424c37222234ea8a4314d01ce386ff92d23`でCOMPLETED / ACCEPTED / PUSHEDとなった。専用gate、Backend 204件、Flutter analyze、focused Flutter 53件、Flutter全408件、exact surface/privacy review、明示的なcommit承認、push、clean DRC working treeが通過した。real operator executionとaudible soft-barge-in acceptanceは未実施。RT-5f4はcheckpoint commit`c84617e7ce07ecb1ca1605956eda7435b797c2fe`とcorrective commit`bf17538f8b33aa504671289edda8f55c511fe77d`を通じてCOMPLETED / ACCEPTED / PUSHED。Control A〜D、repeated Stop Capture corrective、playback-time speech detection correctiveは実機で通過し、Backend 204件、Flutter analyze、Flutter全411件も通過した。RT-5fとRT-5はCOMPLETED / ACCEPTED。RT-6はCOMPLETED / ACCEPTED。RT-6aは実装コミット`cbcb218aa54d286da7515a01e899121b22d8f3fc`でCOMPLETED / ACCEPTED / PUSHED。RT-6bはexact ten-file pure-mapping implementation commit `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`でCOMPLETED / ACCEPTED / PUSHED。RT-6cはexact ten-file default-off root-public mock-only implementation commit `f929e8faa65a817f1ba4fed82b729438b73dbfab`でCOMPLETED / ACCEPTED / PUSHED。RT-6dはexact twelve-file Flutter-only implementation commit `0f220b792feb7ebb82c5871a794731aa1327439a`でCOMPLETED / ACCEPTED / PUSHED。RT-6eはimplementation commit `13343017738d0bb5fe23583467856233d62196fb`でCOMPLETED / ACCEPTED / PUSHED。RT-6fはexact nineteen-file implementation commit `fcdce38b9260604ea7c435c6de44fc129dc613f6`でCOMPLETED / ACCEPTED / PUSHED。dedicated gate、Backend focused 10、Backend full 289、Flutter analyze、focused Flutter 15、Flutter full 483、exact surface/privacy/diff review、configured local Controls A-E、post-push clean-treeが通過した。RT-6はCOMPLETED / ACCEPTED。RT-7はBLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED。 RT-7aはexact seven-file docs/static-gate implementation commit `efb139b2c0b6c7cc66912a229bd674b36df82dd7`でCOMPLETED / ACCEPTED / PUSHED。compileall、専用gate、Backend 289、Flutter analyze、Flutter 483、exact surface/privacy/diff review、明示承認、push、post-push clean-treeが通過した。RT-7bで固定FW v5.5.0 vendor readinessを受け入れた。RT-7cはexact 11-file implementation `4a2374854801791caefdf0be8cd246e5a2e9278e` とexact 4-file strict-boolean corrective `484ba17245d24a98407907984b28995b247581fa`を通じてCOMPLETED / ACCEPTED / PUSHED。dedicated gate、focused Backend 31、Backend full 320、Flutter analyze、Flutter 483、exact surface/privacy/diff review、両push、clean-tree verificationが通過した。RT-7dはexact 28-file default-off manual VTS wiring implementation `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`としてCOMPLETED / ACCEPTED / PUSHED。dedicated gate、Backend focused 16、Backend full 336、Dart focused format、Flutter analyze、Flutter focused 16、Flutter full 499、exact surface/privacy/diff review、明示承認、push、clean-tree verificationが通過した。RT-7e Controls A-Eと親RT-7はCOMPLETED / ACCEPTED。Control Eは追加provider/network/real-motion executionなしでcleanupと最終同期を固定した。RT-8 exact contract reviewはREADYだが、implementationはNOT_AUTHORIZED。
+その後、released FW v5.2.0〜v5.4.0のpublic boundaryを段階的に採用し、RT-1、RT-2、RT-3、RT-3d、RT-3d2、RT-3d3はCOMPLETED / ACCEPTEDとなった。RT-4aは実装コミット`235654e470f8c0cac17644ddf216ac7e6e223514`でCOMPLETED / ACCEPTED / PUSHED。RT-4bは実装コミット`7e1e10e2ca33dd76ee963fcda31c2c5f800b4901`でCOMPLETED / ACCEPTED / PUSHED。RT-4cは実装コミット`72622cab2e73699adaff4b628cfbc4b14323a23a`でbounded SSE transport、cooperative cancel、capacity/time/event limits、disconnect cleanupを実装し、commit-scoped再構成、専用gate、16 focused Backend tests、全回帰、exact diff、private scan、明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。RT-4dは実装コミット`f713f515eef723a1d51cfbe35c1dfe16e3547420`でdefault-off FW root-public `ask_stream()` adapterを実装し、同じくcommit-scoped検証と明示承認後にCOMPLETED / ACCEPTED / PUSHEDとなった。provider-level hard cancelは主張しない。RT-4eは実装コミット`1cfe6134b0d19a4d14ebcf3ec76812ce07dac261`でFlutter stream models、injectable SSE client、ChangeNotifier controller、fake transport testsを実装し、COMPLETED / ACCEPTED / PUSHEDとなった。RT-4fはCOMPLETED / ACCEPTEDで、RT-4f1はdocs/test-only inventoryとしてCOMPLETED / ACCEPTED / PUSHED、RT-4f2はCOMPLETED / ACCEPTED / PUSHED、RT-4f3はCOMPLETED / ACCEPTED / PUSHED、RT-4f4は実装コミット`9b19e379634a718df2ab3ed5eb49bb20bfe7e240`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5aはdocs/test-only inventoryとして実装コミット`1cf77774dca75b9875099c2b6c6c03992456d80f`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5はCURRENT / NOT_COMPLETED。RT-5bはFlutter-only fake/in-memory実装として実装コミット`c48238256cb0b17c925f8063c3b636d3b4ccf533`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5cは別のexact contract reviewで承認され、exact nine-file fake-only実装コミット`f00214cd7e75b28c041728bca6ffc3b180face80`がCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5dは別のexact ten-file fake-only HomeScreen contractで承認され、実装コミット`eff46a3b4de771aa37a48ea9ef5959918e407200`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5eは別のexact contract reviewで承認され、exact thirteen-file実装commit`ef5f96337b5f601277a9bcc38b9e6fedc520b0a6`がCOMPLETED / ACCEPTED / PUSHEDとなった。configured local operator acceptance、natural audible playback、explicit playback-stop、cleanup、clean-tree verificationも通過した。RT-5f0はexact seven-file docs/test-only readiness checkpointとして実装コミット`348669884e872475aaa4242a5960a6de6fb7e10b`でCOMPLETED / ACCEPTED / PUSHEDとなった。RT-5f1はexact seventeen-file実装コミット`daca3a68672eb3106e861278ebb65612380140ed`としてCOMPLETED / ACCEPTED / PUSHEDとなった。専用gate、focused Backend 12件、Backend全204件、Flutter analyze、focused Flutter 12件、Flutter全355件、exact surface、privacy review、明示承認、push、clean-tree verificationが通過した。private credential read、provider/network execution、real STT、HomeScreen wiring、operator acceptanceは実施していない。RT-5f2はimplementation `c538dc89c2aa9780cd3014aa4ba11c17a9e378e6` とcorrective `b7bd436196210f27782b64c1a094aa65d6893915`でCOMPLETED / ACCEPTED / PUSHEDとなった。Backend 204件、Flutter focused 26件、全381件、exact review、両push、clean-tree verificationが通過した。RT-5f3はexact twenty-file実装commit`75504424c37222234ea8a4314d01ce386ff92d23`でCOMPLETED / ACCEPTED / PUSHEDとなった。専用gate、Backend 204件、Flutter analyze、focused Flutter 53件、Flutter全408件、exact surface/privacy review、明示的なcommit承認、push、clean DRC working treeが通過した。real operator executionとaudible soft-barge-in acceptanceは未実施。RT-5f4はcheckpoint commit`c84617e7ce07ecb1ca1605956eda7435b797c2fe`とcorrective commit`bf17538f8b33aa504671289edda8f55c511fe77d`を通じてCOMPLETED / ACCEPTED / PUSHED。Control A〜D、repeated Stop Capture corrective、playback-time speech detection correctiveは実機で通過し、Backend 204件、Flutter analyze、Flutter全411件も通過した。RT-5fとRT-5はCOMPLETED / ACCEPTED。RT-6はCOMPLETED / ACCEPTED。RT-6aは実装コミット`cbcb218aa54d286da7515a01e899121b22d8f3fc`でCOMPLETED / ACCEPTED / PUSHED。RT-6bはexact ten-file pure-mapping implementation commit `17f0c46eb0b4e26e2fdf5ffd4090c15c69f4e594`でCOMPLETED / ACCEPTED / PUSHED。RT-6cはexact ten-file default-off root-public mock-only implementation commit `f929e8faa65a817f1ba4fed82b729438b73dbfab`でCOMPLETED / ACCEPTED / PUSHED。RT-6dはexact twelve-file Flutter-only implementation commit `0f220b792feb7ebb82c5871a794731aa1327439a`でCOMPLETED / ACCEPTED / PUSHED。RT-6eはimplementation commit `13343017738d0bb5fe23583467856233d62196fb`でCOMPLETED / ACCEPTED / PUSHED。RT-6fはexact nineteen-file implementation commit `fcdce38b9260604ea7c435c6de44fc129dc613f6`でCOMPLETED / ACCEPTED / PUSHED。dedicated gate、Backend focused 10、Backend full 289、Flutter analyze、focused Flutter 15、Flutter full 483、exact surface/privacy/diff review、configured local Controls A-E、post-push clean-treeが通過した。RT-6はCOMPLETED / ACCEPTED。RT-7はBLOCKED_REAL_LIVE2D_VTS_ADAPTER_NOT_IMPLEMENTED。 RT-7aはexact seven-file docs/static-gate implementation commit `efb139b2c0b6c7cc66912a229bd674b36df82dd7`でCOMPLETED / ACCEPTED / PUSHED。compileall、専用gate、Backend 289、Flutter analyze、Flutter 483、exact surface/privacy/diff review、明示承認、push、post-push clean-treeが通過した。RT-7bで固定FW v5.5.0 vendor readinessを受け入れた。RT-7cはexact 11-file implementation `4a2374854801791caefdf0be8cd246e5a2e9278e` とexact 4-file strict-boolean corrective `484ba17245d24a98407907984b28995b247581fa`を通じてCOMPLETED / ACCEPTED / PUSHED。dedicated gate、focused Backend 31、Backend full 320、Flutter analyze、Flutter 483、exact surface/privacy/diff review、両push、clean-tree verificationが通過した。RT-7dはexact 28-file default-off manual VTS wiring implementation `37f7ac8bedc5303f3ddf53e4e543b71f35ce2ed2`としてCOMPLETED / ACCEPTED / PUSHED。dedicated gate、Backend focused 16、Backend full 336、Dart focused format、Flutter analyze、Flutter focused 16、Flutter full 499、exact surface/privacy/diff review、明示承認、push、clean-tree verificationが通過した。RT-7e Controls A-Eと親RT-7はCOMPLETED / ACCEPTED。Control Eは追加provider/network/real-motion executionなしでcleanupと最終同期を固定した。RT-8c configured PC Windows acceptanceはCOMPLETED / ACCEPTED / PUSHED。RT-8d exact contract reviewはREADYだが、implementationはNOT_AUTHORIZED。
 
 
 
@@ -3362,36 +3362,72 @@ private manifest and performs no Backend, Flutter, provider, network,
 microphone, STT, TTS, playback, VTS, or physical-motion operation.
 <!-- RT-8b1-STRICT-PC-COUNT-CORRECTIVE:END -->
 
-<!-- RT-8c-STAGE1-PC-WINDOWS-TOOLING:BEGIN -->
-## RT-8c Stage 1 PC Windows operator tooling candidate
+<!-- RT-8c-PC-WINDOWS-ACCEPTANCE:BEGIN -->
+## RT-8c configured PC Windows realtime acceptance
+
+RT-8c is **COMPLETED / ACCEPTED / PUSHED** at source commit
+`fa39065130a4a4689c2e54195f231a5e79c62a35` against accepted baseline
+`4815403d4c94b05551df03678e9c2c4e1dfe754e`.
 
 ```text
-RT-8b1: COMPLETED / ACCEPTED / PUSHED
-RT-8b1 commit: 4815403d4c94b05551df03678e9c2c4e1dfe754e
-RT-8c Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-8: CURRENT / NOT_COMPLETED
+RT-8c: COMPLETED / ACCEPTED / PUSHED
+RT-8c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-8c Stage 1 commit: fa39065130a4a4689c2e54195f231a5e79c62a35
 RT-8c Stage 1 surface: exact 9 files
-RT-8c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
-RT-8c Stage 3: BLOCKED_PENDING_PC_CONTROLS_A_H / NOT_AUTHORIZED
+RT-8c Stage 2 credential-free preflight: COMPLETED / PASS
+RT-8c Stage 2 Controls A-H: COMPLETED / ACCEPTED
+RT-8c Stage 2 manifest recording: COMPLETED / ACCEPTED
+RT-8c Stage 2 strict validation: COMPLETED / ACCEPTED
+RT-8c Stage 3 acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-8c Stage 3 surface: exact 7 documentation/static-gate files
+RT-8d exact contract review: READY
+RT-8d implementation: NOT_AUTHORIZED
+RT-8e: BLOCKED_PENDING_RT8D / NOT_AUTHORIZED
 schema: drc.v3.rt8-platform-acceptance.2
-private manifest created: false
-private manifest read: false
-private configuration read: false
-Backend / Flutter started: false
-provider / network execution attempted: false
-real TTS / playback / VTS executed: false
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Stage 1 adds an inert-by-default runner, exact twelve credential-free tests, a
-fixed PC runbook, and a dedicated source gate. The later PC chronology is
-`A -> B -> D -> C -> E -> F -> G -> H`, with three stream starts, two completed
-terminals, one cancelled terminal, two explicit TTS enqueue/process actions,
-one flush, one mock-motion Apply, and one real VTS Apply.
+Accepted PC chronology and exact counts:
 
-Detailed contract:
+```text
+chronology: A -> B -> D -> C -> E -> F -> G -> H
+manual_stream_start_count: 3
+completed_stream_terminal_count: 2
+cancelled_stream_terminal_count: 1
+cooperative_cancel_request_count: 1
+explicit_tts_enqueue_count: 2
+explicit_tts_process_count: 2
+explicit_flush_count: 1
+pending_after_flush: 0
+app_owned_motion_presentation_count: 1
+manual_vts_apply_count: 1
+vts_commands_requested: 1
+vts_commands_applied: 1
+vts_commands_completed: 1
+```
+
+The accepted PC path includes incremental streaming, one cooperative cancelled
+terminal with retained partial output, two explicit real-TTS enqueue/process
+operations, one natural audible completion, one active-playback app-owned local
+flush, one mock-motion presentation, and one manual configured VTS Apply.
+Backend/Flutter `real_motion_executed` remains false; separate operator-visible
+physical motion was confirmed once.
+
+The ignored strict PC-stage manifest was created without overwrite after nine
+fixed confirmations and passed schema-v2 and candidate Git-state validation. It
+remains ignored, untracked, uncommitted, and unpushed. Its content and private
+values are not included in tracked files and are not read by the Stage 3 gate.
+
+RT-8c does not claim PC microphone, PC STT, PC soft barge-in, provider or Backend
+hard cancel, Framework real TTS queue flush, unified realtime, automatic
+voice-motion synchronization, or runtime proof of physical motion. Android
+voice acceptance remains owned by RT-8d.
+
+Detailed accepted contract:
 `docs/v300_rt8c_configured_pc_windows_realtime_acceptance.md`.
-Dedicated gate:
+Historical implementation and Stage 3 acceptance-sync gate:
 `scripts/check_v300_rt8c_configured_pc_windows_realtime_acceptance.py`.
-Operator runner:
+Operator recorder retained unchanged:
 `scripts/run_v300_rt8c_private_pc_windows_operator.py`.
-<!-- RT-8c-STAGE1-PC-WINDOWS-TOOLING:END -->
+<!-- RT-8c-PC-WINDOWS-ACCEPTANCE:END -->

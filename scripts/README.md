@@ -7772,36 +7772,72 @@ private manifest and performs no Backend, Flutter, provider, network,
 microphone, STT, TTS, playback, VTS, or physical-motion operation.
 <!-- RT-8b1-STRICT-PC-COUNT-CORRECTIVE:END -->
 
-<!-- RT-8c-STAGE1-PC-WINDOWS-TOOLING:BEGIN -->
-## RT-8c Stage 1 PC Windows operator tooling candidate
+<!-- RT-8c-PC-WINDOWS-ACCEPTANCE:BEGIN -->
+## RT-8c configured PC Windows realtime acceptance
+
+RT-8c is **COMPLETED / ACCEPTED / PUSHED** at source commit
+`fa39065130a4a4689c2e54195f231a5e79c62a35` against accepted baseline
+`4815403d4c94b05551df03678e9c2c4e1dfe754e`.
 
 ```text
-RT-8b1: COMPLETED / ACCEPTED / PUSHED
-RT-8b1 commit: 4815403d4c94b05551df03678e9c2c4e1dfe754e
-RT-8c Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-8: CURRENT / NOT_COMPLETED
+RT-8c: COMPLETED / ACCEPTED / PUSHED
+RT-8c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-8c Stage 1 commit: fa39065130a4a4689c2e54195f231a5e79c62a35
 RT-8c Stage 1 surface: exact 9 files
-RT-8c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
-RT-8c Stage 3: BLOCKED_PENDING_PC_CONTROLS_A_H / NOT_AUTHORIZED
+RT-8c Stage 2 credential-free preflight: COMPLETED / PASS
+RT-8c Stage 2 Controls A-H: COMPLETED / ACCEPTED
+RT-8c Stage 2 manifest recording: COMPLETED / ACCEPTED
+RT-8c Stage 2 strict validation: COMPLETED / ACCEPTED
+RT-8c Stage 3 acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-8c Stage 3 surface: exact 7 documentation/static-gate files
+RT-8d exact contract review: READY
+RT-8d implementation: NOT_AUTHORIZED
+RT-8e: BLOCKED_PENDING_RT8D / NOT_AUTHORIZED
 schema: drc.v3.rt8-platform-acceptance.2
-private manifest created: false
-private manifest read: false
-private configuration read: false
-Backend / Flutter started: false
-provider / network execution attempted: false
-real TTS / playback / VTS executed: false
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Stage 1 adds an inert-by-default runner, exact twelve credential-free tests, a
-fixed PC runbook, and a dedicated source gate. The later PC chronology is
-`A -> B -> D -> C -> E -> F -> G -> H`, with three stream starts, two completed
-terminals, one cancelled terminal, two explicit TTS enqueue/process actions,
-one flush, one mock-motion Apply, and one real VTS Apply.
+Accepted PC chronology and exact counts:
 
-Detailed contract:
+```text
+chronology: A -> B -> D -> C -> E -> F -> G -> H
+manual_stream_start_count: 3
+completed_stream_terminal_count: 2
+cancelled_stream_terminal_count: 1
+cooperative_cancel_request_count: 1
+explicit_tts_enqueue_count: 2
+explicit_tts_process_count: 2
+explicit_flush_count: 1
+pending_after_flush: 0
+app_owned_motion_presentation_count: 1
+manual_vts_apply_count: 1
+vts_commands_requested: 1
+vts_commands_applied: 1
+vts_commands_completed: 1
+```
+
+The accepted PC path includes incremental streaming, one cooperative cancelled
+terminal with retained partial output, two explicit real-TTS enqueue/process
+operations, one natural audible completion, one active-playback app-owned local
+flush, one mock-motion presentation, and one manual configured VTS Apply.
+Backend/Flutter `real_motion_executed` remains false; separate operator-visible
+physical motion was confirmed once.
+
+The ignored strict PC-stage manifest was created without overwrite after nine
+fixed confirmations and passed schema-v2 and candidate Git-state validation. It
+remains ignored, untracked, uncommitted, and unpushed. Its content and private
+values are not included in tracked files and are not read by the Stage 3 gate.
+
+RT-8c does not claim PC microphone, PC STT, PC soft barge-in, provider or Backend
+hard cancel, Framework real TTS queue flush, unified realtime, automatic
+voice-motion synchronization, or runtime proof of physical motion. Android
+voice acceptance remains owned by RT-8d.
+
+Detailed accepted contract:
 `docs/v300_rt8c_configured_pc_windows_realtime_acceptance.md`.
-Dedicated gate:
+Historical implementation and Stage 3 acceptance-sync gate:
 `scripts/check_v300_rt8c_configured_pc_windows_realtime_acceptance.py`.
-Operator runner:
+Operator recorder retained unchanged:
 `scripts/run_v300_rt8c_private_pc_windows_operator.py`.
-<!-- RT-8c-STAGE1-PC-WINDOWS-TOOLING:END -->
+<!-- RT-8c-PC-WINDOWS-ACCEPTANCE:END -->

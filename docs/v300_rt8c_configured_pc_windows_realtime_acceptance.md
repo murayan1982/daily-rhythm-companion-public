@@ -2,137 +2,216 @@
 
 Updated: 2026-08-03
 
-## Stage 1 candidate state
+## Accepted state
 
 ```text
 RT-8: CURRENT / NOT_COMPLETED
 RT-8a: COMPLETED / ACCEPTED / PUSHED
 RT-8b: COMPLETED / ACCEPTED / PUSHED
 RT-8b1: COMPLETED / ACCEPTED / PUSHED
-RT-8b1 commit: 4815403d4c94b05551df03678e9c2c4e1dfe754e
-RT-8c Stage 1: IMPLEMENTED / AWAITING_REVIEW
-RT-8c Stage 1 surface: exact 9 files
-RT-8c Stage 2: NOT_AUTHORIZED
-RT-8c Stage 3: NOT_AUTHORIZED
-RT-8d: BLOCKED_PENDING_RT8C_ACCEPTANCE / NOT_AUTHORIZED
+RT-8c: COMPLETED / ACCEPTED / PUSHED
+RT-8c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-8c Stage 1 commit: fa39065130a4a4689c2e54195f231a5e79c62a35
+RT-8c Stage 2 credential-free preflight: COMPLETED / PASS
+RT-8c Stage 2 Controls A-H: COMPLETED / ACCEPTED
+RT-8c Stage 2 manifest recording: COMPLETED / ACCEPTED
+RT-8c Stage 2 strict validation: COMPLETED / ACCEPTED
+RT-8c Stage 3 acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-8c Stage 3 surface: exact 7 documentation/static-gate files
+RT-8d exact contract review: READY
+RT-8d implementation: NOT_AUTHORIZED
+RT-8e: BLOCKED_PENDING_RT8D / NOT_AUTHORIZED
+RT-9: BLOCKED_PENDING_RT8 / NOT_AUTHORIZED
 schema: drc.v3.rt8-platform-acceptance.2
+acceptance-sync commit / push: NOT_AUTHORIZED
+```
+
+RT-8c accepts the configured Windows PC realtime path at the clean synchronized
+source commit `fa39065130a4a4689c2e54195f231a5e79c62a35`. The private configured
+Controls A-H were executed separately from the tracked tooling, followed by one
+ignored PC-stage manifest recording and strict validation. This Stage 3 change
+only synchronizes public-safe acceptance facts.
+
+## Stage 1 accepted tooling
+
+```text
+implementation baseline: 4815403d4c94b05551df03678e9c2c4e1dfe754e
+implementation commit: fa39065130a4a4689c2e54195f231a5e79c62a35
+implementation commit message: test/docs: add RT-8c PC Windows operator tooling
+implementation surface: exact 9 files
+dedicated gate: PASS
+inert runner: PASS
+focused Backend tests: 12 passed
+Backend full regression: 381 passed, 1 existing warning
+Flutter analyze: PASS
+Flutter full regression: 500 passed
+working tree after push: clean
+```
+
+Stage 1 added the inert-by-default runner, twelve credential-free focused tests,
+this runbook, and the static gate. The runner did not execute Controls A-H. It
+performed no Backend/Flutter startup, HTTP request, provider/network operation,
+TTS/playback action, VTS action, microphone access, STT, or physical motion.
+
+## Stage 2 preflight
+
+The credential-free preflight passed against the accepted Stage 1 source:
+
+```text
+source HEAD verified: true
+origin/main synchronized: true
+working tree clean: true
+fixed target Git ignored: true
 private manifest created: false
 private manifest read: false
-private configuration read: false
-Backend / Flutter started: false
-provider / network execution attempted: false
-real TTS / playback / VTS executed: false
-commit / push: NOT_AUTHORIZED
+configured execution attempted: false
 ```
 
-## Purpose
+## Fixed operator chronology
 
-Stage 1 adds only credential-free operator tooling, focused synthetic tests,
-this runbook, and a static gate. It changes no Backend runtime, Flutter runtime,
-Framework source, fixed vendor, dependency, platform declaration, version, or
-release artifact.
-
-The operator runner does not execute Controls A-H. It cannot start Backend,
-Flutter, a provider, audio playback, or VTube Studio and contains no HTTP,
-socket, provider SDK, microphone, audio, `pyvts`, or `websockets` client. Its
-only later authorized write is one ignored strict manifest after fixed operator
-confirmations.
-
-## Three-stage split
-
-```text
-Stage 1: tracked credential-free tooling -> review -> commit/push
-Stage 2: private PC Controls A-H -> ignored manifest -> strict validation
-Stage 3: exact seven-file public-safe acceptance synchronization
-```
-
-Stage 2 must use the accepted Stage 1 commit as the clean synchronized PC
-candidate source HEAD. Stage 1 creates and reads no private manifest.
-
-## Exact Stage 1 surface
-
-```text
-README.md
-roadmap.md
-tasklist.md
-scripts/README.md
-docs/DRC_v300_goal_checklist_small_commit.md
-docs/v300_rt8c_configured_pc_windows_realtime_acceptance.md
-scripts/check_v300_rt8c_configured_pc_windows_realtime_acceptance.py
-scripts/run_v300_rt8c_private_pc_windows_operator.py
-backend/tests/test_v300_rt8c_private_pc_windows_operator.py
-```
-
-## Fixed PC execution chronology
-
-The later separately authorized operator sequence is exactly:
+The accepted PC sequence was exactly:
 
 ```text
 A -> B -> D -> C -> E -> F -> G -> H
 ```
 
-B must finish before D uses its completed terminal. D must finish before C
-replaces the visible stream terminal with a cancelled result. E then creates the
-second completed terminal and second TTS playback used for flush.
+B completed the first stream terminal before D used it for natural TTS
+completion. C then replaced the visible stream result with the cancelled
+terminal. E created the second completed terminal and used its second playback
+for the active-playback flush. F and G were separate explicit motion controls.
 
-## Controls and exact counts
+## Control A — default-off and configured-idle startup
 
-### A — inert/default-off
-
-Normal Windows startup without RT-8c defines performs no configured execution.
-Configured startup also begins with every session-local opt-in off and performs
-no stream, TTS, mock-motion, or VTS action before explicit operator input.
-
-### B — stream 1 completed
-
-One bounded manual stream produces incremental output before one completed
-terminal. It starts no automatic TTS.
-
-### D — TTS 1 natural completion
-
-The B terminal is explicitly enqueued and explicitly processed once. Real
-root-public synthesis succeeds and audible local playback completes naturally.
-
-### C — stream 2 cooperative cancellation
-
-A second bounded manual stream receives exactly one cooperative cancel request,
-reaches one cancelled terminal, retains partial output, and makes no provider or
-Backend hard-cancel claim. A cancelled terminal is not enqueued for TTS.
-
-### E — stream 3, TTS 2, active-playback flush
-
-A third manual stream creates the second completed terminal. It is explicitly
-enqueued and processed. During active playback, one explicit app-owned flush
-requests and succeeds in stopping the local player and leaves pending zero and
-active false. No Framework queue flush or provider hard cancel is claimed.
-
-### F — app-owned mock motion
-
-Exactly one explicit RT-6f speaking Apply completes through the mock adapter.
-Provider execution, external Framework network execution, and real provider
-motion remain false.
-
-### G — manual real VTS
-
-Exactly one RT-7d Flutter Apply uses the public gesture alias and reports one
-requested/applied/completed command, Framework session created/closed,
-provider/network attempted true, Backend/Flutter `real_motion_executed=false`,
-and separate operator-visible physical motion true.
-
-The historical RT-7e runner must not be executed in real mode during RT-8c.
+Normal Windows startup was confirmed unconfigured/default-off. Configured
+startup was then confirmed idle with all session-local opt-ins off and no
+execution before explicit operator action.
 
 ```text
-total real VTS executions: exactly 1
+default_off_startup_confirmed: true
+execution_before_explicit_action: false
+stream state: configured / idle
+TTS state: configured / opt-in off / pending 0 / active no
+mock motion state: configured / opt-in off / idle
+VTS state: configured / opt-in off / idle
+integrated voice turn: disabled / unconfigured
 ```
 
-### H — lifecycle and cleanup
+## Controls B and C — completed stream and cooperative cancellation
 
-RT-6 and RT-7 local reset, opt-out, and Flutter disposal cause no additional
-Backend request, provider execution, network execution, or visible motion.
-Recognized processes are stopped, flags closed, private process values removed,
-local generated artifacts/logs/backups removed, and DRC/FW trees left clean.
+Control B performed the first manual stream. Incremental output was visible
+before one completed terminal, and no automatic TTS or playback started.
 
-Exact accepted counts:
+Control C performed the second manual stream. Exactly one cooperative cancel
+request reached one cancelled terminal while retaining partial output. No
+provider hard cancel or Backend HTTP hard cancel was claimed, and the cancelled
+terminal was not enqueued for TTS.
+
+```text
+manual stream starts covered by B/C: 2
+completed terminals covered by B/C: 1
+cancelled terminals covered by B/C: 1
+cooperative cancel requests: 1
+incremental output before terminal: true
+partial output retained: true
+provider hard cancel claimed: false
+automatic TTS started: false
+```
+
+## Controls D and E — real TTS, natural completion, and local flush
+
+Control D explicitly enqueued and processed the first completed terminal once.
+Real root-public synthesis succeeded, audible local playback started, and that
+playback completed naturally without a flush.
+
+Control E completed the third stream, explicitly enqueued and processed the
+second completed terminal once, and pressed the app-owned flush exactly once
+while local playback was active. The flush requested and successfully stopped
+the local player and left pending zero and active false.
+
+```text
+real TTS generated: true
+audible playback started: true
+first playback completed naturally: true
+active playback before flush: true
+local playback stop requested: true
+local playback stop succeeded: true
+pending after flush: 0
+active after flush: false
+Framework real TTS queue flush claimed: false
+provider TTS hard cancel claimed: false
+```
+
+## Control F — app-owned mock motion presentation
+
+Exactly one explicit `speaking` lifecycle Apply completed through the RT-6 mock
+adapter.
+
+```text
+app_owned_motion_presentation_count: 1
+presentation phase: completed
+execution status: completed
+cue: speaking
+commands requested: 2
+commands completed: 2
+adapter: mock
+real adapter enabled: false
+provider execution attempted: false
+network execution: false
+```
+
+The repository character image remained static. Control F did not execute
+Live2D, VTube Studio, provider motion, or external motion networking.
+
+## Control G — manual configured VTS execution
+
+Exactly one explicit configured VTS Apply used the public gesture alias and
+completed one command. The accepted public result separated runtime state from
+operator-visible physical motion.
+
+```text
+manual_vts_apply_count: 1
+vts_commands_requested: 1
+vts_commands_applied: 1
+vts_commands_completed: 1
+optional skips: 0
+Framework import attempted: true
+Framework session created: true
+Framework session closed: true
+provider execution attempted: true
+network execution attempted: true
+Backend / Flutter real_motion_executed: false
+operator-visible physical motion confirmed: true
+operator-visible physical motion count: 1
+historical RT-7e real runner executed: false
+```
+
+`Backend / Flutter real_motion_executed: false` is the accepted conservative
+runtime value. It is not used as proof of physical motion. The separate operator
+observation records that the configured VTube Studio model visibly moved once.
+
+## Control H — reset, opt-out, disposal, and cleanup
+
+The mock-motion and VTS local states were reset, all opt-ins were turned off,
+Flutter was disposed, Backend was stopped, and the configured process-local
+private values were removed.
+
+```text
+reset additional Backend request: false
+opt-out additional Backend request: false
+disposal additional Backend request: false
+additional provider execution: false
+additional network execution: false
+additional visible motion: false
+recognized processes stopped: true
+real execution flags closed: true
+private process values removed: true
+Backend port closed: true
+DRC working tree clean: true
+DRC HEAD / origin/main synchronized: true
+FW working tree clean: true
+```
+
+## Exact accepted PC counts
 
 ```text
 manual_stream_start_count: 3
@@ -150,76 +229,84 @@ vts_commands_applied: 1
 vts_commands_completed: 1
 ```
 
-PC Windows acceptance does not use or claim real microphone, STT, soft
-barge-in, always-on capture, automatic next-turn capture, provider hard cancel,
-Framework unified realtime, automatic voice-motion synchronization, or physical
-motion proof from runtime state.
+## Manifest recording and strict validation
 
-## Runner modes
-
-Credential-free inert check:
-
-```powershell
-python scripts\run_v300_rt8c_private_pc_windows_operator.py --check-inert
-```
-
-Later Stage 2 preflight:
-
-```powershell
-python scripts\run_v300_rt8c_private_pc_windows_operator.py `
-  --preflight `
-  --expected-source-head <RT8C_STAGE1_ACCEPTED_COMMIT>
-```
-
-Later Stage 2 manifest recording:
-
-```powershell
-python scripts\run_v300_rt8c_private_pc_windows_operator.py `
-  --record-pc-windows `
-  --expected-source-head <RT8C_STAGE1_ACCEPTED_COMMIT>
-```
-
-The recorder accepts only:
+After Controls A-H passed, the operator runner accepted only the nine fixed
+confirmation tokens and created one new ignored PC-stage manifest. It did not
+execute the controls itself and did not overwrite an existing target.
 
 ```text
-PASS-PC-A
-PASS-PC-B
-PASS-PC-C
-PASS-PC-D
-PASS-PC-E
-PASS-PC-F
-PASS-PC-G
-PASS-PC-H
-ACCEPT-PC-WINDOWS
+manifest schema: drc.v3.rt8-platform-acceptance.2
+manifest stage: pc-windows
+manifest status: accepted
+confirmation count: 9
+private manifest created: true
+private manifest overwritten: false
+private manifest content printed: false
+private configuration read by runner: false
+execution performed by runner: false
+strict schema validation: PASS
+candidate Git-state validation: PASS
+private values printed by validator: false
+private manifest remains Git ignored: true
+private manifest tracked: false
+private manifest committed: false
+private manifest pushed: false
+working tree after validation: clean
 ```
 
-It accepts no free-form evidence and writes only the fixed ignored target. An
-existing target or symlink is rejected without reading or overwriting it.
+The private manifest content is not reproduced in tracked documentation and is
+not read by the Stage 3 acceptance-sync gate.
 
-## Stage 2 validation command
+## PC non-claims
 
-Not authorized by Stage 1:
+RT-8c does not use or claim any of the following:
 
-```powershell
-python scripts\validate_v300_rt8_private_operator_manifest.py `
-  --manifest-json operator_evidence\v300_rt8_pc_android_realtime_acceptance.json `
-  --stage pc-windows `
-  --minimum-source-head 4815403d4c94b05551df03678e9c2c4e1dfe754e
+```text
+PC real microphone acceptance
+PC real STT acceptance
+PC soft barge-in acceptance
+always-on microphone
+automatic next-turn capture
+provider LLM hard cancel
+provider STT hard cancel
+provider TTS hard cancel
+Backend HTTP hard cancel
+Framework real TTS queue flush
+Framework unified realtime runtime
+automatic voice-motion synchronization
+automatic emotion inference
+physical motion proven by runtime state
+Web or iOS acceptance
+all Android devices accepted
+production security readiness
+v3.0.0 release readiness
 ```
 
-After Stage 1 acceptance, the PC candidate source field must be the Stage 1
-commit, while this minimum source remains the accepted RT-8b1 commit.
+Android microphone/STT/voice-turn/soft-barge-in acceptance remains owned by
+RT-8d and has not been accepted by RT-8c.
 
-## Focused tests
+## Public privacy boundary
 
-The exact twelve credential-free tests cover inert mode, synthetic clean
-preflight, wrong HEAD, dirty tree, fixed target boundary, nonignored target,
-existing target without read, symlink target, rejected confirmation, exact
-manifest creation, strict schema-v2 validation, and output redaction.
+The Stage 3 tracked synchronization includes no private evidence or free-form
+operator material. It contains none of the following:
 
-## Stage 3 surface
+```text
+private environment values
+credentials, tokens, or authorization headers
+private endpoint or private filesystem path
+LAN address or device identifier
+VTS model identity or private hotkey identity
+provider identity, model, payload, or response JSON
+spoken input, transcript, or generated response
+raw audio, PCM, audio URL, or artifact identifier
+stream session or turn identifier
+screenshot, recording, or raw log
+raw exception or private backup
+private manifest JSON content
+```
 
-Only after PC Controls A-H and strict validation pass:
+## Exact Stage 3 surface
 
 ```text
 README.md
@@ -235,30 +322,58 @@ scripts/check_v300_rt8c_configured_pc_windows_realtime_acceptance.py
 
 ```text
 backend/app/**
+backend/tests/**
 app/**
 vendor/**
+scripts/run_v300_rt8c_private_pc_windows_operator.py
+scripts/validate_v300_rt8_private_operator_manifest.py
+docs/operator_evidence_templates/**
 .gitignore
 backend/.env.example
 backend/env_profiles/**
-backend/requirements*.txt
-app/pubspec.yaml
-app/pubspec.lock
+dependencies and lock files
 platform declarations
-assets
-versions
+assets and version metadata
 release/**
 release_notes/**
 tags and GitHub Releases
-Framework development checkout
+Framework repository
 private environment files
 operator_evidence/**
-historical RT-4 through RT-8b1 contracts and gates
 ```
 
-## Stage 1 stop rule
+## Stage 3 verification
+
+Run from the DRC repository root while the exact seven acceptance-sync files are
+modified against implementation commit
+`fa39065130a4a4689c2e54195f231a5e79c62a35`:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v300_rt8c_configured_pc_windows_realtime_acceptance.py
+python -m pytest -q backend/tests/test_v300_rt8c_private_pc_windows_operator.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+git -c core.whitespace=cr-at-eol diff --check
+git status --short
+git diff --name-only
+```
+
+The acceptance-sync gate verifies the accepted exact nine-file implementation
+history, the current exact seven-file change surface, public acceptance markers,
+unchanged runner/focused tests, inert runner behavior, and the ignored/untracked
+manifest state without reading its content. It starts no runtime and performs no
+configured execution.
+
+## Stage 3 stop rule
 
 After automated verification, stop for exact diff and privacy review. Do not
-create/read a private manifest, read private configuration, start Backend or
-Flutter, use a microphone, call a provider, synthesize/play audio, connect to
-VTube Studio, execute physical motion, start Stage 2/3, or commit/push without
-separate approval.
+edit, read, delete, track, commit, or push the ignored private manifest. Do not
+restart Backend, Flutter, providers, TTS/playback, VTube Studio, microphone, STT,
+or motion execution. Do not authorize RT-8d implementation or commit/push the
+Stage 3 synchronization without separate approval.
