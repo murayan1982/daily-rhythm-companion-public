@@ -1,10 +1,10 @@
-"""RT-7c strict-boolean corrective gate.
+"""RT-7c guarded vendored FW v5.5.0 VTS acceptance-sync gate.
 
-The gate is credential-free and network-free. It verifies the pushed exact
-eleven-file implementation, the exact four-file corrective surface, fixed
-vendor/root-public loading, strict literal-boolean safety boundaries, closed
-guards, and an incomplete-config preflight that stops before pyvts, WebSocket,
-provider execution, or real motion.
+The gate is credential-free and network-free. It verifies the historical exact
+eleven-file implementation, exact four-file strict-boolean corrective, current
+exact seven-file documentation/static-gate acceptance sync, fixed vendor and
+root-public loading, strict literal-boolean safety, closed guards, and a safe
+incomplete-config preflight without provider, network, or real motion execution.
 """
 
 from __future__ import annotations
@@ -22,7 +22,9 @@ from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 IMPLEMENTATION_BASELINE = "35582f06ca037401b2cef8d97cfc5fc26cd40654"
-EXPECTED_HEAD = "4a2374854801791caefdf0be8cd246e5a2e9278e"
+IMPLEMENTATION_COMMIT = "4a2374854801791caefdf0be8cd246e5a2e9278e"
+CORRECTIVE_COMMIT = "484ba17245d24a98407907984b28995b247581fa"
+EXPECTED_HEAD = CORRECTIVE_COMMIT
 FRAMEWORK_RELEASE = "v5.5.0"
 FRAMEWORK_RELEASE_COMMIT = "f56697b6de066b062794ac7bb01330d2d9e91759"
 FRAMEWORK_VENDOR_RELATIVE = Path("vendor/ai-character-framework-5.5.0")
@@ -43,21 +45,28 @@ IMPLEMENTATION_PATHS = {
     "backend/tests/test_framework_vts_motion_session_adapter.py",
 }
 
-EXACT_PATHS = {
+CORRECTIVE_PATHS = {
     "backend/app/services/framework_vts_motion_session_adapter.py",
     "backend/tests/test_framework_vts_motion_session_adapter.py",
     "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md",
     "scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py",
 }
 
-PROTECTED_PATHS = {
+EXACT_PATHS = {
     "README.md",
-    "roadmap.md",
-    "tasklist.md",
-    "scripts/README.md",
     "docs/DRC_v300_goal_checklist_small_commit.md",
+    "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md",
+    "roadmap.md",
+    "scripts/README.md",
+    "scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py",
+    "tasklist.md",
+}
+
+PROTECTED_PATHS = {
     "backend/requirements.txt",
     "backend/app/models/framework_vts_motion.py",
+    "backend/app/services/framework_vts_motion_session_adapter.py",
+    "backend/tests/test_framework_vts_motion_session_adapter.py",
     "backend/.env.example",
     "backend/app/config.py",
     "backend/app/main.py",
@@ -73,9 +82,7 @@ PROTECTED_PATHS = {
     "backend/tests/test_character_motion_presentation_api.py",
 }
 
-DOC_PATHS = {
-    "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md",
-}
+DOC_PATHS = EXACT_PATHS
 
 PRIVATE_BASENAMES = {
     ".env",
@@ -99,7 +106,7 @@ UNSUPPORTED_ASSUMPTIONS = {
 
 
 class GateError(RuntimeError):
-    """Raised when the exact RT-7c corrective contract is not satisfied."""
+    """Raised when the exact RT-7c acceptance-sync contract is not satisfied."""
 
 
 def _run(*args: str, check: bool = True) -> str:
@@ -199,85 +206,112 @@ def _private_vendor_hits(paths: Iterable[Path]) -> tuple[str, ...]:
 
 
 def _assert_git_surface(snapshot: bool) -> set[str]:
-    implementation = {
-        line.strip().replace("\\", "/")
-        for line in _git(
-            "diff",
-            "--name-only",
-            IMPLEMENTATION_BASELINE,
-            EXPECTED_HEAD,
-        ).splitlines()
-        if line.strip()
-    }
-    if implementation != IMPLEMENTATION_PATHS:
-        raise GateError(
-            "RT-7c pushed implementation surface mismatch: "
-            f"expected={sorted(IMPLEMENTATION_PATHS)}, "
-            f"actual={sorted(implementation)}"
-        )
+    if not snapshot:
+        implementation = {
+            line.strip().replace("\\", "/")
+            for line in _git(
+                "diff",
+                "--name-only",
+                IMPLEMENTATION_BASELINE,
+                IMPLEMENTATION_COMMIT,
+            ).splitlines()
+            if line.strip()
+        }
+        if implementation != IMPLEMENTATION_PATHS:
+            raise GateError(
+                "RT-7c pushed implementation surface mismatch: "
+                f"expected={sorted(IMPLEMENTATION_PATHS)}, "
+                f"actual={sorted(implementation)}"
+            )
+
+        corrective = {
+            line.strip().replace("\\", "/")
+            for line in _git(
+                "diff",
+                "--name-only",
+                IMPLEMENTATION_COMMIT,
+                CORRECTIVE_COMMIT,
+            ).splitlines()
+            if line.strip()
+        }
+        if corrective != CORRECTIVE_PATHS:
+            raise GateError(
+                "RT-7c pushed corrective surface mismatch: "
+                f"expected={sorted(CORRECTIVE_PATHS)}, "
+                f"actual={sorted(corrective)}"
+            )
 
     changed = _status_paths()
     if changed != EXACT_PATHS:
         raise GateError(
-            "RT-7c corrective exact change surface mismatch: "
+            "RT-7c acceptance-sync exact change surface mismatch: "
             f"expected={sorted(EXACT_PATHS)}, actual={sorted(changed)}"
         )
     if changed & PROTECTED_PATHS:
-        raise GateError("RT-7c corrective changed a protected path")
+        raise GateError("RT-7c acceptance sync changed a protected path")
     if any(path.startswith("app/") for path in changed):
-        raise GateError("RT-7c corrective changed Flutter files")
+        raise GateError("RT-7c acceptance sync changed Flutter files")
     if any(path.startswith("vendor/") for path in changed):
-        raise GateError("RT-7c corrective changed tracked vendor files")
+        raise GateError("RT-7c acceptance sync changed tracked vendor files")
 
     if not snapshot:
         head = _git("rev-parse", "HEAD").strip()
         origin = _git("rev-parse", "origin/main").strip()
-        if head != EXPECTED_HEAD or origin != EXPECTED_HEAD:
+        if head != CORRECTIVE_COMMIT or origin != CORRECTIVE_COMMIT:
             raise GateError(
-                "DRC corrective baseline mismatch: "
-                f"head={head}, origin/main={origin}, expected={EXPECTED_HEAD}"
+                "DRC acceptance-sync baseline mismatch: "
+                f"head={head}, origin/main={origin}, "
+                f"expected={CORRECTIVE_COMMIT}"
             )
     return changed
-
 
 def _assert_docs() -> None:
     markers = (
         "RT-7c",
-        "CORRECTIVE_REQUIRED / NOT_ACCEPTED",
-        "IMPLEMENTED / AWAITING_REVIEW",
+        "COMPLETED / ACCEPTED / PUSHED",
         IMPLEMENTATION_BASELINE,
-        EXPECTED_HEAD,
+        IMPLEMENTATION_COMMIT,
+        CORRECTIVE_COMMIT,
+        "implementation surface: exact 11 files",
         "corrective surface: exact 4 files",
+        "acceptance-sync surface: exact 7 documentation/static-gate files",
         "vendor/ai-character-framework-5.5.0",
-        "RT-7d: NOT_AUTHORIZED",
+        "RT-7d exact contract review: READY",
+        "RT-7d implementation: NOT_AUTHORIZED",
         "RT-7e: NOT_AUTHORIZED",
-        "RT-7c acceptance sync: BLOCKED / NOT_STARTED",
+        "real VTube Studio execution: NOT_AUTHORIZED",
+        "acceptance-sync commit / push: NOT_AUTHORIZED",
     )
     for relative in DOC_PATHS:
         contract = _text(relative)
         for marker in markers:
             if marker not in contract:
-                raise GateError(f"{relative} is missing marker: {marker}")
+                raise GateError(f"{relative} is missing accepted marker: {marker}")
 
     required_contract = (
         "Framework development checkout: PROHIBITED",
         "Framework internal import: PROHIBITED",
         "pyvts direct import: PROHIBITED",
-        "real VTube Studio execution: NOT_AUTHORIZED",
-        "truthiness conversion is prohibited",
+        "strict-boolean corrective",
         "literal `True`",
+        "non-boolean private execution flags rejected: true",
+        "non-boolean readiness capability fails closed: true",
+        "non-boolean intent capability fails closed: true",
+        "retryable requires literal true: true",
         "backend/app/services/framework_vts_motion_session_adapter.py",
         "backend/tests/test_framework_vts_motion_session_adapter.py",
         "pyvts==0.3.3",
         "websockets==16.0",
+        "focused Backend: 31 passed",
+        "Backend full: 320 passed",
+        "Flutter full: 483 passed",
     )
     contract = _text(
         "docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md"
     )
     for marker in required_contract:
         if marker not in contract:
-            raise GateError(f"RT-7c corrective contract is missing marker: {marker}")
-
+            raise GateError(f"RT-7c accepted contract is missing marker: {marker}")
 
 def _assert_requirements() -> None:
     lines = [
@@ -765,20 +799,24 @@ def main() -> int:
         strict = _strict_boolean_smoke()
         smoke = _safe_runtime_smoke()
 
-        print("v300_rt7c_status: corrective-implemented-awaiting-review")
+        print("v300_rt7c_status: completed-accepted-pushed")
         print("v300_rt7c_implementation_status: completed-verified-pushed")
-        print("v300_rt7c_acceptance_status: corrective-required-not-accepted")
+        print("v300_rt7c_acceptance_status: completed-accepted-pushed")
         print("v300_rt7_status: current-not-completed")
         print("v300_rt7c_exact_implementation_surface: True")
         print("v300_rt7c_implementation_change_file_count: 11")
         print("v300_rt7c_exact_corrective_surface: True")
-        print(f"v300_rt7c_corrective_change_file_count: {len(changed)}")
+        print("v300_rt7c_corrective_change_file_count: 4")
+        print("v300_rt7c_exact_acceptance_sync_surface: True")
+        print(f"v300_rt7c_acceptance_sync_change_file_count: {len(changed)}")
         print(
             "v300_rt7c_implementation_baseline: "
             f"{IMPLEMENTATION_BASELINE}"
         )
-        print(f"v300_rt7c_implementation_commit: {EXPECTED_HEAD}")
-        print(f"v300_rt7c_corrective_baseline: {EXPECTED_HEAD}")
+        print(f"v300_rt7c_implementation_commit: {IMPLEMENTATION_COMMIT}")
+        print(f"v300_rt7c_corrective_baseline: {IMPLEMENTATION_COMMIT}")
+        print(f"v300_rt7c_corrective_commit: {CORRECTIVE_COMMIT}")
+        print(f"v300_rt7c_acceptance_sync_baseline: {CORRECTIVE_COMMIT}")
         print(f"v300_rt7c_framework_release: {FRAMEWORK_RELEASE}")
         print(
             "v300_rt7c_framework_release_commit: "
@@ -859,11 +897,13 @@ def main() -> int:
         print("v300_rt7c_existing_tests_changed: False")
         print("v300_rt7c_flutter_changed: False")
         print("v300_rt7c_vendor_changed: False")
+        print("v300_rt7d_exact_contract_review_ready: True")
         print("v300_rt7d_authorized: False")
         print("v300_rt7e_authorized: False")
         print("v300_rt7c_real_vts_operator_execution_authorized: False")
+        print("v300_rt7c_acceptance_sync_status: implemented-awaiting-review")
         print("v300_rt7c_acceptance_sync_authorized: False")
-        print("v300_rt7c_corrective_commit_push_authorized: False")
+        print("v300_rt7c_acceptance_sync_commit_push_authorized: False")
         return 0
     except (GateError, OSError, ValueError, SyntaxError) as error:
         print(f"v300_rt7c_gate_error: {error}", file=sys.stderr)

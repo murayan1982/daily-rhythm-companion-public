@@ -6,14 +6,15 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-7 CURRENT / NOT_COMPLETED
-Current small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
-Current implementation step: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter core
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current small commit: RT-7c acceptance sync
+Current implementation step: RT-7c guarded fixed-vendor FW v5.5.0 VTS session adapter acceptance
+Current implementation state: COMPLETED / ACCEPTED / PUSHED
 Current implementation baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
-Current implementation commit: none
-Last accepted small commit: RT-7b vendored FW v5.5.0 readiness COMPLETED / ACCEPTED / PUSHED at c766610ce66a539efaabf4e4026a7c12ad2887c9
+Current implementation commit: 4a2374854801791caefdf0be8cd246e5a2e9278e
+Current corrective commit: 484ba17245d24a98407907984b28995b247581fa
+Last accepted small commit: RT-7c guarded vendored FW v5.5.0 VTS adapter COMPLETED / ACCEPTED / PUSHED at 484ba17245d24a98407907984b28995b247581fa
 Accepted RT-4c implementation: 72622cab2e73699adaff4b628cfbc4b14323a23a
-Next implementation action: verify the exact 11-file RT-7c candidate; commit/push, RT-7d, RT-7e, and real VTube Studio execution remain NOT_AUTHORIZED
+Next implementation action: record the exact seven-file RT-7c acceptance sync; RT-7d exact contract review is ready, but implementation remains NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -2929,20 +2930,25 @@ Historical acceptance-sync gate:
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
 
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:BEGIN -->
-## RT-7c guarded vendored FW v5.5.0 VTS adapter candidate
+## RT-7c accepted implementation checkpoint
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7a: COMPLETED / ACCEPTED / PUSHED
 RT-7b: COMPLETED / ACCEPTED / PUSHED
-RT-7c: IMPLEMENTED / AWAITING_REVIEW
-baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
+RT-7c: COMPLETED / ACCEPTED / PUSHED
+implementation baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
+implementation commit: 4a2374854801791caefdf0be8cd246e5a2e9278e
+corrective commit: 484ba17245d24a98407907984b28995b247581fa
 Framework local source: vendor/ai-character-framework-5.5.0
-surface: exact 11 files
-RT-7d: NOT_AUTHORIZED
+implementation surface: exact 11 files
+corrective surface: exact 4 files
+acceptance-sync surface: exact 7 documentation/static-gate files
+RT-7d exact contract review: READY
+RT-7d implementation: NOT_AUTHORIZED
 RT-7e: NOT_AUTHORIZED
 real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
 - [x] Add separate VTS command/result models without changing RT-6 mock types.
@@ -2956,12 +2962,26 @@ commit / push: NOT_AUTHORIZED
 - [x] Keep endpoint/token/hotkey/model/provider/raw values outside results.
 - [x] Close every created session and normalize cleanup failures.
 - [x] Add exact dependency pins and fake/injected focused tests.
-- [x] Add the exact 11-file dedicated candidate gate.
-- [ ] Run the candidate in the real DRC checkout.
-- [ ] Review exact diff, privacy, dependencies, and regression output.
-- [ ] Commit/push only after separate explicit approval.
-- [ ] Review RT-7d and RT-7e separately.
+- [x] Add the exact 11-file implementation gate.
+- [x] Pass implementation compileall, dedicated gate, focused 27, Backend 316, Flutter analyze, and Flutter 483.
+- [x] Commit and push implementation `4a2374854801791caefdf0be8cd246e5a2e9278e`.
+- [x] Identify and correct non-boolean truthiness fail-open behavior.
+- [x] Limit the strict-boolean corrective to exact 4 files.
+- [x] Reject non-boolean private execution flags.
+- [x] Make readiness and intent capability checks accept literal `True` only.
+- [x] Make retryable accept literal `True` only.
+- [x] Pass corrective gate before and after regression.
+- [x] Pass focused Backend 31, Backend full 320 with one existing warning, Flutter analyze, and Flutter 483.
+- [x] Pass exact surface, privacy, and CRLF-aware diff review.
+- [x] Commit and push corrective `484ba17245d24a98407907984b28995b247581fa`.
+- [x] Verify post-push HEAD / origin/main and clean DRC working tree.
+- [x] Mark RT-7c COMPLETED / ACCEPTED / PUSHED.
+- [ ] Commit/push this exact seven-file acceptance sync only after separate approval.
+- [ ] Review RT-7d under a separate exact contract.
+- [ ] Keep RT-7d implementation, RT-7e, and real VTS execution not authorized.
 
-Detailed candidate contract:
+Detailed accepted contract:
 `docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
+Historical acceptance-sync gate:
+`scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py`.
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->

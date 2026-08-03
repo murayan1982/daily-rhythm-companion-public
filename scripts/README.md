@@ -7414,43 +7414,51 @@ not authorized.
 <!-- RT-7b-VENDORED-FW-v5.5.0:END -->
 
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:BEGIN -->
-## v3.0.0 RT-7c guarded vendored FW v5.5.0 VTS adapter candidate gate
+## v3.0.0 RT-7c guarded vendored FW v5.5.0 VTS adapter acceptance-sync gate
 
-RT-7c is **IMPLEMENTED / AWAITING_REVIEW** against
-`35582f06ca037401b2cef8d97cfc5fc26cd40654` under the exact 11-file contract.
+RT-7c is **COMPLETED / ACCEPTED / PUSHED** through implementation commit
+`4a2374854801791caefdf0be8cd246e5a2e9278e` and strict-boolean corrective commit
+`484ba17245d24a98407907984b28995b247581fa` against baseline
+`35582f06ca037401b2cef8d97cfc5fc26cd40654`.
 
 ```text
-Framework local source: vendor/ai-character-framework-5.5.0
-RT-7d: NOT_AUTHORIZED
+implementation surface: exact 11 files
+corrective surface: exact 4 files
+acceptance-sync surface: exact 7 documentation/static-gate files
+focused Backend accepted: 31 passed
+Backend full accepted: 320 passed, 1 existing warning
+Flutter analyze accepted: PASS
+Flutter full accepted: 483 passed
+RT-7d exact contract review: READY
+RT-7d implementation: NOT_AUTHORIZED
 RT-7e: NOT_AUTHORIZED
 real VTube Studio execution: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Run from the DRC repository root:
+Run the acceptance-sync gate from the DRC repository root while the exact seven
+files are modified against corrective commit `484ba17245d24a98407907984b28995b247581fa`:
 
 ```powershell
 python -m compileall -q backend scripts
 python scripts\check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
-python -m pytest -q backend\tests\test_framework_vts_motion_session_adapter.py
-python -m pytest -q backend\tests
-
-cd app
-flutter analyze
-flutter test
-cd ..
-
-python scripts\check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
 git -c core.whitespace=cr-at-eol diff --check
 git status --short
+git diff --name-only
 ```
 
-The gate verifies exact surface, fixed vendor provenance, root-public-only
-loading, API version 5.5.0, exact dependency pins, intent vocabulary, static
-prohibitions, closed guards, and an incomplete-config preflight. It does not
-read private configuration, import pyvts, open a WebSocket, execute network
-operations, or execute real motion.
+The gate verifies the historical exact 11-file implementation and exact 4-file
+corrective surfaces, the current exact 7-file acceptance-sync surface, fixed
+vendor provenance, root-public-only loading, API version 5.5.0, exact dependency
+pins, intent vocabulary, strict literal-boolean safety, closed guards, and an
+incomplete-config preflight.
 
-Detailed candidate contract:
+The gate is credential-free and network-free. It reads no private VTS
+configuration, imports no `pyvts`, opens no WebSocket, attempts no provider or
+network execution, and executes no real motion. The full Backend and Flutter
+regression results above are accepted historical evidence and are not launched
+automatically by this docs/static-gate sync.
+
+Detailed accepted contract:
 `docs/v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.md`.
 <!-- RT-7c-GUARDED-VENDORED-FW-v5.5.0-VTS:END -->

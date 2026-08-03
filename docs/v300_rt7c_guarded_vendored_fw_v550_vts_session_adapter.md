@@ -2,33 +2,34 @@
 
 Updated: 2026-08-03
 
-## Corrective candidate state
+## Accepted state
 
 ```text
 RT-7: CURRENT / NOT_COMPLETED
 RT-7a: COMPLETED / ACCEPTED / PUSHED
 RT-7b: COMPLETED / ACCEPTED / PUSHED
-RT-7c implementation: COMPLETED / VERIFIED / PUSHED
-RT-7c implementation acceptance: CORRECTIVE_REQUIRED / NOT_ACCEPTED
-RT-7c strict-boolean corrective: IMPLEMENTED / AWAITING_REVIEW
-RT-7c acceptance sync: BLOCKED / NOT_STARTED
-RT-7d: NOT_AUTHORIZED
-RT-7e: NOT_AUTHORIZED
+RT-7c: COMPLETED / ACCEPTED / PUSHED
 implementation baseline: 35582f06ca037401b2cef8d97cfc5fc26cd40654
 implementation commit: 4a2374854801791caefdf0be8cd246e5a2e9278e
 corrective baseline: 4a2374854801791caefdf0be8cd246e5a2e9278e
+corrective commit: 484ba17245d24a98407907984b28995b247581fa
+implementation surface: exact 11 files
 corrective surface: exact 4 files
+acceptance-sync surface: exact 7 documentation/static-gate files
 Framework release: v5.5.0
 Framework release commit: f56697b6de066b062794ac7bb01330d2d9e91759
 Framework local source: vendor/ai-character-framework-5.5.0
 Framework development checkout: PROHIBITED
 Framework internal import: PROHIBITED
 pyvts direct import: PROHIBITED
+RT-7d exact contract review: READY
+RT-7d implementation: NOT_AUTHORIZED
+RT-7e: NOT_AUTHORIZED
 real VTube Studio execution: NOT_AUTHORIZED
-corrective commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-## Purpose
+## Accepted result
 
 RT-7c adds only the guarded Backend adapter core required to consume the
 released Framework v5.5.0 root-public VTube Studio motion-session boundary.
@@ -37,7 +38,7 @@ It does not connect the adapter to Backend configuration, a FastAPI route,
 Flutter, HomeScreen, automatic realtime lifecycle events, or private operator
 configuration. Those concerns remain separate RT-7d and RT-7e work.
 
-## Exact eleven-file surface
+## Accepted implementation and corrective surfaces
 
 ```text
 README.md
@@ -61,8 +62,8 @@ focused Backend test: 1 file
 total: exact 11 files
 ```
 
-The pushed implementation is retained as the historical exact eleven-file
-surface. The strict-boolean corrective is limited to the following exact four
+The accepted implementation is the historical exact eleven-file surface.
+The accepted strict-boolean corrective is limited to the following exact four
 files:
 
 ```text
@@ -73,7 +74,8 @@ scripts/check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
 ```
 
 No dependency, model, API, Flutter, RT-6, vendor, release, roadmap, tasklist, or
-private configuration source is changed by the corrective.
+private configuration source was changed by the corrective. This acceptance
+sync changes only the exact seven documentation/static-gate files.
 
 ## Fixed Framework source
 
@@ -328,50 +330,49 @@ retryable requires literal True
 All focused tests use injected root-public fake sessions. They import no pyvts,
 open no network connection, and execute no real motion.
 
-## Candidate verification
+## Accepted verification
 
-Run from the DRC repository root:
-
-```powershell
-python -m compileall -q backend scripts
-python scripts\check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
-python -m pytest -q backend\tests\test_framework_vts_motion_session_adapter.py
-python -m pytest -q backend\tests
-
-cd app
-flutter analyze
-flutter test
-cd ..
-
-python scripts\check_v300_rt7c_guarded_vendored_fw_v550_vts_session_adapter.py
-git -c core.whitespace=cr-at-eol diff --check
-git status --short
-```
-
-Expected corrective boundary:
+The implementation and corrective were verified in the real DRC checkout with
+the fixed ignored Framework vendor present.
 
 ```text
-implementation baseline → implementation commit: exact 11 files
-corrective working-tree surface: exact 4 files
-focused RT-7c tests: 31 passed
-Backend full: 320 passed, 1 existing warning
-Flutter analyze: no issues
+compileall: PASS
+dedicated RT-7c gate: PASS before and after regression
+focused Backend: 31 passed
+Backend full: 320 passed, 1 existing Starlette/httpx dependency warning
+Flutter analyze: No issues found
 Flutter full: 483 passed
-non-boolean config flags rejected: true
-non-boolean readiness flags fail closed: true
-non-boolean intent capability fails closed: true
-retryable requires literal true: true
-pyvts imported by gate: false
-provider execution attempted by gate: false
-network execution attempted by gate: false
-real motion executed by gate: false
+exact implementation surface: 11 files
+exact corrective surface: 4 files
+changed-content privacy review: PASS
+CRLF-aware git diff --check: PASS
+implementation commit / push: 4a2374854801791caefdf0be8cd246e5a2e9278e
+corrective commit / push: 484ba17245d24a98407907984b28995b247581fa
+post-push HEAD / origin/main: 484ba17245d24a98407907984b28995b247581fa
+post-push working tree: clean
 ```
 
-The implementation commit already passed its dedicated gate, focused Backend
-27 tests, Backend full 316 tests with one existing warning, Flutter analyze,
-Flutter full 483 tests, exact eleven-file review, push, and clean-tree check.
-The corrective must pass the complete verification set before separate commit
-approval.
+The existing warning did not fail the Backend regression suite. Verification
+performed no private credential read, provider execution, network execution,
+WebSocket connection, `pyvts` import, or real VTube Studio motion.
+
+The accepted strict-boolean checks establish:
+
+```text
+non-boolean private execution flags rejected: true
+non-boolean readiness capability fails closed: true
+non-boolean intent capability fails closed: true
+retryable requires literal true: true
+disabled smoke status: disabled
+closed provider guard status: provider_execution_not_allowed
+incomplete configuration status: unavailable
+incomplete public session closed: true
+```
+
+The historical gate is retained as the acceptance-sync gate. During this exact
+seven-file sync it verifies the accepted implementation and corrective commit
+surfaces, fixed-vendor/root-public boundary, dependency pins, intent policy,
+strict boolean behavior, safe runtime smoke, and protected non-change surface.
 
 ## Protected non-change surface
 
@@ -409,17 +410,23 @@ RT-7c does not:
 - execute a provider, network operation, or real motion during verification;
 - collect private operator evidence;
 - authorize RT-7d or RT-7e;
-- commit or push the corrective without separate approval.
+- commit or push this acceptance sync without separate approval.
 
 ## Next boundary
 
 ```text
-RT-7c strict-boolean corrective acceptance: pending review
-RT-7c acceptance sync: BLOCKED / NOT_STARTED
+RT-7c: COMPLETED / ACCEPTED / PUSHED
+RT-7d exact contract review: READY
 RT-7d default-off configured Backend/API/Flutter manual VTS wiring:
 NOT_AUTHORIZED
 RT-7e private configured local VTS execution and acceptance:
 NOT_AUTHORIZED
 real VTube Studio execution:
 NOT_AUTHORIZED
+acceptance-sync commit / push:
+NOT_AUTHORIZED
 ```
+
+RT-7d must be reviewed under a separate exact contract. This RT-7c acceptance
+sync does not authorize private configuration reads, provider/network
+execution, real VTube Studio connection, or any RT-7d/RT-7e runtime change.
