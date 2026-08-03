@@ -7659,3 +7659,68 @@ authorize commit/push or RT-8b implementation.
 Detailed candidate contract:
 `docs/v300_rt8_pc_android_realtime_acceptance_readiness.md`.
 <!-- RT-8a-PC-ANDROID-READINESS:END -->
+
+<!-- RT-8b-PRIVATE-OPERATOR-MANIFEST:BEGIN -->
+## RT-8b private operator manifest, validator, and runbook
+
+```text
+RT-8: CURRENT / NOT_COMPLETED
+RT-8a: COMPLETED / ACCEPTED / PUSHED
+RT-8a commit: a3af4fae002c1425fdfb61b46f66e35e2443ad17
+RT-8b: IMPLEMENTED / AWAITING_REVIEW
+RT-8b baseline: a3af4fae002c1425fdfb61b46f66e35e2443ad17
+RT-8b surface: exact 10 files
+readiness: READY_FOR_BOUNDED_PRIVATE_RT8_OPERATOR_MANIFEST_AND_NETWORK_FREE_VALIDATION
+RT-8c exact contract review: READY_AFTER_RT8B_ACCEPTANCE
+RT-8c implementation: NOT_AUTHORIZED
+RT-8d implementation: NOT_AUTHORIZED
+RT-8e implementation: NOT_AUTHORIZED
+private manifest created: false
+private manifest read: false
+private configuration read: false
+provider/network/microphone/TTS/VTS execution: false
+commit / push: NOT_AUTHORIZED
+```
+
+RT-8b adds a strict JSON validator, an intentionally rejected public example,
+focused credential-free tests, a source preflight gate, and a fixed operator
+runbook. A real manifest must remain under ignored `operator_evidence/`; RT-8b
+does not create or read one.
+
+```text
+schema: drc.v3.rt8-platform-acceptance.1
+stages: example / pc_windows / android / aggregate
+maximum private manifest size: 65536 bytes
+unknown, missing, and duplicate JSON keys: rejected
+free-form text and private-looking values: rejected
+public example status: example_not_accepted
+```
+
+Exact RT-8b surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt8b_private_operator_manifest_and_runbook.md
+docs/operator_evidence_templates/v300_rt8_pc_android_realtime_acceptance.example.json
+scripts/validate_v300_rt8_private_operator_manifest.py
+scripts/check_v300_rt8b_private_operator_manifest_and_runbook.py
+backend/tests/test_v300_rt8_private_operator_manifest.py
+```
+
+Protected and unchanged are `.gitignore`, Backend/Flutter runtime, all existing
+tests, dependencies, platform declarations, fixed vendor Framework, versions,
+release records, historical RT-8a files, and all private configuration or
+evidence. RT-8c, RT-8d, RT-8e, RT-9, and every configured real execution remain
+separately unauthorized.
+
+Detailed candidate contract:
+`docs/v300_rt8b_private_operator_manifest_and_runbook.md`.
+Validator:
+`scripts/validate_v300_rt8_private_operator_manifest.py`.
+Dedicated candidate gate:
+`scripts/check_v300_rt8b_private_operator_manifest_and_runbook.py`.
+<!-- RT-8b-PRIVATE-OPERATOR-MANIFEST:END -->

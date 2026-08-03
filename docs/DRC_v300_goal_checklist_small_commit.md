@@ -6,14 +6,14 @@ Current released version: v2.1.0 RELEASED / ACCEPTED
 Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Strategic target: v3.0.0
 Current parent phase: RT-8 CURRENT / NOT_COMPLETED
-Current small commit: RT-8a PC/Android realtime acceptance readiness
-Current implementation step: RT-8a platform-appropriate PC Windows and Android acceptance inventory and exact split
+Current small commit: RT-8b private operator manifest, validator, and runbook
+Current implementation step: RT-8b credential-free private operator manifest schema, validator, and runbook
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 0440aa28fa7d1f49a8e15fd056de8735c83ce2ae
+Current implementation baseline: a3af4fae002c1425fdfb61b46f66e35e2443ad17
 Current implementation commit: none
-Last accepted small commit: RT-7e Control E acceptance sync COMPLETED / ACCEPTED / PUSHED at 0440aa28fa7d1f49a8e15fd056de8735c83ce2ae
+Last accepted small commit: RT-8a PC/Android realtime acceptance readiness COMPLETED / ACCEPTED / PUSHED at a3af4fae002c1425fdfb61b46f66e35e2443ad17
 Accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
-Next implementation action: verify the exact seven-file RT-8a candidate; RT-8b and all real PC/Android execution remain NOT_AUTHORIZED
+Next implementation action: verify the exact ten-file RT-8b candidate; RT-8c and all real PC/Android execution remain NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -3216,3 +3216,68 @@ Detailed candidate contract:
 Dedicated candidate gate:
 `scripts/check_v300_rt8_pc_android_realtime_acceptance_readiness.py`.
 <!-- RT-8a-PC-ANDROID-READINESS:END -->
+
+<!-- RT-8b-PRIVATE-OPERATOR-MANIFEST:BEGIN -->
+## RT-8b private operator manifest, validator, and runbook
+
+```text
+RT-8: CURRENT / NOT_COMPLETED
+RT-8a: COMPLETED / ACCEPTED / PUSHED
+RT-8a commit: a3af4fae002c1425fdfb61b46f66e35e2443ad17
+RT-8b: IMPLEMENTED / AWAITING_REVIEW
+RT-8b baseline: a3af4fae002c1425fdfb61b46f66e35e2443ad17
+RT-8b surface: exact 10 files
+readiness: READY_FOR_BOUNDED_PRIVATE_RT8_OPERATOR_MANIFEST_AND_NETWORK_FREE_VALIDATION
+RT-8c exact contract review: READY_AFTER_RT8B_ACCEPTANCE
+RT-8c implementation: NOT_AUTHORIZED
+RT-8d implementation: NOT_AUTHORIZED
+RT-8e implementation: NOT_AUTHORIZED
+private manifest created: false
+private manifest read: false
+private configuration read: false
+provider/network/microphone/TTS/VTS execution: false
+commit / push: NOT_AUTHORIZED
+```
+
+RT-8b adds a strict JSON validator, an intentionally rejected public example,
+focused credential-free tests, a source preflight gate, and a fixed operator
+runbook. A real manifest must remain under ignored `operator_evidence/`; RT-8b
+does not create or read one.
+
+```text
+schema: drc.v3.rt8-platform-acceptance.1
+stages: example / pc_windows / android / aggregate
+maximum private manifest size: 65536 bytes
+unknown, missing, and duplicate JSON keys: rejected
+free-form text and private-looking values: rejected
+public example status: example_not_accepted
+```
+
+Exact RT-8b surface:
+
+```text
+README.md
+roadmap.md
+tasklist.md
+scripts/README.md
+docs/DRC_v300_goal_checklist_small_commit.md
+docs/v300_rt8b_private_operator_manifest_and_runbook.md
+docs/operator_evidence_templates/v300_rt8_pc_android_realtime_acceptance.example.json
+scripts/validate_v300_rt8_private_operator_manifest.py
+scripts/check_v300_rt8b_private_operator_manifest_and_runbook.py
+backend/tests/test_v300_rt8_private_operator_manifest.py
+```
+
+Protected and unchanged are `.gitignore`, Backend/Flutter runtime, all existing
+tests, dependencies, platform declarations, fixed vendor Framework, versions,
+release records, historical RT-8a files, and all private configuration or
+evidence. RT-8c, RT-8d, RT-8e, RT-9, and every configured real execution remain
+separately unauthorized.
+
+Detailed candidate contract:
+`docs/v300_rt8b_private_operator_manifest_and_runbook.md`.
+Validator:
+`scripts/validate_v300_rt8_private_operator_manifest.py`.
+Dedicated candidate gate:
+`scripts/check_v300_rt8b_private_operator_manifest_and_runbook.py`.
+<!-- RT-8b-PRIVATE-OPERATOR-MANIFEST:END -->
