@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-8b1 strict PC execution-count contract corrective
+Current small commit: RT-8c Stage 1 PC Windows operator tooling
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -8702,3 +8702,37 @@ The public example remains `example_not_accepted`. RT-8b1 creates and reads no
 private manifest and performs no Backend, Flutter, provider, network,
 microphone, STT, TTS, playback, VTS, or physical-motion operation.
 <!-- RT-8b1-STRICT-PC-COUNT-CORRECTIVE:END -->
+
+<!-- RT-8c-STAGE1-PC-WINDOWS-TOOLING:BEGIN -->
+## RT-8c Stage 1 PC Windows operator tooling candidate
+
+```text
+RT-8b1: COMPLETED / ACCEPTED / PUSHED
+RT-8b1 commit: 4815403d4c94b05551df03678e9c2c4e1dfe754e
+RT-8c Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-8c Stage 1 surface: exact 9 files
+RT-8c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+RT-8c Stage 3: BLOCKED_PENDING_PC_CONTROLS_A_H / NOT_AUTHORIZED
+schema: drc.v3.rt8-platform-acceptance.2
+private manifest created: false
+private manifest read: false
+private configuration read: false
+Backend / Flutter started: false
+provider / network execution attempted: false
+real TTS / playback / VTS executed: false
+commit / push: NOT_AUTHORIZED
+```
+
+Stage 1 adds an inert-by-default runner, exact twelve credential-free tests, a
+fixed PC runbook, and a dedicated source gate. The later PC chronology is
+`A -> B -> D -> C -> E -> F -> G -> H`, with three stream starts, two completed
+terminals, one cancelled terminal, two explicit TTS enqueue/process actions,
+one flush, one mock-motion Apply, and one real VTS Apply.
+
+Detailed contract:
+`docs/v300_rt8c_configured_pc_windows_realtime_acceptance.md`.
+Dedicated gate:
+`scripts/check_v300_rt8c_configured_pc_windows_realtime_acceptance.py`.
+Operator runner:
+`scripts/run_v300_rt8c_private_pc_windows_operator.py`.
+<!-- RT-8c-STAGE1-PC-WINDOWS-TOOLING:END -->
