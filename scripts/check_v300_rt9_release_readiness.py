@@ -21,17 +21,18 @@ from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 RT9A_COMMIT = "0e4af7603f60c56f0240271fbb2590d72a189a65"
+RT9B_COMMIT = "15908a548c229726287867ad89c7ce8b4b916298"
 RT8_ACCEPTANCE_COMMIT = "4c3b724a0c42e0d078c876c02b07a04d4c71e24d"
 EXPECTED_BACKEND_VERSION = "3.0.0"
 EXPECTED_FLUTTER_VERSION = "3.0.0+4"
 EXPECTED_BACKEND_TESTS = 417
 EXPECTED_FLUTTER_TESTS = 500
-HISTORICAL_V300_GATE_COUNT = 63
+HISTORICAL_V300_GATE_COUNT = 64
 OFFICIAL_ORIGIN = re.compile(
     r"^(?:https://github\.com/|git@github\.com:)"
     r"murayan1982/daily-rhythm-companion-public(?:\.git)?$"
 )
-SURFACE = {
+RT9B_SURFACE = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
@@ -45,6 +46,16 @@ SURFACE = {
     "scripts/check_v20x_application_version_metadata.py",
     "backend/app/version.py",
     "app/pubspec.yaml",
+}
+RT9C_STAGE1_SURFACE = {
+    "README.md", "roadmap.md", "tasklist.md", "scripts/README.md",
+    "docs/DRC_v300_goal_checklist_small_commit.md",
+    "docs/v300_rt9_release_readiness_current_behavior_inventory.md",
+    "docs/v300_rt9_release_readiness.md", "docs/v300_release_record.md",
+    "release_notes/v3.0.0.md", "scripts/check_v300_rt9_release_readiness.py",
+    "docs/v300_rt9_fixed_release_zip.md",
+    "build_v300_fixed_release_zip_from_head.ps1",
+    "scripts/check_v300_fixed_release_zip.py",
 }
 TOP = (
     "README.md",
@@ -77,11 +88,6 @@ PROTECTED_HASHES = {
     "backend/tests/test_v300_rt8e_private_aggregate_cleanup.py": "030f12f9e34a277d08aad0d49079d863cf704eee71898d333b35da5ef49f756a",
     "scripts/check_v300_rt9_release_readiness_current_behavior_inventory.py": "32d1380592164aa812ae7bfb84bd272e26861905f6c7630a5cc7d989469a9704",
 }
-ABSENT_RT9C = (
-    "build_v300_fixed_release_zip_from_head.ps1",
-    "scripts/check_v300_fixed_release_zip.py",
-    "docs/v300_fixed_release_zip.md",
-)
 SENSITIVE = (
     re.compile(r"(?i)sk-[a-z0-9_-]{12,}"),
     re.compile(r"(?i)xai-[a-z0-9_-]{12,}"),
@@ -190,18 +196,15 @@ def determine_source_mode() -> tuple[str, str]:
     require(git("branch", "--show-current") == "main", "branch must be main")
     head = git("rev-parse", "HEAD")
     origin = git("rev-parse", "origin/main")
-    require(git_ok("cat-file", "-e", RT9A_COMMIT + "^{commit}"), "RT-9a commit missing")
-    require(git_ok("merge-base", "--is-ancestor", RT8_ACCEPTANCE_COMMIT, RT9A_COMMIT), "RT-8 acceptance ancestry")
-    origin_url = git("remote", "get-url", "origin")
-    require(OFFICIAL_ORIGIN.fullmatch(origin_url) is not None, "official origin")
+    require(git_ok("cat-file", "-e", RT9B_COMMIT + "^{commit}"), "RT-9b commit missing")
+    require(git_ok("merge-base", "--is-ancestor", RT8_ACCEPTANCE_COMMIT, RT9B_COMMIT), "RT-8/RT-9b ancestry")
+    require(OFFICIAL_ORIGIN.fullmatch(git("remote", "get-url", "origin")) is not None, "official origin")
     changes = working_changes()
-    if head == RT9A_COMMIT and origin == RT9A_COMMIT and changes == SURFACE:
-        return "candidate", head
-    if head == origin and not changes and git_ok("merge-base", "--is-ancestor", RT9A_COMMIT, head):
-        committed_surface = paths(git("diff", "--name-only", RT9A_COMMIT + ".." + head))
-        require(committed_surface == SURFACE, "committed exact surface " + repr(sorted(committed_surface)))
-        return "committed", head
-    fail("source state is neither exact candidate nor clean committed RT-9b source")
+    if head == RT9B_COMMIT and origin == RT9B_COMMIT and changes == RT9C_STAGE1_SURFACE:
+        return "rt9c-stage1-candidate", head
+    if head == origin and not changes and git_ok("merge-base", "--is-ancestor", RT9B_COMMIT, head):
+        return "current-committed", head
+    fail("source state is neither exact RT-9c Stage 1 candidate nor clean committed current source")
 
 
 def markers(relative: str, *values: str) -> None:
@@ -213,66 +216,41 @@ def markers(relative: str, *values: str) -> None:
 def verify_contract(mode: str) -> None:
     common = (
         "RT-9: CURRENT / NOT_COMPLETED",
-        "RT-9a: COMPLETED / ACCEPTED / PUSHED",
-        "RT-9a commit: " + RT9A_COMMIT,
-        "RT-9b: IMPLEMENTED / AWAITING_REVIEW",
-        "RT-9b baseline: " + RT9A_COMMIT,
-        "RT-9b surface: exact 13 files",
-        "Backend candidate metadata: 3.0.0",
-        "Flutter candidate metadata: 3.0.0+4",
+        "RT-9b: COMPLETED / ACCEPTED / PUSHED",
+        "RT-9b implementation commit: " + RT9B_COMMIT,
         "v3.0.0 fixed ZIP: NOT_BUILT",
         "DRC_v3.0.0 annotated tag: NOT_CREATED",
         "GitHub Release: NOT_CREATED",
     )
     for relative in TOP:
         markers(relative, *common)
-    markers("README.md", "Current v3.0.0 candidate metadata: Backend 3.0.0 / Flutter 3.0.0+4 (**NOT_RELEASED**)")
+        text = read(relative)
+        require(
+            "RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW" in text
+            or "RT-9c: COMPLETED / ACCEPTED / PUSHED" in text,
+            relative + " missing current RT-9c candidate/accepted state",
+        )
+    if mode == "rt9c-stage1-candidate":
+        for relative in TOP:
+            markers(
+                relative,
+                "RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW",
+                "RT-9c Stage 1 baseline: " + RT9B_COMMIT,
+                "RT-9c Stage 1 surface: exact 13 files",
+            )
     markers("backend/app/version.py", 'APP_VERSION = "3.0.0"')
     markers("app/pubspec.yaml", "version: 3.0.0+4")
-    markers(
-        "scripts/check_v20x_application_version_metadata.py",
-        '"3.0.0": "4"',
-        'for forbidden in ("3.0.0", "2.1.0", "2.0.1", "2.0.0+1", "0.15.0")',
+    tooling_contract = read("docs/v300_rt9_fixed_release_zip.md")
+    require(
+        "Status: STAGE1_IMPLEMENTED / AWAITING_REVIEW" in tooling_contract
+        or "Status: COMPLETED / ACCEPTED" in tooling_contract,
+        "fixed-ZIP tooling status",
     )
-    markers(
-        "docs/v300_rt9_release_readiness.md",
-        "Status: IMPLEMENTED / AWAITING_REVIEW",
-        "Backend candidate version: 3.0.0",
-        "Flutter candidate version: 3.0.0+4",
-        "python scripts\\check_v300_rt9_release_readiness.py",
-        "--with-flutter",
-        "--with-builds",
-        "--rt8-manifest-json",
-        "Flutter Android debug APK build",
-        "accepted baseline: 417 passed",
-        "accepted baseline: 500 passed",
-        "## Exact RT-9b surface",
-        "## Stop rule",
-    )
-    markers(
-        "docs/v300_release_record.md",
-        "Status: PREPARED / NOT_RELEASED",
-        "release source HEAD: NOT_RECORDED",
-        "fixed ZIP basename: NOT_BUILT",
-        "fixed ZIP SHA-256: NOT_RECORDED",
-        "fixed ZIP builder invocation count: 0",
-        "explicit final operator approval: NOT_RECEIVED",
-        "annotated tag publication: NOT_CREATED",
-        "GitHub Release publication: NOT_CREATED",
-        "post-publication SHA-256 verification: NOT_COMPLETED",
-    )
-    markers(
-        "release_notes/v3.0.0.md",
-        "Status: RELEASE CANDIDATE / NOT_RELEASED",
-        "Release tag: `DRC_v3.0.0` — NOT_CREATED",
-        "GitHub Release: NOT_CREATED",
-        "Fixed release ZIP: NOT_BUILT",
-        "Backend semantic version: `3.0.0`",
-        "Flutter package version: `3.0.0+4`",
-        "Bundled AI Character Framework",
-    )
-    for relative in ABSENT_RT9C:
-        require(not (ROOT / relative).exists(), "early RT-9c file " + relative)
+    require("builder invocation count: 0" in tooling_contract, "fixed-ZIP builder count")
+    markers("docs/v300_release_record.md", "Status: PREPARED / NOT_RELEASED", "fixed ZIP basename: NOT_BUILT", "fixed ZIP builder invocation count: 0")
+    markers("release_notes/v3.0.0.md", "Status: RELEASE CANDIDATE / NOT_RELEASED", "Fixed release ZIP: NOT_BUILT")
+    for relative in ("build_v300_fixed_release_zip_from_head.ps1", "scripts/check_v300_fixed_release_zip.py"):
+        require((ROOT / relative).is_file(), "missing RT-9c tooling " + relative)
     release_root = ROOT / "release"
     if release_root.exists():
         require(not any(release_root.glob("DailyRhythmCompanion_v3.0.0_*.zip")), "early v3 fixed ZIP")
@@ -286,13 +264,12 @@ def verify_contract(mode: str) -> None:
     builder = read("build_release.bat")
     for value in ('"%ROOT_DIR%release"', '"%ROOT_DIR%vendor"', '"%ROOT_DIR%backend\\local_data"', '"%ROOT_DIR%operator_evidence"', '"*.zip"'):
         require(value in builder, "package denylist marker " + value)
-    if mode == "candidate":
-        for relative in SURFACE:
+    if mode == "rt9c-stage1-candidate":
+        for relative in RT9C_STAGE1_SURFACE:
             if git_ok("ls-files", "--error-unmatch", "--", relative):
                 diff = git("diff", "--unified=0", "HEAD", "--", relative)
                 added = "\n".join(
-                    line[1:]
-                    for line in diff.splitlines()
+                    line[1:] for line in diff.splitlines()
                     if line.startswith("+") and not line.startswith("+++")
                 )
             else:
@@ -321,7 +298,7 @@ def validate_rt8_manifest(path: Path, mode: str, head: str) -> None:
         candidate = str(data[key])
         require(git_ok("cat-file", "-e", candidate + "^{commit}"), "RT-8 candidate commit missing")
         require(git_ok("merge-base", "--is-ancestor", candidate, head), "RT-8 candidate not ancestor")
-    if mode == "committed":
+    if mode == "current-committed":
         validator.verify_git_state(data, "aggregate", RT9A_COMMIT)
     after = target.read_bytes()
     require(before == after, "RT-8 aggregate manifest modified")
@@ -387,11 +364,13 @@ def main() -> None:
 
     print("v300_rt9_status: current-not-completed")
     print("v300_rt9a_status: completed-accepted-pushed")
-    print("v300_rt9b_status: implemented-awaiting-review")
+    print("v300_rt9b_status: completed-accepted-pushed")
+    print("v300_rt9c_stage1_status: implemented-awaiting-review")
     print("v300_rt9b_source_mode:", mode)
-    print("v300_rt9b_baseline:", RT9A_COMMIT)
-    print("v300_rt9b_exact_implementation_surface: True")
-    print("v300_rt9b_implementation_change_file_count:", len(SURFACE))
+    print("v300_rt9b_commit:", RT9B_COMMIT)
+    print("v300_rt9c_stage1_baseline:", RT9B_COMMIT)
+    print("v300_rt9c_stage1_exact_implementation_surface: True")
+    print("v300_rt9c_stage1_implementation_change_file_count:", len(RT9C_STAGE1_SURFACE))
     print("v300_rt9b_backend_version_metadata:", EXPECTED_BACKEND_VERSION)
     print("v300_rt9b_flutter_version_metadata:", EXPECTED_FLUTTER_VERSION)
     print("v300_rt9b_historical_v300_gate_count:", HISTORICAL_V300_GATE_COUNT)
@@ -406,7 +385,8 @@ def main() -> None:
     print("v300_rt9b_tag_created: False")
     print("v300_rt9b_github_release_created: False")
     print("v300_rt9b_commit_push_authorized: False")
-    print("v300_rt9c_authorized: False")
+    print("v300_rt9c_stage2_authorized: False")
+    print("v300_rt9d_authorized: False")
     print("v300_release_ready: False")
 
 

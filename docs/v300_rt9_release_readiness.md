@@ -1,7 +1,7 @@
 # Daily Rhythm Companion v3.0.0 RT-9b release readiness
 
 Updated: 2026-08-04
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: COMPLETED / ACCEPTED / PUSHED
 
 ## Candidate identity
 
@@ -9,6 +9,7 @@ Status: IMPLEMENTED / AWAITING_REVIEW
 Public repository: murayan1982/daily-rhythm-companion-public
 RT-9a accepted commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
 RT-9b implementation baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
 current released version: v2.1.0 RELEASED / ACCEPTED
 Backend candidate version: 3.0.0
 Flutter candidate version: 3.0.0+4
@@ -18,8 +19,9 @@ GitHub Release: NOT_CREATED
 v3.0.0: NOT_RELEASED
 ```
 
-RT-9b synchronizes candidate metadata and adds the active v3 aggregate
-source/test/build gate. It is not a release publication step.
+RT-9b synchronized candidate metadata and added the active v3 aggregate
+source/test/build gate. It is accepted and pushed; it remains a candidate
+readiness step rather than a release publication step.
 
 ## Gate modes
 
@@ -198,3 +200,10 @@ tags and GitHub Releases
 After exact verification, stop for diff, surface, privacy, test, and build review.
 Do not add RT-9c tooling, invoke a fixed-ZIP builder, create `DRC_v3.0.0`,
 publish a GitHub Release, or claim v3.0.0 released without separate approval.
+
+## RT-9c Stage 1 handoff
+
+RT-9c Stage 1 is implemented against accepted RT-9b commit `15908a548c229726287867ad89c7ce8b4b916298`. It adds
+one-time fixed-ZIP tooling only. Stage 2 will run the committed-source no-build
+preflight after Stage 1 acceptance/push. Fixed ZIP build, tuple recording, tag,
+and GitHub Release remain unauthorized.

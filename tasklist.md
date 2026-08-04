@@ -14,12 +14,12 @@ v2.1.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 CURRENT / NOT_COMPLETED
-current small commit: RT-9b v3.0.0 candidate metadata/readiness
-current implementation step: RT-9b v3.0.0 candidate metadata and aggregate source/test/build readiness
+current small commit: RT-9c Stage 1 fixed-ZIP tooling
+current implementation step: RT-9c Stage 1 credential-free one-time fixed-ZIP tooling
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+current implementation baseline: 15908a548c229726287867ad89c7ce8b4b916298
 current implementation commit: none
-last accepted small commit: RT-9a release/security inventory (**COMPLETED / ACCEPTED / PUSHED**) at `0e4af7603f60c56f0240271fbb2590d72a189a65`
+last accepted small commit: RT-9b v3.0.0 candidate metadata/readiness (**COMPLETED / ACCEPTED / PUSHED**) at `15908a548c229726287867ad89c7ce8b4b916298`
 accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
 strategic target: v3.0.0
 ```
@@ -3600,40 +3600,83 @@ Historical RT-9a gate:
 <!-- RT-9A-RELEASE-INVENTORY:END -->
 
 <!-- RT-9B-RELEASE-READINESS:BEGIN -->
-## RT-9b v3.0.0 candidate metadata and aggregate readiness candidate
+## RT-9b accepted v3.0.0 candidate metadata and aggregate readiness
 
 ```text
 RT-9: CURRENT / NOT_COMPLETED
 RT-9a: COMPLETED / ACCEPTED / PUSHED
 RT-9a commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
-RT-9b: IMPLEMENTED / AWAITING_REVIEW
-RT-9b baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b: COMPLETED / ACCEPTED / PUSHED
+RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
 RT-9b surface: exact 13 files
 Backend candidate metadata: 3.0.0
 Flutter candidate metadata: 3.0.0+4
 current released version: v2.1.0 RELEASED / ACCEPTED
 v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED
 v3.0.0 release record: PREPARED / NOT_RELEASED
-RT-9c: BLOCKED_PENDING_RT9B_ACCEPTANCE / NOT_AUTHORIZED
+RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-9c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+RT-9c Stage 3: BLOCKED_PENDING_NO_BUILD_PREFLIGHT / NOT_AUTHORIZED
 RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0 fixed ZIP: NOT_BUILT
 DRC_v3.0.0 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
+```
+
+RT-9b synchronized Backend `3.0.0` and Flutter `3.0.0+4` candidate metadata,
+added the active v3 source/test/build readiness gate, preserved historical
+release records, and kept publication state unfilled. Portable and full Windows
+verification passed with Backend 417 tests, Flutter analyze, Flutter 500 tests,
+Web/Windows/Android debug builds, strict read-only RT-8 aggregate validation,
+exact-surface/privacy review, explicit approval, push, and clean-tree checks.
+No fixed ZIP, tag, or GitHub Release was created.
+
+Detailed accepted contract:
+`docs/v300_rt9_release_readiness.md`.
+
+Active aggregate gate:
+`scripts/check_v300_rt9_release_readiness.py`.
+<!-- RT-9B-RELEASE-READINESS:END -->
+
+<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->
+## RT-9c Stage 1 fixed-ZIP tooling candidate
+
+```text
+RT-9: CURRENT / NOT_COMPLETED
+RT-9b: COMPLETED / ACCEPTED / PUSHED
+RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
+RT-9c: CURRENT / NOT_COMPLETED
+RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-9c Stage 1 baseline: 15908a548c229726287867ad89c7ce8b4b916298
+RT-9c Stage 1 surface: exact 13 files
+RT-9c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+RT-9c Stage 3: BLOCKED_PENDING_NO_BUILD_PREFLIGHT / NOT_AUTHORIZED
+RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
+RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+fixed ZIP builder invocation count: 0
+v3.0.0 fixed ZIP: NOT_BUILT
+same-artifact verification: NOT_COMPLETED
+DRC_v3.0.0 annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
+v3.0.0: NOT_RELEASED
 implementation commit / push: NOT_AUTHORIZED
 ```
 
-RT-9b advances only the active source candidate metadata and adds the v3.0.0
-aggregate source/test/build readiness contract. The portable gate is
-credential-free, provider-free, network-free, private-manifest-free, and
-artifact-free. The explicit Windows full mode reads only the supplied ignored
-RT-8 aggregate manifest, runs strict aggregate validation without printing its
-contents, and adds Flutter tests plus Web, Windows, and Android debug builds.
-Neither mode invokes a fixed-ZIP builder, creates a tag, or publishes a release.
+Stage 1 adds credential-free one-time fixed-ZIP builder/verifier tooling and its
+public contract. The default tooling gate is artifact-free and private-manifest-
+free. The builder requires clean synchronized official Public `main`, preserved
+annotated v2 tags, an absent v3 tag and fixed ZIP, and an explicit ignored RT-8
+aggregate manifest. `-PreflightOnly` runs the full source/test/build gate with
+builder invocation count zero. Actual build, same-artifact verification, tuple
+recording, tag creation, and publication remain separately unauthorized.
 
 Detailed contract:
-`docs/v300_rt9_release_readiness.md`.
+`docs/v300_rt9_fixed_release_zip.md`.
 
-Aggregate candidate gate:
-`scripts/check_v300_rt9_release_readiness.py`.
-<!-- RT-9B-RELEASE-READINESS:END -->
+One-time builder:
+`build_v300_fixed_release_zip_from_head.ps1`.
+
+Source/same-artifact verifier:
+`scripts/check_v300_fixed_release_zip.py`.
+<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->

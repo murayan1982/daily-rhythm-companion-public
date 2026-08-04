@@ -2,7 +2,7 @@
 
 Updated: 2026-08-04
 
-## Accepted RT-9a state and current RT-9b candidate
+## Accepted RT-9a/RT-9b state and current RT-9c Stage 1 candidate
 
 ```text
 RT-8: COMPLETED / ACCEPTED
@@ -13,18 +13,20 @@ RT-9a: COMPLETED / ACCEPTED / PUSHED
 RT-9a implementation commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
 RT-9a implementation baseline: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
 RT-9a exact surface: 7 documentation/static-gate files
-RT-9b: IMPLEMENTED / AWAITING_REVIEW
-RT-9b baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b: COMPLETED / ACCEPTED / PUSHED
+RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
 RT-9b exact surface: 13 files
-RT-9c through RT-9e: NOT_AUTHORIZED
+RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-9c Stage 1 baseline: 15908a548c229726287867ad89c7ce8b4b916298
+RT-9c Stage 2 / Stage 3 / RT-9d / RT-9e: NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
 ```
 
 RT-9a was credential-free, provider-free, network-free, private-manifest-free,
 artifact-free, tag-free, and publication-free. It was accepted and pushed at
-`0e4af7603f60c56f0240271fbb2590d72a189a65`. RT-9b now implements the separately reviewed candidate
-metadata and aggregate source/test/build readiness contract without building or
-publishing a release artifact.
+`0e4af7603f60c56f0240271fbb2590d72a189a65`. RT-9b was accepted and pushed at `15908a548c229726287867ad89c7ce8b4b916298` after portable and full Windows
+source/test/build verification. RT-9c Stage 1 now adds one-time fixed-ZIP
+builder/verifier tooling without building or publishing a release artifact.
 
 ## Current source and test baseline
 
@@ -319,3 +321,21 @@ The separately reviewed RT-9b contract is implemented in
 `docs/v300_rt9_release_readiness.md` and
 `scripts/check_v300_rt9_release_readiness.py`. Commit and push remain subject to
 exact diff, privacy, test, build, and operator review.
+
+## Current RT-9c Stage 1 tooling boundary
+
+```text
+RT-9b accepted commit: 15908a548c229726287867ad89c7ce8b4b916298
+Stage 1 exact surface: 13 files
+new contract: docs/v300_rt9_fixed_release_zip.md
+new builder: build_v300_fixed_release_zip_from_head.ps1
+new verifier: scripts/check_v300_fixed_release_zip.py
+builder invocation count: 0
+fixed ZIP: NOT_BUILT
+DRC_v3.0.0 tag: NOT_CREATED
+GitHub Release: NOT_CREATED
+```
+
+Stage 1 is source/tooling-only. The clean synchronized post-push `-PreflightOnly`
+run belongs to Stage 2. Actual fixed-ZIP build and same-artifact verification
+belong to RT-9d, and publication belongs to RT-9e.
