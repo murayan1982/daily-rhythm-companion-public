@@ -16,7 +16,7 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: RT-8d Stage 3 Android acceptance sync
+current small commit: RT-8e Stage 1 aggregate cleanup tooling
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -7912,3 +7912,46 @@ Dedicated Stage 3 gate:
 Operator runner retained unchanged:
 `scripts/run_v300_rt8d_private_android_operator.py`.
 <!-- RT-8d-STAGE1-ANDROID-TOOLING:END -->
+
+<!-- RT-8E-STAGE1-AGGREGATE-TOOLING:BEGIN -->
+## RT-8e Stage 1 aggregate cleanup tooling candidate
+
+```text
+RT-8: CURRENT / NOT_COMPLETED
+RT-8d: COMPLETED / ACCEPTED / PUSHED
+RT-8d Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-8d Stage 3 acceptance-sync commit: 84839efd6e381cb5a2c45022a7e8f7d9eafcb5df
+RT-8e: CURRENT / NOT_COMPLETED
+RT-8e Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-8e Stage 1 baseline: 84839efd6e381cb5a2c45022a7e8f7d9eafcb5df
+RT-8e Stage 1 surface: exact 9 files
+RT-8e Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+RT-8e Stage 3: BLOCKED_PENDING_AGGREGATE_ACCEPTANCE / NOT_AUTHORIZED
+RT-9: BLOCKED_PENDING_RT8 / NOT_AUTHORIZED
+v3.0.0: NOT_RELEASED
+schema: drc.v3.rt8-platform-acceptance.2
+accepted PC candidate source: fa39065130a4a4689c2e54195f231a5e79c62a35
+accepted Android candidate source: 0e7fc6fc5922c293b8460fc816610d41c2a79e9a
+private manifest read by Stage 1 tooling/gate: false
+private manifest modified by Stage 1: false
+private cleanup performed by Stage 1: false
+configured execution performed by Stage 1: false
+implementation commit / push: NOT_AUTHORIZED
+```
+
+Stage 1 adds an inert-by-default aggregate-transition runner, exact eighteen
+credential-free focused Backend tests, a fixed three-stage RT-8e contract, and
+a dedicated static gate. The later separately authorized sequence is Stage 2
+private aggregate cleanup/manifest transition followed by Stage 3 public-safe
+RT-8 acceptance synchronization. Stage 1 does not read or update the ignored
+manifest and performs no cleanup or configured execution.
+
+Detailed contract:
+`docs/v300_rt8e_aggregate_cleanup_and_rt8_acceptance.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt8e_aggregate_cleanup_and_acceptance.py`.
+
+Private aggregate runner:
+`scripts/run_v300_rt8e_private_aggregate_cleanup.py`.
+<!-- RT-8E-STAGE1-AGGREGATE-TOOLING:END -->

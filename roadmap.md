@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-8d Stage 3 Android acceptance sync
+Current small commit: RT-8e Stage 1 aggregate cleanup tooling
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,14 +571,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-8 CURRENT / NOT_COMPLETED
-Current small commit: RT-8d Stage 3 Android acceptance sync
+Current small commit: RT-8e Stage 1 aggregate cleanup tooling
 Last accepted small commit: RT-8d configured Android smartphone realtime acceptance (**COMPLETED / ACCEPTED / PUSHED**) at `0e7fc6fc5922c293b8460fc816610d41c2a79e9a`
 Accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
-Current implementation: RT-8d Stage 3 public-safe Android acceptance synchronization.
+Current implementation: RT-8e Stage 1 credential-free aggregate-transition tooling.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `0e7fc6fc5922c293b8460fc816610d41c2a79e9a`
+Current implementation baseline: `84839efd6e381cb5a2c45022a7e8f7d9eafcb5df`
 Current implementation commit: none
-Current implementation boundary: exact 7 public documentation/static-gate files; Backend/Flutter runtime, existing tests, operator runner, focused operator tests, strict validator, private configuration, private manifest content, aggregate transition, RT-8e, release records, and all configured execution remain protected.
+Current implementation boundary: exact 9 documentation/static-gate/operator-test files; Backend/Flutter runtime, existing tests, strict validator, earlier operator runners, private configuration, private manifest content, aggregate transition, Stage 3, release records, and all configured execution remain protected.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: fixed released v5.5.0 vendor at `f56697b6de066b062794ac7bb01330d2d9e91759`
 
@@ -816,9 +816,12 @@ RT-8   CURRENT / NOT_COMPLETED  Platform-appropriate PC Windows and Android real
   RT-8d  COMPLETED / ACCEPTED / PUSHED  Configured Android smartphone realtime acceptance
     RT-8d Stage 1  COMPLETED / ACCEPTED / PUSHED  Credential-free Android operator tooling
     RT-8d Stage 2  COMPLETED / ACCEPTED  Private configured Android Controls A-H and strict validation
-    RT-8d Stage 3  IMPLEMENTED / AWAITING_REVIEW  Android acceptance synchronization
-  RT-8e  READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Aggregate cleanup and RT-8 acceptance sync
-RT-9   BLOCKED_PENDING_RT8       Security, cleanup, aggregate readiness, and release
+    RT-8d Stage 3  COMPLETED / ACCEPTED / PUSHED  Android acceptance synchronization
+  RT-8e  CURRENT / NOT_COMPLETED  Aggregate cleanup and RT-8 acceptance sync
+    RT-8e Stage 1  IMPLEMENTED / AWAITING_REVIEW  Credential-free aggregate-transition tooling
+    RT-8e Stage 2  BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED  Private aggregate cleanup and manifest transition
+    RT-8e Stage 3  BLOCKED_PENDING_AGGREGATE_ACCEPTANCE / NOT_AUTHORIZED  Public-safe RT-8 acceptance synchronization
+RT-9   BLOCKED_PENDING_RT8 / NOT_AUTHORIZED       Security, cleanup, aggregate readiness, and release
 ```
 
 
@@ -8849,3 +8852,46 @@ Dedicated Stage 3 gate:
 Operator runner retained unchanged:
 `scripts/run_v300_rt8d_private_android_operator.py`.
 <!-- RT-8d-STAGE1-ANDROID-TOOLING:END -->
+
+<!-- RT-8E-STAGE1-AGGREGATE-TOOLING:BEGIN -->
+## RT-8e Stage 1 aggregate cleanup tooling candidate
+
+```text
+RT-8: CURRENT / NOT_COMPLETED
+RT-8d: COMPLETED / ACCEPTED / PUSHED
+RT-8d Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-8d Stage 3 acceptance-sync commit: 84839efd6e381cb5a2c45022a7e8f7d9eafcb5df
+RT-8e: CURRENT / NOT_COMPLETED
+RT-8e Stage 1: IMPLEMENTED / AWAITING_REVIEW
+RT-8e Stage 1 baseline: 84839efd6e381cb5a2c45022a7e8f7d9eafcb5df
+RT-8e Stage 1 surface: exact 9 files
+RT-8e Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+RT-8e Stage 3: BLOCKED_PENDING_AGGREGATE_ACCEPTANCE / NOT_AUTHORIZED
+RT-9: BLOCKED_PENDING_RT8 / NOT_AUTHORIZED
+v3.0.0: NOT_RELEASED
+schema: drc.v3.rt8-platform-acceptance.2
+accepted PC candidate source: fa39065130a4a4689c2e54195f231a5e79c62a35
+accepted Android candidate source: 0e7fc6fc5922c293b8460fc816610d41c2a79e9a
+private manifest read by Stage 1 tooling/gate: false
+private manifest modified by Stage 1: false
+private cleanup performed by Stage 1: false
+configured execution performed by Stage 1: false
+implementation commit / push: NOT_AUTHORIZED
+```
+
+Stage 1 adds an inert-by-default aggregate-transition runner, exact eighteen
+credential-free focused Backend tests, a fixed three-stage RT-8e contract, and
+a dedicated static gate. The later separately authorized sequence is Stage 2
+private aggregate cleanup/manifest transition followed by Stage 3 public-safe
+RT-8 acceptance synchronization. Stage 1 does not read or update the ignored
+manifest and performs no cleanup or configured execution.
+
+Detailed contract:
+`docs/v300_rt8e_aggregate_cleanup_and_rt8_acceptance.md`.
+
+Dedicated gate:
+`scripts/check_v300_rt8e_aggregate_cleanup_and_acceptance.py`.
+
+Private aggregate runner:
+`scripts/run_v300_rt8e_private_aggregate_cleanup.py`.
+<!-- RT-8E-STAGE1-AGGREGATE-TOOLING:END -->
