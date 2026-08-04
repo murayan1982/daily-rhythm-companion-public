@@ -2,7 +2,7 @@
 
 Updated: 2026-08-04
 
-## Accepted RT-9a/RT-9b state and current RT-9c Stage 1 candidate
+## Accepted RT-9a/RT-9b/RT-9c Stage 1-2 state and current Stage 3 candidate
 
 ```text
 RT-8: COMPLETED / ACCEPTED
@@ -16,24 +16,31 @@ RT-9a exact surface: 7 documentation/static-gate files
 RT-9b: COMPLETED / ACCEPTED / PUSHED
 RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
 RT-9b exact surface: 13 files
-RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW
-RT-9c Stage 1 baseline: 15908a548c229726287867ad89c7ce8b4b916298
-RT-9c Stage 2 / Stage 3 / RT-9d / RT-9e: NOT_AUTHORIZED
+RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
+RT-9c Stage 2 source HEAD: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 2 builder invocation count: 0
+RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
+RT-9c Stage 3 baseline: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9d / RT-9e: NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
 ```
 
 RT-9a was credential-free, provider-free, network-free, private-manifest-free,
 artifact-free, tag-free, and publication-free. It was accepted and pushed at
-`0e4af7603f60c56f0240271fbb2590d72a189a65`. RT-9b was accepted and pushed at `15908a548c229726287867ad89c7ce8b4b916298` after portable and full Windows
-source/test/build verification. RT-9c Stage 1 now adds one-time fixed-ZIP
-builder/verifier tooling without building or publishing a release artifact.
+`0e4af7603f60c56f0240271fbb2590d72a189a65`. RT-9b was accepted and pushed at `15908a548c229726287867ad89c7ce8b4b916298` after portable and full
+Windows source/test/build verification. RT-9c Stage 1 was accepted and pushed at
+`7110035eff205d77157b8058b274b4c281a51f7e`. Stage 2 then passed the committed-source no-build preflight with
+the private aggregate manifest read-only, builder invocation count zero, and no
+fixed ZIP, tag, or GitHub Release. Stage 3 synchronizes only public-safe state.
 
 ## Current source and test baseline
 
 ```text
 Public repository: murayan1982/daily-rhythm-companion-public
 baseline branch: main
-RT-9b baseline HEAD / origin-main: 0e4af7603f60c56f0240271fbb2590d72a189a65
+current candidate HEAD / origin-main before Stage 3: 7110035eff205d77157b8058b274b4c281a51f7e
 current released version: v2.1.0 RELEASED / ACCEPTED
 RT-9a inspected Backend APP_VERSION: 2.1.0
 RT-9a inspected Flutter package version: 2.1.0+3
@@ -322,20 +329,26 @@ The separately reviewed RT-9b contract is implemented in
 `scripts/check_v300_rt9_release_readiness.py`. Commit and push remain subject to
 exact diff, privacy, test, build, and operator review.
 
-## Current RT-9c Stage 1 tooling boundary
+## Current RT-9c Stage 1-3 boundary
 
 ```text
 RT-9b accepted commit: 15908a548c229726287867ad89c7ce8b4b916298
+RT-9c Stage 1 accepted commit: 7110035eff205d77157b8058b274b4c281a51f7e
 Stage 1 exact surface: 13 files
-new contract: docs/v300_rt9_fixed_release_zip.md
-new builder: build_v300_fixed_release_zip_from_head.ps1
-new verifier: scripts/check_v300_fixed_release_zip.py
-builder invocation count: 0
+Stage 2 source HEAD: 7110035eff205d77157b8058b274b4c281a51f7e
+Stage 2 status: COMPLETED / PASS / ACCEPTED
+Stage 2 private manifest: read-only / unchanged / ignored / untracked / unpushed
+Stage 2 builder invocation count: 0
+Stage 2 fixed ZIP built: false
+Stage 3 exact surface: 9 public documentation files
+Stage 3 private manifest read: false
+Stage 3 configured execution: false
 fixed ZIP: NOT_BUILT
 DRC_v3.0.0 tag: NOT_CREATED
 GitHub Release: NOT_CREATED
 ```
 
-Stage 1 is source/tooling-only. The clean synchronized post-push `-PreflightOnly`
-run belongs to Stage 2. Actual fixed-ZIP build and same-artifact verification
-belong to RT-9d, and publication belongs to RT-9e.
+Stage 1 is accepted source/tooling. Stage 2 is the accepted clean synchronized
+post-push `-PreflightOnly` run. Stage 3 synchronizes that result without reading
+private evidence or changing tooling. Actual fixed-ZIP build and same-artifact
+verification belong to RT-9d, and publication belongs to RT-9e.

@@ -7,14 +7,14 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3
 Current v3.0.0 candidate metadata: Backend 3.0.0 / Flutter 3.0.0+4 NOT_RELEASED
 Strategic target: v3.0.0
 Current parent phase: RT-9 CURRENT / NOT_COMPLETED
-Current small commit: RT-9c Stage 1 fixed-ZIP tooling
-Current implementation step: RT-9c Stage 1 credential-free one-time fixed-ZIP tooling
+Current small commit: RT-9c Stage 3 acceptance sync
+Current implementation step: RT-9c Stage 3 public-safe no-build-preflight acceptance synchronization
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 15908a548c229726287867ad89c7ce8b4b916298
+Current implementation baseline: 7110035eff205d77157b8058b274b4c281a51f7e
 Current implementation commit: none
-Last accepted small commit: RT-9b v3.0.0 candidate metadata/readiness (**COMPLETED / ACCEPTED / PUSHED**) at `15908a548c229726287867ad89c7ce8b4b916298`
+Last accepted small commit: RT-9c Stage 1 fixed-ZIP tooling (**COMPLETED / ACCEPTED / PUSHED**) at `7110035eff205d77157b8058b274b4c281a51f7e`
 Accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
-Next implementation action: verify exact thirteen-file RT-9c Stage 1 tooling candidate; no-build preflight, fixed ZIP build, tag, and publication remain NOT_AUTHORIZED
+Next implementation action: verify exact nine-file RT-9c Stage 3 public acceptance-sync candidate; fixed ZIP build, tuple recording, tag, and publication remain NOT_AUTHORIZED
 ```
 
 ## Source of truth
@@ -3545,8 +3545,12 @@ RT-9: CURRENT / NOT_COMPLETED
 RT-9a: COMPLETED / ACCEPTED / PUSHED
 RT-9a implementation commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
 RT-9a surface: exact 7 documentation/static-gate files
-RT-9b: IMPLEMENTED / AWAITING_REVIEW
-RT-9c: BLOCKED_PENDING_RT9B_ACCEPTANCE / NOT_AUTHORIZED
+RT-9b: COMPLETED / ACCEPTED / PUSHED
+RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
+RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
+RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
 RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
@@ -3581,9 +3585,10 @@ Flutter candidate metadata: 3.0.0+4
 current released version: v2.1.0 RELEASED / ACCEPTED
 v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED
 v3.0.0 release record: PREPARED / NOT_RELEASED
-RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW
-RT-9c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
-RT-9c Stage 3: BLOCKED_PENDING_NO_BUILD_PREFLIGHT / NOT_AUTHORIZED
+RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
+RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
 RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0 fixed ZIP: NOT_BUILT
@@ -3607,18 +3612,25 @@ Active aggregate gate:
 <!-- RT-9B-RELEASE-READINESS:END -->
 
 <!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->
-## RT-9c Stage 1 fixed-ZIP tooling candidate
+## RT-9c fixed-ZIP tooling and no-build preflight acceptance-sync candidate
 
 ```text
 RT-9: CURRENT / NOT_COMPLETED
 RT-9b: COMPLETED / ACCEPTED / PUSHED
 RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
 RT-9c: CURRENT / NOT_COMPLETED
-RT-9c Stage 1: IMPLEMENTED / AWAITING_REVIEW
-RT-9c Stage 1 baseline: 15908a548c229726287867ad89c7ce8b4b916298
+RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 1 surface: exact 13 files
-RT-9c Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
-RT-9c Stage 3: BLOCKED_PENDING_NO_BUILD_PREFLIGHT / NOT_AUTHORIZED
+RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
+RT-9c Stage 2 source HEAD: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 2 source branch: main
+RT-9c Stage 2 builder invocation count: 0
+RT-9c Stage 2 fixed ZIP built: false
+RT-9c Stage 2 private manifest: read-only / unchanged / ignored / untracked / unpushed
+RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
+RT-9c Stage 3 baseline: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 3 surface: exact 9 public documentation files
 RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0
@@ -3630,15 +3642,23 @@ v3.0.0: NOT_RELEASED
 implementation commit / push: NOT_AUTHORIZED
 ```
 
-Stage 1 adds credential-free one-time fixed-ZIP builder/verifier tooling and its
-public contract. The default tooling gate is artifact-free and private-manifest-
-free. The builder requires clean synchronized official Public `main`, preserved
-annotated v2 tags, an absent v3 tag and fixed ZIP, and an explicit ignored RT-8
-aggregate manifest. `-PreflightOnly` runs the full source/test/build gate with
-builder invocation count zero. Actual build, same-artifact verification, tuple
-recording, tag creation, and publication remain separately unauthorized.
+Stage 1 added credential-free one-time fixed-ZIP builder/verifier tooling and
+was accepted, committed, and pushed at `7110035eff205d77157b8058b274b4c281a51f7e`. Stage 2 then ran the
+committed-source `-PreflightOnly` path from clean synchronized official Public
+`main`. Backend 417 tests, Flutter analyze, Flutter 500 tests, Web/Windows/Android
+debug builds, and strict read-only RT-8 aggregate validation passed. The private
+manifest remained ignored, untracked, unchanged, and unpushed. The generic
+builder was invoked zero times, and no fixed ZIP, tag, or GitHub Release was
+created.
 
-Detailed contract:
+Stage 3 changes only the exact nine public documentation files. It does not read
+private evidence, execute provider/network/microphone/STT/TTS/VTS paths, invoke
+any builder or verifier artifact mode, record a release tuple, create a tag, or
+publish a release. The detailed Stage 1 tooling file remains the immutable
+implementation-time contract; these current public state files are the active
+acceptance source of truth.
+
+Detailed tooling contract:
 `docs/v300_rt9_fixed_release_zip.md`.
 
 One-time builder:

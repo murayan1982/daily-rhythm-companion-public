@@ -201,9 +201,11 @@ After exact verification, stop for diff, surface, privacy, test, and build revie
 Do not add RT-9c tooling, invoke a fixed-ZIP builder, create `DRC_v3.0.0`,
 publish a GitHub Release, or claim v3.0.0 released without separate approval.
 
-## RT-9c Stage 1 handoff
+## RT-9c accepted tooling/preflight handoff
 
-RT-9c Stage 1 is implemented against accepted RT-9b commit `15908a548c229726287867ad89c7ce8b4b916298`. It adds
-one-time fixed-ZIP tooling only. Stage 2 will run the committed-source no-build
-preflight after Stage 1 acceptance/push. Fixed ZIP build, tuple recording, tag,
+RT-9c Stage 1 was accepted and pushed at `7110035eff205d77157b8058b274b4c281a51f7e`. Stage 2 then passed the
+clean committed-source no-build preflight from that exact HEAD with Backend 417,
+Flutter analyze, Flutter 500, Web/Windows/Android debug builds, and strict
+read-only RT-8 aggregate validation. Builder invocation remained zero. Stage 3
+now synchronizes only public-safe status. Fixed ZIP build, tuple recording, tag,
 and GitHub Release remain unauthorized.
