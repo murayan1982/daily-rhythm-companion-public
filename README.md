@@ -9,15 +9,15 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-8e Stage 3 RT-8 acceptance sync
-Current implementation: RT-8e Stage 3 public-safe RT-8 acceptance synchronization.
+Current small commit: RT-9a release/security inventory
+Current implementation: RT-9a release/security current-behavior inventory and exact split.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `25c003405fe1a59f3ca7e8a8a6788698ad30bf6d`
+Current implementation baseline: `4c3b724a0c42e0d078c876c02b07a04d4c71e24d`
 Current implementation commit: none
-Last accepted small commit: RT-8e Stage 1 aggregate cleanup tooling (**COMPLETED / ACCEPTED / PUSHED**) at `25c003405fe1a59f3ca7e8a8a6788698ad30bf6d`
+Last accepted small commit: RT-8e Stage 3 RT-8 acceptance sync (**COMPLETED / ACCEPTED / PUSHED**) at `4c3b724a0c42e0d078c876c02b07a04d4c71e24d`
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
-Current realtime phase: RT-8 (**COMPLETED / ACCEPTED**)
-Current realtime action: verify the exact seven-file RT-8e Stage 3 public acceptance-sync candidate; commit/push and RT-9 implementation remain NOT_AUTHORIZED
+Current realtime phase: RT-9 (**CURRENT / NOT_COMPLETED**)
+Current realtime action: verify the exact seven-file RT-9a inventory candidate; RT-9b through RT-9e, version changes, fixed ZIP, tag, and publication remain NOT_AUTHORIZED
 
 Current phase state:
 
@@ -110,8 +110,13 @@ RT-8  COMPLETED / ACCEPTED  Platform-appropriate PC Windows and Android realtime
   RT-8e  COMPLETED / ACCEPTED / PUSHED  Aggregate cleanup and RT-8 acceptance sync
     RT-8e Stage 1  COMPLETED / ACCEPTED / PUSHED  Credential-free aggregate-transition tooling
     RT-8e Stage 2  COMPLETED / PASS / ACCEPTED  Private aggregate cleanup and manifest transition
-    RT-8e Stage 3  IMPLEMENTED / AWAITING_REVIEW  Public-safe RT-8 acceptance synchronization
-RT-9  READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Security, cleanup, aggregate readiness, and release
+    RT-8e Stage 3  COMPLETED / ACCEPTED / PUSHED  Public-safe RT-8 acceptance synchronization
+RT-9  CURRENT / NOT_COMPLETED  Security, cleanup, aggregate readiness, and release
+  RT-9a  IMPLEMENTED / AWAITING_REVIEW  Release/security current-behavior inventory and exact split
+  RT-9b  BLOCKED_PENDING_RT9A_ACCEPTANCE / NOT_AUTHORIZED  Candidate metadata and aggregate source/test/build readiness
+  RT-9c  BLOCKED_PENDING_RT9B_ACCEPTANCE / NOT_AUTHORIZED  One-time fixed-ZIP tooling and no-build preflight
+  RT-9d  BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED  Fixed ZIP build-once, same-artifact verification, and tuple record
+  RT-9e  BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED  Publication and post-publication verification
 T-1  COMPLETED / ACCEPTED
 V-1  COMPLETED / ACCEPTED
   V-1a  COMPLETED / ACCEPTED
@@ -6310,3 +6315,44 @@ Dedicated Stage 3 gate:
 Aggregate runner retained unchanged:
 `scripts/run_v300_rt8e_private_aggregate_cleanup.py`.
 <!-- RT-8E-STAGE1-AGGREGATE-TOOLING:END -->
+
+
+<!-- RT-9A-RELEASE-INVENTORY:BEGIN -->
+## RT-9a release/security current-behavior inventory candidate
+
+```text
+RT-8: COMPLETED / ACCEPTED
+RT-8e: COMPLETED / ACCEPTED / PUSHED
+RT-8e Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-8e Stage 3 acceptance-sync commit: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
+RT-9: CURRENT / NOT_COMPLETED
+RT-9a: IMPLEMENTED / AWAITING_REVIEW
+RT-9a baseline: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
+RT-9a surface: exact 7 documentation/static-gate files
+RT-9b: BLOCKED_PENDING_RT9A_ACCEPTANCE / NOT_AUTHORIZED
+RT-9c: BLOCKED_PENDING_RT9B_ACCEPTANCE / NOT_AUTHORIZED
+RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
+RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+v3.0.0: NOT_RELEASED
+Backend version metadata: 2.1.0
+Flutter version metadata: 2.1.0+3
+v3.0.0 fixed ZIP: NOT_BUILT
+DRC_v3.0.0 annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
+implementation commit / push: NOT_AUTHORIZED
+```
+
+RT-9a freezes the current release/security boundary and the exact RT-9a through
+RT-9e split. It changes no Backend or Flutter runtime, tests, dependencies,
+version metadata, package policy, historical release tooling or records,
+private configuration/evidence, generated release artifact, tag, or GitHub
+Release. It does not read the ignored RT-8 aggregate manifest and performs no
+provider, network, microphone/STT, TTS/playback, VTS/WebSocket, build, packaging,
+or publication execution.
+
+Detailed inventory:
+`docs/v300_rt9_release_readiness_current_behavior_inventory.md`.
+
+Dedicated candidate gate:
+`scripts/check_v300_rt9_release_readiness_current_behavior_inventory.py`.
+<!-- RT-9A-RELEASE-INVENTORY:END -->
