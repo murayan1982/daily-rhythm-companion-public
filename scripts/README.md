@@ -17,7 +17,7 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: RT-9c Stage 3 acceptance sync
+current small commit: RT-9d entry-state sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -7990,8 +7990,9 @@ RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
 RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
-RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
-RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
+RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
+RT-9d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
 ```
@@ -8028,8 +8029,9 @@ v3.0.0 release record: PREPARED / NOT_RELEASED
 RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
-RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
-RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
+RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
+RT-9d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0 fixed ZIP: NOT_BUILT
 DRC_v3.0.0 annotated tag: NOT_CREATED
@@ -8052,13 +8054,13 @@ Active aggregate gate:
 <!-- RT-9B-RELEASE-READINESS:END -->
 
 <!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->
-## RT-9c fixed-ZIP tooling and no-build preflight acceptance-sync candidate
+## RT-9c accepted fixed-ZIP tooling and no-build preflight
 
 ```text
 RT-9: CURRENT / NOT_COMPLETED
 RT-9b: COMPLETED / ACCEPTED / PUSHED
 RT-9b implementation commit: 15908a548c229726287867ad89c7ce8b4b916298
-RT-9c: CURRENT / NOT_COMPLETED
+RT-9c: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 1 surface: exact 13 files
@@ -8068,10 +8070,11 @@ RT-9c Stage 2 source branch: main
 RT-9c Stage 2 builder invocation count: 0
 RT-9c Stage 2 fixed ZIP built: false
 RT-9c Stage 2 private manifest: read-only / unchanged / ignored / untracked / unpushed
-RT-9c Stage 3: IMPLEMENTED / AWAITING_REVIEW
+RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
 RT-9c Stage 3 baseline: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 3 surface: exact 9 public documentation files
-RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
+RT-9d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0
 v3.0.0 fixed ZIP: NOT_BUILT
@@ -8091,7 +8094,7 @@ manifest remained ignored, untracked, unchanged, and unpushed. The generic
 builder was invoked zero times, and no fixed ZIP, tag, or GitHub Release was
 created.
 
-Stage 3 changes only the exact nine public documentation files. It does not read
+Stage 3 changed only the exact nine public documentation files and was accepted, committed, and pushed. It does not read
 private evidence, execute provider/network/microphone/STT/TTS/VTS paths, invoke
 any builder or verifier artifact mode, record a release tuple, create a tag, or
 publish a release. The detailed Stage 1 tooling file remains the immutable
@@ -8107,3 +8110,45 @@ One-time builder:
 Source/same-artifact verifier:
 `scripts/check_v300_fixed_release_zip.py`.
 <!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->
+
+<!-- RT-9D-ENTRY-SYNC:BEGIN -->
+## RT-9d fixed-ZIP entry-state sync candidate
+
+```text
+RT-9: CURRENT / NOT_COMPLETED
+RT-9a: COMPLETED / ACCEPTED / PUSHED
+RT-9b: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
+RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
+RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
+RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
+RT-9c: COMPLETED / ACCEPTED / PUSHED
+RT-9d entry sync: IMPLEMENTED / AWAITING_REVIEW
+RT-9d entry-sync baseline: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
+RT-9d entry-sync surface: exact 9 public documentation files
+RT-9d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
+RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+fixed ZIP builder invocation count: 0
+release source HEAD: NOT_RECORDED
+fixed ZIP basename: NOT_BUILT
+fixed ZIP size: NOT_RECORDED
+fixed ZIP SHA-256: NOT_RECORDED
+same-artifact verification: NOT_COMPLETED
+DRC_v3.0.0 annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
+v3.0.0: NOT_RELEASED
+entry-sync commit / push: NOT_AUTHORIZED
+```
+
+This entry sync closes the self-referential RT-9c Stage 3 state and establishes
+the exact committed precondition required by the one-time v3 builder. It changes
+only the nine public documentation files. It does not read private evidence,
+execute provider/network/microphone/STT/TTS/VTS paths, invoke the builder or
+artifact verifier, create a fixed ZIP, record an artifact tuple, create a tag,
+or publish a GitHub Release.
+
+After this candidate is separately reviewed, committed, and pushed, that new
+clean synchronized Public `main` commit becomes the prospective RT-9d release
+source HEAD. Actual fixed-ZIP build-once remains separately unauthorized.
+<!-- RT-9D-ENTRY-SYNC:END -->
