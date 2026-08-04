@@ -30,6 +30,9 @@ STAGE1_SURFACE={
 "docs/v300_rt9_fixed_release_zip.md","build_v300_fixed_release_zip_from_head.ps1",
 "scripts/check_v300_fixed_release_zip.py"}
 POST_BUILD_CORRECTIVE_SURFACE={"scripts/check_v300_fixed_release_zip.py"}
+KNOWN_RELEASE_SCAN_FIXTURES={
+"backend/tests/test_v300_rt8_private_operator_manifest.py":("private Windows user path",b"test_sensitive_looking_values_are_rejected"),
+"scripts/check_v300_rt4f4_configured_local_stream_acceptance.py":("private LAN IP literal",b"assert_scanner_self_checks")}
 REQUIRED_FILES={
 "README.md","roadmap.md","tasklist.md","scripts/README.md","build_release.bat",
 "build_v300_fixed_release_zip_from_head.ps1","scripts/check_release_package.py",
@@ -129,7 +132,7 @@ def verify_git_clean(expected_release_zip=None,expected_source_head=None):
   corrective_surface={x.replace("\\","/") for x in cap(["git","diff","--name-only",expected_source_head+".."+head]).splitlines() if x}
   if head==expected_source_head:
    if corrective_count!=0 or corrective_surface: die("unexpected source HEAD diff state")
-  elif corrective_count!=1 or corrective_surface!=POST_BUILD_CORRECTIVE_SURFACE:
+  elif corrective_count not in {1,2} or corrective_surface!=POST_BUILD_CORRECTIVE_SURFACE:
    die("unexpected post-build verifier corrective state")
  roots=[x for x in cap(["git","rev-list","--max-parents=0","HEAD"]).splitlines() if x]
  if len(roots)!=1: die("one root commit required")
@@ -171,6 +174,28 @@ def run_extracted(root,with_flutter,with_builds):
 def stripped(name):
  parts=PurePosixPath(name.replace("\\","/")).parts
  return "/".join(parts[1:] if parts and parts[0]=="DailyRhythmCompanion" else parts)
+def normalized_source_bytes(data): return data.replace(b"\r\n",b"\n").replace(b"\r",b"\n")
+def git_blob(ref,rel):
+ r=subprocess.run(["git","show",ref+":"+rel],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ if r.returncode: die("unable to read accepted source fixture "+rel)
+ return r.stdout
+def verify_release_package_scan(path,expected_head):
+ r=subprocess.run([sys.executable,"scripts/check_release_package.py",str(path)],cwd=ROOT,text=True,encoding="utf-8",errors="replace",stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+ print(console_safe(r.stdout),end="")
+ if r.returncode==0: return "clean"
+ lines=[line.strip() for line in r.stdout.splitlines() if line.strip()]
+ expected={f"- DailyRhythmCompanion/{rel} (text file contains sensitive-looking value: {reason})" for rel,(reason,_) in KNOWN_RELEASE_SCAN_FIXTURES.items()}
+ if r.returncode!=1 or not lines or lines[0]!="[release-package-check] NG" or len(lines[1:])!=len(expected) or set(lines[1:])!=expected:
+  die("unexpected release-package check failure")
+ with zipfile.ZipFile(path) as z:
+  for rel,(_,marker) in KNOWN_RELEASE_SCAN_FIXTURES.items():
+   name="DailyRhythmCompanion/"+rel
+   try: packaged=z.read(name)
+   except KeyError: die("missing synthetic scanner fixture "+rel)
+   if normalized_source_bytes(packaged)!=normalized_source_bytes(git_blob(expected_head,rel)): die("synthetic scanner fixture differs from accepted source "+rel)
+   if marker not in packaged: die("synthetic scanner fixture marker missing "+rel)
+ print("[release-package-check] exact accepted source-matched synthetic scanner fixtures only")
+ return "exact-source-matched-synthetic-fixtures"
 def verify_zip(path,expected_sha,expected_head,with_flutter,with_builds):
  if not path.is_file() or not ZIP_PATTERN.fullmatch(path.name): die("invalid v3 ZIP")
  if not re.fullmatch(r"[0-9a-f]{64}",expected_sha): die("invalid SHA")
@@ -180,7 +205,7 @@ def verify_zip(path,expected_sha,expected_head,with_flutter,with_builds):
  if "RT-9c: COMPLETED / ACCEPTED / PUSHED" not in checklist or "RT-9d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED" not in checklist: die("RT-9d not authorized entry state")
  before_stat=path.stat(); before=filehash(path)
  if before!=expected_sha: die("ZIP SHA mismatch")
- run([sys.executable,"scripts/check_release_package.py",str(path)])
+ package_scan=verify_release_package_scan(path,expected_head)
  with zipfile.ZipFile(path) as z:
   bad=z.testzip()
   if bad: die("ZIP CRC failed "+bad)
@@ -220,7 +245,7 @@ def verify_zip(path,expected_sha,expected_head,with_flutter,with_builds):
   source=root/"DailyRhythmCompanion"; verify_static(source,stage1=False); run_extracted(source,with_flutter,with_builds)
  after_stat=path.stat(); after=filehash(path)
  if before_stat.st_size!=after_stat.st_size or before_stat.st_mtime_ns!=after_stat.st_mtime_ns or before!=after: die("ZIP changed during verification")
- return before,before_stat.st_size
+ return before,before_stat.st_size,package_scan
 
 def args():
  p=argparse.ArgumentParser(); p.add_argument("--source-tree",action="store_true"); p.add_argument("--release-zip",type=Path); p.add_argument("--expected-sha256"); p.add_argument("--expected-source-head"); p.add_argument("--with-flutter",action="store_true"); p.add_argument("--with-builds",action="store_true"); p.add_argument("--rt8-manifest-json",type=Path); return p.parse_args()
@@ -232,11 +257,11 @@ def main():
  if a.release_zip and (not a.expected_sha256 or not a.expected_source_head): die("release ZIP expected tuple required")
  mode,head=source_mode() if not a.source_tree and not a.release_zip else ("not-run","not-run")
  verify_static()
- source_verified=False; manifest_read=False; zip_sha="not-run"; zip_size="not-run"; same=False
+ source_verified=False; manifest_read=False; zip_sha="not-run"; zip_size="not-run"; same=False; package_scan="not-run"
  if a.source_tree:
   head=verify_git_clean(); cmd=[sys.executable,"scripts/check_v300_rt9_release_readiness.py","--with-flutter","--with-builds","--rt8-manifest-json",str(a.rt8_manifest_json)]; run(cmd); source_verified=True; manifest_read=True; mode="clean-committed"
  if a.release_zip:
-  zip_sha,zip_size=verify_zip(a.release_zip.resolve(),a.expected_sha256,a.expected_source_head,a.with_flutter,a.with_builds); head=a.expected_source_head; same=True; mode="release-zip"
+  zip_sha,zip_size,package_scan=verify_zip(a.release_zip.resolve(),a.expected_sha256,a.expected_source_head,a.with_flutter,a.with_builds); head=a.expected_source_head; same=True; mode="release-zip"
  print("v300_fixed_release_zip_tooling_status: stage1-implemented-awaiting-review")
  print("v300_fixed_release_zip_source_mode:",mode)
  print("v300_fixed_release_zip_stage1_baseline:",RT9B_COMMIT)
@@ -247,6 +272,7 @@ def main():
  print("v300_fixed_release_zip_private_manifest_read:",manifest_read)
  print("v300_fixed_release_zip_private_manifest_modified: False")
  print("v300_fixed_release_zip_same_artifact_verified:",same)
+ print("v300_fixed_release_zip_release_package_scan:",package_scan)
  print("v300_fixed_release_zip_size_bytes:",zip_size)
  print("v300_fixed_release_zip_sha256:",zip_sha)
  print("v300_fixed_release_zip_builder_invoked_by_verifier: False")
