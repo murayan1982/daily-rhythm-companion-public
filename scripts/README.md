@@ -11,12 +11,13 @@ Current state:
 ```text
 current released version: v2.1.0 RELEASED / ACCEPTED
 current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 RELEASED
+current v3.0.0 candidate metadata: Backend 3.0.0 / Flutter 3.0.0+4 NOT_RELEASED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: RT-9a release/security inventory
+current small commit: RT-9b v3.0.0 candidate metadata/readiness
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -7974,41 +7975,72 @@ Aggregate runner retained unchanged:
 
 
 <!-- RT-9A-RELEASE-INVENTORY:BEGIN -->
-## RT-9a release/security current-behavior inventory candidate
+## RT-9a accepted release/security inventory
 
 ```text
 RT-8: COMPLETED / ACCEPTED
 RT-8e: COMPLETED / ACCEPTED / PUSHED
-RT-8e Stage 3: COMPLETED / ACCEPTED / PUSHED
 RT-8e Stage 3 acceptance-sync commit: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
 RT-9: CURRENT / NOT_COMPLETED
-RT-9a: IMPLEMENTED / AWAITING_REVIEW
-RT-9a baseline: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
+RT-9a: COMPLETED / ACCEPTED / PUSHED
+RT-9a implementation commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
 RT-9a surface: exact 7 documentation/static-gate files
-RT-9b: BLOCKED_PENDING_RT9A_ACCEPTANCE / NOT_AUTHORIZED
+RT-9b: IMPLEMENTED / AWAITING_REVIEW
 RT-9c: BLOCKED_PENDING_RT9B_ACCEPTANCE / NOT_AUTHORIZED
 RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
 RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
-Backend version metadata: 2.1.0
-Flutter version metadata: 2.1.0+3
+```
+
+RT-9a froze the release/security current behavior, the RT-9a through RT-9e
+split, current test/version/tooling baselines, package privacy boundary, allowed
+release claims, required non-claims, and the stop rule. Its dedicated gate,
+Backend 417-test regression, Flutter analyze, Flutter 500-test regression,
+exact-surface/privacy review, explicit approval, push, and clean-tree
+verification passed. It created no release ZIP, tag, or GitHub Release.
+
+Detailed accepted inventory:
+`docs/v300_rt9_release_readiness_current_behavior_inventory.md`.
+
+Historical RT-9a gate:
+`scripts/check_v300_rt9_release_readiness_current_behavior_inventory.py`.
+<!-- RT-9A-RELEASE-INVENTORY:END -->
+
+<!-- RT-9B-RELEASE-READINESS:BEGIN -->
+## RT-9b v3.0.0 candidate metadata and aggregate readiness candidate
+
+```text
+RT-9: CURRENT / NOT_COMPLETED
+RT-9a: COMPLETED / ACCEPTED / PUSHED
+RT-9a commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b: IMPLEMENTED / AWAITING_REVIEW
+RT-9b baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b surface: exact 13 files
+Backend candidate metadata: 3.0.0
+Flutter candidate metadata: 3.0.0+4
+current released version: v2.1.0 RELEASED / ACCEPTED
+v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED
+v3.0.0 release record: PREPARED / NOT_RELEASED
+RT-9c: BLOCKED_PENDING_RT9B_ACCEPTANCE / NOT_AUTHORIZED
+RT-9d: BLOCKED_PENDING_RT9C_ACCEPTANCE / NOT_AUTHORIZED
+RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
 v3.0.0 fixed ZIP: NOT_BUILT
 DRC_v3.0.0 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
 implementation commit / push: NOT_AUTHORIZED
 ```
 
-RT-9a freezes the current release/security boundary and the exact RT-9a through
-RT-9e split. It changes no Backend or Flutter runtime, tests, dependencies,
-version metadata, package policy, historical release tooling or records,
-private configuration/evidence, generated release artifact, tag, or GitHub
-Release. It does not read the ignored RT-8 aggregate manifest and performs no
-provider, network, microphone/STT, TTS/playback, VTS/WebSocket, build, packaging,
-or publication execution.
+RT-9b advances only the active source candidate metadata and adds the v3.0.0
+aggregate source/test/build readiness contract. The portable gate is
+credential-free, provider-free, network-free, private-manifest-free, and
+artifact-free. The explicit Windows full mode reads only the supplied ignored
+RT-8 aggregate manifest, runs strict aggregate validation without printing its
+contents, and adds Flutter tests plus Web, Windows, and Android debug builds.
+Neither mode invokes a fixed-ZIP builder, creates a tag, or publishes a release.
 
-Detailed inventory:
-`docs/v300_rt9_release_readiness_current_behavior_inventory.md`.
+Detailed contract:
+`docs/v300_rt9_release_readiness.md`.
 
-Dedicated candidate gate:
-`scripts/check_v300_rt9_release_readiness_current_behavior_inventory.py`.
-<!-- RT-9A-RELEASE-INVENTORY:END -->
+Aggregate candidate gate:
+`scripts/check_v300_rt9_release_readiness.py`.
+<!-- RT-9B-RELEASE-READINESS:END -->

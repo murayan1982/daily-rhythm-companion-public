@@ -2,42 +2,49 @@
 
 Updated: 2026-08-04
 
-## Current RT-9a candidate state
+## Accepted RT-9a state and current RT-9b candidate
 
 ```text
 RT-8: COMPLETED / ACCEPTED
 RT-8e: COMPLETED / ACCEPTED / PUSHED
 RT-8e Stage 3 acceptance-sync commit: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
 RT-9: CURRENT / NOT_COMPLETED
-RT-9a: IMPLEMENTED / AWAITING_REVIEW
-RT-9a baseline: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
+RT-9a: COMPLETED / ACCEPTED / PUSHED
+RT-9a implementation commit: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9a implementation baseline: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
 RT-9a exact surface: 7 documentation/static-gate files
-RT-9b through RT-9e: NOT_AUTHORIZED
+RT-9b: IMPLEMENTED / AWAITING_REVIEW
+RT-9b baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b exact surface: 13 files
+RT-9c through RT-9e: NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
 ```
 
-RT-9a is credential-free, provider-free, network-free, private-manifest-free,
-artifact-free, tag-free, and publication-free. It inventories the accepted RT-8
-source and freezes a bounded release sequence before any version or release
-implementation is allowed.
+RT-9a was credential-free, provider-free, network-free, private-manifest-free,
+artifact-free, tag-free, and publication-free. It was accepted and pushed at
+`0e4af7603f60c56f0240271fbb2590d72a189a65`. RT-9b now implements the separately reviewed candidate
+metadata and aggregate source/test/build readiness contract without building or
+publishing a release artifact.
 
 ## Current source and test baseline
 
 ```text
 Public repository: murayan1982/daily-rhythm-companion-public
 baseline branch: main
-baseline HEAD / origin-main: 4c3b724a0c42e0d078c876c02b07a04d4c71e24d
+RT-9b baseline HEAD / origin-main: 0e4af7603f60c56f0240271fbb2590d72a189a65
 current released version: v2.1.0 RELEASED / ACCEPTED
-Backend APP_VERSION: 2.1.0
-Flutter package version: 2.1.0+3
+RT-9a inspected Backend APP_VERSION: 2.1.0
+RT-9a inspected Flutter package version: 2.1.0+3
+RT-9b candidate Backend APP_VERSION: 3.0.0
+RT-9b candidate Flutter package version: 3.0.0+4
 Backend full regression baseline: 417 passed, 1 existing warning
 Flutter full regression baseline: 500 passed
 v300 check scripts before RT-9a: 62
 v300 check scripts including RT-9a gate: 63
 ```
 
-RT-9a does not change either version. Candidate metadata `3.0.0` and `3.0.0+4`
-belongs only to separately reviewed RT-9b.
+RT-9b advances the active candidate metadata to Backend `3.0.0` and Flutter
+`3.0.0+4`. The currently published release remains v2.1.0 until RT-9e completes.
 
 ## Current release tooling inventory
 
@@ -58,13 +65,18 @@ release_notes/v2.0.1.md
 release_notes/v2.1.0.md
 ```
 
-Not present before RT-9 implementation:
+Created by RT-9b:
 
 ```text
 docs/v300_rt9_release_readiness.md
 docs/v300_release_record.md
 release_notes/v3.0.0.md
 scripts/check_v300_rt9_release_readiness.py
+```
+
+Still absent and unauthorized after RT-9b:
+
+```text
 build_v300_fixed_release_zip_from_head.ps1
 scripts/check_v300_fixed_release_zip.py
 DailyRhythmCompanion_v3.0.0_*.zip
@@ -78,8 +90,8 @@ preserving all prior release records and fixed artifacts.
 
 ## v300 gate classification boundary
 
-There are 62 existing `scripts/check_v300_*.py` files at the accepted RT-8
-baseline. Many are historical candidate gates bound to an earlier exact diff,
+There are 63 existing `scripts/check_v300_*.py` files at the accepted RT-9a
+baseline and 64 including the new RT-9b aggregate gate. Many are historical candidate gates bound to an earlier exact diff,
 baseline commit, configured operator stage, or private local prerequisite.
 Running every historical gate blindly from a release aggregate would be
 incorrect.
@@ -94,8 +106,9 @@ RT-9b must explicitly classify the release aggregate into:
 5. configured/private/operator gates retained but not rerun
 ```
 
-RT-9a does not choose or run the final RT-9b child list. That list requires its
-own exact review after this inventory is accepted.
+The accepted RT-9b aggregate classification is recorded in
+`docs/v300_rt9_release_readiness.md`. Historical exact-diff and configured
+operator gates remain retained but are not blindly rerun.
 
 ## Package and private-data boundary
 
@@ -119,8 +132,11 @@ state that configured manual VTS motion requires a separately obtained and
 placed fixed released Framework v5.5.0; it must not claim bundled Framework or
 out-of-box configured VTS execution.
 
-RT-9a does not read, enumerate, copy, hash, print, modify, commit, or push the
-ignored RT-8 aggregate manifest or any private configuration/evidence.
+RT-9a did not read, enumerate, copy, hash, print, modify, commit, or push the
+ignored RT-8 aggregate manifest or any private configuration/evidence. RT-9b
+portable mode preserves that boundary. Its explicit full mode reads only the
+supplied ignored aggregate manifest for strict validation, prints no content,
+and verifies that the bytes remain unchanged.
 
 ## Accepted exact RT-9 split
 
@@ -283,3 +299,23 @@ review, and explicit operator approval. Do not change version metadata, create
 v3 release notes/record, implement RT-9b through RT-9e, run configured/private
 execution, build a fixed ZIP, create a tag, publish a GitHub Release, or claim
 v3.0.0 release readiness.
+
+
+## RT-9b accepted implementation contract candidate
+
+```text
+RT-9b baseline: 0e4af7603f60c56f0240271fbb2590d72a189a65
+RT-9b exact implementation surface: 13 files
+Backend candidate version: 3.0.0
+Flutter candidate version: 3.0.0+4
+portable aggregate reads private manifest: false
+Windows full aggregate requires explicit ignored aggregate manifest: true
+fixed ZIP builder invoked: false
+tag created: false
+GitHub Release created: false
+```
+
+The separately reviewed RT-9b contract is implemented in
+`docs/v300_rt9_release_readiness.md` and
+`scripts/check_v300_rt9_release_readiness.py`. Commit and push remain subject to
+exact diff, privacy, test, build, and operator review.

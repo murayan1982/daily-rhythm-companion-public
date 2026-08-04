@@ -19,6 +19,7 @@ M2_FLUTTER_VERSION = "2.0.1+2"
 ALLOWED_ACTIVE_VERSIONS = {
     "2.0.1": "2",
     "2.1.0": "3",
+    "3.0.0": "4",
 }
 
 
@@ -117,7 +118,7 @@ def main() -> None:
     for relative in ("app/web/index.html", "app/web/manifest.json"):
         web_source = read(relative)
         require(web_source, "Daily Rhythm Companion", f"{relative} product identity")
-        for forbidden in ("2.1.0", "2.0.1", "2.0.0+1", "0.15.0"):
+        for forbidden in ("3.0.0", "2.1.0", "2.0.1", "2.0.0+1", "0.15.0"):
             reject(web_source, forbidden, f"{relative} duplicate version")
 
     inventory = read("docs/v20x_application_version_metadata.md")
