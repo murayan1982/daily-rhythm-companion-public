@@ -16,7 +16,7 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: RT-8e Stage 1 aggregate cleanup tooling
+current small commit: RT-8e Stage 3 RT-8 acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -7914,44 +7914,60 @@ Operator runner retained unchanged:
 <!-- RT-8d-STAGE1-ANDROID-TOOLING:END -->
 
 <!-- RT-8E-STAGE1-AGGREGATE-TOOLING:BEGIN -->
-## RT-8e Stage 1 aggregate cleanup tooling candidate
+## RT-8e aggregate cleanup and RT-8 acceptance
 
 ```text
-RT-8: CURRENT / NOT_COMPLETED
+RT-8: COMPLETED / ACCEPTED
 RT-8d: COMPLETED / ACCEPTED / PUSHED
-RT-8d Stage 3: COMPLETED / ACCEPTED / PUSHED
 RT-8d Stage 3 acceptance-sync commit: 84839efd6e381cb5a2c45022a7e8f7d9eafcb5df
-RT-8e: CURRENT / NOT_COMPLETED
-RT-8e Stage 1: IMPLEMENTED / AWAITING_REVIEW
-RT-8e Stage 1 baseline: 84839efd6e381cb5a2c45022a7e8f7d9eafcb5df
+RT-8e: COMPLETED / ACCEPTED / PUSHED
+RT-8e Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-8e Stage 1 commit: 25c003405fe1a59f3ca7e8a8a6788698ad30bf6d
 RT-8e Stage 1 surface: exact 9 files
-RT-8e Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
-RT-8e Stage 3: BLOCKED_PENDING_AGGREGATE_ACCEPTANCE / NOT_AUTHORIZED
-RT-9: BLOCKED_PENDING_RT8 / NOT_AUTHORIZED
+RT-8e Stage 2: COMPLETED / PASS / ACCEPTED
+RT-8e Stage 2 aggregate transition: COMPLETED / PASS / ACCEPTED
+RT-8e Stage 2 strict validation: COMPLETED / PASS / ACCEPTED
+RT-8e Stage 3 acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-8e Stage 3 surface: exact 7 documentation/static-gate files
+RT-9: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
 schema: drc.v3.rt8-platform-acceptance.2
 accepted PC candidate source: fa39065130a4a4689c2e54195f231a5e79c62a35
 accepted Android candidate source: 0e7fc6fc5922c293b8460fc816610d41c2a79e9a
-private manifest read by Stage 1 tooling/gate: false
-private manifest modified by Stage 1: false
-private cleanup performed by Stage 1: false
-configured execution performed by Stage 1: false
-implementation commit / push: NOT_AUTHORIZED
+private manifest stage: aggregate
+private manifest status: accepted
+private manifest read by Stage 3 gate: false
+private manifest modified by Stage 3: false
+configured execution performed by Stage 3: false
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Stage 1 adds an inert-by-default aggregate-transition runner, exact eighteen
-credential-free focused Backend tests, a fixed three-stage RT-8e contract, and
-a dedicated static gate. The later separately authorized sequence is Stage 2
-private aggregate cleanup/manifest transition followed by Stage 3 public-safe
-RT-8 acceptance synchronization. Stage 1 does not read or update the ignored
-manifest and performs no cleanup or configured execution.
+Stage 1 added the inert aggregate-transition runner, exact eighteen focused
+Backend tests, the fixed three-stage contract, and the dedicated gate. Its
+implementation commit is `25c003405fe1a59f3ca7e8a8a6788698ad30bf6d`. Verification passed with the dedicated
+gate, 18 focused Backend tests, 417 full Backend tests with one existing warning,
+Flutter analyze, 500 full Flutter tests, exact-surface review, privacy review,
+push, and clean-tree verification.
 
-Detailed contract:
+Stage 2 then passed inert/preflight/Android-transition checks, the fixed nine
+aggregate confirmations, atomic Android-to-aggregate manifest transition,
+strict aggregate-stage schema/Git validation, and final DRC/FW clean-state
+verification. The private manifest remains ignored, untracked, uncommitted, and
+unpushed. No Backend, Flutter, ADB, microphone/STT, provider/network, TTS/playback,
+VTS/WebSocket, motion, or additional PC/Android control execution occurred.
+
+Stage 3 changes only the exact seven public documentation/static-gate files. It
+does not read private manifest content, repeat cleanup, or perform configured
+execution. It synchronizes parent RT-8 completion and leaves RT-9 only ready for
+an exact contract review; RT-9 implementation remains unauthorized and v3.0.0
+remains unreleased.
+
+Detailed accepted contract:
 `docs/v300_rt8e_aggregate_cleanup_and_rt8_acceptance.md`.
 
-Dedicated gate:
+Dedicated Stage 3 gate:
 `scripts/check_v300_rt8e_aggregate_cleanup_and_acceptance.py`.
 
-Private aggregate runner:
+Aggregate runner retained unchanged:
 `scripts/run_v300_rt8e_private_aggregate_cleanup.py`.
 <!-- RT-8E-STAGE1-AGGREGATE-TOOLING:END -->
