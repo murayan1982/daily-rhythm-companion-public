@@ -29,6 +29,7 @@ STAGE1_SURFACE={
 "release_notes/v3.0.0.md","scripts/check_v300_rt9_release_readiness.py",
 "docs/v300_rt9_fixed_release_zip.md","build_v300_fixed_release_zip_from_head.ps1",
 "scripts/check_v300_fixed_release_zip.py"}
+POST_BUILD_CORRECTIVE_SURFACE={"scripts/check_v300_fixed_release_zip.py"}
 REQUIRED_FILES={
 "README.md","roadmap.md","tasklist.md","scripts/README.md","build_release.bat",
 "build_v300_fixed_release_zip_from_head.ps1","scripts/check_release_package.py",
@@ -113,7 +114,7 @@ def verify_static(root=ROOT,stage1=True):
    text=read(rel,root)
    for pat in (r"(?i)sk-[a-z0-9_-]{12,}",r"(?i)bearer\s+[a-z0-9._~+/-]{12,}",r"(?i)\b[a-z]:\\users\\",r"\b192\.168\.\d+\.\d+\b"):
     if re.search(pat,text): die("private-looking value in "+rel)
-def verify_git_clean():
+def verify_git_clean(expected_release_zip=None,expected_source_head=None):
  if Path(cap(["git","rev-parse","--show-toplevel"])).resolve()!=ROOT.resolve(): die("repo root mismatch")
  if cap(["git","status","--porcelain","--untracked-files=all"]): die("working tree must be clean")
  if cap(["git","branch","--show-current"])!="main": die("main required")
@@ -121,13 +122,29 @@ def verify_git_clean():
  head=cap(["git","rev-parse","HEAD"]); origin=cap(["git","rev-parse","origin/main"])
  if head!=origin: die("HEAD != origin/main")
  subprocess.run(["git","merge-base","--is-ancestor",RT9B_COMMIT,head],cwd=ROOT,check=True)
+ if expected_source_head is not None:
+  if not re.fullmatch(r"[0-9a-f]{40}",expected_source_head): die("invalid expected source HEAD")
+  subprocess.run(["git","merge-base","--is-ancestor",expected_source_head,head],cwd=ROOT,check=True)
+  corrective_count=int(cap(["git","rev-list","--count",expected_source_head+".."+head]))
+  corrective_surface={x.replace("\\","/") for x in cap(["git","diff","--name-only",expected_source_head+".."+head]).splitlines() if x}
+  if head==expected_source_head:
+   if corrective_count!=0 or corrective_surface: die("unexpected source HEAD diff state")
+  elif corrective_count!=1 or corrective_surface!=POST_BUILD_CORRECTIVE_SURFACE:
+   die("unexpected post-build verifier corrective state")
  roots=[x for x in cap(["git","rev-list","--max-parents=0","HEAD"]).splitlines() if x]
  if len(roots)!=1: die("one root commit required")
  for tag in ("DRC_v2.0.0","DRC_v2.0.1","DRC_v2.1.0"):
   if cap(["git","tag","--list",tag])!=tag or cap(["git","cat-file","-t",tag])!="tag": die("annotated tag missing "+tag)
  if cap(["git","tag","--list",RELEASE_TAG]): die("v3 tag already exists")
  release=ROOT/"release"
- if release.exists() and any(release.glob("DailyRhythmCompanion_v3.0.0_*.zip")): die("v3 fixed ZIP already exists")
+ fixed_zips=sorted(release.glob("DailyRhythmCompanion_v3.0.0_*.zip")) if release.exists() else []
+ if expected_release_zip is None:
+  if fixed_zips: die("v3 fixed ZIP already exists")
+ else:
+  expected_release_zip=Path(expected_release_zip).resolve()
+  if expected_release_zip.parent!=release.resolve(): die("release ZIP must remain in release directory")
+  if len(fixed_zips)!=1 or fixed_zips[0].resolve()!=expected_release_zip:
+   die("expected exactly one supplied fixed ZIP")
  return head
 def flutter_path():
  names=("flutter.bat","flutter.cmd","flutter") if os.name=="nt" else ("flutter",)
@@ -158,8 +175,7 @@ def verify_zip(path,expected_sha,expected_head,with_flutter,with_builds):
  if not path.is_file() or not ZIP_PATTERN.fullmatch(path.name): die("invalid v3 ZIP")
  if not re.fullmatch(r"[0-9a-f]{64}",expected_sha): die("invalid SHA")
  if not re.fullmatch(r"[0-9a-f]{40}",expected_head): die("invalid source HEAD")
- current=verify_git_clean()
- if current!=expected_head: die("expected source must equal clean current HEAD")
+ verify_git_clean(expected_release_zip=path,expected_source_head=expected_head)
  checklist=read("docs/DRC_v300_goal_checklist_small_commit.md")
  if "RT-9c: COMPLETED / ACCEPTED / PUSHED" not in checklist or "RT-9d: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED" not in checklist: die("RT-9d not authorized entry state")
  before_stat=path.stat(); before=filehash(path)
