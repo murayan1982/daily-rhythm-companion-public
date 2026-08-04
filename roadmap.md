@@ -6,7 +6,7 @@ Current released metadata: Backend 2.1.0 / Flutter 2.1.0+3 (**RELEASED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-8d Stage 1 Android operator tooling
+Current small commit: RT-8d Stage 3 Android acceptance sync
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -571,14 +571,14 @@ Detailed contract: `docs/v210_fitbit_token_status_reconnect.md`.
 ## v3.0.0 - Realtime multimodal character runtime
 
 Status: RT-8 CURRENT / NOT_COMPLETED
-Current small commit: RT-8b private operator manifest, validator, and runbook
-Last accepted small commit: RT-8a PC/Android realtime acceptance readiness COMPLETED / ACCEPTED / PUSHED at `a3af4fae002c1425fdfb61b46f66e35e2443ad17`
+Current small commit: RT-8d Stage 3 Android acceptance sync
+Last accepted small commit: RT-8d configured Android smartphone realtime acceptance (**COMPLETED / ACCEPTED / PUSHED**) at `0e7fc6fc5922c293b8460fc816610d41c2a79e9a`
 Accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
-Current implementation: RT-8b credential-free private operator manifest schema, validator, and runbook.
+Current implementation: RT-8d Stage 3 public-safe Android acceptance synchronization.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: `a3af4fae002c1425fdfb61b46f66e35e2443ad17`
+Current implementation baseline: `0e7fc6fc5922c293b8460fc816610d41c2a79e9a`
 Current implementation commit: none
-Current implementation boundary: exact 10 credential-free docs/schema/validator/gate/test files; Backend/Flutter runtime, existing tests, `.gitignore`, fixed vendor, dependencies, platform declarations, versions, releases, private configuration, private manifests, and all real PC/Android execution remain protected.
+Current implementation boundary: exact 7 public documentation/static-gate files; Backend/Flutter runtime, existing tests, operator runner, focused operator tests, strict validator, private configuration, private manifest content, aggregate transition, RT-8e, release records, and all configured execution remain protected.
 Accepted STT baseline: RT-3 / RT-3d / RT-3d2 / RT-3d3 COMPLETED / ACCEPTED
 Framework baseline: fixed released v5.5.0 vendor at `f56697b6de066b062794ac7bb01330d2d9e91759`
 
@@ -813,11 +813,11 @@ RT-8   CURRENT / NOT_COMPLETED  Platform-appropriate PC Windows and Android real
     RT-8c Stage 1  COMPLETED / ACCEPTED / PUSHED  Credential-free PC Windows operator tooling
     RT-8c Stage 2  COMPLETED / ACCEPTED  Private configured PC Windows Controls A-H and strict validation
     RT-8c Stage 3  COMPLETED / ACCEPTED / PUSHED  PC acceptance synchronization
-  RT-8d  CURRENT / NOT_COMPLETED  Configured Android smartphone realtime acceptance
-    RT-8d Stage 1  IMPLEMENTED / AWAITING_REVIEW  Credential-free Android operator tooling
-    RT-8d Stage 2  BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED  Private configured Android Controls A-H and strict validation
-    RT-8d Stage 3  BLOCKED_PENDING_ANDROID_CONTROLS_A_H / NOT_AUTHORIZED  Android acceptance synchronization
-  RT-8e  BLOCKED_PENDING_RT8D / NOT_AUTHORIZED  Aggregate cleanup and RT-8 acceptance sync
+  RT-8d  COMPLETED / ACCEPTED / PUSHED  Configured Android smartphone realtime acceptance
+    RT-8d Stage 1  COMPLETED / ACCEPTED / PUSHED  Credential-free Android operator tooling
+    RT-8d Stage 2  COMPLETED / ACCEPTED  Private configured Android Controls A-H and strict validation
+    RT-8d Stage 3  IMPLEMENTED / AWAITING_REVIEW  Android acceptance synchronization
+  RT-8e  READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED  Aggregate cleanup and RT-8 acceptance sync
 RT-9   BLOCKED_PENDING_RT8       Security, cleanup, aggregate readiness, and release
 ```
 
@@ -8780,39 +8780,72 @@ Operator recorder retained unchanged:
 <!-- RT-8c-PC-WINDOWS-ACCEPTANCE:END -->
 
 <!-- RT-8d-STAGE1-ANDROID-TOOLING:BEGIN -->
-## RT-8d Stage 1 Android operator tooling candidate
+## RT-8d configured Android smartphone realtime acceptance
 
 ```text
 RT-8: CURRENT / NOT_COMPLETED
 RT-8c: COMPLETED / ACCEPTED / PUSHED
-RT-8c acceptance-sync commit: b889ce884a928809125c473dcd2e8cd7a4c020ef
-RT-8d: CURRENT / NOT_COMPLETED
-RT-8d Stage 1: IMPLEMENTED / AWAITING_REVIEW
-RT-8d Stage 1 baseline: b889ce884a928809125c473dcd2e8cd7a4c020ef
-RT-8d Stage 1 surface: exact 9 files
-RT-8d Stage 2: BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
-RT-8d Stage 3: BLOCKED_PENDING_ANDROID_CONTROLS_A_H / NOT_AUTHORIZED
-RT-8e: BLOCKED_PENDING_RT8D / NOT_AUTHORIZED
+RT-8d: COMPLETED / ACCEPTED / PUSHED
+RT-8d Stage 1: COMPLETED / ACCEPTED / PUSHED
+RT-8d Stage 1 commit: 0e7fc6fc5922c293b8460fc816610d41c2a79e9a
+RT-8d Stage 2a: COMPLETED / PASS
+RT-8d Stage 2b: COMPLETED / PASS
+RT-8d Stage 2c: COMPLETED / PASS / ACCEPTED
+RT-8d Stage 2d: COMPLETED / PASS / ACCEPTED
+RT-8d Stage 2e: COMPLETED / PASS / ACCEPTED
+RT-8d Stage 3 acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-8d Stage 3 surface: exact 7 documentation/static-gate files
+RT-8e exact contract review: READY
+RT-8e implementation: NOT_AUTHORIZED
+RT-9: BLOCKED_PENDING_RT8 / NOT_AUTHORIZED
 schema: drc.v3.rt8-platform-acceptance.2
 accepted PC source: fa39065130a4a4689c2e54195f231a5e79c62a35
-private manifest exists: true
-private manifest read by Stage 1 tooling/gate: false
-private manifest modified by Stage 1: false
-Android / ADB / Backend / Flutter execution: false
-microphone / STT / TTS / playback / VTS execution: false
-commit / push: NOT_AUTHORIZED
+accepted Android source: 0e7fc6fc5922c293b8460fc816610d41c2a79e9a
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Stage 1 adds an inert-by-default Android operator runner, exact eighteen
-credential-free focused tests, a fixed Android runbook, and a dedicated static
-gate. The later separately authorized chronology is
-`A -> B -> C -> D -> E -> F -> G -> H`. Stage 1 neither reads nor updates the
-ignored PC-stage manifest and performs no configured device or provider work.
+Accepted chronology and counts:
 
-Detailed contract:
+```text
+A -> B -> C -> D -> E -> F -> G -> H
+natural_voice_turn_count: 1
+silent_control_interruption_count: 0
+confirmed_user_speech_event_count: 1
+drc_local_interruption_count: 1
+pending_voice_output_after_interruption: 0
+recovery_voice_turn_count: 1
+manual_vts_apply_count: 1
+vts_commands_requested: 1
+vts_commands_applied: 1
+vts_commands_completed: 1
+```
+
+The configured VTS boundary completed one explicit Apply. Framework session
+creation/closure and provider/network attempts were true. The conservative
+Backend/Flutter `real_motion_executed` value remained false, while the operator
+separately confirmed exactly one visible physical model motion.
+
+The original Stage 2c attempt remains FAILED / NOT_ACCEPTED. Its Controls A-F
+observations were not reused; all accepted facts come only from the separately
+authorized fresh A-H rerun.
+
+The ignored manifest transitioned from accepted PC stage to accepted Android
+stage using nine fixed confirmations. The previous PC section was preserved.
+Strict schema, candidate Git-state, and PC-to-Android ancestry validation passed.
+The private manifest remains ignored, untracked, uncommitted, and unpushed.
+
+Stage 3 changes only the exact seven public documentation/static-gate files. It
+does not read private manifest content or perform aggregate transition,
+Backend/Flutter/device startup, microphone/STT, provider/network, TTS/playback,
+or VTS execution. Aggregate cleanup and RT-8 acceptance synchronization remain
+owned by RT-8e.
+
+Detailed accepted contract:
 `docs/v300_rt8d_configured_android_realtime_acceptance.md`.
-Dedicated gate:
+
+Dedicated Stage 3 gate:
 `scripts/check_v300_rt8d_configured_android_realtime_acceptance.py`.
-Operator runner:
+
+Operator runner retained unchanged:
 `scripts/run_v300_rt8d_private_android_operator.py`.
 <!-- RT-8d-STAGE1-ANDROID-TOOLING:END -->
