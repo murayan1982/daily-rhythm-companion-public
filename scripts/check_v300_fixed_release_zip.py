@@ -64,9 +64,12 @@ def safe_command(cmd):
  comspec=os.environ.get("COMSPEC") or shutil.which("cmd.exe")
  if not comspec: die("Windows command processor required")
  return [comspec,"/d","/s","/c",subprocess.list2cmdline(cmd)]
+def console_safe(text):
+ encoding=getattr(sys.stdout,"encoding",None) or "utf-8"
+ return text.encode(encoding,errors="backslashreplace").decode(encoding)
 def run(cmd,cwd=ROOT):
  r=subprocess.run(safe_command(cmd),cwd=cwd,text=True,encoding="utf-8",errors="replace",stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
- print(r.stdout,end="")
+ print(console_safe(r.stdout),end="")
  if r.returncode: die("command failed: "+" ".join(cmd))
  return r.stdout
 def git_changes():
