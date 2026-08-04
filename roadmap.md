@@ -7,10 +7,10 @@ Current v3.0.0 candidate metadata: Backend 3.0.0 / Flutter 3.0.0+4 (**NOT_RELEAS
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-9d Control C tuple record
-Current implementation: RT-9d public docs-only fixed-ZIP tuple recording
+Current small commit: RT-9d acceptance sync
+Current implementation: RT-9d public docs-only acceptance synchronization
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 4b08d20425c469e41277cfb7a013ed2a266c3489
+Current implementation baseline: b5a41e8568a73e0efecc57f4273f7b254e13353a
 Strategic target: v3.0.0
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -8935,8 +8935,8 @@ RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
 RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
-RT-9d: CURRENT / NOT_COMPLETED
-RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+RT-9d: COMPLETED / ACCEPTED
+RT-9e: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
 ```
 
@@ -8974,8 +8974,8 @@ RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
 RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
-RT-9d: CURRENT / NOT_COMPLETED
-RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+RT-9d: COMPLETED / ACCEPTED
+RT-9e: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 v3.0.0 fixed ZIP: NOT_BUILT
 DRC_v3.0.0 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
@@ -9017,8 +9017,8 @@ RT-9c Stage 3: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
 RT-9c Stage 3 baseline: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 3 surface: exact 9 public documentation files
-RT-9d: CURRENT / NOT_COMPLETED
-RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+RT-9d: COMPLETED / ACCEPTED
+RT-9e: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0
 v3.0.0 fixed ZIP: NOT_BUILT
 same-artifact verification: NOT_COMPLETED
@@ -9054,8 +9054,8 @@ Source/same-artifact verifier:
 `scripts/check_v300_fixed_release_zip.py`.
 <!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->
 
-<!-- RT-9D-CONTROL-C-TUPLE-RECORD:BEGIN -->
-## RT-9d Control C fixed-ZIP tuple-record candidate
+<!-- RT-9D-ACCEPTANCE-SYNC:BEGIN -->
+## RT-9d acceptance-sync candidate
 
 ```text
 RT-9: CURRENT / NOT_COMPLETED
@@ -9064,10 +9064,12 @@ RT-9b: COMPLETED / ACCEPTED / PUSHED
 RT-9c: COMPLETED / ACCEPTED / PUSHED
 RT-9d Control A: COMPLETED / PASS / ACCEPTED
 RT-9d Control B: COMPLETED / PASS / ACCEPTED
-RT-9d Control C: IMPLEMENTED / AWAITING_REVIEW
-RT-9d Control C implementation baseline: 4b08d20425c469e41277cfb7a013ed2a266c3489
-RT-9d Control C exact surface: exact 9 public documentation files
-RT-9d: CURRENT / NOT_COMPLETED
+RT-9d Control C: COMPLETED / PASS / ACCEPTED / PUSHED
+RT-9d Control C commit: b5a41e8568a73e0efecc57f4273f7b254e13353a
+RT-9d acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+RT-9d acceptance-sync baseline: b5a41e8568a73e0efecc57f4273f7b254e13353a
+RT-9d acceptance-sync exact surface: exact 9 public documentation files
+RT-9d: COMPLETED / ACCEPTED
 release source HEAD: f5fb54dc4beecdd1fdec957e92bf0b8cfc76513a
 verification HEAD: 4b08d20425c469e41277cfb7a013ed2a266c3489
 post-build verifier-only corrective commits: 2
@@ -9096,21 +9098,19 @@ explicit final operator release approval: NOT_RECEIVED
 DRC_v3.0.0 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
 post-publication verification: NOT_STARTED
-RT-9e: BLOCKED_PENDING_RT9D_ACCEPTANCE / NOT_AUTHORIZED
+RT-9e: READY_FOR_EXACT_CONTRACT_REVIEW / NOT_AUTHORIZED
 v3.0.0: NOT_RELEASED
-Control C commit / push: NOT_AUTHORIZED
+acceptance-sync commit / push: NOT_AUTHORIZED
 ```
 
-Control A built the fixed ZIP exactly once from the recorded release source HEAD.
-Control B verified that same artifact without rebuilding it. Two verifier-only
-corrective commits after the release source changed only
-`scripts/check_v300_fixed_release_zip.py`; they did not alter the fixed ZIP or
-its recorded source identity. The package scan accepted only two exact,
-source-matched synthetic scanner fixtures and continued to reject any additional
-failure or modified fixture.
+Controls A and B established and verified one immutable fixed ZIP. Control C
+recorded that exact tuple in public documentation and was accepted, committed,
+and pushed at `b5a41e8568a73e0efecc57f4273f7b254e13353a`.
 
-This Control C candidate changes public documentation only. It does not invoke a
-builder or artifact verifier, read private evidence, alter the fixed ZIP, execute
-provider/network/microphone/STT/TTS/VTS paths, create a tag, publish a GitHub
-Release, or mark v3.0.0 released.
-<!-- RT-9D-CONTROL-C-TUPLE-RECORD:END -->
+This acceptance-sync candidate closes parent RT-9d and opens RT-9e for a
+separate exact publication-contract review. It changes public documentation
+only. It does not invoke a builder or artifact verifier, read private evidence,
+alter the fixed ZIP, execute provider/network/microphone/STT/TTS/VTS paths,
+create a tag, publish a GitHub Release, grant final release approval, perform
+post-publication verification, or mark v3.0.0 released.
+<!-- RT-9D-ACCEPTANCE-SYNC:END -->
