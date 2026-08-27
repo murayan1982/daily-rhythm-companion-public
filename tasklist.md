@@ -14,20 +14,22 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-2 final acceptance sync
-current implementation step: provider-free installed-SDK root-public FW v6 RealtimeSession adapter checkpoint
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
-current implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-final acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-final acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-3 provider-free FW v6 Backend session API
+current implementation step: provider-free FW v6 RealtimeSession Backend API checkpoint
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
 strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+Commit: NOT_AUTHORIZED
+Push: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -148,6 +150,51 @@ Detailed contract:
 
 Dedicated gate:
 `scripts/check_v400_provider_free_realtime_session_adapter.py`.
+
+## DRC-V4-3 - Provider-free FW v6 Backend session API
+
+Status: IMPLEMENTED / AWAITING_REVIEW
+
+```text
+baseline HEAD: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-3 exact surface: exact 12 files
+Commit: NOT_AUTHORIZED
+Push: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+DRC v4 release status: development work / not released
+exact prefix: /realtime/framework-v6/provider-free
+POST   /realtime/framework-v6/provider-free/sessions
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/turns
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/interrupt
+GET    /realtime/framework-v6/provider-free/sessions/{session_id}/diagnostics
+DELETE /realtime/framework-v6/provider-free/sessions/{session_id}
+provider-free only: true
+real_runtime_enabled: False
+provider execution: False
+network: False
+microphone: False
+real STT: False
+real LLM: False
+real TTS: False
+playback: False
+VTube Studio / real motion: False
+Flutter wiring: False
+existing v3 runtime replacement: False
+existing accepted v3 real adapters remain retained
+removal of v3 real adapters is NOT_AUTHORIZED
+real unified pipeline: NOT_CLAIMED / NOT_ENABLED
+```
+
+DRC-V4-3 exposes the accepted provider-free adapter through a bounded FastAPI
+API only. It does not wire Flutter, replace `/realtime/text`, execute providers,
+or enable real STT, streaming LLM, TTS, playback, or motion.
+
+Detailed contract:
+`docs/v400_provider_free_realtime_backend_api.md`.
+
+Dedicated gate:
+`scripts/check_v400_provider_free_realtime_backend_api.py`.
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 

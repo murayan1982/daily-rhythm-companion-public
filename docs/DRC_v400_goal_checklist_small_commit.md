@@ -1,22 +1,24 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-2 CLOSED / ACCEPTED
+Status: DRC-V4-3 IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-2 final acceptance sync
-current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-current acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-3 provider-free FW v6 Backend session API
+current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+Commit: NOT_AUTHORIZED
+Push: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
 ```
 
 ## Framework v6.0.0 Provenance
@@ -161,3 +163,48 @@ real unified RealtimeSession.run_turn(): NOT_CLAIMED / NOT_AVAILABLE
 
 Detailed DRC-V4-2 contract:
 `docs/v400_provider_free_realtime_session_adapter.md`.
+
+## DRC-V4-3 Backend API Boundary
+
+```text
+baseline HEAD: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-3 exact surface: exact 12 files
+Commit: NOT_AUTHORIZED
+Push: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+DRC v4 release status: development work / not released
+exact prefix: /realtime/framework-v6/provider-free
+POST   /realtime/framework-v6/provider-free/sessions
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/turns
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/interrupt
+GET    /realtime/framework-v6/provider-free/sessions/{session_id}/diagnostics
+DELETE /realtime/framework-v6/provider-free/sessions/{session_id}
+provider-free only: true
+real_runtime_enabled: False
+provider execution: False
+network: False
+microphone: False
+real STT: False
+real LLM: False
+real TTS: False
+playback: False
+VTube Studio / real motion: False
+Flutter wiring: False
+existing v3 runtime replacement: False
+existing accepted v3 real adapters remain retained
+removal of v3 real adapters is NOT_AUTHORIZED
+real unified pipeline: NOT_CLAIMED / NOT_ENABLED
+```
+
+DRC-V4-3 exposes the accepted DRC-V4-2 provider-free installed-SDK root-public
+FW v6 RealtimeSession adapter through a bounded DRC-owned FastAPI Backend API.
+It uses a process-local in-memory registry capped at 8 canonical FW session ids,
+keeps `/realtime/text` untouched, and does not claim or enable the real unified
+pipeline.
+
+Detailed DRC-V4-3 contract:
+`docs/v400_provider_free_realtime_backend_api.md`.
+
+Dedicated DRC-V4-3 gate:
+`scripts/check_v400_provider_free_realtime_backend_api.py`.

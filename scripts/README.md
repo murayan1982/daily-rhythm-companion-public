@@ -17,13 +17,11 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-2 final acceptance sync
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
-current implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-current acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-3 provider-free FW v6 Backend session API
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -31,6 +29,10 @@ completed phase: T-1 COMPLETED / ACCEPTED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+Commit: NOT_AUTHORIZED
+Push: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -118,6 +120,64 @@ focused Backend 23 PASS, full Backend 440 PASS, Flutter analyze PASS, Flutter
 full 500 PASS, exact surface PASS, protected-file review PASS, privacy/security
 review PASS, and fixed FW v6.0.0 SDK smoke NOT_RUN /
 OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING.
+
+## v4.0.0 DRC-V4-3 provider-free FW v6 Backend session API check
+
+Detailed contract:
+`docs/v400_provider_free_realtime_backend_api.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_backend_api.py
+python -m pytest -q backend/tests/test_framework_v600_realtime_api.py backend/tests/test_framework_v600_realtime_session_adapter.py
+python -m pytest -q backend/tests --basetemp <fresh-outside-repo-path>
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v400_provider_free_realtime_backend_api.py
+git diff --check
+git status --short
+git diff --stat
+git diff --name-only
+```
+
+DRC-V4-3 is IMPLEMENTED / AWAITING_REVIEW. Commit: NOT_AUTHORIZED. Push:
+NOT_AUTHORIZED. The exact prefix is `/realtime/framework-v6/provider-free`.
+
+```text
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+commit / push: NOT_AUTHORIZED
+POST   /realtime/framework-v6/provider-free/sessions
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/turns
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/interrupt
+GET    /realtime/framework-v6/provider-free/sessions/{session_id}/diagnostics
+DELETE /realtime/framework-v6/provider-free/sessions/{session_id}
+provider-free only: true
+real_runtime_enabled: False
+provider execution: False
+network: False
+microphone: False
+real STT: False
+real LLM: False
+real TTS: False
+playback: False
+VTube Studio / real motion: False
+Flutter wiring: False
+existing v3 runtime replacement: False
+existing accepted v3 real adapters remain retained
+removal of v3 real adapters is NOT_AUTHORIZED
+```
+
+The DRC-V4-3 checker is deterministic, safe, and read-only. It verifies the
+exact 12-file candidate surface, protected V4-2 and v3 realtime files, bounded
+API prefix and endpoint registration, registry capacity, no direct Framework
+imports in the new production API files, no provider/runtime execution wiring,
+and the critical real unified pipeline non-claim.
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 

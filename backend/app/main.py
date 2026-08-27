@@ -12,6 +12,7 @@ from app.api import (
     daily_records,
     demo_status,
     fitbit,
+    framework_v600_realtime,
     framework_vts_motion_presentation,
     google_health,
     health,
@@ -51,6 +52,7 @@ app.include_router(daily_records.router)
 app.include_router(demo_status.router)
 app.include_router(motion_demo.router)
 app.include_router(realtime_text.router)
+app.include_router(framework_v600_realtime.router)
 app.include_router(voice_input_demo.router)
 app.include_router(voice_output_demo.router)
 app.include_router(fitbit.router)

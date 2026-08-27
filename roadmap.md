@@ -7,14 +7,12 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-2 final acceptance sync
-Current implementation: provider-free installed-SDK root-public FW v6 RealtimeSession adapter checkpoint
-Current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-Current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
-Current implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-Current acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
-Acceptance-sync commit: none
-Acceptance-sync commit / push: NOT_AUTHORIZED
+Current small commit: DRC-V4-3 provider-free FW v6 Backend session API
+Current implementation: provider-free FW v6 RealtimeSession Backend API checkpoint
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+Current implementation commit: none
+Current implementation commit / push: NOT_AUTHORIZED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -114,7 +112,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-2 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Status: DRC-V4-3 IMPLEMENTED / AWAITING_REVIEW
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -247,6 +245,52 @@ Detailed DRC-V4-2 contract:
 
 Dedicated DRC-V4-2 gate:
 `scripts/check_v400_provider_free_realtime_session_adapter.py`.
+
+### DRC-V4-3 provider-free FW v6 Backend session API
+
+Status: **IMPLEMENTED / AWAITING_REVIEW**
+
+```text
+baseline HEAD: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-3 exact surface: exact 12 files
+Commit: NOT_AUTHORIZED
+Push: NOT_AUTHORIZED
+commit / push: NOT_AUTHORIZED
+DRC v4 release status: development work / not released
+exact prefix: /realtime/framework-v6/provider-free
+POST   /realtime/framework-v6/provider-free/sessions
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/turns
+POST   /realtime/framework-v6/provider-free/sessions/{session_id}/interrupt
+GET    /realtime/framework-v6/provider-free/sessions/{session_id}/diagnostics
+DELETE /realtime/framework-v6/provider-free/sessions/{session_id}
+provider-free only: true
+real_runtime_enabled: False
+provider execution: False
+network: False
+microphone: False
+real STT: False
+real LLM: False
+real TTS: False
+playback: False
+VTube Studio / real motion: False
+Flutter wiring: False
+existing v3 runtime replacement: False
+existing accepted v3 real adapters remain retained
+removal of v3 real adapters is NOT_AUTHORIZED
+```
+
+DRC-V4-3 exposes the accepted DRC-V4-2 provider-free FW v6 RealtimeSession
+adapter through a bounded DRC-owned FastAPI API. It uses a process-local,
+in-memory, non-persistent registry capped at 8 canonical FW session ids, returns
+bounded public API problems, keeps `/realtime/text` untouched, and does not
+claim or enable the real unified pipeline.
+
+Detailed DRC-V4-3 contract:
+`docs/v400_provider_free_realtime_backend_api.md`.
+
+Dedicated DRC-V4-3 gate:
+`scripts/check_v400_provider_free_realtime_backend_api.py`.
 
 ---
 
