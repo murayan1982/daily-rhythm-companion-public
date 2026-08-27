@@ -17,11 +17,13 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-3 provider-free FW v6 Backend session API
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current small commit: DRC-V4-3 final acceptance sync
+current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-current implementation commit: none
-current implementation commit / push: NOT_AUTHORIZED
+current implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+current acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -29,10 +31,7 @@ completed phase: T-1 COMPLETED / ACCEPTED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
-Commit: NOT_AUTHORIZED
-Push: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -76,11 +75,18 @@ for initial adoption, retained v3 real adapters, and the non-authorization of
 FW submodule adoption, v3 adapter removal, and real unified RealtimeSession
 claims.
 
-Historical checker note: `scripts/check_v400_framework_v600_readiness_acceptance.py`
-and `scripts/check_v400_provider_free_realtime_session_adapter.py` are frozen
+Historical checker note: `scripts/check_v400_framework_v600_readiness_acceptance.py`,
+`scripts/check_v400_provider_free_realtime_session_adapter.py`, and
+`scripts/check_v400_provider_free_realtime_backend_api.py` are frozen
 pre-commit candidate gates. They contain candidate-specific baseline and
 working-tree surface expectations and are not expected to pass as post-commit
 clean-tree gates.
+
+The DRC-V4-3 candidate checker freezes baseline
+`384006073aa9e8757c904cb89d9bcd62a2b9fb35` and the original exact 12-file dirty
+candidate surface. It is historical after implementation commit
+`3247da0c64afc282a41723b6d9c3a522fbd34de0`; its accepted PASS result is
+recorded and it is not rerun for the DRC-V4-3 final acceptance sync.
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 
@@ -146,12 +152,31 @@ git diff --stat
 git diff --name-only
 ```
 
-DRC-V4-3 is IMPLEMENTED / AWAITING_REVIEW. Commit: NOT_AUTHORIZED. Push:
-NOT_AUTHORIZED. The exact prefix is `/realtime/framework-v6/provider-free`.
+DRC-V4-3 implementation is COMPLETED / VERIFIED / ACCEPTED / COMMITTED /
+PUSHED / CLOSED at implementation commit
+`3247da0c64afc282a41723b6d9c3a522fbd34de0`. The exact prefix is
+`/realtime/framework-v6/provider-free`.
 
 ```text
-DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
-commit / push: NOT_AUTHORIZED
+DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+exact implementation surface: 12 files
+R1 strict request boundary: APPLIED / PASS
+R2 validation privacy boundary: APPLIED / PASS
+dedicated candidate gate: PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+Flutter full: 500 PASS
+fixed FW v6.0.0 SDK smoke: NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+GitHub main after implementation push: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+DRC-V4-3 final acceptance sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 POST   /realtime/framework-v6/provider-free/sessions
 POST   /realtime/framework-v6/provider-free/sessions/{session_id}/turns
 POST   /realtime/framework-v6/provider-free/sessions/{session_id}/interrupt

@@ -1,16 +1,29 @@
 # DRC-V4-3 Provider-Free FW v6 Realtime Backend API
 
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 ```text
-baseline HEAD: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-3 exact surface: exact 12 files
-Commit: NOT_AUTHORIZED
-Push: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-3 exact implementation surface: 12 files
+R1 strict request boundary: APPLIED / PASS
+R2 validation privacy boundary: APPLIED / PASS
+dedicated candidate gate: PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+Flutter full: 500 PASS
+fixed FW v6.0.0 SDK smoke: NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+GitHub main after implementation push: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+DRC-V4-3 final acceptance sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 current released version: v3.0.0 RELEASED / ACCEPTED
 DRC v4 release status: development work / not released
 Framework release: v6.0.0

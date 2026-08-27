@@ -7,12 +7,14 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-3 provider-free FW v6 Backend session API
+Current small commit: DRC-V4-3 final acceptance sync
 Current implementation: provider-free FW v6 RealtimeSession Backend API checkpoint
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-Current implementation commit: none
-Current implementation commit / push: NOT_AUTHORIZED
+Current implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+Current acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+Acceptance-sync commit: none
+Acceptance-sync commit / push: NOT_AUTHORIZED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -112,7 +114,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-3 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-3 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -248,15 +250,28 @@ Dedicated DRC-V4-2 gate:
 
 ### DRC-V4-3 provider-free FW v6 Backend session API
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED**
 
 ```text
-baseline HEAD: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-3 exact surface: exact 12 files
-Commit: NOT_AUTHORIZED
-Push: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-3 exact implementation surface: 12 files
+R1 strict request boundary: APPLIED / PASS
+R2 validation privacy boundary: APPLIED / PASS
+dedicated candidate gate: PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+Flutter full: 500 PASS
+fixed FW v6.0.0 SDK smoke: NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+GitHub main after implementation push: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+DRC-V4-3 final acceptance sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 DRC v4 release status: development work / not released
 exact prefix: /realtime/framework-v6/provider-free
 POST   /realtime/framework-v6/provider-free/sessions

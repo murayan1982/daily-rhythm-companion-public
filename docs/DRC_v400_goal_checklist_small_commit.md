@@ -1,24 +1,24 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-3 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-3 CLOSED / ACCEPTED
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-3 provider-free FW v6 Backend session API
+current small commit: DRC-V4-3 final acceptance sync
 current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation commit: none
-current implementation commit / push: NOT_AUTHORIZED
+current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+current implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+final acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+final acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
-Commit: NOT_AUTHORIZED
-Push: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 ```
 
 ## Framework v6.0.0 Provenance
@@ -33,7 +33,7 @@ Framework root-public inventory: 127 names / frozen
 
 ## Scope
 
-DRC-V4-1 records the public acceptance sync for AI Character Framework v6.0.0
+This historical scope section records earlier v4 checkpoints. DRC-V4-1 records the public acceptance sync for AI Character Framework v6.0.0
 readiness and is CLOSED / ACCEPTED. DRC-V4-2 added the provider-free installed
 SDK root-public FW v6 RealtimeSession adapter checkpoint and is CLOSED /
 ACCEPTED.
@@ -167,12 +167,27 @@ Detailed DRC-V4-2 contract:
 ## DRC-V4-3 Backend API Boundary
 
 ```text
-baseline HEAD: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-DRC-V4-3: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-3 exact surface: exact 12 files
-Commit: NOT_AUTHORIZED
-Push: NOT_AUTHORIZED
-commit / push: NOT_AUTHORIZED
+implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
+implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-3 exact implementation surface: 12 files
+Backend API accepted: true
+R1 strict request boundary: APPLIED / PASS
+R2 validation privacy boundary: APPLIED / PASS
+dedicated candidate gate: PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+Flutter full: 500 PASS
+fixed FW v6.0.0 SDK smoke: NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+GitHub main after implementation push: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+final acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
+final acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 DRC v4 release status: development work / not released
 exact prefix: /realtime/framework-v6/provider-free
 POST   /realtime/framework-v6/provider-free/sessions
