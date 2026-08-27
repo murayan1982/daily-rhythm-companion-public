@@ -1,18 +1,19 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-1 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-2 IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-1 FW v6.0.0 readiness acceptance sync
-current implementation baseline: 6311864237d8f5d86db49c14d17ca083e1af5c03
+current small commit: DRC-V4-2 provider-free FW v6 RealtimeSession adapter
+current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 current implementation commit: none
 DRC-V4-1 aggregate decision: PARTIAL_READY
-DRC-V4-2: NOT_STARTED / NOT_AUTHORIZED
+DRC-V4-1: CLOSED / ACCEPTED
+DRC-V4-2: IMPLEMENTED / AWAITING_REVIEW
 commit / push: NOT_AUTHORIZED
 ```
 
@@ -29,7 +30,8 @@ Framework root-public inventory: 127 names / frozen
 ## Scope
 
 DRC-V4-1 records the public acceptance sync for AI Character Framework v6.0.0
-readiness. It is a documentation and static-gate update only.
+readiness and is CLOSED / ACCEPTED. DRC-V4-2 adds the provider-free installed
+SDK root-public FW v6 RealtimeSession adapter checkpoint.
 
 Allowed files:
 
@@ -41,6 +43,11 @@ scripts/README.md
 docs/DRC_v400_goal_checklist_small_commit.md
 docs/v400_framework_v600_readiness_acceptance.md
 scripts/check_v400_framework_v600_readiness_acceptance.py
+docs/v400_provider_free_realtime_session_adapter.md
+scripts/check_v400_provider_free_realtime_session_adapter.py
+backend/app/models/framework_v600_realtime.py
+backend/app/services/framework_v600_realtime_session_adapter.py
+backend/tests/test_framework_v600_realtime_session_adapter.py
 ```
 
 Out of scope:
@@ -75,16 +82,18 @@ contracts and only where the relevant capability is classified READY or
 PARTIAL_READY below. The existing accepted v3 real runtime paths and fixed FW
 v5.5.0 integration remain preserved.
 
-DRC-V4-2 remains **NOT_STARTED / NOT_AUTHORIZED**.
+DRC-V4-2 is **IMPLEMENTED / AWAITING_REVIEW**. DRC v4 remains development work,
+not released.
 
 Detailed matrix:
 `docs/v400_framework_v600_readiness_acceptance.md`.
 
-## DRC-V4-2 Future Boundary
+## DRC-V4-2 Adoption Boundary
 
-DRC-V4-2 is still **NOT_STARTED / NOT_AUTHORIZED**.
+DRC-V4-2 is **IMPLEMENTED / AWAITING_REVIEW** under this checkpoint and is not
+accepted until review.
 
-Proposed future exact-review scope:
+Approved DRC-V4-2 scope:
 
 ```text
 provider-free FW v6 RealtimeSession adapter first
@@ -114,3 +123,26 @@ host-local playback final control
 presentation state
 persistence
 ```
+
+## DRC-V4-2 Acceptance Boundary
+
+```text
+DRC-V4-2 exact surface: exact 10 files
+provider-free only: true
+real_runtime_enabled: False
+provider execution: False
+network: False
+microphone: False
+real STT: False
+real LLM: False
+real TTS: False
+playback: False
+VTube Studio / real motion: False
+Flutter wiring: False
+FastAPI route wiring: False
+existing v3 runtime replacement: False
+real unified RealtimeSession.run_turn(): NOT_CLAIMED / NOT_AVAILABLE
+```
+
+Detailed DRC-V4-2 contract:
+`docs/v400_provider_free_realtime_session_adapter.md`.

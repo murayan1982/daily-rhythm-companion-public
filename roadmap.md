@@ -110,7 +110,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-1 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-2 IMPLEMENTED / AWAITING_REVIEW
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -158,12 +158,12 @@ RealtimeSession.run_turn() pipeline coordinating
 real STT -> streaming LLM -> TTS -> motion.
 ```
 
-DRC-V4-1 is docs/static-gate only. It preserves DRC v3.0.0 as the current
+DRC-V4-1 is CLOSED / ACCEPTED. It preserves DRC v3.0.0 as the current
 released version, existing accepted v3 real runtime paths, the existing fixed
 FW v5.5.0 integration, and the root-public-only Framework policy for initial
-v4 adoption. DRC-V4-2 remains **NOT_STARTED / NOT_AUTHORIZED**.
+v4 adoption.
 
-DRC-V4-2 proposed future exact-review scope:
+DRC-V4-2 approved checkpoint scope:
 
 ```text
 provider-free FW v6 RealtimeSession adapter first
@@ -196,6 +196,40 @@ persistence
 
 Dedicated gate:
 `scripts/check_v400_framework_v600_readiness_acceptance.py`.
+
+### DRC-V4-2 provider-free FW v6 RealtimeSession adapter
+
+Status: **IMPLEMENTED / AWAITING_REVIEW**
+
+```text
+baseline HEAD: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
+DRC-V4-1: CLOSED / ACCEPTED
+DRC-V4-2: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-2 exact surface: exact 10 files
+DRC v4 release status: development work / not released
+current released version: v3.0.0 RELEASED / ACCEPTED
+commit / push: NOT_AUTHORIZED
+```
+
+DRC-V4-2 adds a provider-free adapter around the installed FW v6
+root-public `framework.create_realtime_session()` and async
+`session.run_turn_async(input_text=...)` lifecycle. The production adapter
+lazy-imports only root `framework`, verifies installed distribution
+`ai-character-framework` version `6.0.0`, registers the public event callback,
+projects bounded DRC-owned public-safe models, and fails closed on identity,
+capability, terminal, sequence, diagnostics, or construction mismatches.
+
+DRC-V4-2 does not request real runtime, does not pass real stages, does not load
+credentials/provider config/endpoints/private paths, does not use Framework
+submodule imports, and does not mutate `sys.path`, `sys.modules`, import caches,
+or CWD. Existing accepted v3 real adapters remain retained; their removal is
+**NOT_AUTHORIZED**.
+
+Detailed DRC-V4-2 contract:
+`docs/v400_provider_free_realtime_session_adapter.md`.
+
+Dedicated DRC-V4-2 gate:
+`scripts/check_v400_provider_free_realtime_session_adapter.py`.
 
 ---
 

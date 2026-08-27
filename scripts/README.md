@@ -17,15 +17,16 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-1 FW v6.0.0 readiness acceptance sync
+current small commit: DRC-V4-2 provider-free FW v6 RealtimeSession adapter
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 6311864237d8f5d86db49c14d17ca083e1af5c03
+current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 DRC-V4-1 aggregate decision: PARTIAL_READY
-DRC-V4-2: NOT_STARTED / NOT_AUTHORIZED
+DRC-V4-1: CLOSED / ACCEPTED
+DRC-V4-2: IMPLEMENTED / AWAITING_REVIEW
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -68,6 +69,37 @@ provider-free DRC-V4-2 future exact-review scope, root `framework` imports only
 for initial adoption, retained v3 real adapters, and the non-authorization of
 FW submodule adoption, v3 adapter removal, and real unified RealtimeSession
 claims.
+
+## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
+
+Detailed contract:
+`docs/v400_provider_free_realtime_session_adapter.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_session_adapter.py
+python -m pytest -q backend/tests/test_framework_v600_realtime_session_adapter.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v400_provider_free_realtime_session_adapter.py
+git diff --check
+git status --short
+git diff --stat
+```
+
+The DRC-V4-2 checker is deterministic and safe by default. It requires no
+network, provider SDK execution, microphone, playback, VTube Studio, private
+configuration, or official FW ZIP. If an operator supplies a local official
+FW v6.0.0 ZIP path through `DRC_FW_V600_OFFICIAL_ZIP`, the checker verifies the
+exact SHA-256 before running the provider-free SDK smoke in temporary isolated
+directories outside the DRC repository.
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
