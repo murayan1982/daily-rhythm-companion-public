@@ -10,16 +10,19 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-2 provider-free FW v6 RealtimeSession adapter
+Current small commit: DRC-V4-2 final acceptance sync
 Current implementation: provider-free installed-SDK root-public FW v6 RealtimeSession adapter checkpoint.
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current implementation baseline: `e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3`
-Current implementation commit: none
+Current implementation commit: `5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b`
+Current acceptance-sync baseline: `5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b`
+Acceptance-sync commit: none
+Acceptance-sync commit / push: NOT_AUTHORIZED
 Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED**)
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: verify exact ten-file DRC-V4-2 provider-free FW v6 RealtimeSession adapter candidate
+Current v4 action: DRC-V4-2 final acceptance sync
 
 Current phase state:
 
@@ -169,10 +172,18 @@ Critical non-claim: FW v6.0.0 does **not** provide a production real unified
 `RealtimeSession.run_turn()` pipeline coordinating real STT -> streaming LLM ->
 TTS -> motion. DRC-V4-2 does not claim or enable that real unified pipeline.
 
-DRC-V4-2 is **IMPLEMENTED / AWAITING_REVIEW** as a provider-free installed-SDK
-root-public FW v6 RealtimeSession adapter checkpoint. It does not migrate real
+DRC-V4-2 implementation is **COMPLETED / VERIFIED / ACCEPTED / COMMITTED /
+PUSHED / CLOSED** at implementation commit
+`5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b`. It adopted the exact 10-file
+provider-free installed-SDK root-public FW v6 RealtimeSession adapter
+checkpoint after focused Backend 23 PASS, full Backend 440 PASS, Flutter
+analyze PASS, Flutter full 500 PASS, exact surface PASS, protected-file review
+PASS, privacy/security review PASS, and fixed FW v6.0.0 SDK smoke
+NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING. It does not migrate real
 STT/LLM/TTS/VTS runtime to RealtimeSession, does not add a FastAPI route or
 Flutter wiring, and preserves existing accepted v3 real runtime paths.
+
+DRC-V4-2 final acceptance sync is **IMPLEMENTED / AWAITING_REVIEW**.
 
 Detailed DRC-V4-2 contract:
 `docs/v400_provider_free_realtime_session_adapter.md`.

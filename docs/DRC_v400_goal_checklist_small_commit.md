@@ -1,20 +1,22 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-2 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-2 CLOSED / ACCEPTED
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-2 provider-free FW v6 RealtimeSession adapter
+current small commit: DRC-V4-2 final acceptance sync
 current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation commit: none
+current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+current implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+current acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
-DRC-V4-2: IMPLEMENTED / AWAITING_REVIEW
-commit / push: NOT_AUTHORIZED
+DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 ```
 
 ## Framework v6.0.0 Provenance
@@ -30,8 +32,9 @@ Framework root-public inventory: 127 names / frozen
 ## Scope
 
 DRC-V4-1 records the public acceptance sync for AI Character Framework v6.0.0
-readiness and is CLOSED / ACCEPTED. DRC-V4-2 adds the provider-free installed
-SDK root-public FW v6 RealtimeSession adapter checkpoint.
+readiness and is CLOSED / ACCEPTED. DRC-V4-2 added the provider-free installed
+SDK root-public FW v6 RealtimeSession adapter checkpoint and is CLOSED /
+ACCEPTED.
 
 Allowed files:
 
@@ -82,16 +85,16 @@ contracts and only where the relevant capability is classified READY or
 PARTIAL_READY below. The existing accepted v3 real runtime paths and fixed FW
 v5.5.0 integration remain preserved.
 
-DRC-V4-2 is **IMPLEMENTED / AWAITING_REVIEW**. DRC v4 remains development work,
-not released.
+DRC-V4-2 is **COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED**.
+DRC v4 remains development work, not released.
 
 Detailed matrix:
 `docs/v400_framework_v600_readiness_acceptance.md`.
 
 ## DRC-V4-2 Adoption Boundary
 
-DRC-V4-2 is **IMPLEMENTED / AWAITING_REVIEW** under this checkpoint and is not
-accepted until review.
+DRC-V4-2 is **COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED**
+under this accepted checkpoint.
 
 Approved DRC-V4-2 scope:
 
@@ -128,6 +131,18 @@ persistence
 
 ```text
 DRC-V4-2 exact surface: exact 10 files
+DRC-V4-2 implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+DRC-V4-2 correctives before implementation commit: R1 / R2 / R3 / R4
+focused Backend: 23 PASS
+full Backend: 440 PASS
+Flutter analyze: PASS
+Flutter full: 500 PASS
+fixed FW v6.0.0 SDK smoke: NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING
+exact implementation surface: PASS
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+GitHub main after push: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
 provider-free only: true
 real_runtime_enabled: False
 provider execution: False

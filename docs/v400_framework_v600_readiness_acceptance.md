@@ -1,6 +1,6 @@
 # DRC-V4-1 FW v6.0.0 Readiness Acceptance
 
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: CLOSED / ACCEPTED
 
 ## Decision
 
@@ -52,7 +52,12 @@ DRC v3.0.0 current released version: RELEASED / ACCEPTED / preserved
 existing accepted v3 real runtime paths: preserved
 existing fixed FW v5.5.0 integration: preserved
 root-public-only Framework policy for initial v4 adoption: preserved
-DRC-V4-2: NOT_STARTED / NOT_AUTHORIZED
+At DRC-V4-1 acceptance time:
+DRC-V4-2 = NOT_STARTED / NOT_AUTHORIZED
+Subsequent accepted state:
+DRC-V4-2 = COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Implementation commit:
+5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
 ```
 
 ## Acceptance Surface
@@ -78,8 +83,13 @@ playback, VTube Studio, or real motion.
 
 ## Next Step Boundary
 
-DRC-V4-2 remains **NOT_STARTED / NOT_AUTHORIZED**. It must not be reported as
-implemented, accepted, committed, pushed, or released by this readiness sync.
+At DRC-V4-1 acceptance time, DRC-V4-2 was **NOT_STARTED / NOT_AUTHORIZED** and
+was not reported as implemented, accepted, committed, pushed, or released by
+that readiness sync.
+
+Subsequent accepted state: DRC-V4-2 is **COMPLETED / VERIFIED / ACCEPTED /
+COMMITTED / PUSHED / CLOSED** at implementation commit
+`5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b`.
 
 Proposed future exact-review scope:
 

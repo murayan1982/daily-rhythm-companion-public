@@ -1,6 +1,6 @@
 # DRC-V4-2 Provider-Free FW v6 RealtimeSession Adapter
 
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 ## Baseline
 
@@ -8,10 +8,36 @@ Status: IMPLEMENTED / AWAITING_REVIEW
 baseline HEAD: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
 branch: main
 DRC-V4-1: CLOSED / ACCEPTED
-DRC-V4-2: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 current released version: v3.0.0 RELEASED / ACCEPTED
 DRC v4 release status: development work / not released
-commit / push: NOT_AUTHORIZED
+implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+current acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
+```
+
+## Acceptance Record
+
+```text
+implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
+implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+implementation exact surface: 10 files
+compileall: PASS
+dedicated gate: PASS
+focused Backend: 23 PASS
+full Backend: 440 PASS
+Flutter analyze: PASS
+Flutter full: 500 PASS
+final dedicated gate: PASS
+git diff --check: PASS
+exact surface: PASS
+protected review: PASS
+privacy/security: PASS
+fixed official FW v6 SDK smoke: NOT_RUN / OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING
+corrective history before implementation commit: R1 / R2 / R3 / R4
+push verification: HEAD == origin/main == GitHub main == 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+working tree after push: clean
 ```
 
 ## Exact Surface
@@ -353,7 +379,10 @@ migrate the real STT/LLM/TTS/VTS runtime to RealtimeSession.
 
 ## Next-Step Authorization
 
-DRC-V4-2 remains **IMPLEMENTED / AWAITING_REVIEW** until explicit review and
-acceptance. Explicit FW submodule adoption, real-runtime stage injection,
-FastAPI route wiring, Flutter wiring, provider execution, v3 adapter removal,
-commit, and push remain **NOT_AUTHORIZED**.
+DRC-V4-2 implementation is **COMPLETED / VERIFIED / ACCEPTED / COMMITTED /
+PUSHED / CLOSED**.
+
+Future follow-up work remains separately unauthorized unless explicitly
+reviewed: FW submodule adoption, real-runtime stage injection, FastAPI route
+wiring, Flutter wiring, provider execution, v3 adapter removal, and production
+real unified runtime claims.

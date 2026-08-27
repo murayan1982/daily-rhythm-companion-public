@@ -17,16 +17,20 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-2 provider-free FW v6 RealtimeSession adapter
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current small commit: DRC-V4-2 final acceptance sync
+current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 current implementation baseline: e6ec8fcfbb819a35f5f74be9386ff2c63a5c64f3
+current implementation commit: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+current acceptance-sync baseline: 5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
-DRC-V4-2: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -70,6 +74,12 @@ for initial adoption, retained v3 real adapters, and the non-authorization of
 FW submodule adoption, v3 adapter removal, and real unified RealtimeSession
 claims.
 
+Historical checker note: `scripts/check_v400_framework_v600_readiness_acceptance.py`
+and `scripts/check_v400_provider_free_realtime_session_adapter.py` are frozen
+pre-commit candidate gates. They contain candidate-specific baseline and
+working-tree surface expectations and are not expected to pass as post-commit
+clean-tree gates.
+
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 
 Detailed contract:
@@ -100,6 +110,14 @@ configuration, or official FW ZIP. If an operator supplies a local official
 FW v6.0.0 ZIP path through `DRC_FW_V600_OFFICIAL_ZIP`, the checker verifies the
 exact SHA-256 before running the provider-free SDK smoke in temporary isolated
 directories outside the DRC repository.
+
+DRC-V4-2 implementation is COMPLETED / VERIFIED / ACCEPTED / COMMITTED /
+PUSHED / CLOSED at implementation commit
+`5eed0fe5e1b7ad0c7a9bd89afde50629b16d664b`. Accepted verification recorded
+focused Backend 23 PASS, full Backend 440 PASS, Flutter analyze PASS, Flutter
+full 500 PASS, exact surface PASS, protected-file review PASS, privacy/security
+review PASS, and fixed FW v6.0.0 SDK smoke NOT_RUN /
+OFFICIAL_ZIP_NOT_SUPPLIED / NON_BLOCKING.
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
