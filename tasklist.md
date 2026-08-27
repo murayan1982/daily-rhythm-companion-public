@@ -14,14 +14,94 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: RT-9e final documentation sync
-current implementation step: public docs-only post-publication completion synchronization
+current small commit: DRC-V4-1 FW v6.0.0 readiness acceptance sync
+current implementation step: public docs/static-gate Framework v6.0.0 readiness acceptance synchronization
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 513046be6016fae787dc77b2dda44681c697ed9c
+current implementation baseline: 6311864237d8f5d86db49c14d17ca083e1af5c03
 current implementation commit: none
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
 strategic target achieved: v3.0.0 RELEASED / ACCEPTED
+DRC-V4-1 aggregate decision: PARTIAL_READY
+DRC-V4-2: NOT_STARTED / NOT_AUTHORIZED
+Framework release: v6.0.0
+Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
+Framework official ZIP: ai-character-framework_v6.0.0.zip
+Framework official ZIP SHA-256: 6b303dba53830dc9bd65ec881bac6f498dbf80f0d0adf1385cea728a86e066f2
+Framework root-public inventory: 127 names / frozen
+```
+
+## DRC-V4-1 - FW v6.0.0 readiness acceptance sync
+
+Status: IMPLEMENTED / AWAITING_REVIEW
+
+```text
+DRC-V4-1: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-1 surface: exact 7 public documentation/static-gate files
+DRC-V4-1 aggregate decision: PARTIAL_READY
+DRC-V4-2: NOT_STARTED / NOT_AUTHORIZED
+current released version: v3.0.0 RELEASED / ACCEPTED
+fixed FW v5.5.0 integration: preserved
+root-public-only Framework policy for initial v4 adoption: preserved
+commit / push: NOT_AUTHORIZED
+```
+
+FW v6.0.0 readiness:
+
+```text
+Unified RealtimeSession       PARTIAL_READY
+Typed lifecycle events        READY
+Interrupt/cancellation        READY
+TTS queue/flush/invalidation  READY
+Stale/late result rejection   READY
+Capability snapshot           READY
+Voice-input streaming         PARTIAL_READY
+Backpressure                  READY
+Motion lifecycle              PARTIAL_READY
+Recovery/reset                PARTIAL_READY
+Safe diagnostics              READY
+Aggregate                     PARTIAL_READY
+```
+
+Critical non-claim: FW v6.0.0 does NOT provide a production real unified
+`RealtimeSession.run_turn()` pipeline coordinating real STT -> streaming LLM ->
+TTS -> motion.
+
+Detailed readiness acceptance:
+`docs/v400_framework_v600_readiness_acceptance.md`.
+
+Dedicated gate:
+`scripts/check_v400_framework_v600_readiness_acceptance.py`.
+
+DRC-V4-2 proposed future exact-review scope:
+
+```text
+provider-free FW v6 RealtimeSession adapter first
+session identity
+turn identity
+generation identity
+canonical event ordering
+exactly-once terminal
+cooperative interrupt results
+stale-result rejection
+truthful capability snapshot
+safe diagnostics
+initial FW imports from root framework only
+explicit FW submodule adoption requires a separate exact review
+existing accepted v3 real adapters remain retained
+removal of v3 real adapters is NOT_AUTHORIZED
+real unified RealtimeSession remains NOT_CLAIMED / NOT_AVAILABLE
+```
+
+DRC-owned responsibilities outside FW ownership:
+
+```text
+Flutter microphone permission / foreground lifecycle
+product UX and explicit opt-in policy
+DailyRecord / sleep / mood / character context
+host-local playback final control
+presentation state
+persistence
 ```
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。

@@ -1,16 +1,16 @@
 # Daily Rhythm Companion Roadmap
 
-Updated: 2026-08-04
+Updated: 2026-08-27
 Current released version: v3.0.0 (**RELEASED / ACCEPTED**)
 Current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 (**RELEASED**)
 Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: RT-9e final documentation sync
-Current implementation: public docs-only post-publication completion synchronization
+Current small commit: DRC-V4-1 FW v6.0.0 readiness acceptance sync
+Current implementation: public docs/static-gate Framework v6.0.0 readiness acceptance synchronization
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 513046be6016fae787dc77b2dda44681c697ed9c
+Current implementation baseline: 6311864237d8f5d86db49c14d17ca083e1af5c03
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -105,6 +105,97 @@ Sleep / mood / daily context
 ```
 
 The application must remain useful in mock-safe mode while providing explicit, observable opt-in paths for configured real integrations.
+
+---
+
+## v4.0.0 - Framework v6.0.0 readiness and initial adoption
+
+Status: DRC-V4-1 IMPLEMENTED / AWAITING_REVIEW
+Current readiness decision: **PARTIAL_READY**
+Source of truth:
+`docs/DRC_v400_goal_checklist_small_commit.md`
+
+Goal:
+
+```text
+Assess AI Character Framework v6.0.0 root-public readiness for DRC v4 adoption
+without weakening the accepted v3.0.0 release state or fixed FW v5.5.0
+integration.
+```
+
+DRC-V4-1 accepted readiness classifications:
+
+```text
+Unified RealtimeSession       PARTIAL_READY
+Typed lifecycle events        READY
+Interrupt/cancellation        READY
+TTS queue/flush/invalidation  READY
+Stale/late result rejection   READY
+Capability snapshot           READY
+Voice-input streaming         PARTIAL_READY
+Backpressure                  READY
+Motion lifecycle              PARTIAL_READY
+Recovery/reset                PARTIAL_READY
+Safe diagnostics              READY
+Aggregate                     PARTIAL_READY
+```
+
+Framework v6.0.0 provenance:
+
+```text
+Framework release: v6.0.0
+Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
+Framework official ZIP: ai-character-framework_v6.0.0.zip
+Framework official ZIP SHA-256: 6b303dba53830dc9bd65ec881bac6f498dbf80f0d0adf1385cea728a86e066f2
+Framework root-public inventory: 127 names / frozen
+```
+
+Critical non-claim:
+
+```text
+FW v6.0.0 does NOT provide a production real unified
+RealtimeSession.run_turn() pipeline coordinating
+real STT -> streaming LLM -> TTS -> motion.
+```
+
+DRC-V4-1 is docs/static-gate only. It preserves DRC v3.0.0 as the current
+released version, existing accepted v3 real runtime paths, the existing fixed
+FW v5.5.0 integration, and the root-public-only Framework policy for initial
+v4 adoption. DRC-V4-2 remains **NOT_STARTED / NOT_AUTHORIZED**.
+
+DRC-V4-2 proposed future exact-review scope:
+
+```text
+provider-free FW v6 RealtimeSession adapter first
+session identity
+turn identity
+generation identity
+canonical event ordering
+exactly-once terminal
+cooperative interrupt results
+stale-result rejection
+truthful capability snapshot
+safe diagnostics
+initial FW imports from root framework only
+explicit FW submodule adoption requires a separate exact review
+existing accepted v3 real adapters remain retained
+removal of v3 real adapters is NOT_AUTHORIZED
+real unified RealtimeSession remains NOT_CLAIMED / NOT_AVAILABLE
+```
+
+DRC-owned responsibilities outside FW ownership:
+
+```text
+Flutter microphone permission / foreground lifecycle
+product UX and explicit opt-in policy
+DailyRecord / sleep / mood / character context
+host-local playback final control
+presentation state
+persistence
+```
+
+Dedicated gate:
+`scripts/check_v400_framework_v600_readiness_acceptance.py`.
 
 ---
 

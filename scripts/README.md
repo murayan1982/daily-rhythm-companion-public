@@ -17,14 +17,57 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: RT-9e final documentation sync
+current small commit: DRC-V4-1 FW v6.0.0 readiness acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 513046be6016fae787dc77b2dda44681c697ed9c
+current implementation baseline: 6311864237d8f5d86db49c14d17ca083e1af5c03
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
 completed phase: T-1 COMPLETED / ACCEPTED
+DRC-V4-1 aggregate decision: PARTIAL_READY
+DRC-V4-2: NOT_STARTED / NOT_AUTHORIZED
+Framework release: v6.0.0
+Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
+Framework official ZIP: ai-character-framework_v6.0.0.zip
+Framework official ZIP SHA-256: 6b303dba53830dc9bd65ec881bac6f498dbf80f0d0adf1385cea728a86e066f2
+Framework root-public inventory: 127 names / frozen
 ```
+
+## v4.0.0 DRC-V4-1 FW v6.0.0 readiness acceptance check
+
+Detailed readiness:
+`docs/v400_framework_v600_readiness_acceptance.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_framework_v600_readiness_acceptance.py
+python -m pytest -q backend/tests
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v400_framework_v600_readiness_acceptance.py
+git diff --check
+git status --short
+git diff --stat
+```
+
+The DRC-V4-1 gate is local, credential-free, provider-free, network-free,
+microphone-free, real STT/LLM/TTS-free, playback-free, VTube Studio-free, and
+real-motion-free. It verifies the exact seven-file docs/static-gate surface,
+the required FW v6.0.0 readiness matrix, the `PARTIAL_READY` aggregate decision,
+the critical unified `RealtimeSession.run_turn()` non-claim, and that DRC-V4-2
+remains `NOT_STARTED / NOT_AUTHORIZED`.
+
+The gate also freezes FW v6.0.0 provenance, root-public inventory count, the
+provider-free DRC-V4-2 future exact-review scope, root `framework` imports only
+for initial adoption, retained v3 real adapters, and the non-authorization of
+FW submodule adoption, v3 adapter removal, and real unified RealtimeSession
+claims.
 
 W-1 inventoried the existing Fitbit implementation and established the v2.1.0 checklist. It changed no backend runtime, Flutter runtime, existing tests, version metadata, released fixed ZIP, tags, GitHub Releases, or publication records.
 
