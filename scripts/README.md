@@ -17,13 +17,11 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-3 final acceptance sync
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-current implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
-current acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-4 provider-free FW v6 Flutter session client/controller
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -32,6 +30,7 @@ DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -87,6 +86,41 @@ The DRC-V4-3 candidate checker freezes baseline
 candidate surface. It is historical after implementation commit
 `3247da0c64afc282a41723b6d9c3a522fbd34de0`; its accepted PASS result is
 recorded and it is not rerun for the DRC-V4-3 final acceptance sync.
+
+## v4.0.0 DRC-V4-4 provider-free FW v6 Flutter session client check
+
+Detailed contract:
+`docs/v400_provider_free_realtime_flutter_session_client.md`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_flutter_session_client.py
+python -m pytest -q backend/tests/test_framework_v600_realtime_api.py backend/tests/test_framework_v600_realtime_session_adapter.py
+python -m pytest -q backend/tests --basetemp <fresh-outside-repo-path>
+
+cd app
+flutter analyze
+flutter test test/framework_v600_realtime_session_model_test.dart test/framework_v600_realtime_session_client_test.dart test/framework_v600_realtime_session_controller_test.dart
+flutter test
+cd ..
+
+python scripts\check_v400_provider_free_realtime_flutter_session_client.py
+git diff --check
+git status --short
+git diff --stat
+git diff --name-only
+```
+
+DRC-V4-4 status is IMPLEMENTED / AWAITING_REVIEW. It adds a provider-free
+Flutter client/controller only. Backend HTTP capability is YES / explicit
+method invocation only; automatic network on construction/startup is NO;
+verification network is NO / fake injected HTTP client only; external provider
+execution, provider network, microphone, real STT, real LLM, real TTS,
+playback, and VTube Studio are NO. HomeScreen/main.dart wiring and configured
+runtime wiring are NOT_IMPLEMENTED. The real unified runtime remains
+NOT_CLAIMED.
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 

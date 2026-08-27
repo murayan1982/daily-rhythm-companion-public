@@ -10,19 +10,18 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-3 final acceptance sync
-Current implementation: provider-free FW v6 RealtimeSession Backend API checkpoint.
-Current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-Current implementation baseline: `384006073aa9e8757c904cb89d9bcd62a2b9fb35`
-Current implementation commit: `3247da0c64afc282a41723b6d9c3a522fbd34de0`
-Current acceptance-sync baseline: `3247da0c64afc282a41723b6d9c3a522fbd34de0`
-Acceptance-sync commit: none
-Acceptance-sync commit / push: NOT_AUTHORIZED
+Current small commit: DRC-V4-4 provider-free FW v6 Flutter session client/controller
+Current implementation: provider-free FW v6 Flutter session client/controller checkpoint.
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: `d194c213fdecc84ec06d8b63f0cb94f8689c5ed7`
+Current implementation commit: none
+Current implementation commit / push: NOT_AUTHORIZED
 Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED**)
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: DRC-V4-3 final acceptance sync
+Current v4 action: DRC-V4-4 provider-free FW v6 Flutter session client/controller
 
 Current phase state:
 

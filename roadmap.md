@@ -7,14 +7,12 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-3 final acceptance sync
-Current implementation: provider-free FW v6 RealtimeSession Backend API checkpoint
-Current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-Current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-Current implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
-Current acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
-Acceptance-sync commit: none
-Acceptance-sync commit / push: NOT_AUTHORIZED
+Current small commit: DRC-V4-4 provider-free FW v6 Flutter session client/controller
+Current implementation: provider-free FW v6 Flutter session client/controller checkpoint
+Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
+Current implementation commit: none
+Current implementation commit / push: NOT_AUTHORIZED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -114,7 +112,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-3 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Status: DRC-V4-4 IMPLEMENTED / AWAITING_REVIEW
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -306,6 +304,48 @@ Detailed DRC-V4-3 contract:
 
 Dedicated DRC-V4-3 gate:
 `scripts/check_v400_provider_free_realtime_backend_api.py`.
+
+### DRC-V4-4 provider-free FW v6 Flutter session client/controller
+
+Status: **IMPLEMENTED / AWAITING_REVIEW**
+
+```text
+implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
+implementation commit: none
+DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4 exact implementation surface: 13 files
+provider-free Flutter client/controller only: true
+Backend HTTP capability: YES / explicit method invocation only
+automatic network on construction/startup: NO
+verification network: NO / fake injected HTTP client only
+external provider execution: NO
+provider network: NO
+microphone: NO
+real STT: NO
+real LLM: NO
+real TTS: NO
+playback: NO
+VTube Studio: NO
+HomeScreen wiring: NOT_IMPLEMENTED
+main.dart wiring: NOT_IMPLEMENTED
+configured runtime wiring: NOT_IMPLEMENTED
+direct Framework import: NOT_IMPLEMENTED
+provider SDK import: NOT_IMPLEMENTED
+existing v3 runtime replacement: False
+real unified pipeline: NOT_CLAIMED / NOT_ENABLED
+commit / push: NOT_AUTHORIZED
+```
+
+DRC-V4-4 adds only the Flutter model, injectable HTTP client, and ChangeNotifier
+controller for the accepted DRC-V4-3 Backend API. It does not add HomeScreen
+wiring, main.dart wiring, configured runtime selection, provider execution, or a
+production real unified `RealtimeSession.run_turn()` pipeline claim.
+
+Detailed DRC-V4-4 contract:
+`docs/v400_provider_free_realtime_flutter_session_client.md`.
+
+Dedicated DRC-V4-4 gate:
+`scripts/check_v400_provider_free_realtime_flutter_session_client.py`.
 
 ---
 

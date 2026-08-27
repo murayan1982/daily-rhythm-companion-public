@@ -1,24 +1,22 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-3 CLOSED / ACCEPTED
+Status: DRC-V4-4 IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-3 final acceptance sync
-current implementation baseline: 384006073aa9e8757c904cb89d9bcd62a2b9fb35
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation commit: 3247da0c64afc282a41723b6d9c3a522fbd34de0
-final acceptance-sync baseline: 3247da0c64afc282a41723b6d9c3a522fbd34de0
-final acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-4 provider-free FW v6 Flutter session client/controller
+current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
 ```
 
 ## Framework v6.0.0 Provenance
@@ -223,3 +221,43 @@ Detailed DRC-V4-3 contract:
 
 Dedicated DRC-V4-3 gate:
 `scripts/check_v400_provider_free_realtime_backend_api.py`.
+
+## DRC-V4-4 Flutter Client Boundary
+
+```text
+implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
+implementation commit: none
+DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4 exact implementation surface: 13 files
+provider-free Flutter client/controller only: true
+Backend HTTP capability: YES / explicit method invocation only
+automatic network on construction/startup: NO
+verification network: NO / fake injected HTTP client only
+external provider execution: NO
+provider network: NO
+microphone: NO
+real STT: NO
+real LLM: NO
+real TTS: NO
+playback: NO
+VTube Studio: NO
+HomeScreen wiring: NOT_IMPLEMENTED
+main.dart wiring: NOT_IMPLEMENTED
+configured runtime wiring: NOT_IMPLEMENTED
+direct Framework import: NOT_IMPLEMENTED
+provider SDK import: NOT_IMPLEMENTED
+existing v3 runtime replacement: False
+real unified pipeline: NOT_CLAIMED / NOT_ENABLED
+commit / push: NOT_AUTHORIZED
+```
+
+DRC-V4-4 adds immutable Flutter projections, an injectable HTTP client, and a
+ChangeNotifier controller for the accepted DRC-V4-3 provider-free Backend API.
+It performs no automatic startup network, no HomeScreen/main.dart wiring, and
+no configured runtime selection.
+
+Detailed DRC-V4-4 contract:
+`docs/v400_provider_free_realtime_flutter_session_client.md`.
+
+Dedicated DRC-V4-4 gate:
+`scripts/check_v400_provider_free_realtime_flutter_session_client.py`.
