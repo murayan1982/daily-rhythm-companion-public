@@ -17,9 +17,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control B
+current small commit: DRC-V4-6 Control B final acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+current implementation baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -34,13 +34,16 @@ DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control A: CLOSED
-DRC-V4-6 Control B: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-6 Control B baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
-DRC-V4-6 Control B implementation commit: none
-DRC-V4-6 Control B commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-6 Control B implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+DRC-V4-6 Control B implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+DRC-V4-6 Control B final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B final acceptance-sync baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+DRC-V4-6 Control B final acceptance-sync commit: none
+DRC-V4-6 Control B acceptance-sync commit / push: NOT_AUTHORIZED
 DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
-HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / AWAITING_REVIEW
+HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
 automatic startup network: NO
 automatic session open: NO
 explicit user-action Backend HTTP: YES
@@ -194,12 +197,42 @@ flutter test --no-pub
 cd ..
 ```
 
-DRC-V4-6 Control B is IMPLEMENTED / AWAITING_REVIEW at baseline
-`9bba7db5ed20abf6a0ffa1444fa37b340f3189cd`; implementation commit is none and
-commit / push are NOT_AUTHORIZED. It adds only a HomeScreen manual
+DRC-V4-6 Control B is COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED /
+CLOSED at implementation commit
+`3f9d38107f0306e023c127e68ce657cc4bd90b18` from implementation baseline
+`9bba7db5ed20abf6a0ffa1444fa37b340f3189cd`. The final acceptance sync is
+IMPLEMENTED / AWAITING_REVIEW at baseline
+`3f9d38107f0306e023c127e68ce657cc4bd90b18`; its commit / push are
+NOT_AUTHORIZED. Control B adds only a HomeScreen manual
 provider-free session panel plus fake-only widget acceptance tests and a static
 gate. Control A remains CLOSED, Control C remains PROPOSED / NOT_AUTHORIZED,
 and the aggregate remains PARTIAL_READY / NOT_COMPLETED.
+
+Accepted Control B verification evidence:
+
+```text
+Corrective R1: PASS / ACCEPTED
+Corrective R2: PASS / unused import corrective
+Corrective R3: PASS / HomeScreen compatibility corrective
+dedicated Control B candidate checker: PASS / HISTORICAL
+post-commit/final-sync checker rerun: NOT_RUN / BY_DESIGN
+Backend focused: 62 PASS
+Flutter analyze: PASS
+Control B focused widget: 14 PASS
+previously failing protected regression tests: 2 PASS
+Control A configured runtime: 11 PASS
+V4-4 controller: 19 PASS
+full Flutter: 565 PASS
+git diff --check: PASS
+protected main.dart: PASS
+protected Backend: PASS
+protected Control A: PASS
+```
+
+`scripts/check_v400_provider_free_realtime_flutter_home_screen.py` is a
+historical pre-commit candidate gate tied to baseline
+`9bba7db5ed20abf6a0ffa1444fa37b340f3189cd` and a dirty exact nine-file
+candidate surface. It is not rerun as a post-commit/final-sync gate.
 
 Control B does not change `main.dart`, Backend, Control A runtime/controller/
 client/model, or existing v3 realtime / voice / motion / VTS behavior.

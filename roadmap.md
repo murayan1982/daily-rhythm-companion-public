@@ -7,19 +7,25 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-6 Control B
-Current implementation: DRC-V4-6 Control B HomeScreen explicit manual FW v6 provider-free session UI
+Current small commit: DRC-V4-6 Control B final acceptance sync
+Current implementation: DRC-V4-6 Control B final acceptance sync
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+Current implementation baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
 Current implementation commit: none
 Current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-6 Control A: CLOSED
 DRC-V4-6 Control A final acceptance-sync commit: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
-DRC-V4-6 Control B: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-6 Control B implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+DRC-V4-6 Control B implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+DRC-V4-6 Control B final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B final acceptance-sync baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+DRC-V4-6 Control B final acceptance-sync commit: none
+DRC-V4-6 Control B acceptance-sync commit / push: NOT_AUTHORIZED
 DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
-HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / AWAITING_REVIEW
+HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
 main.dart FW-v6 composition: NOT_IMPLEMENTED
 automatic startup network: NO
 automatic session open: NO
@@ -30,6 +36,32 @@ existing v3 replacement: NO
 real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
+
+DRC-V4-6 Control B final acceptance sync marker summary:
+
+```text
+Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+Corrective R1: PASS / ACCEPTED
+Corrective R2: PASS / unused import corrective
+Corrective R3: PASS / HomeScreen compatibility corrective
+dedicated Control B candidate checker: PASS / HISTORICAL
+post-commit/final-sync checker rerun: NOT_RUN / BY_DESIGN
+Backend focused: 62 PASS
+Flutter analyze: PASS
+Control B focused widget: 14 PASS
+previously failing protected regression tests: 2 PASS
+Control A configured runtime: 11 PASS
+V4-4 controller: 19 PASS
+full Flutter: 565 PASS
+git diff --check: PASS
+protected main.dart: PASS
+protected Backend: PASS
+protected Control A: PASS
+Control C: PROPOSED / NOT_AUTHORIZED
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+```
 
 ---
 
@@ -127,7 +159,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-6 Control B IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-6 Control B COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`

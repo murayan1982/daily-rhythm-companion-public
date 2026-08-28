@@ -14,10 +14,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control B
-current implementation step: DRC-V4-6 Control B HomeScreen explicit manual FW v6 provider-free session UI
+current small commit: DRC-V4-6 Control B final acceptance sync
+current implementation step: DRC-V4-6 Control B final acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+current implementation baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -32,14 +32,17 @@ DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control A: CLOSED
 DRC-V4-6 Control A final acceptance-sync commit: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
-DRC-V4-6 Control B: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-6 Control B baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
-DRC-V4-6 Control B implementation commit: none
-DRC-V4-6 Control B commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-6 Control B implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+DRC-V4-6 Control B implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+DRC-V4-6 Control B final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B final acceptance-sync baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+DRC-V4-6 Control B final acceptance-sync commit: none
+DRC-V4-6 Control B acceptance-sync commit / push: NOT_AUTHORIZED
 DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
-HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / AWAITING_REVIEW
+HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
 main.dart FW-v6 composition: NOT_IMPLEMENTED
 automatic startup network: NO
 automatic session open: NO
@@ -53,6 +56,32 @@ Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
 Framework official ZIP SHA-256: 6b303dba53830dc9bd65ec881bac6f498dbf80f0d0adf1385cea728a86e066f2
 Framework root-public inventory: 127 names / frozen
+```
+
+DRC-V4-6 Control B final acceptance sync marker summary:
+
+```text
+Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+Corrective R1: PASS / ACCEPTED
+Corrective R2: PASS / unused import corrective
+Corrective R3: PASS / HomeScreen compatibility corrective
+dedicated Control B candidate checker: PASS / HISTORICAL
+post-commit/final-sync checker rerun: NOT_RUN / BY_DESIGN
+Backend focused: 62 PASS
+Flutter analyze: PASS
+Control B focused widget: 14 PASS
+previously failing protected regression tests: 2 PASS
+Control A configured runtime: 11 PASS
+V4-4 controller: 19 PASS
+full Flutter: 565 PASS
+git diff --check: PASS
+protected main.dart: PASS
+protected Backend: PASS
+protected Control A: PASS
+Control C: PROPOSED / NOT_AUTHORIZED
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 ```
 
 ## DRC-V4-1 - FW v6.0.0 readiness acceptance sync

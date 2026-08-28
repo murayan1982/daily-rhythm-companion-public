@@ -1,20 +1,21 @@
 # DRC-V4-6 Control B - HomeScreen manual FW-v6 provider-free session UI
 
 Status:
-DRC-V4-6 Control B IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 ```text
-baseline:
+implementation baseline:
 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
 
 implementation commit:
-none
+3f9d38107f0306e023c127e68ce657cc4bd90b18
 
 commit:
-NOT_AUTHORIZED
+COMPLETED
 
 push:
-NOT_AUTHORIZED
+COMPLETED
 ```
 
 ## Exact Surface
@@ -47,7 +48,7 @@ Control A:
 CLOSED
 
 Control B:
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control C:
 PROPOSED / NOT_AUTHORIZED
@@ -66,7 +67,7 @@ configured FW-v6 runtime/factory:
 IMPLEMENTED / ACCEPTED
 
 HomeScreen FW-v6 provider-free manual UI:
-IMPLEMENTED / AWAITING_REVIEW
+IMPLEMENTED / ACCEPTED
 
 main.dart FW-v6 composition:
 NOT_IMPLEMENTED
@@ -95,6 +96,65 @@ NO
 real unified FW runtime:
 NOT_AVAILABLE / NOT_CLAIMED
 ```
+
+## Accepted Verification Evidence
+
+```text
+Corrective R1:
+PASS / ACCEPTED
+
+Corrective R2:
+PASS / unused import corrective
+
+Corrective R3:
+PASS / HomeScreen compatibility corrective
+
+dedicated Control B candidate checker:
+PASS / HISTORICAL
+
+post-commit/final-sync checker rerun:
+NOT_RUN / BY_DESIGN
+
+Backend focused:
+62 PASS
+
+Flutter analyze:
+PASS
+
+Control B focused widget:
+14 PASS
+
+previously failing protected regression tests:
+2 PASS
+
+Control A configured runtime:
+11 PASS
+
+V4-4 controller:
+19 PASS
+
+full Flutter:
+565 PASS
+
+git diff --check:
+PASS
+
+protected main.dart:
+PASS
+
+protected Backend:
+PASS
+
+protected Control A:
+PASS
+Control C: PROPOSED / NOT_AUTHORIZED
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+```
+
+The candidate checker is historical. It is tied to baseline
+`9bba7db5ed20abf6a0ffa1444fa37b340f3189cd` and a dirty exact nine-file
+implementation candidate surface, so the post-commit/final-sync checker rerun
+is intentionally NOT_RUN / BY_DESIGN.
 
 ## Manual Lifecycle
 
