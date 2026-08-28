@@ -17,11 +17,14 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-4 provider-free FW v6 Flutter session client/controller
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current small commit: DRC-V4-4 final acceptance sync
+current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
-current implementation commit: none
-current implementation commit / push: NOT_AUTHORIZED
+current implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
+current acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
+acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -30,7 +33,7 @@ DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -43,7 +46,7 @@ Framework root-public inventory: 127 names / frozen
 Detailed readiness:
 `docs/v400_framework_v600_readiness_acceptance.md`.
 
-Run from the repository root:
+Historical implementation-candidate run from the repository root:
 
 ```powershell
 python -m compileall -q backend scripts
@@ -113,14 +116,45 @@ git diff --stat
 git diff --name-only
 ```
 
-DRC-V4-4 status is IMPLEMENTED / AWAITING_REVIEW. It adds a provider-free
-Flutter client/controller only. Backend HTTP capability is YES / explicit
-method invocation only; automatic network on construction/startup is NO;
-verification network is NO / fake injected HTTP client only; external provider
-execution, provider network, microphone, real STT, real LLM, real TTS,
-playback, and VTube Studio are NO. HomeScreen/main.dart wiring and configured
-runtime wiring are NOT_IMPLEMENTED. The real unified runtime remains
-NOT_CLAIMED.
+DRC-V4-4 implementation is COMPLETED / VERIFIED / ACCEPTED / COMMITTED /
+PUSHED / CLOSED at implementation commit
+`a05d62447e85be28d674201853d0667aef11e2ae`.
+
+```text
+candidate baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
+candidate required: dirty exact 13-file implementation surface
+accepted result: PASS
+Corrective R1: APPLIED / PASS
+Corrective R2: APPLIED / PASS
+Corrective R3: APPLIED / PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+focused Flutter: 40 PASS
+full Flutter: 540 PASS
+git diff --check: PASS
+protected-file review: PASS
+privacy/security review: PASS
+post-implementation-commit clean tree: historical checker is not rerun for final docs-only acceptance sync
+DRC-V4-4 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
+```
+
+`scripts/check_v400_provider_free_realtime_flutter_session_client.py` is a
+historical candidate/pre-commit acceptance gate. It is tied to baseline
+`d194c213fdecc84ec06d8b63f0cb94f8689c5ed7` and the dirty exact 13-file
+implementation surface, so it is not rerun for the final docs-only acceptance
+sync.
+
+DRC-V4-4 adds a provider-free Flutter client/controller only. Backend HTTP
+capability is YES / explicit method invocation only; automatic network on
+construction/startup is NO; verification network is NO / fake injected HTTP
+client only; external provider execution, provider network, microphone, real
+STT, real LLM, real TTS, playback, and VTube Studio are NO. HomeScreen/main.dart
+wiring and configured runtime wiring are NOT_IMPLEMENTED. The real unified
+runtime remains NOT_CLAIMED.
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 

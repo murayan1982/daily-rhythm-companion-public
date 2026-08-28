@@ -7,12 +7,15 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-4 provider-free FW v6 Flutter session client/controller
+Current small commit: DRC-V4-4 final acceptance sync
 Current implementation: provider-free FW v6 Flutter session client/controller checkpoint
-Current implementation state: IMPLEMENTED / AWAITING_REVIEW
+Current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
-Current implementation commit: none
-Current implementation commit / push: NOT_AUTHORIZED
+Current implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
+Current acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
+Acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
+Acceptance-sync commit: none
+Acceptance-sync commit / push: NOT_AUTHORIZED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -112,7 +115,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-4 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-4 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -307,13 +310,31 @@ Dedicated DRC-V4-3 gate:
 
 ### DRC-V4-4 provider-free FW v6 Flutter session client/controller
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED**
 
 ```text
 implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
-implementation commit: none
-DRC-V4-4: IMPLEMENTED / AWAITING_REVIEW
+implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
+DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 exact implementation surface: 13 files
+Corrective R1: APPLIED / PASS
+Corrective R2: APPLIED / PASS
+Corrective R3: APPLIED / PASS
+dedicated candidate gate: PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+focused Flutter: 40 PASS
+full Flutter: 540 PASS
+git diff --check: PASS
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+GitHub main after implementation push: a05d62447e85be28d674201853d0667aef11e2ae
+DRC-V4-4 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 provider-free Flutter client/controller only: true
 Backend HTTP capability: YES / explicit method invocation only
 automatic network on construction/startup: NO
@@ -333,13 +354,19 @@ direct Framework import: NOT_IMPLEMENTED
 provider SDK import: NOT_IMPLEMENTED
 existing v3 runtime replacement: False
 real unified pipeline: NOT_CLAIMED / NOT_ENABLED
-commit / push: NOT_AUTHORIZED
 ```
 
 DRC-V4-4 adds only the Flutter model, injectable HTTP client, and ChangeNotifier
 controller for the accepted DRC-V4-3 Backend API. It does not add HomeScreen
 wiring, main.dart wiring, configured runtime selection, provider execution, or a
 production real unified `RealtimeSession.run_turn()` pipeline claim.
+
+Accepted corrective history: R1 corrected the open re-entry race, corrected
+close-during-opening cleanup, and enforced the 64 KiB response bound before
+chunk append. R2 made normal concurrent close single-flight. R3 corrected
+synchronous ChangeNotifier close reentrancy, established `_closeInFlight`
+before the close lifecycle starts, and passed the reentrant closing-listener
+test.
 
 Detailed DRC-V4-4 contract:
 `docs/v400_provider_free_realtime_flutter_session_client.md`.

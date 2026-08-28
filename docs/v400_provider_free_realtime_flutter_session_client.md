@@ -1,8 +1,52 @@
 # DRC-V4-4 Provider-free FW v6 Flutter Session Client
 
-Status: DRC-V4-4 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-4 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Baseline: `d194c213fdecc84ec06d8b63f0cb94f8689c5ed7`
+
+Implementation commit:
+`a05d62447e85be28d674201853d0667aef11e2ae`
+
+## Acceptance Evidence
+
+```text
+exact surface: 13 files
+R1 PASS
+R2 PASS
+R3 PASS
+focused Backend: 62 PASS
+full Backend: 479 PASS
+Flutter analyze: PASS
+focused Flutter: 40 PASS
+full Flutter: 540 PASS
+git diff --check: PASS
+protected-file review: PASS
+privacy/security review: PASS
+post-push working tree: clean
+```
+
+Corrective history:
+
+```text
+R1: open re-entry race corrected
+R1: close-during-opening cleanup corrected
+R1: 64 KiB response bound enforced before chunk append
+R2: normal concurrent close made single-flight
+R3: synchronous ChangeNotifier close reentrancy corrected
+R3: _closeInFlight established before close lifecycle starts
+R3: reentrant closing-listener test PASS
+```
+
+## Final Acceptance-sync Provenance
+
+```text
+DRC-V4-4 implementation: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
+DRC-V4-4 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
+```
 
 ## Scope
 
@@ -49,7 +93,6 @@ streaming output UI: NOT_IMPLEMENTED
 direct Framework import: NOT_IMPLEMENTED
 provider SDK import: NOT_IMPLEMENTED
 real unified runtime: NOT_CLAIMED
-commit / push: NOT_AUTHORIZED
 ```
 
 FW v6.0.0 does not provide a production real unified
