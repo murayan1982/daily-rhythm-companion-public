@@ -7,12 +7,27 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-6 Control A final acceptance sync
-Current implementation: DRC-V4-6 Control A final acceptance sync
+Current small commit: DRC-V4-6 Control B
+Current implementation: DRC-V4-6 Control B HomeScreen explicit manual FW v6 provider-free session UI
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 246260fa9c92abc1df02a378b0ab1d84040cc208
+Current implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
 Current implementation commit: none
 Current implementation commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control A: CLOSED
+DRC-V4-6 Control A final acceptance-sync commit: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+DRC-V4-6 Control B: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
+configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
+HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / AWAITING_REVIEW
+main.dart FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NO
+automatic session open: NO
+explicit user-action Backend HTTP: YES
+provider network: NO
+external provider execution: NO
+existing v3 replacement: NO
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
 Historical v2.1.0 terminal marker: `Current small commit: none`
 
@@ -112,7 +127,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-6 Control A COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Status: DRC-V4-6 Control B IMPLEMENTED / AWAITING_REVIEW
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`

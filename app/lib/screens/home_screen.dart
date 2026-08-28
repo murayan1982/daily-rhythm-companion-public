@@ -24,6 +24,7 @@ import '../models/motion_demo.dart';
 import '../services/audioplayers_voice_output_audio_engine.dart';
 import '../services/backend_api_client.dart';
 import '../services/character_motion_presentation_controller.dart';
+import '../services/framework_v600_realtime_session_controller.dart';
 import '../services/framework_vts_motion_presentation_controller.dart';
 import '../services/integrated_voice_turn_home_screen_binding.dart';
 import '../services/realtime_terminal_voice_output_home_screen_binding.dart';
@@ -50,6 +51,7 @@ class HomeScreen extends StatefulWidget {
     this.integratedVoiceTurnBindingFactory,
     this.characterMotionPresentationControllerFactory,
     this.frameworkVtsMotionPresentationControllerFactory,
+    this.frameworkV600RealtimeSessionControllerFactory,
   });
 
   final BackendApiClient apiClient;
@@ -66,6 +68,8 @@ class HomeScreen extends StatefulWidget {
   characterMotionPresentationControllerFactory;
   final FrameworkVtsMotionPresentationController Function()?
   frameworkVtsMotionPresentationControllerFactory;
+  final FrameworkV600RealtimeSessionController Function()?
+  frameworkV600RealtimeSessionControllerFactory;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -206,6 +210,8 @@ class _HomeScreenState extends State<HomeScreen> {
       TextEditingController();
   final TextEditingController _realtimeTextStreamInputController =
       TextEditingController();
+  final TextEditingController _frameworkV600RealtimeInputController =
+      TextEditingController();
   late final VoiceOutputAudioPlayerController _voiceOutputAudioPlayerController;
   RealtimeTextStreamController? _realtimeTextStreamController;
   RealtimeTextStreamTranscriptHandoff? _realtimeTextStreamTranscriptHandoff;
@@ -236,6 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
   FrameworkVtsMotionIntent _selectedFrameworkVtsMotionIntent =
       FrameworkVtsMotionIntent.expression;
   String _frameworkVtsMotionSelectorValue = 'smile';
+  FrameworkV600RealtimeSessionController? _frameworkV600RealtimeController;
   bool _isDisposing = false;
 
   void _handleVoiceOutputPlaybackStateChanged() {
@@ -274,6 +281,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleFrameworkV600RealtimeChanged() {
+    if (mounted && !_isDisposing) {
+      setState(() {});
+    }
+  }
+
+  void _handleFrameworkV600RealtimeInputChanged() {
+    if (mounted && !_isDisposing) {
+      setState(() {});
+    }
+  }
+
   void _handleCharacterMotionChanged() {
     if (mounted && !_isDisposing) {
       setState(() {});
@@ -287,6 +306,13 @@ class _HomeScreenState extends State<HomeScreen> {
       _handleFrameworkVtsMotionChanged,
     );
     _frameworkVtsMotionController?.dispose();
+    _frameworkV600RealtimeController?.removeListener(
+      _handleFrameworkV600RealtimeChanged,
+    );
+    _frameworkV600RealtimeController?.dispose();
+    _frameworkV600RealtimeInputController.removeListener(
+      _handleFrameworkV600RealtimeInputChanged,
+    );
     _characterMotionController?.removeListener(_handleCharacterMotionChanged);
     _characterMotionController?.dispose();
     ++_realtimeTerminalVoiceOutputProcessUiSequence;
@@ -308,6 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     _realtimeTextStreamController?.dispose();
     _realtimeTextStreamInputController.dispose();
+    _frameworkV600RealtimeInputController.dispose();
     _voiceOutputAudioPlayerController.removeListener(
       _handleVoiceOutputPlaybackStateChanged,
     );
@@ -769,6 +796,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     _voiceOutputAudioPlayerController.addListener(
       _handleVoiceOutputPlaybackStateChanged,
+    );
+    _frameworkV600RealtimeInputController.addListener(
+      _handleFrameworkV600RealtimeInputChanged,
     );
     final realtimeTextStreamController = widget
         .realtimeTextStreamControllerFactory
@@ -1633,6 +1663,240 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         _buildRealtimeTextStreamTranscriptHandoffSection(),
+      ],
+    );
+  }
+
+  FrameworkV600RealtimeSessionControllerState?
+  get _frameworkV600RealtimeState => _frameworkV600RealtimeController?.state;
+
+  bool get _isFrameworkV600RealtimeConfigured =>
+      widget.frameworkV600RealtimeSessionControllerFactory != null;
+
+  bool get _canOpenFrameworkV600RealtimeSession {
+    if (!_isFrameworkV600RealtimeConfigured) {
+      return false;
+    }
+    final phase = _frameworkV600RealtimeState?.phase;
+    return phase == null ||
+        phase == FrameworkV600RealtimeSessionPhase.idle ||
+        phase == FrameworkV600RealtimeSessionPhase.closed ||
+        phase == FrameworkV600RealtimeSessionPhase.failed;
+  }
+
+  bool get _canSendFrameworkV600RealtimeTurn {
+    final state = _frameworkV600RealtimeState;
+    return state != null &&
+        state.phase == FrameworkV600RealtimeSessionPhase.ready &&
+        _frameworkV600RealtimeInputController.text.trim().isNotEmpty;
+  }
+
+  bool get _canInterruptFrameworkV600RealtimeSession {
+    final state = _frameworkV600RealtimeState;
+    return state != null &&
+        state.sessionId != null &&
+        state.phase != FrameworkV600RealtimeSessionPhase.closing &&
+        state.phase != FrameworkV600RealtimeSessionPhase.closed &&
+        !state.interruptInFlight;
+  }
+
+  bool get _canReadFrameworkV600RealtimeDiagnostics {
+    final state = _frameworkV600RealtimeState;
+    return state != null &&
+        state.sessionId != null &&
+        state.phase != FrameworkV600RealtimeSessionPhase.closing &&
+        state.phase != FrameworkV600RealtimeSessionPhase.closed &&
+        !state.diagnosticsInFlight;
+  }
+
+  bool get _canCloseFrameworkV600RealtimeSession {
+    final phase = _frameworkV600RealtimeState?.phase;
+    return phase != null &&
+        phase != FrameworkV600RealtimeSessionPhase.closing &&
+        phase != FrameworkV600RealtimeSessionPhase.closed;
+  }
+
+  Future<void> _openFrameworkV600RealtimeSession() async {
+    if (!_canOpenFrameworkV600RealtimeSession) {
+      return;
+    }
+    final factory = widget.frameworkV600RealtimeSessionControllerFactory;
+    if (factory == null) {
+      return;
+    }
+    final existing = _frameworkV600RealtimeController;
+    if (existing != null) {
+      existing.removeListener(_handleFrameworkV600RealtimeChanged);
+      existing.dispose();
+    }
+    final controller = factory();
+    _frameworkV600RealtimeController = controller;
+    controller.addListener(_handleFrameworkV600RealtimeChanged);
+    setState(() {});
+    await controller.open();
+  }
+
+  Future<void> _sendFrameworkV600RealtimeTurn() async {
+    final controller = _frameworkV600RealtimeController;
+    if (controller == null || !_canSendFrameworkV600RealtimeTurn) {
+      return;
+    }
+    final inputText = _frameworkV600RealtimeInputController.text;
+    await controller.runTurn(inputText: inputText);
+    if (!mounted || _isDisposing) {
+      return;
+    }
+    if (controller.state.phase == FrameworkV600RealtimeSessionPhase.ready &&
+        controller.state.problem == null) {
+      _frameworkV600RealtimeInputController.clear();
+    }
+  }
+
+  Future<void> _interruptFrameworkV600RealtimeSession() async {
+    final controller = _frameworkV600RealtimeController;
+    if (controller == null || !_canInterruptFrameworkV600RealtimeSession) {
+      return;
+    }
+    await controller.interrupt();
+  }
+
+  Future<void> _readFrameworkV600RealtimeDiagnostics() async {
+    final controller = _frameworkV600RealtimeController;
+    if (controller == null || !_canReadFrameworkV600RealtimeDiagnostics) {
+      return;
+    }
+    await controller.diagnostics();
+  }
+
+  Future<void> _closeFrameworkV600RealtimeSession() async {
+    final controller = _frameworkV600RealtimeController;
+    if (controller == null || !_canCloseFrameworkV600RealtimeSession) {
+      return;
+    }
+    await controller.close();
+  }
+
+  Widget _buildFrameworkV600RealtimeSessionSection(BuildContext context) {
+    final state = _frameworkV600RealtimeState;
+    final turnResult = state?.latestTurnResult;
+    final interruptResult = state?.latestInterruptResult;
+    final diagnostics = state?.latestDiagnostics;
+    final problem = state?.problem;
+
+    return Column(
+      key: const ValueKey('framework-v600-realtime-section'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Framework v6 provider-free session',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        const Text('manual / provider-free'),
+        const SizedBox(height: 12),
+        Text(
+          'configuration: ${_isFrameworkV600RealtimeConfigured ? 'configured' : 'unconfigured'}',
+          key: const ValueKey('framework-v600-realtime-configuration'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'phase: ${state?.phase.name ?? FrameworkV600RealtimeSessionPhase.idle.name}',
+          key: const ValueKey('framework-v600-realtime-phase'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'session id: ${state?.sessionId ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-session-id'),
+        ),
+        const SizedBox(height: 12),
+        if (_isFrameworkV600RealtimeConfigured) ...[
+          TextField(
+            key: const ValueKey('framework-v600-realtime-input'),
+            controller: _frameworkV600RealtimeInputController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Manual text turn',
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        Wrap(
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            ElevatedButton(
+              key: const ValueKey('framework-v600-realtime-open-button'),
+              onPressed: _canOpenFrameworkV600RealtimeSession
+                  ? _openFrameworkV600RealtimeSession
+                  : null,
+              child: const Text('Open Session'),
+            ),
+            ElevatedButton(
+              key: const ValueKey('framework-v600-realtime-send-button'),
+              onPressed: _canSendFrameworkV600RealtimeTurn
+                  ? _sendFrameworkV600RealtimeTurn
+                  : null,
+              child: const Text('Send Text Turn'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('framework-v600-realtime-interrupt-button'),
+              onPressed: _canInterruptFrameworkV600RealtimeSession
+                  ? _interruptFrameworkV600RealtimeSession
+                  : null,
+              child: const Text('Interrupt'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('framework-v600-realtime-diagnostics-button'),
+              onPressed: _canReadFrameworkV600RealtimeDiagnostics
+                  ? _readFrameworkV600RealtimeDiagnostics
+                  : null,
+              child: const Text('Diagnostics'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('framework-v600-realtime-close-button'),
+              onPressed: _canCloseFrameworkV600RealtimeSession
+                  ? _closeFrameworkV600RealtimeSession
+                  : null,
+              child: const Text('Close Session'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'turn outcome: ${turnResult?.outcome ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-turn-outcome'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'turn safe message: ${turnResult?.safeMessage ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-turn-safe-message'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'interrupt outcome: ${interruptResult?.outcome ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-interrupt-outcome'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'diagnostics state: ${diagnostics?.state ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-diagnostics-state'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'diagnostics phase: ${diagnostics?.phase ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-diagnostics-phase'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'problem code: ${problem?.code ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-problem-code'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'problem message: ${problem?.message ?? '-'}',
+          key: const ValueKey('framework-v600-realtime-problem-message'),
+        ),
       ],
     );
   }
@@ -5195,6 +5459,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 24),
                     _buildRealtimeTextStreamSection(context),
+
+                    const SizedBox(height: 24),
+                    _buildFrameworkV600RealtimeSessionSection(context),
 
                     const SizedBox(height: 24),
                     _buildRealtimeTerminalVoiceOutputSection(context),

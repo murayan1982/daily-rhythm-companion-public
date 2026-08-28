@@ -17,9 +17,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control A final acceptance sync
+current small commit: DRC-V4-6 Control B
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 246260fa9c92abc1df02a378b0ab1d84040cc208
+current implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -33,6 +33,21 @@ DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-6 Control A: CLOSED
+DRC-V4-6 Control B: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
+DRC-V4-6 Control B implementation commit: none
+DRC-V4-6 Control B commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
+HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / AWAITING_REVIEW
+automatic startup network: NO
+automatic session open: NO
+explicit user-action Backend HTTP: YES
+provider network: NO
+external provider execution: NO
+existing v3 replacement: NO
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -155,6 +170,43 @@ client only; external provider execution, provider network, microphone, real
 STT, real LLM, real TTS, playback, and VTube Studio are NO. HomeScreen/main.dart
 wiring and configured runtime wiring are NOT_IMPLEMENTED. The real unified
 runtime remains NOT_CLAIMED.
+
+## v4.0.0 DRC-V4-6 Control B HomeScreen manual FW-v6 UI check
+
+Detailed contract:
+`docs/v400_provider_free_realtime_flutter_home_screen.md`.
+
+Static candidate gate:
+`scripts/check_v400_provider_free_realtime_flutter_home_screen.py`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_flutter_home_screen.py
+
+cd app
+flutter analyze --no-pub
+flutter test --no-pub test/framework_v600_realtime_session_home_screen_widget_test.dart
+flutter test --no-pub test/configured_framework_v600_realtime_session_runtime_test.dart
+flutter test --no-pub test/framework_v600_realtime_session_controller_test.dart
+flutter test --no-pub
+cd ..
+```
+
+DRC-V4-6 Control B is IMPLEMENTED / AWAITING_REVIEW at baseline
+`9bba7db5ed20abf6a0ffa1444fa37b340f3189cd`; implementation commit is none and
+commit / push are NOT_AUTHORIZED. It adds only a HomeScreen manual
+provider-free session panel plus fake-only widget acceptance tests and a static
+gate. Control A remains CLOSED, Control C remains PROPOSED / NOT_AUTHORIZED,
+and the aggregate remains PARTIAL_READY / NOT_COMPLETED.
+
+Control B does not change `main.dart`, Backend, Control A runtime/controller/
+client/model, or existing v3 realtime / voice / motion / VTS behavior.
+Automatic startup network and automatic session open remain NO. Backend HTTP is
+available only through explicit user action. Provider network, external
+provider execution, existing v3 replacement, and real unified FW runtime claims
+remain NO / NOT_AVAILABLE / NOT_CLAIMED.
 
 ## v4.0.0 DRC-V4-5 provider-free FW v6 Flutter UI readiness check
 

@@ -10,8 +10,8 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-6 Control A final acceptance sync
-Current implementation: DRC-V4-6 Control A final acceptance sync.
+Current small commit: DRC-V4-6 Control B
+Current implementation: DRC-V4-6 Control B HomeScreen explicit manual FW v6 provider-free session UI.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 implementation commit: `a05d62447e85be28d674201853d0667aef11e2ae`
@@ -25,15 +25,30 @@ DRC-V4-5 final acceptance-sync commit: `26a4222eec724a7517f2e812dfe4bd039c5b511d
 DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control A implementation baseline: `26a4222eec724a7517f2e812dfe4bd039c5b511d`
 DRC-V4-6 Control A implementation commit: `246260fa9c92abc1df02a378b0ab1d84040cc208`
-DRC-V4-6 Control A final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-6 Control A final acceptance-sync baseline: `246260fa9c92abc1df02a378b0ab1d84040cc208`
-DRC-V4-6 Control A final acceptance-sync commit: none
-DRC-V4-6 Control A acceptance-sync commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control A: CLOSED
+DRC-V4-6 Control A final acceptance-sync commit: `9bba7db5ed20abf6a0ffa1444fa37b340f3189cd`
+DRC-V4-6 Control B: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B baseline: `9bba7db5ed20abf6a0ffa1444fa37b340f3189cd`
+DRC-V4-6 Control B implementation commit: none
+DRC-V4-6 Control B commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
+configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
+HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / AWAITING_REVIEW
+main.dart FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NO
+automatic session open: NO
+explicit user-action Backend HTTP: YES
+provider network: NO
+provider execution: NO
+external provider execution: NO
+existing v3 replacement: NO
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED**)
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: DRC-V4-6 Control A final acceptance sync
+Current v4 action: DRC-V4-6 Control B HomeScreen explicit manual FW v6 provider-free session UI
 
 Current phase state:
 
