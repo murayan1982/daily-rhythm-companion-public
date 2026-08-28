@@ -1,25 +1,23 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-4 final acceptance sync IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-5 IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-4 final acceptance sync
-current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
-current acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
-acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+current implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
 DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
 ```
 
 ## Framework v6.0.0 Provenance
@@ -230,6 +228,7 @@ Dedicated DRC-V4-3 gate:
 ```text
 implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
 implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
+DRC-V4-4 implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 exact implementation surface: 13 files
 Corrective R1: APPLIED / PASS
@@ -246,10 +245,10 @@ protected-file review: PASS
 privacy/security review: PASS
 post-push working tree: clean
 GitHub main after implementation push: a05d62447e85be28d674201853d0667aef11e2ae
-DRC-V4-4 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4 final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 final acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+final acceptance-sync commit: cf82518cd0b96a752ad92151bb3d706a88b9147c
+DRC-V4-4 final acceptance-sync commit: cf82518cd0b96a752ad92151bb3d706a88b9147c
 provider-free Flutter client/controller only: true
 Backend HTTP capability: YES / explicit method invocation only
 automatic network on construction/startup: NO
@@ -288,3 +287,53 @@ Detailed DRC-V4-4 contract:
 
 Dedicated DRC-V4-4 gate:
 `scripts/check_v400_provider_free_realtime_flutter_session_client.py`.
+
+## DRC-V4-5 Flutter UI / Configured Runtime Readiness
+
+```text
+implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+implementation commit: none
+DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-5 exact candidate surface: 7 files
+runtime behavior changes: 0
+app changes: 0
+Backend changes: 0
+commit / push: NOT_AUTHORIZED
+V4-4 Flutter model/client/controller: READY / ACCEPTED
+V4-3 Backend provider-free HTTP API: READY / ACCEPTED
+HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
+main.dart configured-runtime composition seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
+configured provider-free FW-v6 runtime: NOT_IMPLEMENTED
+HomeScreen provider-free FW-v6 session UI: NOT_IMPLEMENTED
+main.dart provider-free FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NOT_AUTHORIZED
+automatic startup session open: NOT_AUTHORIZED
+existing v3 realtime replacement: NOT_AUTHORIZED
+provider execution: OUT_OF_SCOPE
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+DRC-V4 aggregate: PARTIAL_READY
+```
+
+DRC-V4-5 is an inventory/readiness checkpoint only. It freezes the adoption
+boundary between the accepted V4-4 Flutter model/client/controller and the
+existing DRC Flutter application composition seams without changing app,
+Backend, test, checker, runtime, dependency, vendor, version, or release
+metadata behavior.
+
+Proposed future split:
+
+```text
+DRC-V4-6 Control A: configured provider-free FW v6 Flutter runtime/factory / PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control B: HomeScreen explicit manual FW-v6 session controls / PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control C: main.dart default-off configured composition / PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 aggregate: provider-free configured local Backend session acceptance / PROPOSED / NOT_AUTHORIZED
+```
+
+DRC-V4-6 numbering/split is established by DRC-V4-5 inventory. It was not a
+pre-existing canonical checkpoint before DRC-V4-5.
+
+Detailed DRC-V4-5 readiness inventory:
+`docs/v400_provider_free_realtime_flutter_ui_readiness.md`.
+
+Dedicated DRC-V4-5 gate:
+`scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py`.

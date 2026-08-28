@@ -14,15 +14,12 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-4 final acceptance sync
-current implementation step: provider-free FW v6 Flutter session client/controller checkpoint
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
-current implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
-current acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
-acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+current implementation step: provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 accepted RT-4c implementation: 72622cab2e73699adaff4f628cfbc4b14323a23a
 strategic target achieved: v3.0.0 RELEASED / ACCEPTED
@@ -31,6 +28,7 @@ DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -218,6 +216,7 @@ Status: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 ```text
 implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
 implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
+DRC-V4-4 implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 exact implementation surface: 13 files
 Corrective R1: APPLIED / PASS
@@ -234,10 +233,10 @@ protected-file review: PASS
 privacy/security review: PASS
 post-push working tree: clean
 GitHub main after implementation push: a05d62447e85be28d674201853d0667aef11e2ae
-DRC-V4-4 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4 final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 final acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+final acceptance-sync commit: cf82518cd0b96a752ad92151bb3d706a88b9147c
+DRC-V4-4 final acceptance-sync commit: cf82518cd0b96a752ad92151bb3d706a88b9147c
 provider-free Flutter client/controller only: true
 Backend HTTP capability: YES / explicit method invocation only
 automatic network on construction/startup: NO
@@ -264,6 +263,58 @@ Detailed contract:
 
 Dedicated gate:
 `scripts/check_v400_provider_free_realtime_flutter_session_client.py`.
+
+## DRC-V4-5 - Provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+
+Status: IMPLEMENTED / AWAITING_REVIEW
+
+```text
+implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+implementation commit: none
+DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-5 exact candidate surface: 7 files
+5 modified docs: README.md, roadmap.md, tasklist.md, scripts/README.md, docs/DRC_v400_goal_checklist_small_commit.md
+2 added docs/static-gate files: docs/v400_provider_free_realtime_flutter_ui_readiness.md, scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py
+deleted files: 0
+runtime behavior changes: 0
+app changes: 0
+Backend changes: 0
+commit / push: NOT_AUTHORIZED
+V4-4 Flutter model/client/controller: READY / ACCEPTED
+V4-3 Backend provider-free HTTP API: READY / ACCEPTED
+HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
+main.dart configured-runtime composition seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
+configured provider-free FW-v6 runtime: NOT_IMPLEMENTED
+HomeScreen provider-free FW-v6 session UI: NOT_IMPLEMENTED
+main.dart provider-free FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NOT_AUTHORIZED
+automatic startup session open: NOT_AUTHORIZED
+existing v3 realtime replacement: NOT_AUTHORIZED
+provider execution: OUT_OF_SCOPE
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+DRC-V4 aggregate: PARTIAL_READY
+```
+
+DRC-V4-5 inventories the future seam between the accepted V4-4 Flutter
+model/client/controller and the existing DRC Flutter application composition.
+It does not implement a configured runtime/factory, HomeScreen FW-v6 controls,
+main.dart composition, automatic startup session open, provider execution, or
+replacement of any existing accepted v3 runtime path.
+
+Proposed future split:
+
+```text
+DRC-V4-6 Control A: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control B: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 aggregate: PROPOSED / NOT_AUTHORIZED
+```
+
+Detailed readiness inventory:
+`docs/v400_provider_free_realtime_flutter_ui_readiness.md`.
+
+Dedicated gate:
+`scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py`.
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 

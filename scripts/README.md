@@ -17,14 +17,11 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-4 final acceptance sync
-current implementation state: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-current implementation baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
-current implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
-current acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
-acceptance-sync: IMPLEMENTED / AWAITING_REVIEW
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+current small commit: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+current implementation commit: none
+current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
 completed small commit: R-1e COMPLETED / ACCEPTED
 completed phase: V-1 COMPLETED / ACCEPTED
@@ -34,6 +31,7 @@ DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -121,6 +119,7 @@ PUSHED / CLOSED at implementation commit
 `a05d62447e85be28d674201853d0667aef11e2ae`.
 
 ```text
+DRC-V4-4 implementation commit: a05d62447e85be28d674201853d0667aef11e2ae
 candidate baseline: d194c213fdecc84ec06d8b63f0cb94f8689c5ed7
 candidate required: dirty exact 13-file implementation surface
 accepted result: PASS
@@ -136,10 +135,10 @@ git diff --check: PASS
 protected-file review: PASS
 privacy/security review: PASS
 post-implementation-commit clean tree: historical checker is not rerun for final docs-only acceptance sync
-DRC-V4-4 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-4 final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 final acceptance-sync baseline: a05d62447e85be28d674201853d0667aef11e2ae
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+final acceptance-sync commit: cf82518cd0b96a752ad92151bb3d706a88b9147c
+DRC-V4-4 final acceptance-sync commit: cf82518cd0b96a752ad92151bb3d706a88b9147c
 ```
 
 `scripts/check_v400_provider_free_realtime_flutter_session_client.py` is a
@@ -155,6 +154,65 @@ client only; external provider execution, provider network, microphone, real
 STT, real LLM, real TTS, playback, and VTube Studio are NO. HomeScreen/main.dart
 wiring and configured runtime wiring are NOT_IMPLEMENTED. The real unified
 runtime remains NOT_CLAIMED.
+
+## v4.0.0 DRC-V4-5 provider-free FW v6 Flutter UI readiness check
+
+Detailed readiness inventory:
+`docs/v400_provider_free_realtime_flutter_ui_readiness.md`.
+
+Static readiness gate:
+`scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_flutter_ui_readiness.py
+python -m pytest -q backend/tests/test_framework_v600_realtime_api.py backend/tests/test_framework_v600_realtime_session_adapter.py
+
+cd app
+flutter analyze
+flutter test
+cd ..
+
+python scripts\check_v400_provider_free_realtime_flutter_ui_readiness.py
+git diff --check
+git status --short
+git diff --stat
+git diff --name-only
+```
+
+The DRC-V4-5 gate is source/static inspection only.
+
+```text
+DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
+baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+provider execution: NO
+network: NO
+Flutter runtime execution: NO
+source/static inspection: YES
+app changes: 0
+Backend changes: 0
+runtime behavior changes: 0
+commit / push: NOT_AUTHORIZED
+HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
+main.dart configured-runtime composition seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
+configured provider-free FW-v6 runtime: NOT_IMPLEMENTED
+HomeScreen provider-free FW-v6 session UI: NOT_IMPLEMENTED
+main.dart provider-free FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NO
+automatic startup session open: NOT_AUTHORIZED
+existing v3 realtime replacement: NOT_AUTHORIZED
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+DRC-V4 aggregate: PARTIAL_READY
+```
+
+DRC-V4-5 does not modify Flutter app code, Backend code, existing tests,
+existing checkers, dependencies, vendor files, version metadata, release
+metadata, or v3 realtime implementation. It does not create a configured
+runtime/factory, HomeScreen FW-v6 controls, main.dart composition, startup
+session open, Backend request, provider configuration, or replacement of the
+accepted v3 realtime flow.
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 
