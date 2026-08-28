@@ -17,9 +17,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control B final acceptance sync
+current small commit: DRC-V4-6 Control C
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+current implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -37,16 +37,23 @@ DRC-V4-6 Control A: CLOSED
 DRC-V4-6 Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
 DRC-V4-6 Control B implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
-DRC-V4-6 Control B final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B final acceptance-sync baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
-DRC-V4-6 Control B final acceptance-sync commit: none
-DRC-V4-6 Control B acceptance-sync commit / push: NOT_AUTHORIZED
-DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control B final acceptance-sync commit: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+DRC-V4-6 Control C: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+DRC-V4-6 Control C implementation commit: none
+DRC-V4-6 Control C commit / push: NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
+DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
+main.dart FW-v6 composition: IMPLEMENTED / AWAITING_REVIEW
 automatic startup network: NO
 automatic session open: NO
+FW-v6 automatic startup network: NO
+FW-v6 automatic session open: NO
 explicit user-action Backend HTTP: YES
+explicit Open Session Backend HTTP: YES
 provider network: NO
 external provider execution: NO
 existing v3 replacement: NO
@@ -240,6 +247,55 @@ Automatic startup network and automatic session open remain NO. Backend HTTP is
 available only through explicit user action. Provider network, external
 provider execution, existing v3 replacement, and real unified FW runtime claims
 remain NO / NOT_AVAILABLE / NOT_CLAIMED.
+
+## v4.0.0 DRC-V4-6 Control C main.dart FW-v6 composition check
+
+Detailed contract:
+`docs/v400_provider_free_realtime_flutter_main_composition.md`.
+
+Static candidate gate:
+`scripts/check_v400_provider_free_realtime_flutter_main_composition.py`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_flutter_main_composition.py
+
+cd app
+flutter analyze --no-pub
+flutter test --no-pub test/framework_v600_realtime_session_main_composition_test.dart
+flutter test --no-pub test/configured_framework_v600_realtime_session_runtime_test.dart
+flutter test --no-pub test/framework_v600_realtime_session_home_screen_widget_test.dart
+flutter test --no-pub
+cd ..
+```
+
+Control C composes the accepted configured runtime/factory from Control A into
+the accepted HomeScreen manual UI injection point from Control B. It does not
+create a new session/runtime/state machine. Startup creates the configured
+runtime and calls `buildControllerFactory()`, but the FW-v6 controller factory,
+HTTP client, Backend request, and session open remain zero until explicit
+`Open Session`.
+
+Control C state:
+
+```text
+DRC-V4-6 Control C:
+IMPLEMENTED / AWAITING_REVIEW
+
+implementation baseline:
+3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+
+implementation commit:
+none
+
+commit / push:
+NOT_AUTHORIZED
+
+DRC-V4-6 aggregate:
+PARTIAL_READY / NOT_COMPLETED
+```
 
 ## v4.0.0 DRC-V4-5 provider-free FW v6 Flutter UI readiness check
 

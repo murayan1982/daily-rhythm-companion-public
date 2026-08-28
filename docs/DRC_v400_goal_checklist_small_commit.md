@@ -1,14 +1,14 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-6 Control B final acceptance sync IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-6 Control C IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-6 Control B final acceptance sync
-current implementation baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
+current small commit: DRC-V4-6 Control C
+current implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
@@ -24,18 +24,24 @@ DRC-V4-6 Control A final acceptance-sync commit: 9bba7db5ed20abf6a0ffa1444fa37b3
 DRC-V4-6 Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B implementation baseline: 9bba7db5ed20abf6a0ffa1444fa37b340f3189cd
 DRC-V4-6 Control B implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b18
-DRC-V4-6 Control B final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B final acceptance-sync baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
-DRC-V4-6 Control B final acceptance-sync commit: none
-DRC-V4-6 Control B acceptance-sync commit / push: NOT_AUTHORIZED
-DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control B final acceptance-sync commit: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+DRC-V4-6 Control C: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+DRC-V4-6 Control C implementation commit: none
+DRC-V4-6 Control C commit / push: NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
+DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
-main.dart FW-v6 composition: NOT_IMPLEMENTED
+main.dart FW-v6 composition: IMPLEMENTED / AWAITING_REVIEW
 automatic startup network: NO
 automatic session open: NO
+FW-v6 automatic startup network: NO
+FW-v6 automatic session open: NO
 explicit user-action Backend HTTP: YES
+explicit Open Session Backend HTTP: YES
 provider network: NO
 external provider execution: NO
 existing v3 replacement: NO
@@ -64,7 +70,13 @@ git diff --check: PASS
 protected main.dart: PASS
 protected Backend: PASS
 protected Control A: PASS
-Control C: PROPOSED / NOT_AUTHORIZED
+Control C: IMPLEMENTED / AWAITING_REVIEW
+implementation baseline:
+3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+implementation commit:
+none
+commit / push:
+NOT_AUTHORIZED
 real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 ```
 

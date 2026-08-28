@@ -10,8 +10,8 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-6 Control B final acceptance sync
-Current implementation: DRC-V4-6 Control B final acceptance sync.
+Current small commit: DRC-V4-6 Control C
+Current implementation: DRC-V4-6 Control C main.dart default-off FW v6 provider-free session composition.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 implementation commit: `a05d62447e85be28d674201853d0667aef11e2ae`
@@ -30,18 +30,24 @@ DRC-V4-6 Control A final acceptance-sync commit: `9bba7db5ed20abf6a0ffa1444fa37b
 DRC-V4-6 Control B: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B implementation baseline: `9bba7db5ed20abf6a0ffa1444fa37b340f3189cd`
 DRC-V4-6 Control B implementation commit: `3f9d38107f0306e023c127e68ce657cc4bd90b18`
-DRC-V4-6 Control B final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control B final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B final acceptance-sync baseline: `3f9d38107f0306e023c127e68ce657cc4bd90b18`
-DRC-V4-6 Control B final acceptance-sync commit: none
-DRC-V4-6 Control B acceptance-sync commit / push: NOT_AUTHORIZED
-DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control B final acceptance-sync commit: `3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43`
+DRC-V4-6 Control C: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C implementation baseline: `3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43`
+DRC-V4-6 Control C implementation commit: none
+DRC-V4-6 Control C commit / push: NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
+DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
-main.dart FW-v6 composition: NOT_IMPLEMENTED
+main.dart FW-v6 composition: IMPLEMENTED / AWAITING_REVIEW
 automatic startup network: NO
 automatic session open: NO
+FW-v6 automatic startup network: NO
+FW-v6 automatic session open: NO
 explicit user-action Backend HTTP: YES
+explicit Open Session Backend HTTP: YES
 provider network: NO
 provider execution: NO
 external provider execution: NO
@@ -51,7 +57,7 @@ Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION 
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: DRC-V4-6 Control B final acceptance sync
+Current v4 action: DRC-V4-6 Control C main.dart default-off FW v6 provider-free session composition
 
 DRC-V4-6 Control B final acceptance sync marker summary:
 
@@ -75,7 +81,13 @@ git diff --check: PASS
 protected main.dart: PASS
 protected Backend: PASS
 protected Control A: PASS
-Control C: PROPOSED / NOT_AUTHORIZED
+Control C: IMPLEMENTED / AWAITING_REVIEW
+implementation baseline:
+3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+implementation commit:
+none
+commit / push:
+NOT_AUTHORIZED
 real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 ```
 

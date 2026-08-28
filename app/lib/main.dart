@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'services/backend_api_client.dart';
 import 'services/character_motion_presentation_controller.dart';
+import 'services/configured_framework_v600_realtime_session_runtime.dart';
 import 'services/configured_character_motion_presentation_runtime.dart';
 import 'services/configured_integrated_voice_turn_runtime.dart';
 import 'services/configured_framework_vts_motion_presentation_runtime.dart';
 import 'services/configured_realtime_terminal_voice_output_runtime.dart';
 import 'services/configured_realtime_text_stream_runtime.dart';
+import 'services/framework_v600_realtime_session_controller.dart';
 import 'services/integrated_voice_turn_home_screen_binding.dart';
 import 'services/framework_vts_motion_presentation_controller.dart';
 import 'services/realtime_terminal_voice_output_home_screen_binding.dart';
@@ -38,6 +40,10 @@ void main() {
       ConfiguredRealtimeTerminalVoiceOutputRuntime.fromEnvironment(
         apiClient: apiClient,
       );
+  final configuredFrameworkV600RealtimeSessionRuntime =
+      ConfiguredFrameworkV600RealtimeSessionRuntime.fromEnvironment(
+        apiClient: apiClient,
+      );
 
   runApp(
     DailyRhythmCompanionApp(
@@ -52,6 +58,9 @@ void main() {
           configuredCharacterMotionRuntime.buildControllerFactory(),
       frameworkVtsMotionPresentationControllerFactory:
           configuredFrameworkVtsMotionRuntime.buildControllerFactory(),
+      frameworkV600RealtimeSessionControllerFactory:
+          configuredFrameworkV600RealtimeSessionRuntime
+              .buildControllerFactory(),
     ),
   );
 }
@@ -65,6 +74,7 @@ class DailyRhythmCompanionApp extends StatelessWidget {
     this.integratedVoiceTurnBindingFactory,
     this.characterMotionPresentationControllerFactory,
     this.frameworkVtsMotionPresentationControllerFactory,
+    this.frameworkV600RealtimeSessionControllerFactory,
   });
 
   final BackendApiClient apiClient;
@@ -78,6 +88,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
   characterMotionPresentationControllerFactory;
   final FrameworkVtsMotionPresentationController Function()?
   frameworkVtsMotionPresentationControllerFactory;
+  final FrameworkV600RealtimeSessionController Function()?
+  frameworkV600RealtimeSessionControllerFactory;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +109,8 @@ class DailyRhythmCompanionApp extends StatelessWidget {
             characterMotionPresentationControllerFactory,
         frameworkVtsMotionPresentationControllerFactory:
             frameworkVtsMotionPresentationControllerFactory,
+        frameworkV600RealtimeSessionControllerFactory:
+            frameworkV600RealtimeSessionControllerFactory,
       ),
     );
   }
