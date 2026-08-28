@@ -14,10 +14,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control C
-current implementation step: DRC-V4-6 Control C main.dart default-off FW v6 provider-free session composition
+current small commit: DRC-V4-6 Control C final acceptance sync
+current implementation step: DRC-V4-6 Control C final acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
+current implementation baseline: 8c807507e930b546f562acad97f52a6ba652b35f
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -38,15 +38,18 @@ DRC-V4-6 Control B implementation commit: 3f9d38107f0306e023c127e68ce657cc4bd90b
 DRC-V4-6 Control B final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control B final acceptance-sync baseline: 3f9d38107f0306e023c127e68ce657cc4bd90b18
 DRC-V4-6 Control B final acceptance-sync commit: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
-DRC-V4-6 Control C: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control C implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
-DRC-V4-6 Control C implementation commit: none
-DRC-V4-6 Control C commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control C implementation commit: 8c807507e930b546f562acad97f52a6ba652b35f
+DRC-V4-6 Control C final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C final acceptance-sync baseline: 8c807507e930b546f562acad97f52a6ba652b35f
+DRC-V4-6 Control C final acceptance-sync commit: none
+DRC-V4-6 Control C acceptance-sync commit / push: NOT_AUTHORIZED
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
 DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
-main.dart FW-v6 composition: IMPLEMENTED / AWAITING_REVIEW
+main.dart FW-v6 composition: IMPLEMENTED / ACCEPTED
 automatic startup network: NO
 automatic session open: NO
 FW-v6 automatic startup network: NO
@@ -86,13 +89,39 @@ git diff --check: PASS
 protected main.dart: PASS
 protected Backend: PASS
 protected Control A: PASS
-Control C: IMPLEMENTED / AWAITING_REVIEW
+Control C: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 implementation baseline:
 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 implementation commit:
+8c807507e930b546f562acad97f52a6ba652b35f
+final acceptance sync:
+IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline:
+8c807507e930b546f562acad97f52a6ba652b35f
+final acceptance-sync commit:
 none
-commit / push:
+acceptance-sync commit / push:
 NOT_AUTHORIZED
+Control C focused:
+5 PASS / HISTORICAL
+Control A runtime:
+11 PASS / HISTORICAL
+Control B HomeScreen:
+14 PASS / HISTORICAL
+Flutter analyze:
+PASS / HISTORICAL
+full Flutter:
+570 PASS / HISTORICAL
+Backend:
+479 PASS / HISTORICAL
+dedicated Control C candidate checker:
+PASS / HISTORICAL
+post-commit/final-sync checker rerun:
+NOT_RUN / BY_DESIGN
+git diff --check:
+PASS
+dependencies:
+UNCHANGED
 real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 ```
 

@@ -1,19 +1,25 @@
 # DRC-V4-6 Control C - main.dart default-off FW-v6 provider-free session composition
 
 Status:
-DRC-V4-6 Control C IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 ```text
 baseline:
 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 
 implementation commit:
+8c807507e930b546f562acad97f52a6ba652b35f
+
+final acceptance sync:
+IMPLEMENTED / AWAITING_REVIEW
+
+final acceptance-sync baseline:
+8c807507e930b546f562acad97f52a6ba652b35f
+
+final acceptance-sync commit:
 none
 
-commit:
-NOT_AUTHORIZED
-
-push:
+acceptance-sync commit / push:
 NOT_AUTHORIZED
 ```
 
@@ -108,7 +114,7 @@ HomeScreen FW-v6 provider-free manual UI:
 IMPLEMENTED / ACCEPTED
 
 main.dart FW-v6 composition:
-IMPLEMENTED / AWAITING_REVIEW
+IMPLEMENTED / ACCEPTED
 
 FW-v6 automatic startup network:
 NO
@@ -178,16 +184,70 @@ Control B final acceptance-sync commit:
 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 
 DRC-V4-6 Control C:
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 implementation baseline:
 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 
 implementation commit:
+8c807507e930b546f562acad97f52a6ba652b35f
+
+final acceptance sync:
+IMPLEMENTED / AWAITING_REVIEW
+
+final acceptance-sync baseline:
+8c807507e930b546f562acad97f52a6ba652b35f
+
+final acceptance-sync commit:
 none
 
-commit / push:
+acceptance-sync commit / push:
 NOT_AUTHORIZED
+
+Control C focused:
+5 PASS / HISTORICAL
+
+Control A runtime:
+11 PASS / HISTORICAL
+
+Control B HomeScreen:
+14 PASS / HISTORICAL
+
+Flutter analyze:
+PASS / HISTORICAL
+
+full Flutter:
+570 PASS / HISTORICAL
+
+Backend:
+479 PASS / HISTORICAL
+
+python compileall backend/scripts:
+PASS
+
+dedicated Control C candidate checker:
+PASS / HISTORICAL
+
+post-commit/final-sync checker rerun:
+NOT_RUN / BY_DESIGN
+
+git diff --check:
+PASS
+
+protected HomeScreen:
+PASS
+
+protected Control A runtime:
+PASS
+
+protected Control B controller/client/model:
+PASS
+
+protected Backend:
+PASS
+
+dependencies:
+UNCHANGED
 
 DRC-V4-6 aggregate:
 PARTIAL_READY / NOT_COMPLETED
