@@ -14,10 +14,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
-current implementation step: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
+current small commit: DRC-V4-6 Control A final acceptance sync
+current implementation step: DRC-V4-6 Control A final acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+current implementation baseline: 246260fa9c92abc1df02a378b0ab1d84040cc208
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -29,7 +29,7 @@ DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -290,10 +290,9 @@ app changes: 0
 Backend changes: 0
 post-push working tree: clean
 GitHub main after implementation push: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
-DRC-V4-5 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
-final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+DRC-V4-5 final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-5 final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+DRC-V4-5 final acceptance-sync commit: 26a4222eec724a7517f2e812dfe4bd039c5b511d
 V4-4 Flutter model/client/controller: READY / ACCEPTED
 V4-3 Backend provider-free HTTP API: READY / ACCEPTED
 HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
@@ -332,17 +331,32 @@ Dedicated gate:
 
 ## DRC-V4-6 Control A - Configured provider-free FW v6 Flutter session runtime/factory
 
-Status: IMPLEMENTED / AWAITING_REVIEW
+Status: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 ```text
-baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
-implementation commit: none
-DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
+implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+implementation commit: 246260fa9c92abc1df02a378b0ab1d84040cc208
+DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Corrective R1: PASS
 exact candidate surface: 9 files
-MODIFY: 5
-ADD: 4
-DELETE: 0
-commit / push: NOT_AUTHORIZED
+implementation surface: MODIFY 5 / ADD 4 / DELETE 0
+dedicated candidate checker: PASS / HISTORICAL
+post-commit/final-sync checker rerun: NOT_RUN / BY_DESIGN
+focused Backend: 62 PASS
+Flutter analyze: PASS
+focused Flutter: 51 PASS
+full Flutter: 551 PASS
+protected Backend: PASS
+protected main.dart: PASS
+protected HomeScreen: PASS
+protected V4-4 boundary: PASS
+protected V4-5 readiness doc: PASS
+git diff --check: PASS
+post-push working tree: clean
+GitHub main after implementation push: 246260fa9c92abc1df02a378b0ab1d84040cc208
+final acceptance-sync baseline: 246260fa9c92abc1df02a378b0ab1d84040cc208
+final acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 configured FW-v6 runtime/factory: IMPLEMENTED
 HomeScreen FW-v6 UI: NOT_IMPLEMENTED
 main.dart FW-v6 composition: NOT_IMPLEMENTED
@@ -362,7 +376,7 @@ DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
 DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 ```
 
-DRC-V4-6 Control A adds only the default-off configured provider-free FW v6
+DRC-V4-6 Control A added only the default-off configured provider-free FW v6
 Flutter session runtime/factory. It does not modify HomeScreen, main.dart,
 Backend, V4-4 model/client/controller behavior, V4-5 readiness docs, existing
 tests, dependencies, vendor, version metadata, release records, or v3 realtime
@@ -373,6 +387,14 @@ HTTP client, make no HTTP request, and open no session. Each returned factory
 invocation creates a fresh owned HTTP client, `FrameworkV600RealtimeSessionClient`,
 and `FrameworkV600RealtimeSessionController`; the controller starts idle and
 performs network only after an explicit future `controller.open()` call.
+
+Corrective R1:
+
+```text
+Corrective R1: PASS
+corrective repo surface: README.md only
+other 8 implementation candidate files changed by corrective: 0
+```
 
 Historical V4-5 state:
 

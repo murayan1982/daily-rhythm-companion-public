@@ -1,19 +1,19 @@
 # DRC-V4-6 Control A Configured Provider-free FW v6 Flutter Runtime
 
-Status: DRC-V4-6 Control A IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-6 Control A COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 ```text
 baseline:
 26a4222eec724a7517f2e812dfe4bd039c5b511d
 
 implementation commit:
-none
+246260fa9c92abc1df02a378b0ab1d84040cc208
 
 commit:
-NOT_AUTHORIZED
+COMPLETED
 
 push:
-NOT_AUTHORIZED
+COMPLETED
 ```
 
 ## Scope
@@ -136,7 +136,7 @@ Backend session DELETE is limited to controller.close(): YES
 
 ```text
 configured FW-v6 runtime/factory:
-IMPLEMENTED
+IMPLEMENTED / ACCEPTED
 
 HomeScreen FW-v6 UI:
 NOT_IMPLEMENTED
@@ -171,6 +171,102 @@ Control A automatic startup network: NO
 verification network: NO / fake transport only
 provider network: NO
 external provider execution: NO
+```
+
+Accepted implementation evidence:
+
+```text
+DRC-V4-6 Control A:
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+implementation baseline:
+26a4222eec724a7517f2e812dfe4bd039c5b511d
+
+implementation commit:
+246260fa9c92abc1df02a378b0ab1d84040cc208
+
+Corrective R1:
+PASS
+
+exact implementation surface:
+9 files
+
+implementation surface:
+MODIFY 5 / ADD 4 / DELETE 0
+
+dedicated candidate checker:
+PASS / HISTORICAL
+
+post-commit/final-sync checker rerun:
+NOT_RUN / BY_DESIGN
+
+focused Backend:
+62 PASS
+
+Flutter analyze:
+PASS
+
+focused Flutter:
+51 PASS
+
+full Flutter:
+551 PASS
+
+protected Backend:
+PASS
+
+protected main.dart:
+PASS
+
+protected HomeScreen:
+PASS
+
+protected V4-4 boundary:
+PASS
+
+protected V4-5 readiness doc:
+PASS
+
+git diff --check:
+PASS
+
+post-push working tree:
+clean
+
+GitHub main after implementation push:
+246260fa9c92abc1df02a378b0ab1d84040cc208
+
+final acceptance-sync baseline:
+246260fa9c92abc1df02a378b0ab1d84040cc208
+
+final acceptance-sync commit:
+none
+
+acceptance-sync commit / push:
+NOT_AUTHORIZED
+```
+
+Historical checker handling:
+
+```text
+dedicated candidate checker:
+PASS / HISTORICAL
+
+post-commit/final-sync checker rerun:
+NOT_RUN / BY_DESIGN
+```
+
+Corrective R1 history:
+
+```text
+Corrective R1:
+PASS
+
+corrective repo surface:
+README.md only
+
+other 8 implementation candidate files changed by corrective:
+0
 ```
 
 ## Forbidden Behavior

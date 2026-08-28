@@ -17,9 +17,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
+current small commit: DRC-V4-6 Control A final acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+current implementation baseline: 246260fa9c92abc1df02a378b0ab1d84040cc208
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -32,7 +32,7 @@ DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -206,10 +206,9 @@ Backend changes: 0
 runtime behavior changes: 0
 post-push working tree: clean
 GitHub main after implementation push: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
-DRC-V4-5 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
-final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
-acceptance-sync commit: none
-acceptance-sync commit / push: NOT_AUTHORIZED
+DRC-V4-5 final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-5 final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+DRC-V4-5 final acceptance-sync commit: 26a4222eec724a7517f2e812dfe4bd039c5b511d
 HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
 main.dart configured-runtime composition seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
 configured provider-free FW-v6 runtime: NOT_IMPLEMENTED
@@ -267,14 +266,29 @@ The DRC-V4-6 Control A gate is source/static inspection only and credential-free
 provider-free, and real-network-free.
 
 ```text
-DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
-baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
-implementation commit: none
+DRC-V4-6 Control A: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+implementation commit: 246260fa9c92abc1df02a378b0ab1d84040cc208
+Corrective R1: PASS
 exact candidate surface: 9 files
-MODIFY: 5
-ADD: 4
-DELETE: 0
-commit / push: NOT_AUTHORIZED
+implementation surface: MODIFY 5 / ADD 4 / DELETE 0
+dedicated candidate checker: PASS / HISTORICAL
+post-commit/final-sync checker rerun: NOT_RUN / BY_DESIGN
+focused Backend: 62 PASS
+Flutter analyze: PASS
+focused Flutter: 51 PASS
+full Flutter: 551 PASS
+protected Backend: PASS
+protected main.dart: PASS
+protected HomeScreen: PASS
+protected V4-4 boundary: PASS
+protected V4-5 readiness doc: PASS
+git diff --check: PASS
+post-push working tree: clean
+GitHub main after implementation push: 246260fa9c92abc1df02a378b0ab1d84040cc208
+final acceptance-sync baseline: 246260fa9c92abc1df02a378b0ab1d84040cc208
+final acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 configured FW-v6 runtime/factory: IMPLEMENTED
 HomeScreen FW-v6 UI: NOT_IMPLEMENTED
 main.dart FW-v6 composition: NOT_IMPLEMENTED
@@ -306,6 +320,20 @@ Historical V4-5 state:
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
 final acceptance-sync commit: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+```
+
+`scripts/check_v400_provider_free_realtime_flutter_configured_runtime.py` is a
+historical candidate/pre-commit static acceptance gate. It is tied to baseline
+`26a4222eec724a7517f2e812dfe4bd039c5b511d` and the dirty exact nine-file
+implementation surface, so its accepted PASS result is historical and its
+post-commit/final-sync rerun status is `NOT_RUN / BY_DESIGN`.
+
+Control A Corrective R1:
+
+```text
+Corrective R1: PASS
+corrective repo surface: README.md only
+other 8 implementation candidate files changed by corrective: 0
 ```
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
