@@ -1,8 +1,10 @@
 # DRC-V4-5 Provider-free FW v6 Flutter UI / Configured Runtime Readiness
 
-Status: DRC-V4-5 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-5 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Baseline: `cf82518cd0b96a752ad92151bb3d706a88b9147c`
+
+Implementation commit: `838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e`
 
 This document is an inventory/readiness contract only. It records future
 adoption seams and constraints without implementing UI wiring, configured
@@ -315,6 +317,51 @@ pre-existing canonical checkpoint before DRC-V4-5.
 ## V4-5 Boundary
 
 ```text
+DRC-V4-5:
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+implementation baseline:
+cf82518cd0b96a752ad92151bb3d706a88b9147c
+
+implementation commit:
+838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+
+exact implementation surface:
+7 files
+
+MODIFY:
+5
+
+ADD:
+2
+
+DELETE:
+0
+
+aggregate implementation diff:
+897 insertions / 61 deletions
+
+Corrective R1:
+EVIDENCE-ONLY / PASS
+
+Corrective R1 repository source changes:
+0
+
+dedicated candidate checker:
+PASS
+
+focused Backend:
+62 PASS
+
+Flutter analyze:
+PASS
+
+Flutter full:
+540 PASS
+
+git diff --check:
+PASS
+
 runtime behavior changes:
 0
 
@@ -327,9 +374,52 @@ Backend changes:
 existing checkers changed:
 0
 
-commit:
-NOT_AUTHORIZED
+post-push working tree:
+clean
 
-push:
+GitHub main after implementation push:
+838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+```
+
+Corrective R1 history:
+
+```text
+Corrective R1:
+EVIDENCE-ONLY / PASS
+
+Repository source changes caused by Corrective R1:
+0
+
+Initial review artifact contained stale candidate numstat.
+Corrected evidence:
+tracked 5 files:
+307 insertions / 61 deletions
+new readiness document:
+335 additions
+new static checker:
+255 additions
+aggregate:
+897 insertions / 61 deletions
+```
+
+## Final Acceptance Sync
+
+```text
+DRC-V4-5 implementation:
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+DRC-V4-5 implementation commit:
+838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+
+DRC-V4-5 final acceptance sync:
+IMPLEMENTED / AWAITING_REVIEW
+
+final acceptance-sync baseline:
+838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+
+acceptance-sync commit:
+none
+
+acceptance-sync commit / push:
 NOT_AUTHORIZED
 ```

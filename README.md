@@ -10,21 +10,24 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
-Current implementation: provider-free FW v6 Flutter UI/configured-runtime readiness inventory.
+Current small commit: DRC-V4-5 final acceptance sync
+Current implementation: DRC-V4-5 final acceptance sync.
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 implementation commit: `a05d62447e85be28d674201853d0667aef11e2ae`
 DRC-V4-4 final acceptance-sync commit: `cf82518cd0b96a752ad92151bb3d706a88b9147c`
-DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-5 baseline: `cf82518cd0b96a752ad92151bb3d706a88b9147c`
-DRC-V4-5 commit: none
-commit / push: NOT_AUTHORIZED
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-5 implementation baseline: `cf82518cd0b96a752ad92151bb3d706a88b9147c`
+DRC-V4-5 implementation commit: `838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e`
+DRC-V4-5 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: `838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e`
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED**)
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+Current v4 action: DRC-V4-5 final acceptance sync
 
 Current phase state:
 
@@ -308,18 +311,34 @@ Dedicated DRC-V4-4 gate:
 `scripts/check_v400_provider_free_realtime_flutter_session_client.py`.
 
 DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
-is **IMPLEMENTED / AWAITING_REVIEW** against baseline
-`cf82518cd0b96a752ad92151bb3d706a88b9147c`.
+is **COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED** at
+implementation commit `838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e`.
 
 ```text
-DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
-DRC-V4-5 baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
-DRC-V4-5 commit: none
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
 exact candidate surface: 7 files
+MODIFY: 5
+ADD: 2
+DELETE: 0
+aggregate implementation diff: 897 insertions / 61 deletions
+Corrective R1: EVIDENCE-ONLY / PASS
+Corrective R1 repository source changes: 0
+dedicated candidate checker: PASS
+focused Backend: 62 PASS
+Flutter analyze: PASS
+Flutter full: 540 PASS
+git diff --check: PASS
 runtime behavior changes: 0
 app changes: 0
 Backend changes: 0
-commit / push: NOT_AUTHORIZED
+post-push working tree: clean
+GitHub main after implementation push: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+DRC-V4-5 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 V4-4 Flutter model/client/controller: READY / ACCEPTED
 V4-3 Backend provider-free HTTP API: READY / ACCEPTED
 HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
@@ -335,7 +354,7 @@ real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 DRC-V4 aggregate: PARTIAL_READY
 ```
 
-DRC-V4-5 inventories the future adoption boundary only. It does not add
+DRC-V4-5 inventoried the future adoption boundary only. It did not add
 HomeScreen wiring, main.dart wiring, configured runtime wiring, startup network,
 startup session open, provider execution, or replacement of existing accepted
 v3 realtime paths.

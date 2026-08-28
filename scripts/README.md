@@ -17,9 +17,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+current small commit: DRC-V4-5 final acceptance sync
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+current implementation baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -31,7 +31,7 @@ DRC-V4-1: CLOSED / ACCEPTED
 DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
-DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -185,16 +185,30 @@ git diff --name-only
 The DRC-V4-5 gate is source/static inspection only.
 
 ```text
-DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
-baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+candidate baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+candidate surface: exact 7 files
+accepted result: PASS
+Corrective R1: EVIDENCE-ONLY / PASS
+Corrective R1 repository source changes: 0
+tracked 5 files: 307 insertions / 61 deletions
+new readiness document: 335 additions
+new static checker: 255 additions
+aggregate implementation diff: 897 insertions / 61 deletions
 provider execution: NO
-network: NO
+verification / static-gate network: NO
 Flutter runtime execution: NO
 source/static inspection: YES
 app changes: 0
 Backend changes: 0
 runtime behavior changes: 0
-commit / push: NOT_AUTHORIZED
+post-push working tree: clean
+GitHub main after implementation push: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+DRC-V4-5 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
 main.dart configured-runtime composition seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
 configured provider-free FW-v6 runtime: NOT_IMPLEMENTED
@@ -213,6 +227,12 @@ metadata, or v3 realtime implementation. It does not create a configured
 runtime/factory, HomeScreen FW-v6 controls, main.dart composition, startup
 session open, Backend request, provider configuration, or replacement of the
 accepted v3 realtime flow.
+
+`scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py` is a
+historical candidate/pre-commit static acceptance gate. It is tied to baseline
+`cf82518cd0b96a752ad92151bb3d706a88b9147c` and the dirty exact seven-file
+implementation surface, so its accepted PASS result is historical and its
+post-commit/final-sync rerun status is `NOT_RUN / BY_DESIGN`.
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 

@@ -7,10 +7,10 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
-Current implementation: provider-free FW v6 Flutter UI/configured-runtime readiness inventory
+Current small commit: DRC-V4-5 final acceptance sync
+Current implementation: DRC-V4-5 final acceptance sync
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
+Current implementation baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
 Current implementation commit: none
 Current implementation commit / push: NOT_AUTHORIZED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
@@ -112,7 +112,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-5 IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-5 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -374,17 +374,33 @@ Dedicated DRC-V4-4 gate:
 
 ### DRC-V4-5 provider-free FW v6 Flutter UI/configured-runtime readiness inventory
 
-Status: **IMPLEMENTED / AWAITING_REVIEW**
+Status: **COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED**
 
 ```text
 implementation baseline: cf82518cd0b96a752ad92151bb3d706a88b9147c
-implementation commit: none
-DRC-V4-5: IMPLEMENTED / AWAITING_REVIEW
+implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5 exact candidate surface: 7 files
+MODIFY: 5
+ADD: 2
+DELETE: 0
+aggregate implementation diff: 897 insertions / 61 deletions
+Corrective R1: EVIDENCE-ONLY / PASS
+Corrective R1 repository source changes: 0
+dedicated candidate checker: PASS
+focused Backend: 62 PASS
+Flutter analyze: PASS
+Flutter full: 540 PASS
+git diff --check: PASS
 runtime behavior changes: 0
 app changes: 0
 Backend changes: 0
-commit / push: NOT_AUTHORIZED
+post-push working tree: clean
+GitHub main after implementation push: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+DRC-V4-5 final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+final acceptance-sync baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+acceptance-sync commit: none
+acceptance-sync commit / push: NOT_AUTHORIZED
 V4-4 Flutter model/client/controller: READY / ACCEPTED
 V4-3 Backend provider-free HTTP API: READY / ACCEPTED
 HomeScreen dependency-injection seam: READY_FOR_EXACT_IMPLEMENTATION_REVIEW
@@ -400,7 +416,7 @@ real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
 DRC-V4 aggregate: PARTIAL_READY
 ```
 
-DRC-V4-5 is an inventory/readiness contract only. It records that HomeScreen
+DRC-V4-5 is an accepted inventory/readiness contract only. It records that HomeScreen
 already has dependency-injection seams and that main.dart already has
 configured-runtime factory composition seams, but it does not add UI wiring,
 configured runtime wiring, automatic startup network, provider execution, or
