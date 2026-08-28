@@ -14,10 +14,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-5 final acceptance sync
-current implementation step: DRC-V4-5 final acceptance sync
+current small commit: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
+current implementation step: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+current implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -29,6 +29,7 @@ DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -328,6 +329,64 @@ Detailed readiness inventory:
 
 Dedicated gate:
 `scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py`.
+
+## DRC-V4-6 Control A - Configured provider-free FW v6 Flutter session runtime/factory
+
+Status: IMPLEMENTED / AWAITING_REVIEW
+
+```text
+baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+implementation commit: none
+DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
+exact candidate surface: 9 files
+MODIFY: 5
+ADD: 4
+DELETE: 0
+commit / push: NOT_AUTHORIZED
+configured FW-v6 runtime/factory: IMPLEMENTED
+HomeScreen FW-v6 UI: NOT_IMPLEMENTED
+main.dart FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NO
+automatic startup session open: NO
+Backend HTTP capability: YES
+Control A automatic startup network: NO
+verification network: NO / fake transport only
+provider network: NO
+external provider execution: NO
+provider execution: NO
+existing v3 runtime replacement: NO
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+DRC-V4 aggregate: PARTIAL_READY
+DRC-V4-6 Control B: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
+```
+
+DRC-V4-6 Control A adds only the default-off configured provider-free FW v6
+Flutter session runtime/factory. It does not modify HomeScreen, main.dart,
+Backend, V4-4 model/client/controller behavior, V4-5 readiness docs, existing
+tests, dependencies, vendor, version metadata, release records, or v3 realtime
+implementation.
+
+Runtime construction and `buildControllerFactory()` are lazy. They create no
+HTTP client, make no HTTP request, and open no session. Each returned factory
+invocation creates a fresh owned HTTP client, `FrameworkV600RealtimeSessionClient`,
+and `FrameworkV600RealtimeSessionController`; the controller starts idle and
+performs network only after an explicit future `controller.open()` call.
+
+Historical V4-5 state:
+
+```text
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+final acceptance-sync commit: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+```
+
+Detailed contract:
+`docs/v400_provider_free_realtime_flutter_configured_runtime.md`.
+
+Dedicated gate:
+`scripts/check_v400_provider_free_realtime_flutter_configured_runtime.py`.
 
 v2.1.0は固定ZIP `DailyRhythmCompanion_v2.1.0_20260725_160036.zip`、annotated tag `DRC_v2.1.0`、GitHub Release、公開後SHA-256再検証まで完了している。公開済み`DRC_v2.0.0`、`DRC_v2.0.1`、`DRC_v2.1.0`を変更せず、v3.0.0の最初の小コミットRT-0aをdocs/test-onlyで完了・受け入れた。RT-0a受け入れ時点ではRT-0bはNOT_STARTEDだった。RT-0bはcompileall、RT-0a/RT-0b gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。RT-0bのv5.0.0判定`BLOCKED_FRAMEWORK_UPDATE_REQUIRED`は履歴として維持する。RT-0cもreleased Framework v5.1.0の再評価、local gate、Backend 110件、Flutter 103件、diff確認、明示的なオペレーター承認の通過後にCOMPLETED / ACCEPTEDとなった。host-app基盤は大幅に改善したが、public voice input、unified realtime、hard cancel/TTS queue/barge-in、motion adapterは未リリースのため、`BLOCKED_REALTIME_PUBLIC_CONTRACTS_MISSING`としてRT-1以降を開始しない。
 

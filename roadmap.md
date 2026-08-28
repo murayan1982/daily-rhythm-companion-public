@@ -7,10 +7,10 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-5 final acceptance sync
-Current implementation: DRC-V4-5 final acceptance sync
+Current small commit: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
+Current implementation: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+Current implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
 Current implementation commit: none
 Current implementation commit / push: NOT_AUTHORIZED
 Strategic target achieved: v3.0.0 RELEASED / ACCEPTED
@@ -112,7 +112,7 @@ The application must remain useful in mock-safe mode while providing explicit, o
 
 ## v4.0.0 - Framework v6.0.0 readiness and initial adoption
 
-Status: DRC-V4-5 COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Status: DRC-V4-6 Control A IMPLEMENTED / AWAITING_REVIEW
 Current readiness decision: **PARTIAL_READY**
 Source of truth:
 `docs/DRC_v400_goal_checklist_small_commit.md`
@@ -439,6 +439,63 @@ Detailed DRC-V4-5 readiness inventory:
 
 Dedicated DRC-V4-5 gate:
 `scripts/check_v400_provider_free_realtime_flutter_ui_readiness.py`.
+
+### DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
+
+Status: **IMPLEMENTED / AWAITING_REVIEW**
+
+```text
+baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+implementation commit: none
+DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
+exact candidate surface: 9 files
+MODIFY: 5
+ADD: 4
+DELETE: 0
+commit / push: NOT_AUTHORIZED
+configured FW-v6 runtime/factory: IMPLEMENTED
+HomeScreen FW-v6 UI: NOT_IMPLEMENTED
+main.dart FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NO
+automatic startup session open: NO
+Backend HTTP capability: YES
+Control A automatic startup network: NO
+verification network: NO / fake transport only
+provider network: NO
+external provider execution: NO
+provider execution: NO
+existing v3 runtime replacement: NO
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+DRC-V4 aggregate: PARTIAL_READY
+DRC-V4-6 Control B: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
+```
+
+DRC-V4-6 Control A adds a default-off configured provider-free FW v6 Flutter
+session runtime/factory. It returns a controller factory only when explicitly
+enabled and configured with a valid HTTP/HTTPS Backend base URL. Runtime
+construction and factory lookup perform no HTTP client creation and no Backend
+request; each returned factory invocation creates a fresh owned HTTP client,
+V4-4 session client, and V4-4 controller in the idle state.
+
+Control A does not wire HomeScreen or main.dart, open a session automatically,
+execute providers, use microphone/STT/LLM/TTS/playback/VTube Studio/motion, or
+replace `/realtime/text` or any accepted v3 realtime path.
+
+Historical V4-5 state:
+
+```text
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+final acceptance-sync commit: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+```
+
+Detailed DRC-V4-6 Control A contract:
+`docs/v400_provider_free_realtime_flutter_configured_runtime.md`.
+
+Dedicated DRC-V4-6 Control A gate:
+`scripts/check_v400_provider_free_realtime_flutter_configured_runtime.py`.
 
 ---
 

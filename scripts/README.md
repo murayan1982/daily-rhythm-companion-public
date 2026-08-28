@@ -17,9 +17,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4-5 final acceptance sync
+current small commit: DRC-V4-6 Control A configured provider-free FW v6 Flutter session runtime/factory
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation baseline: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+current implementation baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -32,6 +32,7 @@ DRC-V4-2: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-3: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
 Framework release: v6.0.0
 Framework annotated tag target: 61e15f62d1ecc5faee016abae82200f8de56c5dd
 Framework official ZIP: ai-character-framework_v6.0.0.zip
@@ -233,6 +234,79 @@ historical candidate/pre-commit static acceptance gate. It is tied to baseline
 `cf82518cd0b96a752ad92151bb3d706a88b9147c` and the dirty exact seven-file
 implementation surface, so its accepted PASS result is historical and its
 post-commit/final-sync rerun status is `NOT_RUN / BY_DESIGN`.
+
+## v4.0.0 DRC-V4-6 Control A configured FW v6 Flutter runtime check
+
+Detailed contract:
+`docs/v400_provider_free_realtime_flutter_configured_runtime.md`.
+
+Static acceptance gate:
+`scripts/check_v400_provider_free_realtime_flutter_configured_runtime.py`.
+
+Run from the repository root:
+
+```powershell
+python -m compileall -q backend scripts
+python scripts\check_v400_provider_free_realtime_flutter_configured_runtime.py
+python -m pytest -q backend/tests/test_framework_v600_realtime_api.py backend/tests/test_framework_v600_realtime_session_adapter.py
+
+cd app
+flutter analyze
+flutter test test/framework_v600_realtime_session_model_test.dart test/framework_v600_realtime_session_client_test.dart test/framework_v600_realtime_session_controller_test.dart test/configured_framework_v600_realtime_session_runtime_test.dart
+flutter test
+cd ..
+
+python scripts\check_v400_provider_free_realtime_flutter_configured_runtime.py
+git diff --check
+git status --short
+git diff --stat
+git diff --name-only
+```
+
+The DRC-V4-6 Control A gate is source/static inspection only and credential-free,
+provider-free, and real-network-free.
+
+```text
+DRC-V4-6 Control A: IMPLEMENTED / AWAITING_REVIEW
+baseline: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+implementation commit: none
+exact candidate surface: 9 files
+MODIFY: 5
+ADD: 4
+DELETE: 0
+commit / push: NOT_AUTHORIZED
+configured FW-v6 runtime/factory: IMPLEMENTED
+HomeScreen FW-v6 UI: NOT_IMPLEMENTED
+main.dart FW-v6 composition: NOT_IMPLEMENTED
+automatic startup network: NO
+automatic startup session open: NO
+Backend HTTP capability: YES
+Control A automatic startup network: NO
+verification network: NO / fake transport only
+provider network: NO
+external provider execution: NO
+provider execution: NO
+existing v3 runtime replacement: NO
+real unified FW runtime: NOT_AVAILABLE / NOT_CLAIMED
+DRC-V4 aggregate: PARTIAL_READY
+DRC-V4-6 Control B: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 Control C: PROPOSED / NOT_AUTHORIZED
+DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
+```
+
+Control A creates only a configured runtime/factory for the accepted V4-4
+provider-free Flutter client/controller. It does not modify HomeScreen,
+main.dart, Backend, V4-4 lifecycle behavior, V4-5 readiness documentation,
+dependencies, vendor files, version metadata, release metadata, or v3 realtime
+implementation.
+
+Historical V4-5 state:
+
+```text
+DRC-V4-5: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+implementation commit: 838ab047bb7a7e96f26f3c6ab436a1b9241c2c0e
+final acceptance-sync commit: 26a4222eec724a7517f2e812dfe4bd039c5b511d
+```
 
 ## v4.0.0 DRC-V4-2 provider-free FW v6 RealtimeSession adapter check
 
