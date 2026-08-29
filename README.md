@@ -10,10 +10,10 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4 Aggregate Readiness Reassessment - post V4-6
-Current implementation: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+Current small commit: DRC v4.0.0 Release Preparation Protocol
+Current implementation: DRC v4.0.0 Release Preparation Protocol
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-implementation baseline: `3f28c62aa193b404ccc9cc6111d756bbd7580b3f`
+protocol baseline: `7ff8e34037808f6c002b1644201e856c1e0187f2`
 implementation commit: none
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 implementation commit: `a05d62447e85be28d674201853d0667aef11e2ae`
@@ -66,13 +66,28 @@ stage: NOT_AUTHORIZED / NOT_RUN
 commit: NOT_AUTHORIZED / NOT_RUN
 push: NOT_AUTHORIZED / NOT_RUN
 release: NOT_AUTHORIZED / NOT_RUN
+package: NOT_AUTHORIZED / NOT_RUN
+tag: NOT_AUTHORIZED / NOT_RUN
+publication: NOT_AUTHORIZED / NOT_RUN
 DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework v6.0.0 framework-level readiness: PARTIAL_READY / HISTORICAL_AND_STILL_TRUE
 DRC-V4 bounded coexistence readiness: READY_FOR_RELEASE_PREPARATION
 DRC-V4 aggregate: READY_FOR_RELEASE_PREPARATION
 DRC v4.0.0: NOT_RELEASED
+DRC-V4 Aggregate Readiness Reassessment: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+reassessment commit: `7ff8e34037808f6c002b1644201e856c1e0187f2`
+DRC v4.0.0 Release Preparation Protocol Control A: IMPLEMENTED / AWAITING_REVIEW
+Control B: FUTURE / NOT_AUTHORIZED
+Control C: FUTURE / NOT_AUTHORIZED
+Control D: FUTURE / NOT_AUTHORIZED
+Control E: FUTURE / NOT_AUTHORIZED
+fixed ZIP builder invocation count: 0
+fixed ZIP: NOT_BUILT
+annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
 existing v3 real runtime: PRESERVED / RELEASED / ACCEPTED
 real unified FW runtime required for DRC v4.0.0 release: NO / NOT_A_RELEASE_BLOCKER
+real unified FW runtime release blocker: NO
 automatic FW-v6 startup network: NO
 automatic FW-v6 session open: NO
 existing v3 replacement: NO
@@ -95,7 +110,7 @@ Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION 
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+Current v4 action: DRC v4.0.0 Release Preparation Protocol
 
 DRC-V4-6 Control B final acceptance sync marker summary:
 

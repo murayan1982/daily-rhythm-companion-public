@@ -17,10 +17,10 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+current small commit: DRC v4.0.0 Release Preparation Protocol
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation: DRC-V4 Aggregate Readiness Reassessment - post V4-6
-implementation baseline: 3f28c62aa193b404ccc9cc6111d756bbd7580b3f
+current implementation: DRC v4.0.0 Release Preparation Protocol
+protocol baseline: 7ff8e34037808f6c002b1644201e856c1e0187f2
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -72,13 +72,28 @@ stage: NOT_AUTHORIZED / NOT_RUN
 commit: NOT_AUTHORIZED / NOT_RUN
 push: NOT_AUTHORIZED / NOT_RUN
 release: NOT_AUTHORIZED / NOT_RUN
+package: NOT_AUTHORIZED / NOT_RUN
+tag: NOT_AUTHORIZED / NOT_RUN
+publication: NOT_AUTHORIZED / NOT_RUN
 DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Framework v6.0.0 framework-level readiness: PARTIAL_READY / HISTORICAL_AND_STILL_TRUE
 DRC-V4 bounded coexistence readiness: READY_FOR_RELEASE_PREPARATION
 DRC-V4 aggregate: READY_FOR_RELEASE_PREPARATION
 DRC v4.0.0: NOT_RELEASED
+DRC-V4 Aggregate Readiness Reassessment: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+reassessment commit: 7ff8e34037808f6c002b1644201e856c1e0187f2
+DRC v4.0.0 Release Preparation Protocol Control A: IMPLEMENTED / AWAITING_REVIEW
+Control B: FUTURE / NOT_AUTHORIZED
+Control C: FUTURE / NOT_AUTHORIZED
+Control D: FUTURE / NOT_AUTHORIZED
+Control E: FUTURE / NOT_AUTHORIZED
+fixed ZIP builder invocation count: 0
+fixed ZIP: NOT_BUILT
+annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
 existing v3 real runtime: PRESERVED / RELEASED / ACCEPTED
 real unified FW runtime required for DRC v4.0.0 release: NO / NOT_A_RELEASE_BLOCKER
+real unified FW runtime release blocker: NO
 automatic FW-v6 startup network: NO
 automatic FW-v6 session open: NO
 existing v3 replacement: NO
