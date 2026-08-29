@@ -14,11 +14,11 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC-V4-6 Aggregate Final Acceptance Sync
-current implementation step: DRC-V4-6 Aggregate Final Acceptance Sync
+current small commit: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+current implementation step: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+current implementation: DRC-V4 Aggregate Readiness Reassessment - post V4-6
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-final acceptance-sync baseline: 9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
-final acceptance-sync commit: none
+implementation baseline: 3f28c62aa193b404ccc9cc6111d756bbd7580b3f
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -69,8 +69,18 @@ operator post-run repository: clean / PASS
 stage: NOT_AUTHORIZED / NOT_RUN
 commit: NOT_AUTHORIZED / NOT_RUN
 push: NOT_AUTHORIZED / NOT_RUN
-DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
-DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / CLOSED
+release: NOT_AUTHORIZED / NOT_RUN
+DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Framework v6.0.0 framework-level readiness: PARTIAL_READY / HISTORICAL_AND_STILL_TRUE
+DRC-V4 bounded coexistence readiness: READY_FOR_RELEASE_PREPARATION
+DRC-V4 aggregate: READY_FOR_RELEASE_PREPARATION
+DRC v4.0.0: NOT_RELEASED
+existing v3 real runtime: PRESERVED / RELEASED / ACCEPTED
+real unified FW runtime required for DRC v4.0.0 release: NO / NOT_A_RELEASE_BLOCKER
+automatic FW-v6 startup network: NO
+automatic FW-v6 session open: NO
+existing v3 replacement: NO
+/realtime/text replacement: NO
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
 main.dart FW-v6 composition: IMPLEMENTED / ACCEPTED

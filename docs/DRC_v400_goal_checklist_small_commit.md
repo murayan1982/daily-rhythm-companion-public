@@ -1,16 +1,15 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-6 Aggregate Final Acceptance Sync IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4 Aggregate Readiness Reassessment - post V4-6 IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-6 Aggregate Final Acceptance Sync
-current implementation: DRC-V4-6 Aggregate Final Acceptance Sync
-final acceptance-sync baseline: 9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
-final acceptance-sync commit: none
+current small commit: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+current implementation: DRC-V4 Aggregate Readiness Reassessment - post V4-6
+implementation baseline: 3f28c62aa193b404ccc9cc6111d756bbd7580b3f
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
@@ -59,8 +58,18 @@ operator post-run repository: clean / PASS
 stage: NOT_AUTHORIZED / NOT_RUN
 commit: NOT_AUTHORIZED / NOT_RUN
 push: NOT_AUTHORIZED / NOT_RUN
-DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
-DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / CLOSED
+release: NOT_AUTHORIZED / NOT_RUN
+DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Framework v6.0.0 framework-level readiness: PARTIAL_READY / HISTORICAL_AND_STILL_TRUE
+DRC-V4 bounded coexistence readiness: READY_FOR_RELEASE_PREPARATION
+DRC-V4 aggregate: READY_FOR_RELEASE_PREPARATION
+DRC v4.0.0: NOT_RELEASED
+existing v3 real runtime: PRESERVED / RELEASED / ACCEPTED
+real unified FW runtime required for DRC v4.0.0 release: NO / NOT_A_RELEASE_BLOCKER
+automatic FW-v6 startup network: NO
+automatic FW-v6 session open: NO
+existing v3 replacement: NO
+/realtime/text replacement: NO
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
 main.dart FW-v6 composition: IMPLEMENTED / ACCEPTED
