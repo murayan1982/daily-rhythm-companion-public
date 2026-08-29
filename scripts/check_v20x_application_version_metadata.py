@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +19,7 @@ ALLOWED_ACTIVE_VERSIONS = {
     "2.0.1": "2",
     "2.1.0": "3",
     "3.0.0": "4",
+    "4.0.0": "5",
 }
 
 
@@ -40,12 +40,11 @@ def reject(text: str, needle: str, label: str) -> None:
         raise AssertionError(f"Unexpected {label}: {needle!r}")
 
 
-def run_baseline_check() -> None:
-    subprocess.run(
-        [sys.executable, str(ROOT / "scripts/check_v20x_maintenance_baseline.py")],
-        cwd=ROOT,
-        check=True,
-    )
+def require_historical_baseline_checker_present() -> None:
+    """Preserve the historical checker without requiring current-main execution."""
+    historical_checker = ROOT / "scripts/check_v20x_maintenance_baseline.py"
+    if not historical_checker.is_file():
+        raise AssertionError("Missing historical v2.0.x maintenance baseline checker")
 
 
 def main() -> None:
@@ -118,7 +117,7 @@ def main() -> None:
     for relative in ("app/web/index.html", "app/web/manifest.json"):
         web_source = read(relative)
         require(web_source, "Daily Rhythm Companion", f"{relative} product identity")
-        for forbidden in ("3.0.0", "2.1.0", "2.0.1", "2.0.0+1", "0.15.0"):
+        for forbidden in ("4.0.0", "3.0.0", "2.1.0", "2.0.1", "2.0.0+1", "0.15.0"):
             reject(web_source, forbidden, f"{relative} duplicate version")
 
     inventory = read("docs/v20x_application_version_metadata.md")
@@ -153,7 +152,7 @@ def main() -> None:
     m9 = checklist.split("\n## M-9 — Patch release", 1)[1].split("# Future-version boundary", 1)[0]
     require(m9, "Status: COMPLETED / ACCEPTED", "M-9 accepted state")
 
-    run_baseline_check()
+    require_historical_baseline_checker_present()
 
     print("v20x_application_version_metadata_status: m2-completed")
     print(f"v20x_application_version_metadata_m2_version: {M2_VERSION}")

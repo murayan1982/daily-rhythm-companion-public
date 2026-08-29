@@ -4,25 +4,28 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol
+DRC v4.0.0 Release Preparation Protocol Control B
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol
+DRC v4.0.0 Release Preparation Protocol Control B
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol
+DRC v4.0.0 Release Preparation Protocol Control B
 
 Current implementation state:
 IMPLEMENTED / AWAITING_REVIEW
 
-protocol baseline:
-7ff8e34037808f6c002b1644201e856c1e0187f2
+Control B baseline:
+b752491632c58c557c02b06587cab28edcb901ca
 
 implementation commit:
 none
 
 current released version:
 v3.0.0 RELEASED / ACCEPTED
+
+current v4 candidate metadata:
+Backend 4.0.0 / Flutter 4.0.0+5 NOT_RELEASED
 
 DRC-V4 Aggregate Readiness Reassessment:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -58,10 +61,25 @@ real unified FW runtime release blocker:
 NO
 
 Control A:
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control A commit:
+b752491632c58c557c02b06587cab28edcb901ca
 
 Control B:
-FUTURE / NOT_AUTHORIZED
+IMPLEMENTED / AWAITING_REVIEW
+
+Candidate Backend:
+4.0.0
+
+Candidate Flutter:
+4.0.0+5
+
+release notes:
+RELEASE CANDIDATE / NOT_RELEASED
+
+release record:
+PREPARED / NOT_RELEASED
 
 Control C:
 FUTURE / NOT_AUTHORIZED
@@ -105,10 +123,10 @@ NOT_AUTHORIZED / NOT_RUN
 
 ## Purpose
 
-Control A freezes the DRC v4.0.0 release-preparation protocol. It is a
-documentation/static-gate milestone only. It does not change versions, mutate
-release notes into a v4 candidate, build a package, create a tag, or publish a
-release.
+Control A froze the DRC v4.0.0 release-preparation protocol as a
+documentation/static-gate milestone. Control B prepares candidate metadata,
+release notes, and the pre-release record while keeping DRC v4.0.0
+`NOT_RELEASED`. It does not build a package, create a tag, or publish a release.
 
 DRC v4.0.0 can proceed to release preparation because its accepted scope is
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
@@ -150,11 +168,14 @@ Framework v6 provider-free path alongside it.
 ```text
 Control A:
 Release inventory / preparation protocol
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control A commit:
+b752491632c58c557c02b06587cab28edcb901ca
 
 Control B:
 Candidate metadata / release-record preparation
-FUTURE / NOT_AUTHORIZED
+IMPLEMENTED / AWAITING_REVIEW
 
 Control C:
 Release Candidate verification / no-build preflight
@@ -169,7 +190,7 @@ Publication
 FUTURE / NOT_AUTHORIZED
 ```
 
-Control A defines the sequence only. completion or acceptance of one control does not authorize the next control.
+Completion or acceptance of one control does not authorize the next control.
 
 ## Control A Boundary
 
@@ -196,18 +217,48 @@ publication:
 NOT_AUTHORIZED / NOT_RUN
 ```
 
-No future version or build number is selected in Control A.
+No future version or build number was selected in Control A.
 
-## Future Control B
+## Control B Boundary
 
-Control B is future work under separate exact review. It may prepare candidate
-Backend/Flutter version metadata, release-notes candidate material, release
-checklist, and release record while still keeping DRC v4.0.0 `NOT_RELEASED`.
+Control B selects the v4.0.0 / 4.0.0+5 candidate metadata and prepares the
+release notes and release record while still keeping DRC v4.0.0 `NOT_RELEASED`.
 
 ```text
 Control B:
-FUTURE / NOT_AUTHORIZED
+IMPLEMENTED / AWAITING_REVIEW
+
+Control B baseline:
+b752491632c58c557c02b06587cab28edcb901ca
+
+Candidate Backend:
+4.0.0
+
+Candidate Flutter:
+4.0.0+5
+
+release notes:
+RELEASE CANDIDATE / NOT_RELEASED
+
+release record:
+PREPARED / NOT_RELEASED
+
+fixed ZIP builder invocation count:
+0
+
+fixed ZIP:
+NOT_BUILT
+
+annotated tag:
+NOT_CREATED
+
+GitHub Release:
+NOT_CREATED
 ```
+
+Control B does not run release-candidate full regression, configured operator
+acceptance, packaging, fixed-ZIP building, tag creation, GitHub Release
+creation, or publication.
 
 ## Future Control C
 
@@ -356,7 +407,7 @@ NO
 
 ```text
 exact surface:
-7 files / M5 A2 D0
+13 files / M9 A4 D0
 
 MODIFY:
 README.md
@@ -364,10 +415,16 @@ roadmap.md
 tasklist.md
 scripts/README.md
 docs/DRC_v400_goal_checklist_small_commit.md
+docs/v400_release_preparation_protocol.md
+backend/app/version.py
+app/pubspec.yaml
+scripts/check_v20x_application_version_metadata.py
 
 ADD:
-docs/v400_release_preparation_protocol.md
-scripts/check_v400_release_preparation_protocol.py
+docs/v400_release_candidate_metadata.md
+docs/v400_release_record.md
+release_notes/v4.0.0.md
+scripts/check_v400_release_candidate_metadata.py
 
 DELETE:
 0

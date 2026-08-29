@@ -11,16 +11,17 @@ Current state:
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
+current v4 candidate metadata: Backend 4.0.0 / Flutter 4.0.0+5 NOT_RELEASED
 previous released version: v2.1.0 RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Release Preparation Protocol
+current small commit: DRC v4.0.0 Release Preparation Protocol Control B
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
-current implementation: DRC v4.0.0 Release Preparation Protocol
-protocol baseline: 7ff8e34037808f6c002b1644201e856c1e0187f2
+current implementation: DRC v4.0.0 Release Preparation Protocol Control B
+Control B baseline: b752491632c58c557c02b06587cab28edcb901ca
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -82,8 +83,14 @@ DRC-V4 aggregate: READY_FOR_RELEASE_PREPARATION
 DRC v4.0.0: NOT_RELEASED
 DRC-V4 Aggregate Readiness Reassessment: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 reassessment commit: 7ff8e34037808f6c002b1644201e856c1e0187f2
-DRC v4.0.0 Release Preparation Protocol Control A: IMPLEMENTED / AWAITING_REVIEW
-Control B: FUTURE / NOT_AUTHORIZED
+DRC v4.0.0 Release Preparation Protocol Control A: CLOSED
+Control A commit: b752491632c58c557c02b06587cab28edcb901ca
+Control B: IMPLEMENTED / AWAITING_REVIEW
+Backend candidate metadata: 4.0.0
+Flutter candidate metadata: 4.0.0+5
+Candidate release: v4.0.0 RELEASE CANDIDATE / NOT_RELEASED
+release notes: RELEASE CANDIDATE / NOT_RELEASED
+release record: PREPARED / NOT_RELEASED
 Control C: FUTURE / NOT_AUTHORIZED
 Control D: FUTURE / NOT_AUTHORIZED
 Control E: FUTURE / NOT_AUTHORIZED
