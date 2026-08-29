@@ -7,10 +7,11 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-6 Aggregate Acceptance Protocol
-Current implementation: DRC-V4-6 Aggregate Acceptance Protocol
+Current small commit: DRC-V4-6 Aggregate Final Acceptance Sync
+Current implementation: DRC-V4-6 Aggregate Final Acceptance Sync
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
-Current implementation baseline: 13127ac93054840caeff5ec12698ae82f36bb514
+final acceptance-sync baseline: 9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
+final acceptance-sync commit: none
 Current implementation commit: none
 Current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-6 Control A: CLOSED
@@ -27,15 +28,32 @@ DRC-V4-6 Control C implementation commit: 8c807507e930b546f562acad97f52a6ba652b3
 DRC-V4-6 Control C final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control C final acceptance-sync baseline: 8c807507e930b546f562acad97f52a6ba652b35f
 DRC-V4-6 Control C final acceptance-sync commit: 13127ac93054840caeff5ec12698ae82f36bb514
-DRC-V4-6 Aggregate Acceptance Protocol: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Aggregate Acceptance Protocol: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 protocol baseline: 13127ac93054840caeff5ec12698ae82f36bb514
-protocol implementation commit: none
-operator acceptance: NOT_AUTHORIZED / NOT_RUN
+protocol implementation commit: 9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
+Corrective R1: PASS / ACCEPTED
+operator acceptance: COMPLETED / VERIFIED / ACCEPTED / PASS
+operator configured presentation: PASS
+operator pre-Open phase: idle / PASS
+operator pre-Open session: not opened / PASS
+operator Open Session: PASS
+operator Send: PASS
+operator turn outcome: completed
+operator turn safe projection: PASS
+operator Interrupt: PASS
+operator interrupt outcome: no_active_turn
+operator Diagnostics: PASS
+operator Close: PASS
+operator final phase: closed
+operator Framework distribution: ai-character-framework 6.0.0 / PASS
+operator provider execution: NO / PASS
+operator repository modified: NO / PASS
+operator post-run repository: clean / PASS
 stage: NOT_AUTHORIZED / NOT_RUN
 commit: NOT_AUTHORIZED / NOT_RUN
 push: NOT_AUTHORIZED / NOT_RUN
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
-DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
+DRC-V4-6 aggregate: COMPLETED / VERIFIED / ACCEPTED / CLOSED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
 HomeScreen FW-v6 provider-free manual UI: IMPLEMENTED / ACCEPTED
 main.dart FW-v6 composition: IMPLEMENTED / ACCEPTED

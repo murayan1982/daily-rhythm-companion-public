@@ -1,17 +1,86 @@
 # DRC-V4-6 Aggregate Acceptance Protocol - provider-free configured local Backend session acceptance
 
 Status:
-DRC-V4-6 Aggregate Acceptance Protocol IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Aggregate Final Acceptance Sync IMPLEMENTED / AWAITING_REVIEW
 
 ```text
+Current small commit:
+DRC-V4-6 Aggregate Final Acceptance Sync
+
+Current implementation:
+DRC-V4-6 Aggregate Final Acceptance Sync
+
+Current implementation state:
+IMPLEMENTED / AWAITING_REVIEW
+
+final acceptance-sync baseline:
+9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
+
+final acceptance-sync commit:
+none
+
+DRC-V4-6 Aggregate Acceptance Protocol:
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
 protocol baseline:
 13127ac93054840caeff5ec12698ae82f36bb514
 
 protocol implementation commit:
-none
+9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
+
+Corrective R1:
+PASS / ACCEPTED
 
 operator acceptance:
-NOT_AUTHORIZED / NOT_RUN
+COMPLETED / VERIFIED / ACCEPTED / PASS
+
+operator configured presentation:
+PASS
+
+operator pre-Open phase:
+idle / PASS
+
+operator pre-Open session:
+not opened / PASS
+
+operator Open Session:
+PASS
+
+operator Send:
+PASS
+
+operator turn outcome:
+completed
+
+operator turn safe projection:
+PASS
+
+operator Interrupt:
+PASS
+
+operator interrupt outcome:
+no_active_turn
+
+operator Diagnostics:
+PASS
+
+operator Close:
+PASS
+
+operator final phase:
+closed
+
+operator Framework distribution:
+ai-character-framework 6.0.0 / PASS
+
+operator provider execution:
+NO / PASS
+
+operator repository modified:
+NO / PASS
+
+operator post-run repository:
+clean / PASS
 
 stage:
 NOT_AUTHORIZED / NOT_RUN
@@ -21,6 +90,12 @@ NOT_AUTHORIZED / NOT_RUN
 
 push:
 NOT_AUTHORIZED / NOT_RUN
+
+DRC-V4-6 aggregate:
+COMPLETED / VERIFIED / ACCEPTED / CLOSED
+
+DRC-V4 aggregate:
+PARTIAL_READY / NOT_COMPLETED
 ```
 
 ## Purpose
@@ -400,25 +475,94 @@ Control C final acceptance-sync commit:
 13127ac93054840caeff5ec12698ae82f36bb514
 
 Current small commit:
-DRC-V4-6 Aggregate Acceptance Protocol
+DRC-V4-6 Aggregate Final Acceptance Sync
 
 Current implementation:
-DRC-V4-6 Aggregate Acceptance Protocol
+DRC-V4-6 Aggregate Final Acceptance Sync
 
 Current implementation state:
 IMPLEMENTED / AWAITING_REVIEW
+
+final acceptance-sync baseline:
+9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
+
+final acceptance-sync commit:
+none
+
+DRC-V4-6 Aggregate Acceptance Protocol:
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 protocol baseline:
 13127ac93054840caeff5ec12698ae82f36bb514
 
 protocol implementation commit:
-none
+9f382cd787e132b98061b4cc6cf3b8dfbb50bde5
+
+Corrective R1:
+PASS / ACCEPTED
 
 operator acceptance:
+COMPLETED / VERIFIED / ACCEPTED / PASS
+
+operator configured presentation:
+PASS
+
+operator pre-Open phase:
+idle / PASS
+
+operator pre-Open session:
+not opened / PASS
+
+operator Open Session:
+PASS
+
+operator Send:
+PASS
+
+operator turn outcome:
+completed
+
+operator turn safe projection:
+PASS
+
+operator Interrupt:
+PASS
+
+operator interrupt outcome:
+no_active_turn
+
+operator Diagnostics:
+PASS
+
+operator Close:
+PASS
+
+operator final phase:
+closed
+
+operator Framework distribution:
+ai-character-framework 6.0.0 / PASS
+
+operator provider execution:
+NO / PASS
+
+operator repository modified:
+NO / PASS
+
+operator post-run repository:
+clean / PASS
+
+stage:
+NOT_AUTHORIZED / NOT_RUN
+
+commit:
+NOT_AUTHORIZED / NOT_RUN
+
+push:
 NOT_AUTHORIZED / NOT_RUN
 
 DRC-V4-6 aggregate:
-PARTIAL_READY / NOT_COMPLETED
+COMPLETED / VERIFIED / ACCEPTED / CLOSED
 
 DRC-V4 aggregate:
 PARTIAL_READY / NOT_COMPLETED
