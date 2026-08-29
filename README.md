@@ -10,8 +10,8 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC-V4-6 Control C final acceptance sync
-Current implementation: DRC-V4-6 Control C final acceptance sync
+Current small commit: DRC-V4-6 Aggregate Acceptance Protocol
+Current implementation: DRC-V4-6 Aggregate Acceptance Protocol
 Current implementation state: IMPLEMENTED / AWAITING_REVIEW
 DRC-V4-4: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-4 implementation commit: `a05d62447e85be28d674201853d0667aef11e2ae`
@@ -36,10 +36,16 @@ DRC-V4-6 Control B final acceptance-sync commit: `3ef11c87d8e12393ab6dbe8f3308ff
 DRC-V4-6 Control C: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control C implementation baseline: `3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43`
 DRC-V4-6 Control C implementation commit: `8c807507e930b546f562acad97f52a6ba652b35f`
-DRC-V4-6 Control C final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control C final acceptance-sync baseline: `8c807507e930b546f562acad97f52a6ba652b35f`
-DRC-V4-6 Control C final acceptance-sync commit: none
-DRC-V4-6 Control C acceptance-sync commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control C final acceptance-sync commit: `13127ac93054840caeff5ec12698ae82f36bb514`
+DRC-V4-6 Aggregate Acceptance Protocol: IMPLEMENTED / AWAITING_REVIEW
+protocol baseline: `13127ac93054840caeff5ec12698ae82f36bb514`
+protocol implementation commit: none
+operator acceptance: NOT_AUTHORIZED / NOT_RUN
+stage: NOT_AUTHORIZED / NOT_RUN
+commit: NOT_AUTHORIZED / NOT_RUN
+push: NOT_AUTHORIZED / NOT_RUN
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
 DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
@@ -60,7 +66,7 @@ Last accepted release control: RT-9e Control D (**POST_PUBLICATION_VERIFICATION 
 Accepted RT-4c implementation: `72622cab2e73699adaff4f628cfbc4b14323a23a`
 Completed realtime phase: RT-9 (**COMPLETED / ACCEPTED**)
 Current release action: none; v3.0.0 publication is complete
-Current v4 action: DRC-V4-6 Control C final acceptance sync
+Current v4 action: DRC-V4-6 Aggregate Acceptance Protocol
 
 DRC-V4-6 Control B final acceptance sync marker summary:
 
@@ -90,13 +96,33 @@ implementation baseline:
 implementation commit:
 8c807507e930b546f562acad97f52a6ba652b35f
 final acceptance sync:
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 final acceptance-sync baseline:
 8c807507e930b546f562acad97f52a6ba652b35f
 final acceptance-sync commit:
+13127ac93054840caeff5ec12698ae82f36bb514
+Current small commit:
+DRC-V4-6 Aggregate Acceptance Protocol
+Current implementation:
+DRC-V4-6 Aggregate Acceptance Protocol
+Current implementation state:
+IMPLEMENTED / AWAITING_REVIEW
+protocol baseline:
+13127ac93054840caeff5ec12698ae82f36bb514
+protocol implementation commit:
 none
-acceptance-sync commit / push:
-NOT_AUTHORIZED
+operator acceptance:
+NOT_AUTHORIZED / NOT_RUN
+stage:
+NOT_AUTHORIZED / NOT_RUN
+commit:
+NOT_AUTHORIZED / NOT_RUN
+push:
+NOT_AUTHORIZED / NOT_RUN
+DRC-V4-6 aggregate:
+PARTIAL_READY / NOT_COMPLETED
+DRC-V4 aggregate:
+PARTIAL_READY / NOT_COMPLETED
 Control C focused:
 5 PASS / HISTORICAL
 Control A runtime:

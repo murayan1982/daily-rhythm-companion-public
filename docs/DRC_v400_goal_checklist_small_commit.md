@@ -1,14 +1,14 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC-V4-6 Control C final acceptance sync IMPLEMENTED / AWAITING_REVIEW
+Status: DRC-V4-6 Aggregate Acceptance Protocol IMPLEMENTED / AWAITING_REVIEW
 
 ## Current State
 
 ```text
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
-current small commit: DRC-V4-6 Control C final acceptance sync
-current implementation baseline: 8c807507e930b546f562acad97f52a6ba652b35f
+current small commit: DRC-V4-6 Aggregate Acceptance Protocol
+current implementation baseline: 13127ac93054840caeff5ec12698ae82f36bb514
 current implementation state: IMPLEMENTED / AWAITING_REVIEW
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
@@ -30,10 +30,16 @@ DRC-V4-6 Control B final acceptance-sync commit: 3ef11c87d8e12393ab6dbe8f3308ffe
 DRC-V4-6 Control C: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control C implementation baseline: 3ef11c87d8e12393ab6dbe8f3308ffe9a1ca6f43
 DRC-V4-6 Control C implementation commit: 8c807507e930b546f562acad97f52a6ba652b35f
-DRC-V4-6 Control C final acceptance sync: IMPLEMENTED / AWAITING_REVIEW
+DRC-V4-6 Control C final acceptance sync: COMPLETED / VERIFIED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 DRC-V4-6 Control C final acceptance-sync baseline: 8c807507e930b546f562acad97f52a6ba652b35f
-DRC-V4-6 Control C final acceptance-sync commit: none
-DRC-V4-6 Control C acceptance-sync commit / push: NOT_AUTHORIZED
+DRC-V4-6 Control C final acceptance-sync commit: 13127ac93054840caeff5ec12698ae82f36bb514
+DRC-V4-6 Aggregate Acceptance Protocol: IMPLEMENTED / AWAITING_REVIEW
+protocol baseline: 13127ac93054840caeff5ec12698ae82f36bb514
+protocol implementation commit: none
+operator acceptance: NOT_AUTHORIZED / NOT_RUN
+stage: NOT_AUTHORIZED / NOT_RUN
+commit: NOT_AUTHORIZED / NOT_RUN
+push: NOT_AUTHORIZED / NOT_RUN
 DRC-V4 aggregate: PARTIAL_READY / NOT_COMPLETED
 DRC-V4-6 aggregate: PARTIAL_READY / NOT_COMPLETED
 configured FW-v6 runtime/factory: IMPLEMENTED / ACCEPTED
