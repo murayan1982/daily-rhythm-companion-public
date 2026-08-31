@@ -7,7 +7,7 @@ Status:
 PREPARED / NOT_RELEASED
 
 Current phase:
-Control B IMPLEMENTED / AWAITING_REVIEW
+Control C IMPLEMENTED / VERIFIED / AWAITING_REVIEW
 
 release version:
 v4.0.0
@@ -32,6 +32,12 @@ b752491632c58c557c02b06587cab28edcb901ca
 
 Control B implementation baseline:
 b752491632c58c557c02b06587cab28edcb901ca
+
+Control B implementation commit:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
+
+Control C verification baseline:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
 ```
 
 ## Release Tuple
@@ -81,6 +87,36 @@ NOT_CREATED
 
 GitHub Release publication:
 NOT_CREATED
+
+Control C verification:
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+
+Backend FW-v6 focused:
+62 PASS
+
+Backend v3 realtime preservation:
+29 PASS
+
+Backend full:
+479 PASS
+
+Flutter analyze:
+PASS / No issues found
+
+Flutter FW-v6 focused:
+70 PASS
+
+Flutter v3 realtime preservation:
+328 PASS
+
+Flutter full:
+570 PASS
+
+Flutter SDK startup issue:
+NON_PRODUCT_ENVIRONMENT_FAILURE / RESOLVED
+
+initial Flutter FW-v6 focused timeout:
+NON_PRODUCT_COMPLETION_TIMEOUT / RESOLVED_BY_CORRECTIVE_RERUN
 
 post-publication downloaded asset:
 NOT_DOWNLOADED

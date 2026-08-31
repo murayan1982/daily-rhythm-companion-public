@@ -4,22 +4,25 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control B
+DRC v4.0.0 Release Preparation Protocol Control C
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control B
+DRC v4.0.0 Release Preparation Protocol Control C
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control B
+DRC v4.0.0 Release Preparation Protocol Control C
 
 Current implementation state:
-IMPLEMENTED / AWAITING_REVIEW
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
 
-Control B baseline:
-b752491632c58c557c02b06587cab28edcb901ca
+Control C baseline:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
 
-implementation commit:
+current implementation commit:
 none
+
+current implementation commit / push:
+NOT_AUTHORIZED
 
 current released version:
 v3.0.0 RELEASED / ACCEPTED
@@ -67,7 +70,13 @@ Control A commit:
 b752491632c58c557c02b06587cab28edcb901ca
 
 Control B:
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control B implementation baseline:
+b752491632c58c557c02b06587cab28edcb901ca
+
+Control B implementation commit:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
 
 Candidate Backend:
 4.0.0
@@ -82,7 +91,10 @@ release record:
 PREPARED / NOT_RELEASED
 
 Control C:
-FUTURE / NOT_AUTHORIZED
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+
+Control C baseline:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
 
 Control D:
 FUTURE / NOT_AUTHORIZED
@@ -124,9 +136,11 @@ NOT_AUTHORIZED / NOT_RUN
 ## Purpose
 
 Control A froze the DRC v4.0.0 release-preparation protocol as a
-documentation/static-gate milestone. Control B prepares candidate metadata,
+documentation/static-gate milestone. Control B prepared candidate metadata,
 release notes, and the pre-release record while keeping DRC v4.0.0
-`NOT_RELEASED`. It does not build a package, create a tag, or publish a release.
+`NOT_RELEASED`. Control C performs release-candidate verification and a
+source-only no-build preflight while preserving package, tag, and publication
+boundaries.
 
 DRC v4.0.0 can proceed to release preparation because its accepted scope is
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
@@ -175,11 +189,14 @@ b752491632c58c557c02b06587cab28edcb901ca
 
 Control B:
 Candidate metadata / release-record preparation
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control B implementation commit:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
 
 Control C:
 Release Candidate verification / no-build preflight
-FUTURE / NOT_AUTHORIZED
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
 
 Control D:
 Fixed source ZIP / same-artifact acceptance
@@ -221,15 +238,18 @@ No future version or build number was selected in Control A.
 
 ## Control B Boundary
 
-Control B selects the v4.0.0 / 4.0.0+5 candidate metadata and prepares the
+Control B selected the v4.0.0 / 4.0.0+5 candidate metadata and prepared the
 release notes and release record while still keeping DRC v4.0.0 `NOT_RELEASED`.
 
 ```text
 Control B:
-IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control B baseline:
+Control B implementation baseline:
 b752491632c58c557c02b06587cab28edcb901ca
+
+Control B implementation commit:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
 
 Candidate Backend:
 4.0.0
@@ -256,19 +276,33 @@ GitHub Release:
 NOT_CREATED
 ```
 
-Control B does not run release-candidate full regression, configured operator
+Control B did not run release-candidate full regression, configured operator
 acceptance, packaging, fixed-ZIP building, tag creation, GitHub Release
 creation, or publication.
 
-## Future Control C
+## Control C Boundary
 
-Control C is future work under separate exact review. It may run full
-source/runtime regressions, configured coexistence verification, and
-release-package hygiene preflight.
+Control C is the current release-candidate verification and no-build preflight.
+It may run full source/runtime regressions, configured coexistence verification,
+and source-only release-package hygiene preflight. Its configured coexistence
+verification is limited to source/in-process Backend unit tests and Flutter
+tests for the v3 real runtime preservation plus FW-v6 provider-free path.
 
 ```text
 Control C:
-FUTURE / NOT_AUTHORIZED
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+
+Control C baseline:
+5908cb5b0d88c2e8aa6370105c3d618064cb4665
+
+full source/runtime regression:
+AUTHORIZED_FOR_VERIFICATION
+
+v3/FW-v6 provider-free coexistence focused verification:
+AUTHORIZED_FOR_SOURCE_AND_IN_PROCESS_TESTS
+
+source-only release-package hygiene preflight:
+AUTHORIZED
 
 fixed ZIP builder invocation count:
 0
@@ -278,14 +312,21 @@ NOT_BUILT
 ```
 
 Control C is a no-build preflight. The fixed ZIP builder invocation count remains
-`0`.
+`0`. Control C does not execute a real provider, read credentials or `.env`
+contents, use microphone/STT/LLM/TTS/audio playback/VTube Studio/motion, run
+private operators, start the Backend server, perform loopback HTTP operator
+execution, access external networks, build Flutter release artifacts, invoke a
+release builder, create release artifacts, stage, commit, push, tag, or publish.
 
 ## Future Control D
 
 Control D is future work under separate exact review. It may freeze the exact
 release source HEAD, build the fixed ZIP exactly once, record artifact basename,
-size, and SHA-256 outside the artifact, perform same-artifact verification,
-extract the exact same ZIP, and execute the accepted verification matrix.
+size, and SHA-256 outside the artifact, perform same-artifact verification, and
+extract the exact same ZIP. Control D owns the release source HEAD, verification
+HEAD, and fixed ZIP.
+
+Control D owns the release source HEAD, verification HEAD, and fixed ZIP.
 
 ```text
 Control D:
@@ -304,7 +345,7 @@ Control E is future work under separate exact review. It may perform publication
 preflight, require explicit final operator approval, create the annotated tag,
 create the GitHub Release, upload the unchanged accepted fixed ZIP, run
 post-publication artifact/SHA/tag verification, and perform final documentation
-sync.
+sync. Control E owns tag, GitHub Release, and publication.
 
 ```text
 Control E:
@@ -407,7 +448,7 @@ NO
 
 ```text
 exact surface:
-13 files / M9 A4 D0
+10 files / M8 A2 D0
 
 MODIFY:
 README.md
@@ -416,30 +457,36 @@ tasklist.md
 scripts/README.md
 docs/DRC_v400_goal_checklist_small_commit.md
 docs/v400_release_preparation_protocol.md
-backend/app/version.py
-app/pubspec.yaml
-scripts/check_v20x_application_version_metadata.py
-
-ADD:
 docs/v400_release_candidate_metadata.md
 docs/v400_release_record.md
-release_notes/v4.0.0.md
-scripts/check_v400_release_candidate_metadata.py
+
+ADD:
+docs/v400_release_candidate_no_build_preflight.md
+scripts/check_v400_release_candidate_no_build_preflight.py
 
 DELETE:
 0
 ```
 
 Protected surfaces include app, Backend, tests, release notes, version metadata,
-dependency files, lockfiles, existing V4 detailed docs, existing V4 checker
-scripts, v3 release records, packaging/build scripts, release artifacts, tags,
-and GitHub Releases.
+dependency files, lockfiles, existing V4 detailed docs and checker scripts other
+than the new Control C preflight gate, v3 release records, packaging/build
+scripts, release artifacts, tags, and GitHub Releases.
 
 ## Stop State
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-IMPLEMENTED / AWAITING_REVIEW
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+
+Control B:
+CLOSED
+
+Control C:
+IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+
+exact surface:
+10 files / M8 A2 D0
 
 DRC v4.0.0:
 NOT_RELEASED

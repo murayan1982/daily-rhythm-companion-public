@@ -1,6 +1,6 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC v4.0.0 Release Preparation Protocol Control B IMPLEMENTED / AWAITING_REVIEW
+Status: DRC v4.0.0 Release Preparation Protocol Control C IMPLEMENTED / VERIFIED / AWAITING_REVIEW
 
 ## Current State
 
@@ -8,10 +8,10 @@ Status: DRC v4.0.0 Release Preparation Protocol Control B IMPLEMENTED / AWAITING
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
 current v4 candidate metadata: Backend 4.0.0 / Flutter 4.0.0+5 NOT_RELEASED
-current small commit: DRC v4.0.0 Release Preparation Protocol Control B
-current implementation: DRC v4.0.0 Release Preparation Protocol Control B
-Control B baseline: b752491632c58c557c02b06587cab28edcb901ca
-current implementation state: IMPLEMENTED / AWAITING_REVIEW
+current small commit: DRC v4.0.0 Release Preparation Protocol Control C
+current implementation: DRC v4.0.0 Release Preparation Protocol Control C
+Control C baseline: 5908cb5b0d88c2e8aa6370105c3d618064cb4665
+current implementation state: IMPLEMENTED / VERIFIED / AWAITING_REVIEW
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
@@ -72,13 +72,18 @@ DRC-V4 Aggregate Readiness Reassessment: COMPLETED / VERIFIED / REVIEWED / ACCEP
 reassessment commit: 7ff8e34037808f6c002b1644201e856c1e0187f2
 DRC v4.0.0 Release Preparation Protocol Control A: CLOSED
 Control A commit: b752491632c58c557c02b06587cab28edcb901ca
-Control B: IMPLEMENTED / AWAITING_REVIEW
+Control B: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Control B implementation baseline: b752491632c58c557c02b06587cab28edcb901ca
+Control B implementation commit: 5908cb5b0d88c2e8aa6370105c3d618064cb4665
 Backend candidate metadata: 4.0.0
 Flutter candidate metadata: 4.0.0+5
 Candidate release: v4.0.0 RELEASE CANDIDATE / NOT_RELEASED
 release notes: RELEASE CANDIDATE / NOT_RELEASED
 release record: PREPARED / NOT_RELEASED
-Control C: FUTURE / NOT_AUTHORIZED
+Control C: IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+Control C baseline: 5908cb5b0d88c2e8aa6370105c3d618064cb4665
+Control C verification: Backend 62 focused / 29 v3 preservation / 479 full; Flutter analyze PASS; Flutter FW-v6 focused 70 PASS; Flutter v3 realtime preservation 328 PASS; Flutter full 570 PASS
+Control C environmental corrections: unittest discover loader failure RESOLVED_BY_PYTEST; old Flutter SDK source/cache mismatch RESOLVED_BY_SIDE_BY_SIDE_SDK; initial FW-v6 focused timeout RESOLVED_BY_CORRECTIVE_RERUN
 Control D: FUTURE / NOT_AUTHORIZED
 Control E: FUTURE / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0
