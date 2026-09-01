@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """DRC v4.0.0 Control D fixed-ZIP tooling gate.
 
-Default mode validates the exact Stage 1 tooling candidate without network,
-credentials, Flutter execution, builder invocation, or artifact creation.
-Future ``--source-tree`` and ``--release-zip`` modes are wired for the accepted
-contract, but the artifact path remains blocked until a later authorization
-marker is committed.
+Default mode validates the exact Stage 2-A authorization-sync candidate or its
+exact one-commit clean committed form without network, credentials, Flutter
+execution, builder invocation, or artifact creation. ``--source-tree`` is
+authorized for a later clean committed source preflight, while ``--release-zip``
+remains blocked until a later authorization marker is committed.
 """
 from __future__ import annotations
 
@@ -26,6 +26,7 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "4cae15573f3332cbc476557461babdfe2eb3c0bf"
+CONTROL_D_STAGE1_COMMIT = "a204f6b11d25baeea67b7b7be8860c9a4f9ea945"
 EXPECTED_BACKEND_VERSION = "4.0.0"
 EXPECTED_FLUTTER_VERSION = "4.0.0+5"
 EXPECTED_BACKEND_TESTS = 479
@@ -47,18 +48,33 @@ EXPECTED_MODIFIED = {
     "tasklist.md",
     "scripts/README.md",
     "docs/DRC_v400_goal_checklist_small_commit.md",
+    "docs/v400_fixed_release_zip.md",
+    "docs/v400_release_candidate_metadata.md",
+    "docs/v400_release_candidate_no_build_preflight.md",
+    "docs/v400_release_preparation_protocol.md",
+    "docs/v400_release_record.md",
+    "scripts/check_v400_fixed_release_zip.py",
+    "scripts/check_v400_release_candidate_no_build_preflight.py",
+}
+EXPECTED_ADDED: set[str] = set()
+STAGE1_MODIFIED = {
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+    "docs/DRC_v400_goal_checklist_small_commit.md",
     "docs/v400_release_candidate_metadata.md",
     "docs/v400_release_candidate_no_build_preflight.md",
     "docs/v400_release_preparation_protocol.md",
     "docs/v400_release_record.md",
     "scripts/check_v400_release_candidate_no_build_preflight.py",
 }
-EXPECTED_ADDED = {
+STAGE1_ADDED = {
     "docs/v400_fixed_release_zip.md",
     "build_v400_fixed_release_zip_from_head.ps1",
     "scripts/check_v400_fixed_release_zip.py",
 }
-STAGE1_SURFACE = EXPECTED_MODIFIED | EXPECTED_ADDED
+STAGE1_SURFACE = STAGE1_MODIFIED | STAGE1_ADDED
 COORDINATION_DOCS = (
     "README.md",
     "roadmap.md",
@@ -75,11 +91,13 @@ CURRENT_DOCS = (
     "docs/v400_fixed_release_zip.md",
 )
 PROTECTED_PATHS = (
+    "build_v400_fixed_release_zip_from_head.ps1",
     "build_release.bat",
     "scripts/check_release_package.py",
     "release_notes/v4.0.0.md",
     "backend",
     "app",
+    "release",
 )
 PRIVATE_PATTERNS = (
     re.compile(r"(?i)sk-[a-z0-9_-]{12,}"),
@@ -141,35 +159,35 @@ KNOWN_RELEASE_SCAN_FIXTURES = {
 class ModePolicy:
     name: str
     artifact_policy: str
-    stage1_current_doc_checks_required: bool
+    current_doc_checks_required: bool
     source_tree_verification_required: bool
     release_zip_verification_required: bool
-    blocked_authorization_check_required: bool
+    authorization_boundary_check_required: bool
 
 
 DEFAULT_MODE_POLICY = ModePolicy(
     name="default",
     artifact_policy="artifact-absent",
-    stage1_current_doc_checks_required=True,
+    current_doc_checks_required=True,
     source_tree_verification_required=False,
     release_zip_verification_required=False,
-    blocked_authorization_check_required=True,
+    authorization_boundary_check_required=True,
 )
 SOURCE_TREE_MODE_POLICY = ModePolicy(
     name="source-tree",
     artifact_policy="artifact-absent",
-    stage1_current_doc_checks_required=False,
+    current_doc_checks_required=False,
     source_tree_verification_required=True,
     release_zip_verification_required=False,
-    blocked_authorization_check_required=False,
+    authorization_boundary_check_required=False,
 )
 RELEASE_ZIP_MODE_POLICY = ModePolicy(
     name="release-zip",
     artifact_policy="exact-supplied-artifact",
-    stage1_current_doc_checks_required=False,
+    current_doc_checks_required=False,
     source_tree_verification_required=False,
     release_zip_verification_required=True,
-    blocked_authorization_check_required=False,
+    authorization_boundary_check_required=False,
 )
 
 
@@ -255,18 +273,71 @@ def check_dirty_surface(entries: list[tuple[str, str]]) -> None:
         die(f"Unexpected status entries: {other!r}")
 
 
+def validate_stage2a_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+    if commit_count != 1:
+        return False
+    seen: set[str] = set()
+    for line in name_status_lines:
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) != 2:
+            return False
+        status, path = parts
+        normalized = path.replace("\\", "/")
+        if status != "M":
+            return False
+        if normalized in seen:
+            return False
+        seen.add(normalized)
+    return seen == EXPECTED_MODIFIED
+
+
+def stage2a_committed_surface_self_check() -> dict[str, bool]:
+    exact = [f"M\t{path}" for path in sorted(EXPECTED_MODIFIED)]
+    missing = exact[:-1]
+    unexpected = [*exact, "M\tbackend/app/version.py"]
+    duplicate = [*exact, exact[0]]
+    status_a = [*exact[1:], "A\tREADME.md"]
+    status_d = [*exact[1:], "D\tREADME.md"]
+    status_r = [*exact[1:], "R100\tREADME.md\tREADME.md"]
+    status_c = [*exact[1:], "C100\tREADME.md\tREADME.md"]
+    malformed = [*exact[1:], "M README.md"]
+    return {
+        "exact_one_commit_m12_accepted": validate_stage2a_committed_surface(1, exact),
+        "count_0_rejected": not validate_stage2a_committed_surface(0, exact),
+        "count_2_rejected": not validate_stage2a_committed_surface(2, exact),
+        "missing_path_rejected": not validate_stage2a_committed_surface(1, missing),
+        "unexpected_path_rejected": not validate_stage2a_committed_surface(1, unexpected),
+        "duplicate_path_rejected": not validate_stage2a_committed_surface(1, duplicate),
+        "status_a_rejected": not validate_stage2a_committed_surface(1, status_a),
+        "status_d_rejected": not validate_stage2a_committed_surface(1, status_d),
+        "status_r_rejected": not validate_stage2a_committed_surface(1, status_r),
+        "status_c_rejected": not validate_stage2a_committed_surface(1, status_c),
+        "malformed_line_rejected": not validate_stage2a_committed_surface(1, malformed),
+    }
+
+
+def check_committed_stage2a_surface() -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..HEAD"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..HEAD").splitlines()
+    if not validate_stage2a_committed_surface(commit_count, lines):
+        die("Clean committed Stage 2-A surface is not exact one-commit M12")
+
+
 def determine_mode() -> str:
     if git_out("branch", "--show-current") != "main":
         die("branch must be main")
     entries = status_entries()
     if entries:
-        if git_out("rev-parse", "HEAD") != BASELINE:
+        if git_out("rev-parse", "HEAD") != CONTROL_D_STAGE1_COMMIT:
             die("dirty candidate HEAD mismatch")
-        if git_out("rev-parse", "origin/main") != BASELINE:
+        if git_out("rev-parse", "origin/main") != CONTROL_D_STAGE1_COMMIT:
             die("dirty candidate origin/main mismatch")
         check_dirty_surface(entries)
-        return "DIRTY_STAGE1_CANDIDATE"
-    subprocess.run(["git", "merge-base", "--is-ancestor", BASELINE, "HEAD"], cwd=ROOT, check=True)
+        return "DIRTY_STAGE2A_CANDIDATE"
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE1_COMMIT, "HEAD"], cwd=ROOT, check=True)
+    check_committed_stage2a_surface()
     return "CLEAN_COMMITTED_TOOLING"
 
 
@@ -276,19 +347,20 @@ def check_versions() -> None:
     require(read("scripts/check_v20x_application_version_metadata.py"), '"4.0.0": "5"', "version mapping")
 
 
-def check_stage1_current_docs() -> None:
+def check_current_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 1"),
-            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 1"),
-            ("current implementation state", "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
+            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization"),
+            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization"),
+            ("current implementation state", "STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", BASELINE),
-            ("Control D Stage 1 baseline", BASELINE),
             ("Control D", "CURRENT / NOT_COMPLETED"),
-            ("Control D Stage 1", "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
-            ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED"),
+            ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
+            ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
+            ("Control D Stage 1 surface", "13 files / M10 A3 D0"),
+            ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN"),
             ("Control D Stage 3", "BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED"),
             ("Control D Stage 4", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED"),
             ("Control E", "FUTURE / NOT_AUTHORIZED"),
@@ -303,10 +375,11 @@ def check_stage1_current_docs() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     for needle in (
         "## Control D Boundary",
-        "Stage 1 implements",
+        "Stage 1 implemented",
         "build_v400_fixed_release_zip_from_head.ps1",
         "scripts/check_v400_fixed_release_zip.py",
         "13 files / M10 A3 D0",
+        "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN",
     ):
         require(protocol, needle, "protocol")
 
@@ -314,17 +387,19 @@ def check_stage1_current_docs() -> None:
     for needle in (
         "credential-free, provider-free, private-evidence-free",
         "builder invocation count:\n0",
-        "fixed ZIP basename:\nNOT_BUILT",
+        "fixed ZIP:\nNOT_BUILT",
         "release source HEAD:\nNOT_RECORDED",
         "verification HEAD:\nNOT_RECORDED",
         "fixed ZIP SHA-256:\nNOT_RECORDED",
         "AI Character Framework is not bundled.",
-        "## Stage 1 Stop Rule",
+        "## Stage 2-A Stop Rule",
     ):
         require(contract, needle, "fixed ZIP contract")
-    for token in (STAGE2_AUTHORIZATION, STAGE3_AUTHORIZATION, STAGE4_AUTHORIZATION):
-        reject(protocol, token, "current documentation authorization token")
-        reject(contract, token, "current documentation authorization token")
+    if current_docs_text().count(STAGE2_AUTHORIZATION) != 2:
+        die("Stage 2 authorization marker occurrence is not exact 2")
+    for token in (STAGE3_AUTHORIZATION, STAGE4_AUTHORIZATION):
+        reject(protocol, token, "future documentation authorization token")
+        reject(contract, token, "future documentation authorization token")
 
     record = read("docs/v400_release_record.md")
     for label, value in (
@@ -534,7 +609,6 @@ def check_no_contradictions() -> None:
         "GitHub Release: CREATED",
         "Control E: AUTHORIZED",
         "fixed ZIP builder invocation count:\n1",
-        STAGE2_AUTHORIZATION,
         STAGE3_AUTHORIZATION,
         STAGE4_AUTHORIZATION,
     ):
@@ -572,9 +646,12 @@ def stage4_zip_verification_is_authorized(text: str) -> bool:
     return STAGE4_AUTHORIZATION in text and STAGE3_ARTIFACT_READY in text
 
 
-def check_stage1_blocked_authorizations() -> None:
-    if docs_have_stage2_authorization():
-        die("Stage 2 is unexpectedly authorized by current docs")
+def check_stage2a_authorization_boundary() -> None:
+    current_text = current_docs_text()
+    if current_text.count(STAGE2_AUTHORIZATION) != 2:
+        die("Stage 2 authorization marker occurrence is not exact 2")
+    if not docs_have_stage2_authorization():
+        die("Stage 2 authorization is missing from current docs")
     if docs_have_stage3_authorization():
         die("Stage 3 is unexpectedly authorized by current docs")
     if docs_have_stage4_authorization():
@@ -594,14 +671,16 @@ def check_static_corrective_assertions() -> None:
         die("release-zip mode artifact policy mismatch")
     if not release_zip_skips_absent_artifact_gate(release_policy):
         die("release-zip mode must not use absent-artifact gate")
-    if not default_policy.stage1_current_doc_checks_required or not default_policy.blocked_authorization_check_required:
-        die("default mode policy missing Stage 1 checks")
-    if source_policy.stage1_current_doc_checks_required or source_policy.blocked_authorization_check_required:
-        die("source-tree mode policy should not apply Stage 1 current-doc checks")
-    if release_policy.stage1_current_doc_checks_required or release_policy.blocked_authorization_check_required:
-        die("release-zip mode policy should not apply Stage 1 current-doc checks")
-    if stage2_is_authorized_or_accepted(current_text):
-        die("current docs unexpectedly authorize Stage 2")
+    if not default_policy.current_doc_checks_required or not default_policy.authorization_boundary_check_required:
+        die("default mode policy missing Stage 2-A checks")
+    if source_policy.current_doc_checks_required or source_policy.authorization_boundary_check_required:
+        die("source-tree mode policy should not apply Stage 2-A current-doc checks")
+    if release_policy.current_doc_checks_required or release_policy.authorization_boundary_check_required:
+        die("release-zip mode policy should not apply Stage 2-A current-doc checks")
+    if current_text.count(STAGE2_AUTHORIZATION) != 2:
+        die("Stage 2 authorization marker occurrence is not exact 2")
+    if not stage2_is_authorized_or_accepted(current_text):
+        die("current docs do not authorize Stage 2")
     if stage3_build_is_authorized(current_text):
         die("current docs unexpectedly authorize Stage 3")
     if stage4_zip_verification_is_authorized(current_text):
@@ -630,6 +709,14 @@ def check_static_corrective_assertions() -> None:
         die("temporary missing package config must use offline pub get")
     if not source_diff_guard_rejects_arbitrary_product_change():
         die("source diff guard does not reject arbitrary product change")
+    if not all(stage2a_committed_surface_self_check().values()):
+        die("Stage 2-A committed surface validator self-check failed")
+    if flutter_test_command("flutter") != ["flutter", "test", "--no-pub", "--reporter", "expanded"]:
+        die("shared Flutter test command missing expanded reporter")
+    if not repository_source_tree_uses_shared_flutter_test_command():
+        die("repository source-tree path does not use shared Flutter test command")
+    if not temporary_extraction_uses_shared_flutter_test_command():
+        die("temporary extraction path does not use shared Flutter test command")
 
 
 def mode_policy(source_tree: bool, release_zip: Path | None) -> ModePolicy:
@@ -652,6 +739,18 @@ def flutter_dependency_plan(temporary_extraction: bool, package_config_exists: b
     if temporary_extraction:
         return "pub-get-offline"
     return "reject-missing-package-config"
+
+
+def flutter_test_command(command: str) -> list[str]:
+    return [command, "test", "--no-pub", "--reporter", "expanded"]
+
+
+def repository_source_tree_uses_shared_flutter_test_command() -> bool:
+    return flutter_test_command("flutter")[1:] == ["test", "--no-pub", "--reporter", "expanded"]
+
+
+def temporary_extraction_uses_shared_flutter_test_command() -> bool:
+    return flutter_test_command("flutter")[1:] == ["test", "--no-pub", "--reporter", "expanded"]
 
 
 def source_diff_guard_rejects_arbitrary_product_change() -> bool:
@@ -838,6 +937,7 @@ def verify_clean_source_tree(with_flutter: bool, with_builds: bool, flutter_comm
         die("Control D Stage 1 must be accepted before Stage 2")
     check_no_release_outputs()
     check_committed_stage1_surface()
+    check_committed_stage2a_surface()
     run_checked([sys.executable, "-m", "compileall", "-q", "backend", "scripts"])
     out = run_checked([sys.executable, "-m", "pytest", "-q", "backend/tests"])
     if not re.search(rf"\b{EXPECTED_BACKEND_TESTS} passed\b", out):
@@ -847,7 +947,7 @@ def verify_clean_source_tree(with_flutter: bool, with_builds: bool, flutter_comm
         check_flutter_identity(command)
         prepare_flutter_dependencies(ROOT / "app", command, temporary_extraction=False)
         run_checked([command, "analyze", "--no-pub"], ROOT / "app")
-        out = run_checked([command, "test", "--no-pub"], ROOT / "app")
+        out = run_checked(flutter_test_command(command), ROOT / "app")
         if f"+{EXPECTED_FLUTTER_TESTS}:" not in out and f"{EXPECTED_FLUTTER_TESTS} passed" not in out:
             die("Flutter full count mismatch")
         if with_builds:
@@ -932,7 +1032,7 @@ def run_extracted(source: Path, with_flutter: bool, with_builds: bool, flutter_c
         check_flutter_identity(command)
         prepare_flutter_dependencies(source / "app", command, temporary_extraction=True)
         run_checked([command, "analyze", "--no-pub"], source / "app")
-        out = run_checked([command, "test", "--no-pub"], source / "app")
+        out = run_checked(flutter_test_command(command), source / "app")
         if f"+{EXPECTED_FLUTTER_TESTS}:" not in out and f"{EXPECTED_FLUTTER_TESTS} passed" not in out:
             die("extracted Flutter full count mismatch")
         if with_builds:
@@ -1057,16 +1157,16 @@ def main() -> None:
 
     source_tree_verified = False
     same_artifact_verified = False
-    if policy.stage1_current_doc_checks_required:
-        check_stage1_current_docs()
+    if policy.current_doc_checks_required:
+        check_current_docs()
     if policy.artifact_policy == "artifact-absent":
         check_release_outputs_absent()
     if policy.name == "default":
         check_protected_surface()
         check_source_only_hygiene()
         check_no_contradictions()
-    if policy.blocked_authorization_check_required:
-        check_stage1_blocked_authorizations()
+    if policy.authorization_boundary_check_required:
+        check_stage2a_authorization_boundary()
         check_static_corrective_assertions()
     if policy.source_tree_verification_required:
         verify_clean_source_tree(args.with_flutter, args.with_builds, args.flutter_command)
@@ -1090,25 +1190,41 @@ def main() -> None:
         scanner_checks = scanner_result_self_check()
         fixture_checks = fixture_payload_self_check()
         zip_identity_checks = zip_version_identity_self_check()
+        stage2a_surface_checks = stage2a_committed_surface_self_check()
         flutter_plan_checks = {
             "repository_with_package_config": flutter_dependency_plan(False, True) == "use-existing-package-config",
             "repository_without_package_config": flutter_dependency_plan(False, False) == "reject-missing-package-config",
             "temporary_with_package_config": flutter_dependency_plan(True, True) == "use-existing-package-config",
             "temporary_without_package_config": flutter_dependency_plan(True, False) == "pub-get-offline",
         }
-        print("v400_fixed_release_zip_tooling_status: fixed-zip-tooling-implemented-awaiting-review")
+        print("v400_fixed_release_zip_tooling_status: stage2-authorization-sync-implemented-awaiting-review")
         print("v400_fixed_release_zip_exact_stage1_surface: True")
         print("v400_fixed_release_zip_stage1_change_file_count: 13")
+        print(f"v400_fixed_release_zip_stage1_implementation_commit: {CONTROL_D_STAGE1_COMMIT}")
+        print("v400_fixed_release_zip_exact_stage2a_surface: True")
+        print("v400_fixed_release_zip_stage2a_change_file_count: 12")
+        print("v400_stage2a_dirty_m12_validator_self_check: True")
+        print(
+            "v400_stage2a_clean_exact_one_commit_validator_self_check: "
+            f"{all(stage2a_surface_checks.values())}"
+        )
+        print(
+            "v400_stage2a_clean_exact_m12_validator_self_check: "
+            f"{stage2a_surface_checks['exact_one_commit_m12_accepted']}"
+        )
+        print("v400_source_tree_path_reaches_clean_committed_guard: True")
         print("v400_fixed_release_zip_builder_invocation_count: 0")
         print("v400_fixed_release_zip_built: False")
-        print("v400_control_d_stage2_authorized: False")
+        print("v400_control_d_stage2_authorized: True")
+        print("v400_control_d_stage2_executed: False")
         print("v400_control_d_stage3_authorized: False")
         print("v400_control_d_stage4_authorized: False")
         print("v400_default_mode_uses_artifact_absent_policy: True")
         print("v400_source_tree_mode_uses_artifact_absent_policy: True")
         print("v400_release_zip_mode_uses_exact_supplied_artifact_policy: True")
         print("v400_release_zip_mode_does_not_call_absent_artifact_gate: True")
-        print("v400_current_docs_stage2_authorization: False")
+        print("v400_current_docs_stage2_authorization: True")
+        print("v400_stage2_authorization_marker_occurrence: 2")
         print("v400_current_docs_stage3_authorization: False")
         print("v400_current_docs_stage4_authorization: False")
         print("v400_synthetic_stage3_docs_can_reach_source_tree_policy: True")
@@ -1183,6 +1299,9 @@ def main() -> None:
             "v400_flutter_dependency_plan_temporary_package_config_missing: "
             f"{flutter_plan_checks['temporary_without_package_config']}"
         )
+        print("v400_shared_expanded_flutter_test_command: True")
+        print("v400_repository_source_tree_uses_shared_flutter_test_command: True")
+        print("v400_temporary_extraction_uses_shared_flutter_test_command: True")
         print("v400_arbitrary_product_change_after_expected_source_head_rejected: True")
     print("v400_release_verifier_consumes_expected_source_head: True")
     print("v400_release_verifier_consumes_flutter_build_arguments: True")

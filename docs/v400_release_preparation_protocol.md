@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 1
+DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 1
+DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 1
+DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
 
 Current implementation state:
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -21,8 +21,14 @@ Control C baseline:
 Control C implementation commit:
 4cae15573f3332cbc476557461babdfe2eb3c0bf
 
-Control D Stage 1 baseline:
-4cae15573f3332cbc476557461babdfe2eb3c0bf
+Control D Stage 1:
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control D Stage 1 implementation commit:
+a204f6b11d25baeea67b7b7be8860c9a4f9ea945
+
+Control D Stage 1 surface:
+13 files / M10 A3 D0
 
 current implementation commit:
 none
@@ -106,10 +112,13 @@ Control D:
 CURRENT / NOT_COMPLETED
 
 Control D Stage 1:
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
+
+Control D Stage 2 authorization marker:
+AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT
 
 Control D Stage 3:
 BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
@@ -158,10 +167,11 @@ documentation/static-gate milestone. Control B prepared candidate metadata,
 release notes, and the pre-release record while keeping DRC v4.0.0
 `NOT_RELEASED`. Control C completed release-candidate verification and a
 source-only no-build preflight while preserving package, tag, and publication
-boundaries. Control D Stage 1 adds fixed ZIP tooling only; it does not run the
-builder or verifier artifact paths.
+boundaries. Control D Stage 1 added fixed ZIP tooling and is closed. Control D
+Stage 2 clean committed source preflight is authorized but not run.
 
-DRC v4.0.0 can proceed to release preparation because its accepted scope is
+DRC v4.0.0 can proceed through the authorized Stage 2 clean committed source
+preflight because its accepted scope is
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
 production unified real STT -> streaming LLM -> TTS -> motion runtime.
 
@@ -223,11 +233,11 @@ CURRENT / NOT_COMPLETED
 
 Control D Stage 1:
 Fixed ZIP tooling implementation
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
 Clean committed source preflight
-BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+AUTHORIZED / NOT_RUN
 
 Control D Stage 3:
 Build exactly once
@@ -320,7 +330,7 @@ creation, or publication.
 Control C is the accepted release-candidate verification and no-build preflight.
 It ran full source/runtime regressions, configured coexistence verification,
 and source-only release-package hygiene preflight. The current checkpoint is
-Control D Stage 1 fixed ZIP tooling only.
+Control D Stage 2 authorization-sync.
 
 ```text
 Control C:
@@ -354,10 +364,12 @@ release builder, create release artifacts, stage, commit, push, tag, or publish.
 
 ## Control D Boundary
 
-Control D is split into four separately accepted stages. Stage 1 implements
-credential-free, provider-free, private-evidence-free fixed ZIP tooling only.
-It does not authorize Stage 2, Stage 3, Stage 4, Control E, package creation,
-tag creation, GitHub Release creation, or publication.
+Control D is split into four separately accepted stages. Stage 1 implemented
+credential-free, provider-free, private-evidence-free fixed ZIP tooling and is
+closed at commit `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`. Stage 2 clean
+committed source preflight is authorized but not run. This does not authorize
+Stage 3, Stage 4, Control E, package creation, tag creation, GitHub Release
+creation, or publication.
 
 Control D owns the release source HEAD, verification HEAD, and fixed ZIP.
 
@@ -366,10 +378,10 @@ Control D:
 CURRENT / NOT_COMPLETED
 
 Control D Stage 1:
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
 
 Control D Stage 3:
 BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
@@ -390,20 +402,21 @@ publication:
 NO
 ```
 
-Stage 1 adds `docs/v400_fixed_release_zip.md`,
+Stage 1 added `docs/v400_fixed_release_zip.md`,
 `build_v400_fixed_release_zip_from_head.ps1`, and
 `scripts/check_v400_fixed_release_zip.py`.
 
 `-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
 generic ZIP, create a fixed ZIP, create a tag, or publish. The actual build path
-must remain inert unless a future committed document adds the tooling-defined
+must remain inert unless a future accepted document adds the tooling-defined
 Stage 3 one-time-build authorization marker. The release ZIP verifier must
-remain inert unless a future committed document adds the tooling-defined Stage 4
-same-artifact authorization marker. The current Stage 1 candidate does not add
-any tooling-defined authorization marker tokens.
+remain inert unless a future accepted document adds the tooling-defined Stage 4
+same-artifact authorization marker. The current Stage 2-A candidate adds only
+the tooling-defined Stage 2 authorization marker.
 
-Mode-specific ordering is part of the Stage 1 tooling contract. Default mode is
-limited to Stage 1 static/current-state checks and future authorization absence.
+Mode-specific ordering is part of the fixed ZIP tooling contract. Default mode
+is limited to Stage 2-A static/current-state checks, Stage 2 authorization
+marker exactness, and future Stage 3/4 authorization absence.
 Source-tree mode requires Stage 2 authorization or accepted state and uses the
 fixed-ZIP absent policy. Release-ZIP mode requires Stage 4 authorization plus a
 Stage 3 artifact-ready accepted state and verifies exactly one supplied fixed
@@ -414,8 +427,10 @@ Known privacy-scanner fixture exceptions must exactly match the expected source
 HEAD Git blobs and required marker bytes. Extracted Flutter dependency
 preparation may run only offline `pub get` inside the temporary extracted tree
 when package config is missing; repository source-tree verification must not run
-`pub get`. If verification HEAD contains source-affecting changes after the
-expected source HEAD, the artifact is invalidated.
+`pub get`. Repository source-tree and temporary extracted ZIP Flutter tests use
+the shared `<ABSOLUTE_FLUTTER_COMMAND> test --no-pub --reporter expanded`
+command helper. If verification HEAD contains source-affecting changes after
+the expected source HEAD, the artifact is invalidated.
 
 For current v4 sources, known fixtures are always verified regardless of the
 generic scanner result. The expected scanner result is exactly two findings for
@@ -570,7 +585,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control B:
 CLOSED
@@ -579,16 +594,16 @@ Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 exact surface:
-13 files / M10 A3 D0
+12 files / M12 A0 D0
 
 Control D:
 CURRENT / NOT_COMPLETED
 
 Control D Stage 1:
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
 
 Control D Stage 3:
 BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED

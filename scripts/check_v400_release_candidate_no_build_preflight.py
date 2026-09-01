@@ -1,4 +1,4 @@
-"""Validate DRC v4.0.0 Control C and Control D Stage 1 static boundary."""
+"""Validate DRC v4.0.0 Control C and Control D Stage 2-A static boundary."""
 
 from __future__ import annotations
 
@@ -10,23 +10,25 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 CONTROL_C_BASELINE = "5908cb5b0d88c2e8aa6370105c3d618064cb4665"
 CONTROL_C_COMMIT = "4cae15573f3332cbc476557461babdfe2eb3c0bf"
+CONTROL_D_STAGE1_COMMIT = "a204f6b11d25baeea67b7b7be8860c9a4f9ea945"
+STAGE2_AUTHORIZATION = "AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT"
+STAGE3_AUTHORIZATION = "AUTHORIZED_FOR_ONE_TIME_BUILD"
+STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
 EXPECTED_MODIFIED = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
     "scripts/README.md",
     "docs/DRC_v400_goal_checklist_small_commit.md",
+    "docs/v400_fixed_release_zip.md",
     "docs/v400_release_preparation_protocol.md",
     "docs/v400_release_candidate_metadata.md",
     "docs/v400_release_candidate_no_build_preflight.md",
     "docs/v400_release_record.md",
     "scripts/check_v400_release_candidate_no_build_preflight.py",
-}
-EXPECTED_ADDED = {
-    "docs/v400_fixed_release_zip.md",
-    "build_v400_fixed_release_zip_from_head.ps1",
     "scripts/check_v400_fixed_release_zip.py",
 }
+EXPECTED_ADDED: set[str] = set()
 COORDINATION_DOCS = (
     "README.md",
     "roadmap.md",
@@ -137,18 +139,63 @@ def check_dirty_surface(entries: list[tuple[str, str]]) -> None:
         raise AssertionError(f"Unexpected status entries: {other!r}")
 
 
+def validate_stage2a_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+    if commit_count != 1:
+        return False
+    seen: set[str] = set()
+    for line in name_status_lines:
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) != 2:
+            return False
+        status, path = parts
+        normalized = path.replace("\\", "/")
+        if status != "M":
+            return False
+        if normalized in seen:
+            return False
+        seen.add(normalized)
+    return seen == EXPECTED_MODIFIED
+
+
+def stage2a_committed_surface_self_check() -> dict[str, bool]:
+    exact = [f"M\t{path}" for path in sorted(EXPECTED_MODIFIED)]
+    return {
+        "exact_one_commit_m12_accepted": validate_stage2a_committed_surface(1, exact),
+        "count_0_rejected": not validate_stage2a_committed_surface(0, exact),
+        "count_2_rejected": not validate_stage2a_committed_surface(2, exact),
+        "missing_path_rejected": not validate_stage2a_committed_surface(1, exact[:-1]),
+        "unexpected_path_rejected": not validate_stage2a_committed_surface(1, [*exact, "M\tbackend/app/version.py"]),
+        "duplicate_path_rejected": not validate_stage2a_committed_surface(1, [*exact, exact[0]]),
+        "status_a_rejected": not validate_stage2a_committed_surface(1, [*exact[1:], "A\tREADME.md"]),
+        "status_d_rejected": not validate_stage2a_committed_surface(1, [*exact[1:], "D\tREADME.md"]),
+        "status_r_rejected": not validate_stage2a_committed_surface(1, [*exact[1:], "R100\tREADME.md\tREADME.md"]),
+        "status_c_rejected": not validate_stage2a_committed_surface(1, [*exact[1:], "C100\tREADME.md\tREADME.md"]),
+        "malformed_line_rejected": not validate_stage2a_committed_surface(1, [*exact[1:], "M README.md"]),
+    }
+
+
+def check_committed_stage2a_surface() -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..HEAD"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..HEAD").splitlines()
+    if not validate_stage2a_committed_surface(commit_count, lines):
+        raise AssertionError("Clean committed Stage 2-A surface is not exact one-commit M12")
+
+
 def determine_mode() -> str:
     if git_out("branch", "--show-current") != "main":
         raise AssertionError("Unexpected branch")
     entries = status_entries()
     if entries:
-        if git_out("rev-parse", "HEAD") != CONTROL_C_COMMIT:
+        if git_out("rev-parse", "HEAD") != CONTROL_D_STAGE1_COMMIT:
             raise AssertionError("Dirty candidate HEAD mismatch")
-        if git_out("rev-parse", "origin/main") != CONTROL_C_COMMIT:
+        if git_out("rev-parse", "origin/main") != CONTROL_D_STAGE1_COMMIT:
             raise AssertionError("Dirty candidate origin/main mismatch")
         check_dirty_surface(entries)
-        return "DIRTY_CONTROL_D_STAGE1_CANDIDATE"
-    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_C_COMMIT, "HEAD"], cwd=ROOT, check=True)
+        return "DIRTY_CONTROL_D_STAGE2A_CANDIDATE"
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE1_COMMIT, "HEAD"], cwd=ROOT, check=True)
+    check_committed_stage2a_surface()
     return "CLEAN_COMMITTED_STATIC"
 
 
@@ -162,15 +209,16 @@ def check_release_state_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 1"),
-            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 1"),
-            ("current implementation state", "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
+            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization"),
+            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization"),
+            ("current implementation state", "STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", CONTROL_C_COMMIT),
-            ("Control D Stage 1 baseline", CONTROL_C_COMMIT),
             ("Control D", "CURRENT / NOT_COMPLETED"),
-            ("Control D Stage 1", "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
-            ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED"),
+            ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
+            ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
+            ("Control D Stage 1 surface", "13 files / M10 A3 D0"),
+            ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN"),
             ("Control D Stage 3", "BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED"),
             ("Control D Stage 4", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED"),
             ("Control E", "FUTURE / NOT_AUTHORIZED"),
@@ -187,9 +235,10 @@ def check_protocol_and_records() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     for needle in (
         "Control D Stage 1",
-        "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW",
+        "STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW",
         "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED",
         "13 files / M10 A3 D0",
+        "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN",
         "build_v400_fixed_release_zip_from_head.ps1",
         "scripts/check_v400_fixed_release_zip.py",
     ):
@@ -200,7 +249,9 @@ def check_protocol_and_records() -> None:
         ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
         ("Control C implementation commit", CONTROL_C_COMMIT),
         ("Control D", "CURRENT / NOT_COMPLETED"),
-        ("Control D Stage 1", "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
+        ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
+        ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
+        ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN"),
         ("Control E", "FUTURE / NOT_AUTHORIZED"),
         ("DRC v4.0.0", "NOT_RELEASED"),
     ):
@@ -209,9 +260,12 @@ def check_protocol_and_records() -> None:
     record = read("docs/v400_release_record.md")
     for label, value in (
         ("Status", "PREPARED / NOT_RELEASED"),
-        ("Current phase", "Control D Stage 1 FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
+        ("Current phase", "Control D Stage 2 Authorization STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
         ("Control C verification baseline", CONTROL_C_BASELINE),
         ("Control C implementation commit", CONTROL_C_COMMIT),
+        ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
+        ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
+        ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN"),
         ("release source HEAD", "NOT_RECORDED"),
         ("verification HEAD", "NOT_RECORDED"),
         ("fixed ZIP basename", "NOT_BUILT"),
@@ -229,7 +283,9 @@ def check_protocol_and_records() -> None:
     for label, value in (
         ("Status", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
         ("Control C implementation commit", CONTROL_C_COMMIT),
-        ("Control D Stage 1", "FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW"),
+        ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
+        ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
+        ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN"),
         ("Python compileall", "PASS / exit 0"),
         ("Control C dedicated checker", "PASS / OK"),
         ("application version metadata checker", "PASS / OK"),
@@ -277,10 +333,16 @@ def check_protocol_and_records() -> None:
         "release source HEAD:\nNOT_RECORDED",
         "verification HEAD:\nNOT_RECORDED",
         "fixed ZIP SHA-256:\nNOT_RECORDED",
-        "## Stage 1 Stop Rule",
+        "## Stage 2-A Stop Rule",
     ):
         require(fixed, needle, "fixed ZIP contract")
     current_text = "\n".join(read(relative) for relative in CURRENT_DOCS)
+    if current_text.count(STAGE2_AUTHORIZATION) != 2:
+        raise AssertionError("Stage 2 authorization marker occurrence is not exact 2")
+    if not all(stage2a_committed_surface_self_check().values()):
+        raise AssertionError("Stage 2-A committed surface validator self-check failed")
+    for marker in (STAGE3_AUTHORIZATION, STAGE4_AUTHORIZATION):
+        reject(current_text, marker, "future authorization marker")
     if current_text.count(PENDING_POST_EDIT_MARKER) != 0:
         raise AssertionError("PENDING_POST_EDIT_VERIFICATION marker is present in current docs")
 
@@ -338,6 +400,8 @@ def reject_current_state_contradictions() -> None:
         "annotated tag: CREATED",
         "GitHub Release: CREATED",
         "Control E: AUTHORIZED",
+        "Control D Stage 3:\nBUILD_EXACTLY_ONCE / AUTHORIZED",
+        "Control D Stage 4:\nSAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED",
         "existing v3 replacement: YES",
         "/realtime/text replacement: YES",
         "real unified FW runtime: AVAILABLE",
@@ -358,8 +422,13 @@ def main() -> None:
     print(f"v400_release_candidate_no_build_preflight_source_state: {mode}")
     print("v400_release_candidate_no_build_preflight_control_c_status: completed-verified-reviewed-accepted-committed-pushed-closed")
     print(f"v400_release_candidate_no_build_preflight_control_c_implementation_commit: {CONTROL_C_COMMIT}")
-    print("v400_release_candidate_no_build_preflight_control_d_stage1_status: fixed-zip-tooling-implemented-awaiting-review")
-    print(f"v400_release_candidate_no_build_preflight_control_d_stage1_baseline: {CONTROL_C_COMMIT}")
+    print("v400_release_candidate_no_build_preflight_control_d_stage1_status: completed-verified-reviewed-accepted-committed-pushed-closed")
+    print(f"v400_release_candidate_no_build_preflight_control_d_stage1_implementation_commit: {CONTROL_D_STAGE1_COMMIT}")
+    print("v400_release_candidate_no_build_preflight_control_d_stage2_status: clean-committed-source-preflight-authorized-not-run")
+    print("v400_release_candidate_no_build_preflight_stage2_marker_occurrence: 2")
+    print("v400_release_candidate_no_build_preflight_stage2a_dirty_m12_validator_self_check: True")
+    print("v400_release_candidate_no_build_preflight_stage2a_clean_exact_one_commit_validator_self_check: True")
+    print("v400_release_candidate_no_build_preflight_stage2a_clean_exact_m12_validator_self_check: True")
     print("v400_release_candidate_no_build_preflight_backend_version: 4.0.0")
     print("v400_release_candidate_no_build_preflight_flutter_version: 4.0.0+5")
     print("v400_release_candidate_no_build_preflight_current_released: v3.0.0")

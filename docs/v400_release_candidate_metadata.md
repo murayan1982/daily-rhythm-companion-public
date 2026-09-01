@@ -55,10 +55,13 @@ Control D:
 CURRENT / NOT_COMPLETED
 
 Control D Stage 1:
-FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control D Stage 1 implementation commit:
+a204f6b11d25baeea67b7b7be8860c9a4f9ea945
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
 
 Control D Stage 3:
 BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
@@ -86,6 +89,8 @@ operator acceptance, build the fixed ZIP, invoke the release builder, record the
 release source HEAD, create a tag, create a GitHub Release, or publish.
 
 Control C owns the accepted release-candidate verification and no-build
-preflight. Control D Stage 1 adds credential-free fixed ZIP tooling only;
-Stage 2 through Stage 4 remain blocked pending separate acceptance and
-authorization. Control E owns publication and remains future/not authorized.
+preflight. Control D Stage 1 added credential-free fixed ZIP tooling and is
+closed at commit `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`. Control D Stage
+2 clean committed source preflight is authorized but not run. Stage 3 and Stage
+4 remain blocked pending separate acceptance and authorization. Control E owns
+publication and remains future/not authorized.
