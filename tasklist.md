@@ -15,11 +15,13 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Release Preparation Protocol Control C
-current implementation step: DRC v4.0.0 Release Preparation Protocol Control C
-current implementation: DRC v4.0.0 Release Preparation Protocol Control C
-current implementation state: IMPLEMENTED / VERIFIED / AWAITING_REVIEW
-Control C baseline: 5908cb5b0d88c2e8aa6370105c3d618064cb4665
+current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 1
+current implementation step: DRC v4.0.0 Release Preparation Protocol Control D Stage 1
+current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 1
+current implementation state: FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
+Control D Stage 1 baseline: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 last accepted release control: RT-9e Control D POST_PUBLICATION_VERIFICATION / PASS / ACCEPTED
@@ -91,11 +93,15 @@ Flutter candidate metadata: 4.0.0+5
 Candidate release: v4.0.0 RELEASE CANDIDATE / NOT_RELEASED
 release notes: RELEASE CANDIDATE / NOT_RELEASED
 release record: PREPARED / NOT_RELEASED
-Control C: IMPLEMENTED / VERIFIED / AWAITING_REVIEW
-Control C baseline: 5908cb5b0d88c2e8aa6370105c3d618064cb4665
+Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control C verification: Backend 62 focused / 29 v3 preservation / 479 full; Flutter analyze PASS; Flutter FW-v6 focused 70 PASS; Flutter v3 realtime preservation 328 PASS; Flutter full 570 PASS
 Control C environmental corrections: unittest discover loader failure RESOLVED_BY_PYTEST; old Flutter SDK source/cache mismatch RESOLVED_BY_SIDE_BY_SIDE_SDK; initial FW-v6 focused timeout RESOLVED_BY_CORRECTIVE_RERUN
-Control D: FUTURE / NOT_AUTHORIZED
+Control D: CURRENT / NOT_COMPLETED
+Control D Stage 1: FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+Control D Stage 3: BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 Control E: FUTURE / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0
 fixed ZIP: NOT_BUILT

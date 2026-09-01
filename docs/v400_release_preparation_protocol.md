@@ -4,19 +4,25 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control C
+DRC v4.0.0 Release Preparation Protocol Control D Stage 1
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control C
+DRC v4.0.0 Release Preparation Protocol Control D Stage 1
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control C
+DRC v4.0.0 Release Preparation Protocol Control D Stage 1
 
 Current implementation state:
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
+
+Control C implementation commit:
+4cae15573f3332cbc476557461babdfe2eb3c0bf
+
+Control D Stage 1 baseline:
+4cae15573f3332cbc476557461babdfe2eb3c0bf
 
 current implementation commit:
 none
@@ -91,13 +97,25 @@ release record:
 PREPARED / NOT_RELEASED
 
 Control C:
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
 
 Control D:
-FUTURE / NOT_AUTHORIZED
+CURRENT / NOT_COMPLETED
+
+Control D Stage 1:
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+
+Control D Stage 2:
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 3:
+BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 4:
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 
 Control E:
 FUTURE / NOT_AUTHORIZED
@@ -138,9 +156,10 @@ NOT_AUTHORIZED / NOT_RUN
 Control A froze the DRC v4.0.0 release-preparation protocol as a
 documentation/static-gate milestone. Control B prepared candidate metadata,
 release notes, and the pre-release record while keeping DRC v4.0.0
-`NOT_RELEASED`. Control C performs release-candidate verification and a
+`NOT_RELEASED`. Control C completed release-candidate verification and a
 source-only no-build preflight while preserving package, tag, and publication
-boundaries.
+boundaries. Control D Stage 1 adds fixed ZIP tooling only; it does not run the
+builder or verifier artifact paths.
 
 DRC v4.0.0 can proceed to release preparation because its accepted scope is
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
@@ -196,11 +215,27 @@ Control B implementation commit:
 
 Control C:
 Release Candidate verification / no-build preflight
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D:
 Fixed source ZIP / same-artifact acceptance
-FUTURE / NOT_AUTHORIZED
+CURRENT / NOT_COMPLETED
+
+Control D Stage 1:
+Fixed ZIP tooling implementation
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+
+Control D Stage 2:
+Clean committed source preflight
+BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 3:
+Build exactly once
+BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 4:
+Same-artifact verification and tuple record
+BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 
 Control E:
 Publication
@@ -282,15 +317,14 @@ creation, or publication.
 
 ## Control C Boundary
 
-Control C is the current release-candidate verification and no-build preflight.
-It may run full source/runtime regressions, configured coexistence verification,
-and source-only release-package hygiene preflight. Its configured coexistence
-verification is limited to source/in-process Backend unit tests and Flutter
-tests for the v3 real runtime preservation plus FW-v6 provider-free path.
+Control C is the accepted release-candidate verification and no-build preflight.
+It ran full source/runtime regressions, configured coexistence verification,
+and source-only release-package hygiene preflight. The current checkpoint is
+Control D Stage 1 fixed ZIP tooling only.
 
 ```text
 Control C:
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -318,26 +352,82 @@ private operators, start the Backend server, perform loopback HTTP operator
 execution, access external networks, build Flutter release artifacts, invoke a
 release builder, create release artifacts, stage, commit, push, tag, or publish.
 
-## Future Control D
+## Control D Boundary
 
-Control D is future work under separate exact review. It may freeze the exact
-release source HEAD, build the fixed ZIP exactly once, record artifact basename,
-size, and SHA-256 outside the artifact, perform same-artifact verification, and
-extract the exact same ZIP. Control D owns the release source HEAD, verification
-HEAD, and fixed ZIP.
+Control D is split into four separately accepted stages. Stage 1 implements
+credential-free, provider-free, private-evidence-free fixed ZIP tooling only.
+It does not authorize Stage 2, Stage 3, Stage 4, Control E, package creation,
+tag creation, GitHub Release creation, or publication.
 
 Control D owns the release source HEAD, verification HEAD, and fixed ZIP.
 
 ```text
 Control D:
-FUTURE / NOT_AUTHORIZED
+CURRENT / NOT_COMPLETED
+
+Control D Stage 1:
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+
+Control D Stage 2:
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 3:
+BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 4:
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 
 silent rebuild:
 NO
 
+fixed ZIP builder invocation count:
+0
+
+fixed ZIP:
+NOT_BUILT
+
 publication:
 NO
 ```
+
+Stage 1 adds `docs/v400_fixed_release_zip.md`,
+`build_v400_fixed_release_zip_from_head.ps1`, and
+`scripts/check_v400_fixed_release_zip.py`.
+
+`-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
+generic ZIP, create a fixed ZIP, create a tag, or publish. The actual build path
+must remain inert unless a future committed document adds the tooling-defined
+Stage 3 one-time-build authorization marker. The release ZIP verifier must
+remain inert unless a future committed document adds the tooling-defined Stage 4
+same-artifact authorization marker. The current Stage 1 candidate does not add
+any tooling-defined authorization marker tokens.
+
+Mode-specific ordering is part of the Stage 1 tooling contract. Default mode is
+limited to Stage 1 static/current-state checks and future authorization absence.
+Source-tree mode requires Stage 2 authorization or accepted state and uses the
+fixed-ZIP absent policy. Release-ZIP mode requires Stage 4 authorization plus a
+Stage 3 artifact-ready accepted state and verifies exactly one supplied fixed
+ZIP with the supplied expected source HEAD and SHA-256; it does not use the
+absent-artifact gate.
+
+Known privacy-scanner fixture exceptions must exactly match the expected source
+HEAD Git blobs and required marker bytes. Extracted Flutter dependency
+preparation may run only offline `pub get` inside the temporary extracted tree
+when package config is missing; repository source-tree verification must not run
+`pub get`. If verification HEAD contains source-affecting changes after the
+expected source HEAD, the artifact is invalidated.
+
+For current v4 sources, known fixtures are always verified regardless of the
+generic scanner result. The expected scanner result is exactly two findings for
+the known fixture files, and scanner pass, missing fixtures, sanitized or
+modified fixtures, duplicate findings, missing findings, unexpected findings,
+source mismatch, and marker absence are rejected.
+
+ZIP Backend and Flutter metadata must be read from the ZIP and matched to the
+expected source HEAD blobs. Backend must declare exactly `4.0.0`, Flutter must
+declare exactly `4.0.0+5`, duplicate active version declarations are rejected,
+and ZIP/source mismatch is rejected. The checker's mode dispatcher and
+deterministic self-checks use the same mode-policy contract.
 
 ## Future Control E
 
@@ -448,7 +538,7 @@ NO
 
 ```text
 exact surface:
-10 files / M8 A2 D0
+13 files / M10 A3 D0
 
 MODIFY:
 README.md
@@ -458,11 +548,14 @@ scripts/README.md
 docs/DRC_v400_goal_checklist_small_commit.md
 docs/v400_release_preparation_protocol.md
 docs/v400_release_candidate_metadata.md
+docs/v400_release_candidate_no_build_preflight.md
 docs/v400_release_record.md
+scripts/check_v400_release_candidate_no_build_preflight.py
 
 ADD:
-docs/v400_release_candidate_no_build_preflight.md
-scripts/check_v400_release_candidate_no_build_preflight.py
+docs/v400_fixed_release_zip.md
+build_v400_fixed_release_zip_from_head.ps1
+scripts/check_v400_fixed_release_zip.py
 
 DELETE:
 0
@@ -477,16 +570,31 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
 
 Control B:
 CLOSED
 
 Control C:
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 exact surface:
-10 files / M8 A2 D0
+13 files / M10 A3 D0
+
+Control D:
+CURRENT / NOT_COMPLETED
+
+Control D Stage 1:
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+
+Control D Stage 2:
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 3:
+BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 4:
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 
 DRC v4.0.0:
 NOT_RELEASED

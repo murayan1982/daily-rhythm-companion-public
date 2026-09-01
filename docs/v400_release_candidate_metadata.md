@@ -46,10 +46,25 @@ DRC v4.0.0:
 NOT_RELEASED
 
 Control C:
-IMPLEMENTED / VERIFIED / AWAITING_REVIEW
+COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control C implementation commit:
+4cae15573f3332cbc476557461babdfe2eb3c0bf
 
 Control D:
-FUTURE / NOT_AUTHORIZED
+CURRENT / NOT_COMPLETED
+
+Control D Stage 1:
+FIXED_ZIP_TOOLING / IMPLEMENTED / AWAITING_REVIEW
+
+Control D Stage 2:
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / BLOCKED_PENDING_STAGE1_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 3:
+BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+
+Control D Stage 4:
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 
 Control E:
 FUTURE / NOT_AUTHORIZED
@@ -70,4 +85,7 @@ Control B does not run release candidate full regression, run configured
 operator acceptance, build the fixed ZIP, invoke the release builder, record the
 release source HEAD, create a tag, create a GitHub Release, or publish.
 
-Control C owns release-candidate verification and no-build preflight. Control D owns fixed ZIP and same-artifact acceptance. Control E owns publication.
+Control C owns the accepted release-candidate verification and no-build
+preflight. Control D Stage 1 adds credential-free fixed ZIP tooling only;
+Stage 2 through Stage 4 remain blocked pending separate acceptance and
+authorization. Control E owns publication and remains future/not authorized.
