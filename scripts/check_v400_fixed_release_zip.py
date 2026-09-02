@@ -27,6 +27,7 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "4cae15573f3332cbc476557461babdfe2eb3c0bf"
 CONTROL_D_STAGE1_COMMIT = "a204f6b11d25baeea67b7b7be8860c9a4f9ea945"
+CONTROL_D_STAGE2A_COMMIT = "507685488fd33231dfec4bfc0f2c4532a1141de2"
 EXPECTED_BACKEND_VERSION = "4.0.0"
 EXPECTED_FLUTTER_VERSION = "4.0.0+5"
 EXPECTED_BACKEND_TESTS = 479
@@ -42,7 +43,7 @@ STAGE3_AUTHORIZATION = "AUTHORIZED_FOR_ONE_TIME_BUILD"
 STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
 STAGE2_ACCEPTED = "Control D Stage 2:\nCLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"
 STAGE3_ARTIFACT_READY = "Control D Stage 3:\nBUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"
-EXPECTED_MODIFIED = {
+STAGE2A_MODIFIED = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
@@ -56,6 +57,11 @@ EXPECTED_MODIFIED = {
     "scripts/check_v400_fixed_release_zip.py",
     "scripts/check_v400_release_candidate_no_build_preflight.py",
 }
+CORRECTIVE_SURFACE = {
+    "scripts/check_v400_fixed_release_zip.py",
+    "scripts/check_v400_release_candidate_no_build_preflight.py",
+}
+EXPECTED_MODIFIED = STAGE2A_MODIFIED
 EXPECTED_ADDED: set[str] = set()
 STAGE1_MODIFIED = {
     "README.md",
@@ -75,6 +81,16 @@ STAGE1_ADDED = {
     "scripts/check_v400_fixed_release_zip.py",
 }
 STAGE1_SURFACE = STAGE1_MODIFIED | STAGE1_ADDED
+STAGE1_PROTECTED_DELTA = {
+    "build_v400_fixed_release_zip_from_head.ps1",
+}
+STAGE1_EXPECTED_BY_STATUS = {
+    "M": STAGE1_MODIFIED,
+    "A": STAGE1_ADDED,
+}
+STAGE1_PROTECTED_EXPECTED_BY_STATUS = {
+    "A": STAGE1_PROTECTED_DELTA,
+}
 COORDINATION_DOCS = (
     "README.md",
     "roadmap.md",
@@ -249,31 +265,47 @@ def status_entries() -> list[tuple[str, str]]:
     return entries
 
 
-def check_dirty_surface(entries: list[tuple[str, str]]) -> None:
+def dirty_surface_is_exact(entries: list[tuple[str, str]], expected_modified: set[str]) -> bool:
     modified: set[str] = set()
     added: set[str] = set()
     deleted: set[str] = set()
     other: list[tuple[str, str]] = []
     for status, path in entries:
         if status == " M":
+            if path in modified:
+                other.append((status, path))
             modified.add(path)
         elif status == "??":
+            if path in added:
+                other.append((status, path))
             added.add(path)
         elif "D" in status:
+            if path in deleted:
+                other.append((status, path))
             deleted.add(path)
         else:
             other.append((status, path))
-    if modified != EXPECTED_MODIFIED:
-        die(f"Unexpected modified surface: {sorted(modified)}")
-    if added != EXPECTED_ADDED:
-        die(f"Unexpected added surface: {sorted(added)}")
-    if deleted:
-        die(f"Unexpected deleted files: {sorted(deleted)}")
-    if other:
-        die(f"Unexpected status entries: {other!r}")
+    return modified == expected_modified and added == EXPECTED_ADDED and not deleted and not other
 
 
-def validate_stage2a_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+def check_dirty_surface(entries: list[tuple[str, str]], expected_modified: set[str]) -> None:
+    if not dirty_surface_is_exact(entries, expected_modified):
+        modified_paths = sorted(path for status, path in entries if status == " M")
+        added_paths = sorted(path for status, path in entries if status == "??")
+        deleted_paths = sorted(path for status, path in entries if "D" in status)
+        other = [(status, path) for status, path in entries if status not in {" M", "??"} and "D" not in status]
+        die(
+            "Unexpected dirty surface: "
+            f"modified={modified_paths!r} added={added_paths!r} "
+            f"deleted={deleted_paths!r} other={other!r}"
+        )
+
+
+def validate_exact_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+    expected_modified: set[str],
+) -> bool:
     if commit_count != 1:
         return False
     seen: set[str] = set()
@@ -290,11 +322,53 @@ def validate_stage2a_committed_surface(commit_count: int, name_status_lines: lis
         if normalized in seen:
             return False
         seen.add(normalized)
-    return seen == EXPECTED_MODIFIED
+    return seen == expected_modified
+
+
+def validate_stage2a_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, STAGE2A_MODIFIED)
+
+
+def validate_corrective_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, CORRECTIVE_SURFACE)
+
+
+def validate_exact_name_status_surface(
+    name_status_lines: list[str],
+    expected_by_status: dict[str, set[str]],
+) -> bool:
+    expected_paths = set().union(*expected_by_status.values())
+    seen: set[str] = set()
+    seen_by_status = {status: set() for status in expected_by_status}
+    for line in name_status_lines:
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) != 2:
+            return False
+        status, path = parts
+        normalized = path.replace("\\", "/")
+        if status not in expected_by_status or normalized in seen:
+            return False
+        seen.add(normalized)
+        seen_by_status[status].add(normalized)
+    return seen == expected_paths and seen_by_status == expected_by_status
+
+
+def validate_stage1_surface(name_status_lines: list[str]) -> bool:
+    return validate_exact_name_status_surface(name_status_lines, STAGE1_EXPECTED_BY_STATUS)
+
+
+def validate_stage1_protected_delta(name_status_lines: list[str]) -> bool:
+    return validate_exact_name_status_surface(name_status_lines, STAGE1_PROTECTED_EXPECTED_BY_STATUS)
+
+
+def validate_empty_protected_delta(name_status_lines: list[str]) -> bool:
+    return not any(line for line in name_status_lines)
 
 
 def stage2a_committed_surface_self_check() -> dict[str, bool]:
-    exact = [f"M\t{path}" for path in sorted(EXPECTED_MODIFIED)]
+    exact = [f"M\t{path}" for path in sorted(STAGE2A_MODIFIED)]
     missing = exact[:-1]
     unexpected = [*exact, "M\tbackend/app/version.py"]
     duplicate = [*exact, exact[0]]
@@ -318,27 +392,158 @@ def stage2a_committed_surface_self_check() -> dict[str, bool]:
     }
 
 
+def stage1_surface_self_check() -> dict[str, bool]:
+    exact = [*[f"M\t{path}" for path in sorted(STAGE1_MODIFIED)], *[f"A\t{path}" for path in sorted(STAGE1_ADDED)]]
+    first_modified = sorted(STAGE1_MODIFIED)[0]
+    first_added = sorted(STAGE1_ADDED)[0]
+    return {
+        "exact_m10_a3_accepted": validate_stage1_surface(exact),
+        "missing_path_rejected": not validate_stage1_surface(exact[:-1]),
+        "unexpected_path_rejected": not validate_stage1_surface([*exact, "M\tbackend/app/version.py"]),
+        "duplicate_path_rejected": not validate_stage1_surface([*exact, exact[0]]),
+        "wrong_m_a_rejected": not validate_stage1_surface(
+            [line for line in exact if line != "M\t" + first_modified and line != "A\t" + first_added]
+            + ["A\t" + first_modified, "M\t" + first_added]
+        ),
+        "status_d_rejected": not validate_stage1_surface([*exact[1:], "D\t" + first_modified]),
+        "status_r_rejected": not validate_stage1_surface([*exact[1:], "R100\told\t" + first_modified]),
+        "status_c_rejected": not validate_stage1_surface([*exact[1:], "C100\told\t" + first_modified]),
+        "malformed_line_rejected": not validate_stage1_surface([*exact[1:], "M " + first_modified]),
+    }
+
+
+def stage1_protected_delta_self_check() -> dict[str, bool]:
+    exact = [f"A\t{path}" for path in sorted(STAGE1_PROTECTED_DELTA)]
+    builder = sorted(STAGE1_PROTECTED_DELTA)[0]
+    return {
+        "exact_builder_a_accepted": validate_stage1_protected_delta(exact),
+        "empty_rejected": not validate_stage1_protected_delta([]),
+        "builder_m_rejected": not validate_stage1_protected_delta(["M\t" + builder]),
+        "missing_rejected": not validate_stage1_protected_delta([]),
+        "unexpected_protected_path_rejected": not validate_stage1_protected_delta([*exact, "A\tbuild_release.bat"]),
+        "duplicate_rejected": not validate_stage1_protected_delta([*exact, exact[0]]),
+        "status_d_rejected": not validate_stage1_protected_delta(["D\t" + builder]),
+        "status_r_rejected": not validate_stage1_protected_delta(["R100\told\t" + builder]),
+        "status_c_rejected": not validate_stage1_protected_delta(["C100\told\t" + builder]),
+    }
+
+
+def post_stage1_protected_delta_self_check() -> dict[str, bool]:
+    return {
+        "empty_accepted": validate_empty_protected_delta([]),
+        "any_protected_change_rejected": not validate_empty_protected_delta(["M\tbuild_release.bat"]),
+    }
+
+
+def corrective_dirty_surface_self_check() -> dict[str, bool]:
+    first = sorted(CORRECTIVE_SURFACE)[0]
+    exact = [(" M", path) for path in sorted(CORRECTIVE_SURFACE)]
+    return {
+        "exact_m2_accepted": dirty_surface_is_exact(exact, CORRECTIVE_SURFACE),
+        "missing_path_rejected": not dirty_surface_is_exact(exact[:-1], CORRECTIVE_SURFACE),
+        "unexpected_path_rejected": not dirty_surface_is_exact([*exact, (" M", "README.md")], CORRECTIVE_SURFACE),
+        "duplicate_path_rejected": not dirty_surface_is_exact([*exact, exact[0]], CORRECTIVE_SURFACE),
+        "staged_rejected": not dirty_surface_is_exact([*exact[1:], ("M ", first)], CORRECTIVE_SURFACE),
+        "untracked_rejected": not dirty_surface_is_exact([*exact, ("??", "scratch.txt")], CORRECTIVE_SURFACE),
+        "status_a_rejected": not dirty_surface_is_exact([*exact[1:], (" A", first)], CORRECTIVE_SURFACE),
+        "status_d_rejected": not dirty_surface_is_exact([*exact[1:], (" D", first)], CORRECTIVE_SURFACE),
+        "status_r_rejected": not dirty_surface_is_exact([*exact[1:], ("R ", first)], CORRECTIVE_SURFACE),
+        "status_c_rejected": not dirty_surface_is_exact([*exact[1:], ("C ", first)], CORRECTIVE_SURFACE),
+    }
+
+
+def corrective_committed_surface_self_check() -> dict[str, bool]:
+    first = sorted(CORRECTIVE_SURFACE)[0]
+    exact = [f"M\t{path}" for path in sorted(CORRECTIVE_SURFACE)]
+    return {
+        "exact_one_commit_m2_accepted": validate_corrective_committed_surface(1, exact),
+        "count_0_rejected": not validate_corrective_committed_surface(0, exact),
+        "count_2_rejected": not validate_corrective_committed_surface(2, exact),
+        "missing_path_rejected": not validate_corrective_committed_surface(1, exact[:-1]),
+        "unexpected_path_rejected": not validate_corrective_committed_surface(1, [*exact, "M\tREADME.md"]),
+        "duplicate_path_rejected": not validate_corrective_committed_surface(1, [*exact, exact[0]]),
+        "status_a_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "A\t" + first]),
+        "status_d_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "D\t" + first]),
+        "status_r_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "R100\told\t" + first]),
+        "status_c_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "C100\told\t" + first]),
+        "malformed_line_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "M " + first]),
+    }
+
+
 def check_committed_stage2a_surface() -> None:
-    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..HEAD"))
-    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..HEAD").splitlines()
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}").splitlines()
     if not validate_stage2a_committed_surface(commit_count, lines):
         die("Clean committed Stage 2-A surface is not exact one-commit M12")
+    check_protected_delta_empty(CONTROL_D_STAGE1_COMMIT, CONTROL_D_STAGE2A_COMMIT)
+
+
+def check_committed_corrective_surface() -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE2A_COMMIT}..HEAD"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE2A_COMMIT}..HEAD").splitlines()
+    if not validate_corrective_committed_surface(commit_count, lines):
+        die("Clean committed corrective surface is not exact one-commit M2")
+    check_protected_delta_empty(CONTROL_D_STAGE2A_COMMIT, "HEAD")
+
+
+def clean_committed_source_guard_plan():
+    return (
+        check_committed_stage1_surface,
+        check_committed_stage2a_surface,
+        check_committed_corrective_surface,
+    )
+
+
+def check_clean_committed_source_guards() -> None:
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE2A_COMMIT, "HEAD"], cwd=ROOT, check=True)
+    for guard in clean_committed_source_guard_plan():
+        guard()
+
+
+def clean_committed_source_guard_plan_self_check() -> dict[str, bool]:
+    plan = clean_committed_source_guard_plan()
+    names = [guard.__name__ for guard in plan]
+    expected = [
+        "check_committed_stage1_surface",
+        "check_committed_stage2a_surface",
+        "check_committed_corrective_surface",
+    ]
+    code_names = set(verify_clean_source_tree.__code__.co_names)
+    return {
+        "exact_order": names == expected,
+        "all_callable": all(callable(guard) for guard in plan),
+        "no_duplicate_guards": len(set(names)) == len(names),
+        "source_tree_runtime_uses_shared_guard_plan": "check_clean_committed_source_guards" in code_names,
+    }
 
 
 def determine_mode() -> str:
     if git_out("branch", "--show-current") != "main":
         die("branch must be main")
+    check_committed_stage2a_surface()
     entries = status_entries()
     if entries:
-        if git_out("rev-parse", "HEAD") != CONTROL_D_STAGE1_COMMIT:
+        head = git_out("rev-parse", "HEAD")
+        origin = git_out("rev-parse", "origin/main")
+        if head == CONTROL_D_STAGE1_COMMIT and origin == CONTROL_D_STAGE1_COMMIT:
+            check_dirty_surface(entries, STAGE2A_MODIFIED)
+            return "DIRTY_STAGE2A_CANDIDATE"
+        if head == CONTROL_D_STAGE2A_COMMIT and origin == CONTROL_D_STAGE2A_COMMIT:
+            check_dirty_surface(entries, CORRECTIVE_SURFACE)
+            return "DIRTY_STAGE2_PREFLIGHT_GUARD_CORRECTIVE_CANDIDATE"
+        if head != CONTROL_D_STAGE2A_COMMIT:
             die("dirty candidate HEAD mismatch")
-        if git_out("rev-parse", "origin/main") != CONTROL_D_STAGE1_COMMIT:
+        if origin != CONTROL_D_STAGE2A_COMMIT:
             die("dirty candidate origin/main mismatch")
-        check_dirty_surface(entries)
-        return "DIRTY_STAGE2A_CANDIDATE"
-    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE1_COMMIT, "HEAD"], cwd=ROOT, check=True)
-    check_committed_stage2a_surface()
-    return "CLEAN_COMMITTED_TOOLING"
+        check_dirty_surface(entries, CORRECTIVE_SURFACE)
+        return "DIRTY_STAGE2_PREFLIGHT_GUARD_CORRECTIVE_CANDIDATE"
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE2A_COMMIT, "HEAD"], cwd=ROOT, check=True)
+    if git_out("rev-parse", "HEAD") == CONTROL_D_STAGE2A_COMMIT:
+        return "CLEAN_COMMITTED_TOOLING"
+    check_committed_corrective_surface()
+    if git_out("rev-parse", "HEAD") != git_out("rev-parse", "origin/main"):
+        die("clean corrective HEAD/origin mismatch")
+    return "CLEAN_COMMITTED_STAGE2_PREFLIGHT_GUARD_CORRECTIVE"
 
 
 def check_versions() -> None:
@@ -504,22 +709,18 @@ def check_protected_surface() -> None:
 
 
 def check_committed_stage1_surface() -> None:
-    changed = {
-        path.replace("\\", "/")
-        for path in git_out("diff", "--name-only", f"{BASELINE}..HEAD").splitlines()
-        if path
-    }
-    if changed and changed != STAGE1_SURFACE:
-        die(f"Unexpected committed Stage 1 surface: {sorted(changed)}")
-    protected = subprocess.run(
-        ["git", "diff", "--exit-code", f"{BASELINE}..HEAD", "--", *PROTECTED_PATHS],
-        cwd=ROOT,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if protected.returncode:
-        die("Committed protected product/build/release surface diff is not empty")
+    lines = git_out("diff", "--name-status", f"{BASELINE}..{CONTROL_D_STAGE1_COMMIT}").splitlines()
+    if not validate_stage1_surface(lines):
+        die("Committed Stage 1 surface is not exact M10 A3")
+    protected = git_out("diff", "--name-status", f"{BASELINE}..{CONTROL_D_STAGE1_COMMIT}", "--", *PROTECTED_PATHS)
+    if not validate_stage1_protected_delta(protected.splitlines()):
+        die("Committed Stage 1 protected delta is not exact builder A")
+
+
+def check_protected_delta_empty(start: str, end: str) -> None:
+    lines = git_out("diff", "--name-status", f"{start}..{end}", "--", *PROTECTED_PATHS).splitlines()
+    if not validate_empty_protected_delta(lines):
+        die("Post-Stage 1 protected product/build/release surface diff is not empty")
 
 
 ALLOWED_POST_SOURCE_HEAD_SURFACE = {
@@ -709,8 +910,20 @@ def check_static_corrective_assertions() -> None:
         die("temporary missing package config must use offline pub get")
     if not source_diff_guard_rejects_arbitrary_product_change():
         die("source diff guard does not reject arbitrary product change")
+    if not all(stage1_surface_self_check().values()):
+        die("Stage 1 surface validator self-check failed")
+    if not all(stage1_protected_delta_self_check().values()):
+        die("Stage 1 protected delta validator self-check failed")
+    if not all(post_stage1_protected_delta_self_check().values()):
+        die("post-Stage 1 protected delta validator self-check failed")
     if not all(stage2a_committed_surface_self_check().values()):
         die("Stage 2-A committed surface validator self-check failed")
+    if not all(corrective_dirty_surface_self_check().values()):
+        die("corrective dirty surface validator self-check failed")
+    if not all(corrective_committed_surface_self_check().values()):
+        die("corrective committed surface validator self-check failed")
+    if not all(clean_committed_source_guard_plan_self_check().values()):
+        die("clean committed source guard plan self-check failed")
     if flutter_test_command("flutter") != ["flutter", "test", "--no-pub", "--reporter", "expanded"]:
         die("shared Flutter test command missing expanded reporter")
     if not repository_source_tree_uses_shared_flutter_test_command():
@@ -936,8 +1149,7 @@ def verify_clean_source_tree(with_flutter: bool, with_builds: bool, flutter_comm
     if not Path("docs/v400_fixed_release_zip.md").is_file():
         die("Control D Stage 1 must be accepted before Stage 2")
     check_no_release_outputs()
-    check_committed_stage1_surface()
-    check_committed_stage2a_surface()
+    check_clean_committed_source_guards()
     run_checked([sys.executable, "-m", "compileall", "-q", "backend", "scripts"])
     out = run_checked([sys.executable, "-m", "pytest", "-q", "backend/tests"])
     if not re.search(rf"\b{EXPECTED_BACKEND_TESTS} passed\b", out):
@@ -1190,20 +1402,37 @@ def main() -> None:
         scanner_checks = scanner_result_self_check()
         fixture_checks = fixture_payload_self_check()
         zip_identity_checks = zip_version_identity_self_check()
+        stage1_surface_checks = stage1_surface_self_check()
+        stage1_protected_checks = stage1_protected_delta_self_check()
+        post_stage1_protected_checks = post_stage1_protected_delta_self_check()
         stage2a_surface_checks = stage2a_committed_surface_self_check()
+        corrective_dirty_checks = corrective_dirty_surface_self_check()
+        corrective_committed_checks = corrective_committed_surface_self_check()
+        clean_guard_plan_checks = clean_committed_source_guard_plan_self_check()
         flutter_plan_checks = {
             "repository_with_package_config": flutter_dependency_plan(False, True) == "use-existing-package-config",
             "repository_without_package_config": flutter_dependency_plan(False, False) == "reject-missing-package-config",
             "temporary_with_package_config": flutter_dependency_plan(True, True) == "use-existing-package-config",
             "temporary_without_package_config": flutter_dependency_plan(True, False) == "pub-get-offline",
         }
-        print("v400_fixed_release_zip_tooling_status: stage2-authorization-sync-implemented-awaiting-review")
-        print("v400_fixed_release_zip_exact_stage1_surface: True")
+        print("v400_fixed_release_zip_tooling_status: stage2-preflight-guard-corrective-implemented-awaiting-review")
+        print(
+            "v400_fixed_release_zip_exact_stage1_surface: "
+            f"{stage1_surface_checks['exact_m10_a3_accepted']}"
+        )
         print("v400_fixed_release_zip_stage1_change_file_count: 13")
         print(f"v400_fixed_release_zip_stage1_implementation_commit: {CONTROL_D_STAGE1_COMMIT}")
+        print(
+            "v400_fixed_release_zip_stage1_protected_exact_builder_a: "
+            f"{stage1_protected_checks['exact_builder_a_accepted']}"
+        )
+        print(
+            "v400_fixed_release_zip_post_stage1_protected_delta_empty: "
+            f"{post_stage1_protected_checks['empty_accepted']}"
+        )
         print("v400_fixed_release_zip_exact_stage2a_surface: True")
         print("v400_fixed_release_zip_stage2a_change_file_count: 12")
-        print("v400_stage2a_dirty_m12_validator_self_check: True")
+        print(f"v400_stage2a_dirty_m12_validator_self_check: {all(stage2a_surface_checks.values())}")
         print(
             "v400_stage2a_clean_exact_one_commit_validator_self_check: "
             f"{all(stage2a_surface_checks.values())}"
@@ -1212,7 +1441,18 @@ def main() -> None:
             "v400_stage2a_clean_exact_m12_validator_self_check: "
             f"{stage2a_surface_checks['exact_one_commit_m12_accepted']}"
         )
-        print("v400_source_tree_path_reaches_clean_committed_guard: True")
+        print(
+            "v400_corrective_dirty_exact_m2_validator_self_check: "
+            f"{all(corrective_dirty_checks.values())}"
+        )
+        print(
+            "v400_corrective_clean_exact_one_commit_m2_validator_self_check: "
+            f"{all(corrective_committed_checks.values())}"
+        )
+        print(
+            "v400_source_tree_path_reaches_clean_committed_guard: "
+            f"{all(clean_guard_plan_checks.values())}"
+        )
         print("v400_fixed_release_zip_builder_invocation_count: 0")
         print("v400_fixed_release_zip_built: False")
         print("v400_control_d_stage2_authorized: True")

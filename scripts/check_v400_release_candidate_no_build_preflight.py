@@ -11,10 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTROL_C_BASELINE = "5908cb5b0d88c2e8aa6370105c3d618064cb4665"
 CONTROL_C_COMMIT = "4cae15573f3332cbc476557461babdfe2eb3c0bf"
 CONTROL_D_STAGE1_COMMIT = "a204f6b11d25baeea67b7b7be8860c9a4f9ea945"
+CONTROL_D_STAGE2A_COMMIT = "507685488fd33231dfec4bfc0f2c4532a1141de2"
 STAGE2_AUTHORIZATION = "AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT"
 STAGE3_AUTHORIZATION = "AUTHORIZED_FOR_ONE_TIME_BUILD"
 STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
-EXPECTED_MODIFIED = {
+STAGE2A_MODIFIED = {
     "README.md",
     "roadmap.md",
     "tasklist.md",
@@ -28,6 +29,11 @@ EXPECTED_MODIFIED = {
     "scripts/check_v400_release_candidate_no_build_preflight.py",
     "scripts/check_v400_fixed_release_zip.py",
 }
+CORRECTIVE_SURFACE = {
+    "scripts/check_v400_fixed_release_zip.py",
+    "scripts/check_v400_release_candidate_no_build_preflight.py",
+}
+EXPECTED_MODIFIED = STAGE2A_MODIFIED
 EXPECTED_ADDED: set[str] = set()
 COORDINATION_DOCS = (
     "README.md",
@@ -115,31 +121,47 @@ def status_entries() -> list[tuple[str, str]]:
     ]
 
 
-def check_dirty_surface(entries: list[tuple[str, str]]) -> None:
+def dirty_surface_is_exact(entries: list[tuple[str, str]], expected_modified: set[str]) -> bool:
     modified: set[str] = set()
     added: set[str] = set()
     deleted: set[str] = set()
     other: list[tuple[str, str]] = []
     for status, path in entries:
         if status == " M":
+            if path in modified:
+                other.append((status, path))
             modified.add(path)
         elif status == "??":
+            if path in added:
+                other.append((status, path))
             added.add(path)
         elif "D" in status:
+            if path in deleted:
+                other.append((status, path))
             deleted.add(path)
         else:
             other.append((status, path))
-    if modified != EXPECTED_MODIFIED:
-        raise AssertionError(f"Unexpected modified surface: {sorted(modified)}")
-    if added != EXPECTED_ADDED:
-        raise AssertionError(f"Unexpected added surface: {sorted(added)}")
-    if deleted:
-        raise AssertionError(f"Unexpected deleted files: {sorted(deleted)}")
-    if other:
-        raise AssertionError(f"Unexpected status entries: {other!r}")
+    return modified == expected_modified and added == EXPECTED_ADDED and not deleted and not other
 
 
-def validate_stage2a_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+def check_dirty_surface(entries: list[tuple[str, str]], expected_modified: set[str]) -> None:
+    if not dirty_surface_is_exact(entries, expected_modified):
+        modified_paths = sorted(path for status, path in entries if status == " M")
+        added_paths = sorted(path for status, path in entries if status == "??")
+        deleted_paths = sorted(path for status, path in entries if "D" in status)
+        other = [(status, path) for status, path in entries if status not in {" M", "??"} and "D" not in status]
+        raise AssertionError(
+            "Unexpected dirty surface: "
+            f"modified={modified_paths!r} added={added_paths!r} "
+            f"deleted={deleted_paths!r} other={other!r}"
+        )
+
+
+def validate_exact_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+    expected_modified: set[str],
+) -> bool:
     if commit_count != 1:
         return False
     seen: set[str] = set()
@@ -156,7 +178,15 @@ def validate_stage2a_committed_surface(commit_count: int, name_status_lines: lis
         if normalized in seen:
             return False
         seen.add(normalized)
-    return seen == EXPECTED_MODIFIED
+    return seen == expected_modified
+
+
+def validate_stage2a_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, STAGE2A_MODIFIED)
+
+
+def validate_corrective_committed_surface(commit_count: int, name_status_lines: list[str]) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, CORRECTIVE_SURFACE)
 
 
 def stage2a_committed_surface_self_check() -> dict[str, bool]:
@@ -176,27 +206,80 @@ def stage2a_committed_surface_self_check() -> dict[str, bool]:
     }
 
 
+def corrective_dirty_surface_self_check() -> dict[str, bool]:
+    exact = [(" M", path) for path in sorted(CORRECTIVE_SURFACE)]
+    return {
+        "exact_m2_accepted": dirty_surface_is_exact(exact, CORRECTIVE_SURFACE),
+        "missing_path_rejected": not dirty_surface_is_exact(exact[:-1], CORRECTIVE_SURFACE),
+        "unexpected_path_rejected": not dirty_surface_is_exact([*exact, (" M", "README.md")], CORRECTIVE_SURFACE),
+        "duplicate_path_rejected": not dirty_surface_is_exact([*exact, exact[0]], CORRECTIVE_SURFACE),
+        "staged_rejected": not dirty_surface_is_exact([*exact[1:], ("M ", sorted(CORRECTIVE_SURFACE)[0])], CORRECTIVE_SURFACE),
+        "untracked_rejected": not dirty_surface_is_exact([*exact, ("??", "scratch.txt")], CORRECTIVE_SURFACE),
+        "status_a_rejected": not dirty_surface_is_exact([*exact[1:], (" A", sorted(CORRECTIVE_SURFACE)[0])], CORRECTIVE_SURFACE),
+        "status_d_rejected": not dirty_surface_is_exact([*exact[1:], (" D", sorted(CORRECTIVE_SURFACE)[0])], CORRECTIVE_SURFACE),
+        "status_r_rejected": not dirty_surface_is_exact([*exact[1:], ("R ", sorted(CORRECTIVE_SURFACE)[0])], CORRECTIVE_SURFACE),
+        "status_c_rejected": not dirty_surface_is_exact([*exact[1:], ("C ", sorted(CORRECTIVE_SURFACE)[0])], CORRECTIVE_SURFACE),
+    }
+
+
+def corrective_committed_surface_self_check() -> dict[str, bool]:
+    exact = [f"M\t{path}" for path in sorted(CORRECTIVE_SURFACE)]
+    return {
+        "exact_one_commit_m2_accepted": validate_corrective_committed_surface(1, exact),
+        "count_0_rejected": not validate_corrective_committed_surface(0, exact),
+        "count_2_rejected": not validate_corrective_committed_surface(2, exact),
+        "missing_path_rejected": not validate_corrective_committed_surface(1, exact[:-1]),
+        "unexpected_path_rejected": not validate_corrective_committed_surface(1, [*exact, "M\tREADME.md"]),
+        "duplicate_path_rejected": not validate_corrective_committed_surface(1, [*exact, exact[0]]),
+        "status_a_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "A\t" + sorted(CORRECTIVE_SURFACE)[0]]),
+        "status_d_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "D\t" + sorted(CORRECTIVE_SURFACE)[0]]),
+        "status_r_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "R100\told\t" + sorted(CORRECTIVE_SURFACE)[0]]),
+        "status_c_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "C100\told\t" + sorted(CORRECTIVE_SURFACE)[0]]),
+        "malformed_line_rejected": not validate_corrective_committed_surface(1, [*exact[1:], "M " + sorted(CORRECTIVE_SURFACE)[0]]),
+    }
+
+
 def check_committed_stage2a_surface() -> None:
-    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..HEAD"))
-    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..HEAD").splitlines()
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}").splitlines()
     if not validate_stage2a_committed_surface(commit_count, lines):
         raise AssertionError("Clean committed Stage 2-A surface is not exact one-commit M12")
+
+
+def check_committed_corrective_surface() -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE2A_COMMIT}..HEAD"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE2A_COMMIT}..HEAD").splitlines()
+    if not validate_corrective_committed_surface(commit_count, lines):
+        raise AssertionError("Clean committed corrective surface is not exact one-commit M2")
 
 
 def determine_mode() -> str:
     if git_out("branch", "--show-current") != "main":
         raise AssertionError("Unexpected branch")
+    check_committed_stage2a_surface()
     entries = status_entries()
     if entries:
-        if git_out("rev-parse", "HEAD") != CONTROL_D_STAGE1_COMMIT:
+        head = git_out("rev-parse", "HEAD")
+        origin = git_out("rev-parse", "origin/main")
+        if head == CONTROL_D_STAGE1_COMMIT and origin == CONTROL_D_STAGE1_COMMIT:
+            check_dirty_surface(entries, STAGE2A_MODIFIED)
+            return "DIRTY_CONTROL_D_STAGE2A_CANDIDATE"
+        if head == CONTROL_D_STAGE2A_COMMIT and origin == CONTROL_D_STAGE2A_COMMIT:
+            check_dirty_surface(entries, CORRECTIVE_SURFACE)
+            return "DIRTY_STAGE2_PREFLIGHT_GUARD_CORRECTIVE_CANDIDATE"
+        if head != CONTROL_D_STAGE2A_COMMIT:
             raise AssertionError("Dirty candidate HEAD mismatch")
-        if git_out("rev-parse", "origin/main") != CONTROL_D_STAGE1_COMMIT:
+        if origin != CONTROL_D_STAGE2A_COMMIT:
             raise AssertionError("Dirty candidate origin/main mismatch")
-        check_dirty_surface(entries)
-        return "DIRTY_CONTROL_D_STAGE2A_CANDIDATE"
-    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE1_COMMIT, "HEAD"], cwd=ROOT, check=True)
-    check_committed_stage2a_surface()
-    return "CLEAN_COMMITTED_STATIC"
+        check_dirty_surface(entries, CORRECTIVE_SURFACE)
+        return "DIRTY_STAGE2_PREFLIGHT_GUARD_CORRECTIVE_CANDIDATE"
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE2A_COMMIT, "HEAD"], cwd=ROOT, check=True)
+    if git_out("rev-parse", "HEAD") == CONTROL_D_STAGE2A_COMMIT:
+        return "CLEAN_COMMITTED_STATIC"
+    check_committed_corrective_surface()
+    if git_out("rev-parse", "HEAD") != git_out("rev-parse", "origin/main"):
+        raise AssertionError("Clean corrective HEAD/origin mismatch")
+    return "CLEAN_COMMITTED_STAGE2_PREFLIGHT_GUARD_CORRECTIVE"
 
 
 def check_versions() -> None:
@@ -341,6 +424,10 @@ def check_protocol_and_records() -> None:
         raise AssertionError("Stage 2 authorization marker occurrence is not exact 2")
     if not all(stage2a_committed_surface_self_check().values()):
         raise AssertionError("Stage 2-A committed surface validator self-check failed")
+    if not all(corrective_dirty_surface_self_check().values()):
+        raise AssertionError("corrective dirty surface validator self-check failed")
+    if not all(corrective_committed_surface_self_check().values()):
+        raise AssertionError("corrective committed surface validator self-check failed")
     for marker in (STAGE3_AUTHORIZATION, STAGE4_AUTHORIZATION):
         reject(current_text, marker, "future authorization marker")
     if current_text.count(PENDING_POST_EDIT_MARKER) != 0:
@@ -411,6 +498,9 @@ def reject_current_state_contradictions() -> None:
 
 def main() -> None:
     mode = determine_mode()
+    stage2a_surface_checks = stage2a_committed_surface_self_check()
+    corrective_dirty_checks = corrective_dirty_surface_self_check()
+    corrective_committed_checks = corrective_committed_surface_self_check()
     check_versions()
     check_release_state_docs()
     check_protocol_and_records()
@@ -426,9 +516,30 @@ def main() -> None:
     print(f"v400_release_candidate_no_build_preflight_control_d_stage1_implementation_commit: {CONTROL_D_STAGE1_COMMIT}")
     print("v400_release_candidate_no_build_preflight_control_d_stage2_status: clean-committed-source-preflight-authorized-not-run")
     print("v400_release_candidate_no_build_preflight_stage2_marker_occurrence: 2")
-    print("v400_release_candidate_no_build_preflight_stage2a_dirty_m12_validator_self_check: True")
-    print("v400_release_candidate_no_build_preflight_stage2a_clean_exact_one_commit_validator_self_check: True")
-    print("v400_release_candidate_no_build_preflight_stage2a_clean_exact_m12_validator_self_check: True")
+    print(
+        "v400_release_candidate_no_build_preflight_stage2a_dirty_m12_validator_self_check: "
+        f"{all(stage2a_surface_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage2a_clean_exact_one_commit_validator_self_check: "
+        f"{all(stage2a_surface_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage2a_clean_exact_m12_validator_self_check: "
+        f"{stage2a_surface_checks['exact_one_commit_m12_accepted']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_corrective_dirty_exact_m2_validator_self_check: "
+        f"{all(corrective_dirty_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_corrective_clean_exact_one_commit_m2_validator_self_check: "
+        f"{all(corrective_committed_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_control_d_stage2_tooling_status: "
+        "stage2-preflight-guard-corrective-implemented-awaiting-review"
+    )
     print("v400_release_candidate_no_build_preflight_backend_version: 4.0.0")
     print("v400_release_candidate_no_build_preflight_flutter_version: 4.0.0+5")
     print("v400_release_candidate_no_build_preflight_current_released: v3.0.0")
