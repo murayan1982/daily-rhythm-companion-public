@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
+DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
+DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
+DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
 
 Current implementation state:
-STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -114,9 +114,12 @@ CURRENT / NOT_COMPLETED
 Control D Stage 1:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
+Control D Stage 2 acceptance-sync commit:
+697d0918cb8a6de5c0459324464b7d7e376b3a5a
+
+Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
@@ -232,11 +235,14 @@ COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
 Clean committed source preflight
-COMPLETED / PASS / ACCEPTED
+COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 3:
 Build exactly once
-READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
+AUTHORIZED / NOT_RUN
+
+Control D Stage 3 authorization:
+AUTHORIZED_FOR_ONE_TIME_BUILD
 
 Control D Stage 4:
 Same-artifact verification and tuple record
@@ -375,9 +381,11 @@ CURRENT / NOT_COMPLETED
 Control D Stage 1:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
+Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
+
+Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
@@ -458,17 +466,24 @@ Stage 1 added `docs/v400_fixed_release_zip.md`,
 `scripts/check_v400_fixed_release_zip.py`.
 
 `-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
-generic ZIP, create a fixed ZIP, create a tag, or publish. The actual build path
-must remain inert unless a future accepted document adds the tooling-defined
-Stage 3 one-time-build authorization marker. The release ZIP verifier must
+generic ZIP, create a fixed ZIP, create a tag, or publish. Stage 3
+authorization-sync candidate does not run the builder while it is dirty,
+unreviewed, unaccepted, uncommitted, and unpushed. After Stage 3
+authorization-sync is reviewed, accepted, committed, and pushed, the accepted
+marker authorizes only the fixed ZIP exact one-time build, and the builder still
+requires separate explicit user build approval. The release ZIP verifier must
 remain inert unless a future accepted document adds the tooling-defined Stage 4
-same-artifact authorization marker. The current Stage 2 acceptance-sync records
-the accepted preflight evidence and consumes the Stage 2 authorization marker.
+same-artifact authorization marker. Stage 4 remains future and not authorized
+until a future accepted document adds the tooling-defined Stage 4 same-artifact
+authorization marker. The current Stage 3 authorization-sync
+records the Stage 3 authorization marker while preserving the accepted Stage 2
+preflight evidence and consumed Stage 2 authorization marker.
 
 Mode-specific ordering is part of the fixed ZIP tooling contract. Default mode
 is limited to Stage 2 accepted static/current-state checks, consumed Stage 2
-authorization-token absence, accepted marker exactness, and future Stage 3/4
-authorization absence.
+authorization-token absence, Stage 2 accepted marker exactness, Stage 3
+authorization-marker exactness, Stage 4 authorization-marker absence, and exact
+dirty/clean Stage 3 authorization-sync surface checks.
 Source-tree mode requires Stage 2 accepted state and uses the
 fixed-ZIP absent policy. Release-ZIP mode requires Stage 4 authorization plus a
 Stage 3 artifact-ready accepted state and verifies exactly one supplied fixed
@@ -637,7 +652,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control B:
 CLOSED
@@ -655,10 +670,10 @@ Control D Stage 1:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 3:
-BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
+BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED

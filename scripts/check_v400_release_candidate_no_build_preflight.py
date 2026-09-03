@@ -1,4 +1,4 @@
-"""Validate DRC v4.0.0 Control C and Control D Stage 2 acceptance-sync boundary."""
+"""Validate DRC v4.0.0 Control C and Control D Stage 3 authorization-sync boundary."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ CONTROL_C_COMMIT = "4cae15573f3332cbc476557461babdfe2eb3c0bf"
 CONTROL_D_STAGE1_COMMIT = "a204f6b11d25baeea67b7b7be8860c9a4f9ea945"
 CONTROL_D_STAGE2A_COMMIT = "507685488fd33231dfec4bfc0f2c4532a1141de2"
 CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT = "eb68cf9334f46a30c0c06d3921d59f56abb540bb"
+CONTROL_D_STAGE2_ACCEPTANCE_COMMIT = "697d0918cb8a6de5c0459324464b7d7e376b3a5a"
 STAGE2_AUTHORIZATION = "AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT"
 STAGE3_AUTHORIZATION = "AUTHORIZED_FOR_ONE_TIME_BUILD"
 STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
@@ -38,6 +39,7 @@ CORRECTIVE_SURFACE = {
 EXPECTED_MODIFIED = STAGE2A_MODIFIED
 EXPECTED_ADDED: set[str] = set()
 STAGE2_ACCEPTANCE_SYNC_MODIFIED = STAGE2A_MODIFIED
+STAGE3_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 COORDINATION_DOCS = (
     "README.md",
     "roadmap.md",
@@ -79,6 +81,17 @@ PRIVATE_PATTERNS = (
 FORBIDDEN_PACKAGE_NAMES = {".env", "credentials.json", "token.json"}
 FORBIDDEN_PACKAGE_PARTS = {".git", "release", "build", "operator_evidence", "local_data", "vendor"}
 PENDING_POST_EDIT_MARKER = "PENDING_POST_EDIT_" + "VERIFICATION"
+STALE_STAGE3_CURRENT_STATE_PHRASES = (
+    "future accepted document adds the tooling-defined Stage 3 one-time-build authorization marker",
+    "future Stage 3/4 authorization absence",
+    "When authorized in the future, actual build must create",
+    "Current checkpoint: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync",
+)
+REQUIRED_STAGE3_CURRENT_STATE_PHRASES = (
+    "Stage 3 authorization-sync candidate does not run the builder while it is dirty, unreviewed, unaccepted, uncommitted, and unpushed.",
+    "After Stage 3 authorization-sync is reviewed, accepted, committed, and pushed, the accepted marker authorizes only the fixed ZIP exact one-time build, and the builder still requires separate explicit user build approval.",
+    "Stage 4 remains future and not authorized until a future accepted document adds the tooling-defined Stage 4 same-artifact authorization marker.",
+)
 
 
 def git_out(*args: str) -> str:
@@ -94,6 +107,10 @@ def read(relative: str) -> str:
 
 def norm(text: str) -> str:
     return text.replace("\r\n", "\n").replace("`", "").replace("*", "")
+
+
+def compact(text: str) -> str:
+    return " ".join(norm(text).split())
 
 
 def require(text: str, needle: str, label: str) -> None:
@@ -196,6 +213,13 @@ def validate_acceptance_sync_committed_surface(commit_count: int, name_status_li
     return validate_exact_committed_surface(commit_count, name_status_lines, STAGE2_ACCEPTANCE_SYNC_MODIFIED)
 
 
+def validate_stage3_authorization_sync_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, STAGE3_AUTHORIZATION_SYNC_MODIFIED)
+
+
 def acceptance_sync_origin_state(head: str, origin: str) -> str | None:
     if not origin:
         return None
@@ -215,6 +239,31 @@ def acceptance_sync_clean_mode_after_surface_validation(surface_validated: bool,
     if state == "PUSHED":
         return "CLEAN_COMMITTED_STAGE2_ACCEPTANCE_SYNC"
     raise AssertionError("Clean Stage 2 acceptance-sync origin/main state is invalid")
+
+
+def stage3_authorization_sync_origin_state(head: str, origin: str) -> str | None:
+    if not origin:
+        return None
+    if origin == CONTROL_D_STAGE2_ACCEPTANCE_COMMIT and head != origin:
+        return "NOT_PUSHED"
+    if origin == head and head != CONTROL_D_STAGE2_ACCEPTANCE_COMMIT:
+        return "PUSHED"
+    return None
+
+
+def stage3_authorization_sync_clean_mode_after_surface_validation(
+    surface_validated: bool,
+    head: str,
+    origin: str,
+) -> str:
+    if not surface_validated:
+        raise AssertionError("Stage 3 authorization-sync origin policy reached before committed surface validation")
+    state = stage3_authorization_sync_origin_state(head, origin)
+    if state == "NOT_PUSHED":
+        return "CLEAN_COMMITTED_STAGE3_AUTHORIZATION_SYNC_NOT_PUSHED"
+    if state == "PUSHED":
+        return "CLEAN_COMMITTED_STAGE3_AUTHORIZATION_SYNC"
+    raise AssertionError("Clean Stage 3 authorization-sync origin/main state is invalid")
 
 
 def stage2a_committed_surface_self_check() -> dict[str, bool]:
@@ -318,6 +367,63 @@ def acceptance_sync_committed_surface_self_check() -> dict[str, bool]:
     }
 
 
+def stage3_authorization_sync_dirty_surface_self_check() -> dict[str, bool]:
+    first = sorted(STAGE3_AUTHORIZATION_SYNC_MODIFIED)[0]
+    exact = [(" M", path) for path in sorted(STAGE3_AUTHORIZATION_SYNC_MODIFIED)]
+    return {
+        "exact_m12_accepted": dirty_surface_is_exact(exact, STAGE3_AUTHORIZATION_SYNC_MODIFIED),
+        "missing_path_rejected": not dirty_surface_is_exact(exact[:-1], STAGE3_AUTHORIZATION_SYNC_MODIFIED),
+        "unexpected_path_rejected": not dirty_surface_is_exact(
+            [*exact, (" M", "backend/app/version.py")], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+        "duplicate_path_rejected": not dirty_surface_is_exact([*exact, exact[0]], STAGE3_AUTHORIZATION_SYNC_MODIFIED),
+        "staged_rejected": not dirty_surface_is_exact(
+            [*exact[1:], ("M ", first)], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+        "untracked_rejected": not dirty_surface_is_exact(
+            [*exact, ("??", "scratch.txt")], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+        "status_a_rejected": not dirty_surface_is_exact(
+            [*exact[1:], (" A", first)], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+        "status_d_rejected": not dirty_surface_is_exact(
+            [*exact[1:], (" D", first)], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+        "status_r_rejected": not dirty_surface_is_exact(
+            [*exact[1:], ("R ", first)], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+        "status_c_rejected": not dirty_surface_is_exact(
+            [*exact[1:], ("C ", first)], STAGE3_AUTHORIZATION_SYNC_MODIFIED
+        ),
+    }
+
+
+def stage3_authorization_sync_committed_surface_self_check() -> dict[str, bool]:
+    first = sorted(STAGE3_AUTHORIZATION_SYNC_MODIFIED)[0]
+    exact = [f"M\t{path}" for path in sorted(STAGE3_AUTHORIZATION_SYNC_MODIFIED)]
+    return {
+        "exact_one_commit_m12_accepted": validate_stage3_authorization_sync_committed_surface(1, exact),
+        "count_0_rejected": not validate_stage3_authorization_sync_committed_surface(0, exact),
+        "count_2_rejected": not validate_stage3_authorization_sync_committed_surface(2, exact),
+        "missing_path_rejected": not validate_stage3_authorization_sync_committed_surface(1, exact[:-1]),
+        "unexpected_path_rejected": not validate_stage3_authorization_sync_committed_surface(
+            1, [*exact, "M\tbackend/app/version.py"]
+        ),
+        "duplicate_path_rejected": not validate_stage3_authorization_sync_committed_surface(1, [*exact, exact[0]]),
+        "status_a_rejected": not validate_stage3_authorization_sync_committed_surface(1, [*exact[1:], "A\t" + first]),
+        "status_d_rejected": not validate_stage3_authorization_sync_committed_surface(1, [*exact[1:], "D\t" + first]),
+        "status_r_rejected": not validate_stage3_authorization_sync_committed_surface(
+            1, [*exact[1:], "R100\told\t" + first]
+        ),
+        "status_c_rejected": not validate_stage3_authorization_sync_committed_surface(
+            1, [*exact[1:], "C100\told\t" + first]
+        ),
+        "malformed_line_rejected": not validate_stage3_authorization_sync_committed_surface(
+            1, [*exact[1:], "M " + first]
+        ),
+    }
+
+
 def acceptance_sync_origin_state_self_check() -> dict[str, bool]:
     synthetic_head = "f" * 40
     unrelated = "1" * 40
@@ -343,6 +449,56 @@ def acceptance_sync_origin_state_self_check() -> dict[str, bool]:
     }
 
 
+def stage3_authorization_sync_origin_state_self_check() -> dict[str, bool]:
+    synthetic_head = "e" * 40
+    unrelated = "2" * 40
+    try:
+        stage3_authorization_sync_clean_mode_after_surface_validation(
+            False, synthetic_head, CONTROL_D_STAGE2_ACCEPTANCE_COMMIT
+        )
+        blocked_before_surface_validation = False
+    except AssertionError:
+        blocked_before_surface_validation = True
+    determine_names = set(determine_mode.__code__.co_names)
+    determine_consts = set(determine_mode.__code__.co_consts)
+    return {
+        "base_origin_accepted_as_not_pushed": stage3_authorization_sync_origin_state(
+            synthetic_head, CONTROL_D_STAGE2_ACCEPTANCE_COMMIT
+        )
+        == "NOT_PUSHED",
+        "head_origin_accepted_as_pushed": stage3_authorization_sync_origin_state(
+            synthetic_head, synthetic_head
+        )
+        == "PUSHED",
+        "unrelated_origin_rejected": stage3_authorization_sync_origin_state(synthetic_head, unrelated) is None,
+        "empty_origin_rejected": stage3_authorization_sync_origin_state(synthetic_head, "") is None,
+        "origin_policy_blocked_before_surface_validation": blocked_before_surface_validation,
+        "determine_mode_references_origin_helper": "stage3_authorization_sync_clean_mode_after_surface_validation"
+        in determine_names,
+        "dirty_mode_maintained": "DIRTY_STAGE3_AUTHORIZATION_SYNC_CANDIDATE" in determine_consts,
+    }
+
+
+def current_state_prose_is_consistent(text: str) -> bool:
+    compacted = compact(text)
+    return all(phrase in compacted for phrase in REQUIRED_STAGE3_CURRENT_STATE_PHRASES) and not any(
+        phrase in compacted for phrase in STALE_STAGE3_CURRENT_STATE_PHRASES
+    )
+
+
+def current_state_prose_consistency_self_check() -> dict[str, bool]:
+    corrected = "\n".join(REQUIRED_STAGE3_CURRENT_STATE_PHRASES)
+    stale = corrected + "\nWhen authorized in the future, actual build must create"
+    missing = "\n".join(REQUIRED_STAGE3_CURRENT_STATE_PHRASES[:-1])
+    stage4_future = corrected + "\nfuture accepted document adds the tooling-defined Stage 4 same-artifact authorization marker"
+    return {
+        "corrected_current_state_prose_accepted": current_state_prose_is_consistent(corrected),
+        "stale_stage3_phrase_rejected": not current_state_prose_is_consistent(stale),
+        "required_current_state_phrase_missing_rejected": not current_state_prose_is_consistent(missing),
+        "stage4_future_boundary_prose_accepted": current_state_prose_is_consistent(stage4_future),
+    }
+
+
 def check_committed_stage2a_surface() -> None:
     commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}"))
     lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}").splitlines()
@@ -358,10 +514,21 @@ def check_committed_corrective_surface() -> None:
 
 
 def check_committed_stage2_acceptance_sync_surface() -> None:
-    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT}..HEAD"))
-    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT}..HEAD").splitlines()
+    commit_count = int(
+        git_out("rev-list", "--count", f"{CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT}..{CONTROL_D_STAGE2_ACCEPTANCE_COMMIT}")
+    )
+    lines = git_out(
+        "diff", "--name-status", f"{CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT}..{CONTROL_D_STAGE2_ACCEPTANCE_COMMIT}"
+    ).splitlines()
     if not validate_acceptance_sync_committed_surface(commit_count, lines):
         raise AssertionError("Clean committed Stage 2 acceptance-sync surface is not exact one-commit M12")
+
+
+def check_committed_stage3_authorization_sync_surface() -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE2_ACCEPTANCE_COMMIT}..HEAD"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE2_ACCEPTANCE_COMMIT}..HEAD").splitlines()
+    if not validate_stage3_authorization_sync_committed_surface(commit_count, lines):
+        raise AssertionError("Clean committed Stage 3 authorization-sync surface is not exact one-commit M12")
 
 
 def determine_mode() -> str:
@@ -369,6 +536,7 @@ def determine_mode() -> str:
         raise AssertionError("Unexpected branch")
     check_committed_stage2a_surface()
     check_committed_corrective_surface()
+    check_committed_stage2_acceptance_sync_surface()
     entries = status_entries()
     if entries:
         head = git_out("rev-parse", "HEAD")
@@ -380,20 +548,27 @@ def determine_mode() -> str:
             check_dirty_surface(entries, CORRECTIVE_SURFACE)
             return "DIRTY_STAGE2_PREFLIGHT_GUARD_CORRECTIVE_CANDIDATE"
         if head != CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
+            if head == CONTROL_D_STAGE2_ACCEPTANCE_COMMIT and origin == CONTROL_D_STAGE2_ACCEPTANCE_COMMIT:
+                check_dirty_surface(entries, STAGE3_AUTHORIZATION_SYNC_MODIFIED)
+                return "DIRTY_STAGE3_AUTHORIZATION_SYNC_CANDIDATE"
             raise AssertionError("Dirty candidate HEAD mismatch")
         if origin != CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
             raise AssertionError("Dirty candidate origin/main mismatch")
         check_dirty_surface(entries, STAGE2_ACCEPTANCE_SYNC_MODIFIED)
         return "DIRTY_STAGE2_ACCEPTANCE_SYNC_CANDIDATE"
-    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT, "HEAD"], cwd=ROOT, check=True)
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_D_STAGE2_ACCEPTANCE_COMMIT, "HEAD"], cwd=ROOT, check=True)
     if git_out("rev-parse", "HEAD") == CONTROL_D_STAGE2A_COMMIT:
         return "CLEAN_COMMITTED_STATIC"
     if git_out("rev-parse", "HEAD") == CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
         return "CLEAN_COMMITTED_STAGE2_PREFLIGHT_GUARD_CORRECTIVE"
-    check_committed_stage2_acceptance_sync_surface()
+    if git_out("rev-parse", "HEAD") == CONTROL_D_STAGE2_ACCEPTANCE_COMMIT:
+        head = git_out("rev-parse", "HEAD")
+        origin = git_out("rev-parse", "origin/main")
+        return acceptance_sync_clean_mode_after_surface_validation(True, head, origin)
+    check_committed_stage3_authorization_sync_surface()
     head = git_out("rev-parse", "HEAD")
     origin = git_out("rev-parse", "origin/main")
-    return acceptance_sync_clean_mode_after_surface_validation(True, head, origin)
+    return stage3_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
 
 
 def check_versions() -> None:
@@ -406,9 +581,9 @@ def check_release_state_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync"),
-            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync"),
-            ("current implementation state", "STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
+            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization"),
+            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization"),
+            ("current implementation state", "STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", CONTROL_C_COMMIT),
             ("Control D", "CURRENT / NOT_COMPLETED"),
@@ -416,7 +591,7 @@ def check_release_state_docs() -> None:
             ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
             ("Control D Stage 1 surface", "13 files / M10 A3 D0"),
             ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"),
-            ("Control D Stage 3", "BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED"),
+            ("Control D Stage 3", "BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN"),
             ("Control D Stage 4", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED"),
             ("Control E", "FUTURE / NOT_AUTHORIZED"),
             ("DRC v4.0.0", "NOT_RELEASED"),
@@ -432,10 +607,11 @@ def check_protocol_and_records() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     for needle in (
         "Control D Stage 1",
-        "STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW",
+        "STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW",
         "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED",
         "13 files / M10 A3 D0",
         "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED",
+        "AUTHORIZED_FOR_ONE_TIME_BUILD",
         "build_v400_fixed_release_zip_from_head.ps1",
         "scripts/check_v400_fixed_release_zip.py",
     ):
@@ -449,6 +625,7 @@ def check_protocol_and_records() -> None:
         ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
         ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
         ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"),
+        ("Control D Stage 3", "BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN"),
         ("Control E", "FUTURE / NOT_AUTHORIZED"),
         ("DRC v4.0.0", "NOT_RELEASED"),
     ):
@@ -457,12 +634,13 @@ def check_protocol_and_records() -> None:
     record = read("docs/v400_release_record.md")
     for label, value in (
         ("Status", "PREPARED / NOT_RELEASED"),
-        ("Current phase", "Control D Stage 2 Acceptance Sync STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
+        ("Current phase", "Control D Stage 3 Authorization STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
         ("Control C verification baseline", CONTROL_C_BASELINE),
         ("Control C implementation commit", CONTROL_C_COMMIT),
         ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
         ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
         ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"),
+        ("Control D Stage 3", "BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN"),
         ("release source HEAD", "NOT_RECORDED"),
         ("verification HEAD", "NOT_RECORDED"),
         ("fixed ZIP basename", "NOT_BUILT"),
@@ -530,7 +708,7 @@ def check_protocol_and_records() -> None:
         "release source HEAD:\nNOT_RECORDED",
         "verification HEAD:\nNOT_RECORDED",
         "fixed ZIP SHA-256:\nNOT_RECORDED",
-        "## Stage 2 Acceptance-Sync Stop Rule",
+        "## Stage 3 Authorization-Sync Stop Rule",
     ):
         require(fixed, needle, "fixed ZIP contract")
     current_text = "\n".join(read(relative) for relative in CURRENT_DOCS)
@@ -550,8 +728,19 @@ def check_protocol_and_records() -> None:
         raise AssertionError("Stage 2 acceptance-sync future clean validator self-check failed")
     if not all(acceptance_sync_origin_state_self_check().values()):
         raise AssertionError("Stage 2 acceptance-sync origin-state validator self-check failed")
-    for marker in (STAGE3_AUTHORIZATION, STAGE4_AUTHORIZATION):
-        reject(current_text, marker, "future authorization marker")
+    if current_text.count(STAGE3_AUTHORIZATION) != 2:
+        raise AssertionError("Stage 3 authorization marker occurrence is not exact 2")
+    if not all(stage3_authorization_sync_dirty_surface_self_check().values()):
+        raise AssertionError("Stage 3 authorization-sync dirty validator self-check failed")
+    if not all(stage3_authorization_sync_committed_surface_self_check().values()):
+        raise AssertionError("Stage 3 authorization-sync future clean validator self-check failed")
+    if not all(stage3_authorization_sync_origin_state_self_check().values()):
+        raise AssertionError("Stage 3 authorization-sync origin-state validator self-check failed")
+    if not current_state_prose_is_consistent(current_text):
+        raise AssertionError("Stage 3 current-state prose consistency failed")
+    if not all(current_state_prose_consistency_self_check().values()):
+        raise AssertionError("Stage 3 current-state prose consistency self-check failed")
+    reject(current_text, STAGE4_AUTHORIZATION, "future authorization marker")
     if current_text.count(PENDING_POST_EDIT_MARKER) != 0:
         raise AssertionError("PENDING_POST_EDIT_VERIFICATION marker is present in current docs")
 
@@ -609,7 +798,6 @@ def reject_current_state_contradictions() -> None:
         "annotated tag: CREATED",
         "GitHub Release: CREATED",
         "Control E: AUTHORIZED",
-        "Control D Stage 3:\nBUILD_EXACTLY_ONCE / AUTHORIZED",
         "Control D Stage 4:\nSAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED",
         "existing v3 replacement: YES",
         "/realtime/text replacement: YES",
@@ -626,6 +814,10 @@ def main() -> None:
     acceptance_sync_dirty_checks = acceptance_sync_dirty_surface_self_check()
     acceptance_sync_committed_checks = acceptance_sync_committed_surface_self_check()
     acceptance_sync_origin_checks = acceptance_sync_origin_state_self_check()
+    stage3_dirty_checks = stage3_authorization_sync_dirty_surface_self_check()
+    stage3_committed_checks = stage3_authorization_sync_committed_surface_self_check()
+    stage3_origin_checks = stage3_authorization_sync_origin_state_self_check()
+    prose_checks = current_state_prose_consistency_self_check()
     check_versions()
     check_release_state_docs()
     check_protocol_and_records()
@@ -640,6 +832,7 @@ def main() -> None:
     print("v400_release_candidate_no_build_preflight_control_d_stage1_status: completed-verified-reviewed-accepted-committed-pushed-closed")
     print(f"v400_release_candidate_no_build_preflight_control_d_stage1_implementation_commit: {CONTROL_D_STAGE1_COMMIT}")
     print("v400_release_candidate_no_build_preflight_control_d_stage2_status: clean-committed-source-preflight-completed-pass-accepted")
+    print("v400_release_candidate_no_build_preflight_control_d_stage2_acceptance_sync_commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a")
     print("v400_release_candidate_no_build_preflight_stage2_accepted_marker_occurrence: 2")
     print("v400_release_candidate_no_build_preflight_stage2_authorization_token_occurrence: 0")
     print(
@@ -703,8 +896,56 @@ def main() -> None:
         f"{acceptance_sync_origin_checks['dirty_mode_maintained']}"
     )
     print(
-        "v400_release_candidate_no_build_preflight_control_d_stage2_tooling_status: "
-        "stage2-acceptance-sync-implemented-awaiting-review"
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_dirty_m12_validator_self_check: "
+        f"{all(stage3_dirty_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_future_clean_exact_one_commit_m12_validator_self_check: "
+        f"{all(stage3_committed_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_origin_state_validator_self_check: "
+        f"{all(stage3_origin_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_origin_base_not_pushed_self_check: "
+        f"{stage3_origin_checks['base_origin_accepted_as_not_pushed']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_origin_head_pushed_self_check: "
+        f"{stage3_origin_checks['head_origin_accepted_as_pushed']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_origin_unrelated_rejected_self_check: "
+        f"{stage3_origin_checks['unrelated_origin_rejected']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_origin_empty_rejected_self_check: "
+        f"{stage3_origin_checks['empty_origin_rejected']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_origin_policy_after_surface_guard_self_check: "
+        f"{stage3_origin_checks['origin_policy_blocked_before_surface_validation']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_determine_mode_uses_origin_helper: "
+        f"{stage3_origin_checks['determine_mode_references_origin_helper']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage3_authorization_sync_dirty_mode_maintained: "
+        f"{stage3_origin_checks['dirty_mode_maintained']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_current_state_prose_consistency_self_check: "
+        f"{all(prose_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stale_stage3_current_state_phrase_rejected: "
+        f"{prose_checks['stale_stage3_phrase_rejected']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_control_d_stage3_authorization_sync_status: "
+        "stage3-authorization-sync-implemented-awaiting-review"
     )
     print("v400_release_candidate_no_build_preflight_backend_version: 4.0.0")
     print("v400_release_candidate_no_build_preflight_flutter_version: 4.0.0+5")
@@ -716,6 +957,9 @@ def main() -> None:
     print("v400_release_candidate_no_build_preflight_fixed_zip_built: False")
     print("v400_release_candidate_no_build_preflight_tag_created: False")
     print("v400_release_candidate_no_build_preflight_github_release_created: False")
+    print("v400_release_candidate_no_build_preflight_stage3_authorization_token_occurrence: 2")
+    print("v400_release_candidate_no_build_preflight_stage3_build_authorized: True")
+    print("v400_release_candidate_no_build_preflight_stage4_authorized: False")
     print("v400_release_candidate_no_build_preflight_stage_commit_push_authorized: False")
     print("v400_release_candidate_no_build_preflight_package_tag_publication_authorized: False")
     print("[v400-release-candidate-no-build-preflight-check] OK")

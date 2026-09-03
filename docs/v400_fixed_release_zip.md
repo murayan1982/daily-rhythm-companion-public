@@ -4,7 +4,7 @@
 
 ```text
 Status:
-STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -22,10 +22,16 @@ Control D Stage 1 implementation commit:
 a204f6b11d25baeea67b7b7be8860c9a4f9ea945
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
+
+Control D Stage 2 acceptance-sync commit:
+697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
 Control D Stage 3:
-BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
+BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+
+Control D Stage 3 authorization:
+AUTHORIZED_FOR_ONE_TIME_BUILD
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
@@ -116,7 +122,8 @@ DRC_v4.0.0 tag:
 NOT_CREATED
 ```
 
-Stage 2 acceptance does not approve Stage 3, Stage 4, Control E, package
+Stage 2 acceptance is committed, pushed, and closed. Stage 3 is authorized for
+exactly one fixed ZIP build. This does not approve Stage 4, Control E, package
 creation, tag creation, GitHub Release creation, or publication.
 
 `-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
@@ -169,15 +176,21 @@ overwrite: forbidden
 python scripts\check_v400_fixed_release_zip.py --source-tree --with-flutter --with-builds --flutter-command <ABSOLUTE_FLUTTER_COMMAND>
 ```
 
-The actual build path remains blocked until a future accepted document adds the
-tooling-defined Stage 3 one-time-build authorization marker.
+The actual build path is authorized only by the current accepted document marker
+above, and only for one fixed ZIP build.
 
-When authorized in the future, actual build must create a detached temporary
-worktree from exact committed HEAD, verify that worktree HEAD, run
-`build_release.bat release` exactly once, carry forward only the generic
-timestamp, move the final ZIP to `release`, output basename, size, SHA-256, and
-source HEAD, leave verification status `not-run`, and clean temporary state
-even on failure. It must refuse silent rebuild, overwrite, or replacement.
+Stage 3 authorization-sync candidate does not run the builder while it is dirty,
+unreviewed, unaccepted, uncommitted, and unpushed. After Stage 3
+authorization-sync is reviewed, accepted, committed, and pushed, the accepted
+marker authorizes only the fixed ZIP exact one-time build, and the builder still
+requires separate explicit user build approval.
+
+The authorized one-time build must create a detached temporary worktree from
+exact committed HEAD, verify that worktree HEAD, run `build_release.bat release`
+exactly once, carry forward only the generic timestamp, move the final ZIP to
+`release`, output basename, size, SHA-256, and source HEAD, leave verification
+status `not-run`, and clean temporary state even on failure. It must refuse
+silent rebuild, overwrite, or replacement.
 
 The fixed basename must be:
 
@@ -196,7 +209,7 @@ scripts/check_v400_fixed_release_zip.py
 Modes:
 
 ```text
-default: Stage 2 acceptance-sync dirty candidate or exact clean committed acceptance static gate
+default: Stage 3 authorization-sync dirty candidate or exact clean committed authorization static gate
 --source-tree: authorized clean committed main no-artifact preflight
 --release-zip: future same fixed ZIP verification
 ```
@@ -210,9 +223,9 @@ HEAD, verification HEAD, and artifact SHA-256 separate.
 
 Mode dispatch is strict. Default mode validates Stage 2 accepted current-state
 documentation, consumed Stage 2 authorization-token absence, Stage 2 accepted
-marker exactness, Stage 3/4 authorization-marker absence, fixed ZIP absence,
-blocked future authorization, and exact dirty/clean Stage 2 acceptance-sync
-static checks. Source-tree mode is mutually exclusive with release-ZIP mode and
+marker exactness, Stage 3 authorization-marker exactness, Stage 4
+authorization-marker absence, fixed ZIP absence, and exact dirty/clean Stage 3
+authorization-sync static checks. Source-tree mode is mutually exclusive with release-ZIP mode and
 requires Control D Stage 2 accepted state before clean committed source/runtime
 preflight. Release-ZIP
 mode is mutually exclusive with source-tree mode and verifies the exact supplied
@@ -293,10 +306,10 @@ After a source-affecting corrective, any existing artifact is invalidated. A
 verifier-only corrective may be recorded only by keeping release source HEAD,
 verification HEAD, and artifact SHA-256 distinct.
 
-## Stage 2 Acceptance-Sync Stop Rule
+## Stage 3 Authorization-Sync Stop Rule
 
-Stage 2 acceptance-sync stops as a dirty exact candidate for external diff
+Stage 3 authorization-sync stops as a dirty exact candidate for external diff
 review. It does not stage, commit, push, run another Control D Stage 2
-source-tree preflight, run Control D Stage 3, run Control D Stage 4, build a
-fixed ZIP, package, tag, create a GitHub Release, publish, or clean release
+source-tree preflight, run the Stage 3 build, run Control D Stage 4, build a
+fixed ZIP outside that separately approved build, package, tag, create a GitHub Release, publish, or clean release
 artifacts.
