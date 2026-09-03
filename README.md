@@ -11,9 +11,9 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
-Current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
-Current implementation state: STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+Current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
+Current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
+Current implementation state: STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: `4cae15573f3332cbc476557461babdfe2eb3c0bf`
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -99,14 +99,32 @@ Control C environmental corrections: unittest discover loader failure RESOLVED_B
 Control D: CURRENT / NOT_COMPLETED
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 1 implementation commit: `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`
-Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
-Control D Stage 3: BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
+Control D Stage 3: BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 Control E: FUTURE / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0
 fixed ZIP: NOT_BUILT
 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
+Control D Stage 2 source preflight HEAD: `eb68cf9334f46a30c0c06d3921d59f56abb540bb`
+Control D Stage 2 source-tree verifier: COMPLETED / PASS / exit 0
+Control D Stage 2 accepted verifier invocation count: 1
+Control D Stage 2 verifier elapsed: 00:05:08.0615422
+Control D Stage 2 Python runtime: Python 3.12.0 / dependency-complete repository runtime
+Control D Stage 2 Backend full: 479 PASS
+Control D Stage 2 Flutter SDK: 3.41.7 stable
+Control D Stage 2 Flutter framework revision: `cc0734ac716fbb8b90f3f9db8020958b1553afa7`
+Control D Stage 2 Flutter analyze: PASS / No issues found
+Control D Stage 2 Flutter full: 570 PASS
+Control D Stage 2 Flutter web build: PASS
+Control D Stage 2 Flutter Windows build: PASS
+Control D Stage 2 Flutter APK debug build: PASS
+Control D Stage 2 repository preservation: working tree clean / Git index empty
+Control D Stage 2 package_config: PRESERVED / SHA-256 AND TIMESTAMP UNCHANGED
+Control D Stage 2 release builder invocation: 0
+Control D Stage 2 fixed ZIP: NOT_BUILT
+Control D Stage 2 DRC_v4.0.0 tag: NOT_CREATED
 existing v3 real runtime: PRESERVED / RELEASED / ACCEPTED
 real unified FW runtime required for DRC v4.0.0 release: NO / NOT_A_RELEASE_BLOCKER
 real unified FW runtime release blocker: NO

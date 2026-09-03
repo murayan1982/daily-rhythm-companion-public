@@ -4,7 +4,7 @@
 
 ```text
 Status:
-STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -22,13 +22,10 @@ Control D Stage 1 implementation commit:
 a204f6b11d25baeea67b7b7be8860c9a4f9ea945
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
-
-Control D Stage 2 authorization marker:
-AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 3:
-BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
@@ -64,16 +61,63 @@ GitHub Release:
 NOT_CREATED
 ```
 
-## Stage 2 Authorization Boundary
+## Stage 2 Accepted Source Preflight
 
 Stage 1 implemented credential-free, provider-free, private-evidence-free fixed
 ZIP tooling and was accepted, committed, pushed, and closed at
 `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`.
 
-Stage 2 clean committed source preflight is authorized but not run. It remains
-credential-free and artifact-free. This authorization does not approve Stage 3,
-Stage 4, Control E, package creation, tag creation, GitHub Release creation, or
-publication.
+Stage 2 clean committed source preflight completed, passed, and is accepted at
+source HEAD `eb68cf9334f46a30c0c06d3921d59f56abb540bb`. The accepted preflight
+used exactly one source-tree verifier invocation, exited `0`, and elapsed
+`00:05:08.0615422`.
+
+```text
+Python:
+3.12.0 / dependency-complete repository runtime
+
+Backend full:
+479 PASS
+
+Flutter SDK:
+3.41.7 stable
+
+Flutter framework revision:
+cc0734ac716fbb8b90f3f9db8020958b1553afa7
+
+Flutter analyze:
+PASS / No issues found
+
+Flutter full:
+570 PASS
+
+Flutter web build:
+PASS
+
+Flutter Windows build:
+PASS
+
+Flutter APK debug build:
+PASS
+
+repository preservation:
+working tree clean / Git index empty
+
+package_config:
+PRESERVED / SHA-256 AND TIMESTAMP UNCHANGED
+
+release builder invocation:
+0
+
+fixed ZIP:
+NOT_BUILT
+
+DRC_v4.0.0 tag:
+NOT_CREATED
+```
+
+Stage 2 acceptance does not approve Stage 3, Stage 4, Control E, package
+creation, tag creation, GitHub Release creation, or publication.
 
 `-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
 generic ZIP, create a fixed ZIP, create a tag, or publish. It must report
@@ -152,7 +196,7 @@ scripts/check_v400_fixed_release_zip.py
 Modes:
 
 ```text
-default: Stage 2-A dirty candidate or exact clean committed authorization static gate
+default: Stage 2 acceptance-sync dirty candidate or exact clean committed acceptance static gate
 --source-tree: authorized clean committed main no-artifact preflight
 --release-zip: future same fixed ZIP verification
 ```
@@ -164,12 +208,13 @@ document adds the tooling-defined Stage 4 same-artifact authorization marker.
 Release ZIP verification must not mutate the ZIP and must keep release source
 HEAD, verification HEAD, and artifact SHA-256 separate.
 
-Mode dispatch is strict. Default mode validates Stage 2-A current-state
-documentation, Stage 2 authorization marker exactness, Stage 3/4
-authorization-marker absence, fixed ZIP absence, blocked future authorization,
-and exact dirty/clean Stage 2-A static checks. Source-tree mode is mutually
-exclusive with release-ZIP mode and requires Control D Stage 2 authorization or
-accepted state before clean committed source/runtime preflight. Release-ZIP
+Mode dispatch is strict. Default mode validates Stage 2 accepted current-state
+documentation, consumed Stage 2 authorization-token absence, Stage 2 accepted
+marker exactness, Stage 3/4 authorization-marker absence, fixed ZIP absence,
+blocked future authorization, and exact dirty/clean Stage 2 acceptance-sync
+static checks. Source-tree mode is mutually exclusive with release-ZIP mode and
+requires Control D Stage 2 accepted state before clean committed source/runtime
+preflight. Release-ZIP
 mode is mutually exclusive with source-tree mode and verifies the exact supplied
 artifact instead of applying the absent-artifact gate.
 
@@ -248,9 +293,10 @@ After a source-affecting corrective, any existing artifact is invalidated. A
 verifier-only corrective may be recorded only by keeping release source HEAD,
 verification HEAD, and artifact SHA-256 distinct.
 
-## Stage 2-A Stop Rule
+## Stage 2 Acceptance-Sync Stop Rule
 
-Stage 2-A stops as a dirty exact candidate for external diff review. It does
-not stage, commit, push, run Control D Stage 2 source-tree preflight, run
-Control D Stage 3, run Control D Stage 4, build a fixed ZIP, package, tag,
-create a GitHub Release, publish, or clean release artifacts.
+Stage 2 acceptance-sync stops as a dirty exact candidate for external diff
+review. It does not stage, commit, push, run another Control D Stage 2
+source-tree preflight, run Control D Stage 3, run Control D Stage 4, build a
+fixed ZIP, package, tag, create a GitHub Release, publish, or clean release
+artifacts.

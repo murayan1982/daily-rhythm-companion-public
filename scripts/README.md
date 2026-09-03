@@ -18,9 +18,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
-current implementation state: STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
-current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
+current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
+current implementation state: STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
+current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -104,8 +104,8 @@ Control C environmental corrections: unittest discover loader failure RESOLVED_B
 Control D: CURRENT / NOT_COMPLETED
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 1 implementation commit: a204f6b11d25baeea67b7b7be8860c9a4f9ea945
-Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
-Control D Stage 3: BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
+Control D Stage 3: BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
 Control E: FUTURE / NOT_AUTHORIZED
 fixed ZIP builder invocation count: 0

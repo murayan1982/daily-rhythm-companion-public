@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
+DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
+DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Authorization
+DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync
 
 Current implementation state:
-STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -114,14 +114,9 @@ CURRENT / NOT_COMPLETED
 Control D Stage 1:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 2 authorization marker:
-AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT
-
-Control D Stage 3:
-BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+Control D Stage 3: BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
@@ -168,10 +163,10 @@ release notes, and the pre-release record while keeping DRC v4.0.0
 `NOT_RELEASED`. Control C completed release-candidate verification and a
 source-only no-build preflight while preserving package, tag, and publication
 boundaries. Control D Stage 1 added fixed ZIP tooling and is closed. Control D
-Stage 2 clean committed source preflight is authorized but not run.
+Stage 2 clean committed source preflight completed, passed, and is accepted.
 
-DRC v4.0.0 can proceed through the authorized Stage 2 clean committed source
-preflight because its accepted scope is
+DRC v4.0.0 can proceed to a separately authorized Stage 3 build request because
+the accepted Stage 2 source preflight preserved its bounded release scope:
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
 production unified real STT -> streaming LLM -> TTS -> motion runtime.
 
@@ -237,11 +232,11 @@ COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
 Clean committed source preflight
-AUTHORIZED / NOT_RUN
+COMPLETED / PASS / ACCEPTED
 
 Control D Stage 3:
 Build exactly once
-BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 
 Control D Stage 4:
 Same-artifact verification and tuple record
@@ -367,7 +362,7 @@ release builder, create release artifacts, stage, commit, push, tag, or publish.
 Control D is split into four separately accepted stages. Stage 1 implemented
 credential-free, provider-free, private-evidence-free fixed ZIP tooling and is
 closed at commit `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`. Stage 2 clean
-committed source preflight is authorized but not run. This does not authorize
+committed source preflight completed, passed, and is accepted. This does not authorize
 Stage 3, Stage 4, Control E, package creation, tag creation, GitHub Release
 creation, or publication.
 
@@ -380,11 +375,9 @@ CURRENT / NOT_COMPLETED
 Control D Stage 1:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
-Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
+Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 3:
-BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+Control D Stage 3: BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
@@ -402,6 +395,64 @@ publication:
 NO
 ```
 
+Stage 2 accepted evidence:
+
+```text
+Stage 2 source preflight HEAD:
+eb68cf9334f46a30c0c06d3921d59f56abb540bb
+
+source-tree verifier:
+COMPLETED / PASS / exit 0
+
+accepted corrective source-tree verifier invocation count:
+1
+
+elapsed:
+00:05:08.0615422
+
+Python:
+3.12.0 / dependency-complete repository runtime
+
+Backend full:
+479 PASS
+
+Flutter SDK:
+3.41.7 stable
+
+Flutter framework revision:
+cc0734ac716fbb8b90f3f9db8020958b1553afa7
+
+Flutter analyze:
+PASS / No issues found
+
+Flutter full:
+570 PASS
+
+Flutter web build:
+PASS
+
+Flutter Windows build:
+PASS
+
+Flutter APK debug build:
+PASS
+
+repository preservation:
+working tree clean / Git index empty
+
+package_config:
+PRESERVED / SHA-256 AND TIMESTAMP UNCHANGED
+
+release builder invocation:
+0
+
+fixed ZIP:
+NOT_BUILT
+
+DRC_v4.0.0 tag:
+NOT_CREATED
+```
+
 Stage 1 added `docs/v400_fixed_release_zip.md`,
 `build_v400_fixed_release_zip_from_head.ps1`, and
 `scripts/check_v400_fixed_release_zip.py`.
@@ -411,13 +462,14 @@ generic ZIP, create a fixed ZIP, create a tag, or publish. The actual build path
 must remain inert unless a future accepted document adds the tooling-defined
 Stage 3 one-time-build authorization marker. The release ZIP verifier must
 remain inert unless a future accepted document adds the tooling-defined Stage 4
-same-artifact authorization marker. The current Stage 2-A candidate adds only
-the tooling-defined Stage 2 authorization marker.
+same-artifact authorization marker. The current Stage 2 acceptance-sync records
+the accepted preflight evidence and consumes the Stage 2 authorization marker.
 
 Mode-specific ordering is part of the fixed ZIP tooling contract. Default mode
-is limited to Stage 2-A static/current-state checks, Stage 2 authorization
-marker exactness, and future Stage 3/4 authorization absence.
-Source-tree mode requires Stage 2 authorization or accepted state and uses the
+is limited to Stage 2 accepted static/current-state checks, consumed Stage 2
+authorization-token absence, accepted marker exactness, and future Stage 3/4
+authorization absence.
+Source-tree mode requires Stage 2 accepted state and uses the
 fixed-ZIP absent policy. Release-ZIP mode requires Stage 4 authorization plus a
 Stage 3 artifact-ready accepted state and verifies exactly one supplied fixed
 ZIP with the supplied expected source HEAD and SHA-256; it does not use the
@@ -585,7 +637,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-STAGE2_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE2_ACCEPTANCE_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control B:
 CLOSED
@@ -603,10 +655,10 @@ Control D Stage 1:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 2:
-CLEAN_COMMITTED_SOURCE_PREFLIGHT / AUTHORIZED / NOT_RUN
+CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 3:
-BUILD_EXACTLY_ONCE / BLOCKED_PENDING_STAGE2_ACCEPTANCE / NOT_AUTHORIZED
+BUILD_EXACTLY_ONCE / READY_FOR_SEPARATE_AUTHORIZATION / NOT_AUTHORIZED
 
 Control D Stage 4:
 SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
