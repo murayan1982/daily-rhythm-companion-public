@@ -17,7 +17,7 @@ $worktreeAdded = $false
 $buildInvocationCount = 0
 $previousDontWriteBytecode = $env:PYTHONDONTWRITEBYTECODE
 $stage2AcceptedState = "Control D Stage 2:\s*`r?`nCLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"
-$stage3AuthorizationMarker = "Control D Stage 3:\s*`r?`nAUTHORIZED_FOR_ONE_TIME_BUILD"
+$stage3AuthorizationMarker = "Control D Stage 3 authorization:\s*`r?`nAUTHORIZED_FOR_ONE_TIME_BUILD"
 
 function Invoke-NativeChecked {
     param(
