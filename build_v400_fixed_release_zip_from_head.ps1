@@ -73,6 +73,50 @@ function Assert-AbsoluteFlutterCommand {
     }
 }
 
+function Get-TrackedPathBudget {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Commit,
+        [Parameter(Mandatory = $true)]
+        [string]$PlannedRoot
+    )
+
+    $trackedPaths = @(& git ls-tree -r --name-only $Commit)
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to inspect tracked paths for path-budget validation."
+    }
+    $trackedPaths = @($trackedPaths | Where-Object { $_ })
+    if ($trackedPaths.Count -eq 0) {
+        throw "Tracked path-budget validation found no tracked files."
+    }
+
+    $seen = @{}
+    $maxRelative = 0
+    foreach ($relativePath in $trackedPaths) {
+        $normalized = $relativePath.Replace("\", "/")
+        if ($normalized.StartsWith("/") -or $normalized -match "^[A-Za-z]:/" -or $normalized.Split("/") -contains "..") {
+            throw "Tracked path-budget validation found an unsafe relative path: $relativePath"
+        }
+        if ($seen.ContainsKey($normalized)) {
+            throw "Tracked path-budget validation found a duplicate relative path: $relativePath"
+        }
+        $seen[$normalized] = $true
+        if ($normalized.Length -gt $maxRelative) {
+            $maxRelative = $normalized.Length
+        }
+    }
+
+    $rootLength = ([IO.Path]::GetFullPath($PlannedRoot)).Length
+    $projected = $rootLength + 1 + $maxRelative
+    return [PSCustomObject]@{
+        TrackedFileCount = $trackedPaths.Count
+        MaximumRelativePathLength = $maxRelative
+        WorktreeRootLength = $rootLength
+        MaximumProjectedPathLength = $projected
+        Limit = 259
+    }
+}
+
 try {
     Push-Location $repoRoot
     Assert-AbsoluteFlutterCommand -Command $FlutterCommand
@@ -213,10 +257,17 @@ try {
         $FlutterCommand
 
     New-Item -ItemType Directory -Path $outputFullDirectory -Force | Out-Null
-    $tempRoot = Join-Path (
-        [IO.Path]::GetTempPath()
-    ) ("DailyRhythmCompanion_v400_fixed_" + [Guid]::NewGuid().ToString("N"))
-    $worktreeRoot = Join-Path $tempRoot "committed_head"
+    $tempRoot = Join-Path ([IO.Path]::GetTempPath()) ("d4w_" + [Guid]::NewGuid().ToString("N").Substring(0, 8))
+    $worktreeRoot = Join-Path $tempRoot "w"
+    $pathBudget = Get-TrackedPathBudget -Commit $headCommit -PlannedRoot $worktreeRoot
+    Write-Host "[PathBudget] tracked files: $($pathBudget.TrackedFileCount)"
+    Write-Host "[PathBudget] maximum relative path: $($pathBudget.MaximumRelativePathLength)"
+    Write-Host "[PathBudget] worktree root length: $($pathBudget.WorktreeRootLength)"
+    Write-Host "[PathBudget] maximum projected worktree path: $($pathBudget.MaximumProjectedPathLength)"
+    Write-Host "[PathBudget] limit: $($pathBudget.Limit)"
+    if ($pathBudget.MaximumProjectedPathLength -gt $pathBudget.Limit) {
+        throw "Temporary worktree path budget exceeded before git worktree add."
+    }
     New-Item -ItemType Directory -Path $tempRoot -Force | Out-Null
 
     Write-Host "[Source] Creating detached temporary worktree from Public committed HEAD..."

@@ -56,7 +56,20 @@ REM Keep the temporary package directory outside the repository tree.
 REM Robocopy fails with exit code 16 when copying a directory into its own child.
 set "TEMP_BASE=%TEMP%"
 if "%TEMP_BASE%"=="" set "TEMP_BASE=%SystemRoot%\Temp"
-set "TEMP_ROOT=%TEMP_BASE%\DailyRhythmCompanion_release_temp_%TIMESTAMP%_%RANDOM%"
+set "TEMP_ROOT="
+set "TEMP_ROOT_OWNED=0"
+for %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT (
+  mkdir "%TEMP_BASE%\d%%s" >nul 2>nul
+  if not errorlevel 1 (
+    set "TEMP_ROOT=%TEMP_BASE%\d%%s"
+    set "TEMP_ROOT_OWNED=1"
+  )
+)
+if not defined TEMP_ROOT (
+  echo [Error] No available package temp slot under: %TEMP_BASE%
+  echo [Error] Slots d0 through d9 are already in use.
+  exit /b 1
+)
 set "TEMP_DIR=%TEMP_ROOT%\%PACKAGE_ROOT_NAME%"
 set "ROBOCOPY_LOG=%TEMP_ROOT%\robocopy_copy.log"
 
@@ -86,15 +99,26 @@ echo   Exclude secrets, tokens, private local data, operator evidence, vendored 
 echo   Exclude secrets, tokens, private local data, operator evidence, caches, build outputs, local handoff prompts, development-day docs/scripts, and release artifacts. ^(legacy compatibility marker^)
 echo.
 
-set "BUILD_STAGE=setup_clean_temp"
-echo [Setup] Cleaning temp directory...
-call :cleanup_temp_silent
-
 set "BUILD_STAGE=create_release_dir"
 if not exist "%RELEASE_DIR%" mkdir "%RELEASE_DIR%"
 if errorlevel 1 goto :fail
 
 set "BUILD_STAGE=create_temp_dir"
+echo [PathBudget] Checking package staging path budget...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference = 'Stop';" ^
+  "$root = [IO.Path]::GetFullPath('%ROOT_DIR%.');" ^
+  "$dest = [IO.Path]::GetFullPath('%TEMP_DIR%');" ^
+  "$excludedDirs = @('.git','release','release_temp','vendor','repo_files','optional_replacements','.venv','venv','env','__pycache__','.pytest_cache','.mypy_cache','.ruff_cache','.dart_tool','.pub-cache','.gradle','.idea','.vscode','build','coverage','ephemeral','.plugin_symlinks','local_data','operator_evidence','_local','.release_build','node_modules');" ^
+  "$items = Get-ChildItem -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $relative = $_.FullName.Substring($root.Length).TrimStart('\'); -not ($relative -split '[\\/]' | Where-Object { $excludedDirs -icontains $_ }) };" ^
+  "$max = 0; foreach ($item in $items) { $relative = $item.FullName.Substring($root.Length).TrimStart('\').Replace('\','/'); if ($relative.Length -gt $max) { $max = $relative.Length } };" ^
+  "$projected = $dest.Length + 1 + $max;" ^
+  "Write-Output ('[PathBudget] package source maximum relative path: ' + $max);" ^
+  "Write-Output ('[PathBudget] package destination root length: ' + $dest.Length);" ^
+  "Write-Output ('[PathBudget] maximum projected package path: ' + $projected);" ^
+  "Write-Output '[PathBudget] limit: 259';" ^
+  "if ($items.Count -eq 0 -or $projected -gt 259) { exit 1 }"
+if errorlevel 1 goto :fail
 mkdir "%TEMP_DIR%" >nul 2>nul
 if errorlevel 1 (
   echo [Error] Failed to create temp directory: %TEMP_DIR%
@@ -271,6 +295,7 @@ echo.
 exit /b 0
 
 :cleanup_temp_silent
+if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0
 if not exist "%TEMP_ROOT%" exit /b 0
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "$p = '%TEMP_ROOT%';" ^
@@ -283,6 +308,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
 exit /b 0
 
 :cleanup_temp
+if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0
 if not exist "%TEMP_ROOT%" exit /b 0
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "$p = '%TEMP_ROOT%';" ^

@@ -31,6 +31,7 @@ CONTROL_D_STAGE2A_COMMIT = "507685488fd33231dfec4bfc0f2c4532a1141de2"
 CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT = "eb68cf9334f46a30c0c06d3921d59f56abb540bb"
 CONTROL_D_STAGE2_ACCEPTANCE_COMMIT = "697d0918cb8a6de5c0459324464b7d7e376b3a5a"
 CONTROL_D_STAGE3_AUTHORIZATION_COMMIT = "0f7418100beaedd764d4c0821973b23fa20327a2"
+CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT = "3193aa6aa8eb5e8e0140fc0235d5f4ecfd6ac4f3"
 EXPECTED_BACKEND_VERSION = "4.0.0"
 EXPECTED_FLUTTER_VERSION = "4.0.0+5"
 EXPECTED_BACKEND_TESTS = 479
@@ -47,7 +48,8 @@ STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
 EXPECTED_STAGE3_AUTHORIZATION_MARKER_ASSIGNMENT = (
     '$stage3AuthorizationMarker = "Control D Stage 3 authorization:\\s*`r?`nAUTHORIZED_FOR_ONE_TIME_BUILD"'
 )
-EXPECTED_STAGE3_BUILDER_NORMALIZED_SHA256 = "13248D55299C57B5DD940091DB2B6738B5F7024DC3A2A3F238917E9F8315A330"
+EXPECTED_STAGE3_BUILDER_NORMALIZED_SHA256 = "599080CCBAA77EBDFEF934FCC1BC79E772E58B80F1E0F6A7903FAC79AA7F1E00"
+EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256 = "E341FCA3180C62EE90ED5F95E0D8433CD6723DAEE7ABD98FA618639ED53A6AAB"
 STAGE2_ACCEPTED = "Control D Stage 2:\nCLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"
 STAGE3_ARTIFACT_READY = "Control D Stage 3:\nBUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"
 STAGE2A_MODIFIED = {
@@ -77,6 +79,23 @@ STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_MODIFIED = {
     "scripts/check_v400_fixed_release_zip.py",
     "scripts/check_v400_release_candidate_no_build_preflight.py",
 }
+STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED = {
+    "build_v400_fixed_release_zip_from_head.ps1",
+    "build_release.bat",
+    "scripts/check_v400_fixed_release_zip.py",
+    "scripts/check_v400_release_candidate_no_build_preflight.py",
+}
+STAGE3_PATH_LENGTH_CORRECTIVE_PROTECTED = {
+    "build_v400_fixed_release_zip_from_head.ps1",
+    "build_release.bat",
+}
+PATH_BUDGET_LIMIT = 259
+FIXED_BUILDER_CANONICAL_SHORT_WORKTREE_ASSIGNMENT = re.compile(
+    r'(?m)^\s*\$tempRoot\s*=\s*Join-Path\s+'
+    r'\(\s*\[IO\.Path\]\s*::\s*GetTempPath\(\s*\)\s*\)\s+'
+    r'\(\s*"d4w_"\s*\+\s*\[Guid\]\s*::\s*NewGuid\(\s*\)'
+    r'\s*\.\s*ToString\(\s*"N"\s*\)\s*\.\s*Substring\(\s*0\s*,\s*8\s*\)\s*\)\s*$'
+)
 STAGE1_MODIFIED = {
     "README.md",
     "roadmap.md",
@@ -384,6 +403,17 @@ def validate_stage3_builder_auth_guard_corrective_committed_surface(
     )
 
 
+def validate_stage3_path_length_corrective_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+) -> bool:
+    return validate_exact_committed_surface(
+        commit_count,
+        name_status_lines,
+        STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED,
+    )
+
+
 def acceptance_sync_origin_state(head: str, origin: str) -> str | None:
     if not origin:
         return None
@@ -440,6 +470,16 @@ def stage3_builder_auth_guard_corrective_origin_state(head: str, origin: str) ->
     return None
 
 
+def stage3_path_length_corrective_origin_state(head: str, origin: str) -> str | None:
+    if not origin:
+        return None
+    if origin == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT and head != origin:
+        return "NOT_PUSHED"
+    if origin == head and head != CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT:
+        return "PUSHED"
+    return None
+
+
 def stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(
     surface_validated: bool,
     head: str,
@@ -453,6 +493,21 @@ def stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(
     if state == "PUSHED":
         return "CLEAN_COMMITTED_STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE"
     die("clean Stage 3 builder authorization guard corrective origin/main state is invalid")
+
+
+def stage3_path_length_corrective_clean_mode_after_surface_validation(
+    surface_validated: bool,
+    head: str,
+    origin: str,
+) -> str:
+    if not surface_validated:
+        die("Stage 3 path-length corrective origin policy reached before committed surface validation")
+    state = stage3_path_length_corrective_origin_state(head, origin)
+    if state == "NOT_PUSHED":
+        return "CLEAN_COMMITTED_STAGE3_PATH_LENGTH_CORRECTIVE_NOT_PUSHED"
+    if state == "PUSHED":
+        return "CLEAN_COMMITTED_STAGE3_PATH_LENGTH_CORRECTIVE"
+    die("clean Stage 3 path-length corrective origin/main state is invalid")
 
 
 def validate_exact_name_status_surface(
@@ -493,6 +548,13 @@ def validate_stage3_builder_auth_guard_corrective_protected_delta(name_status_li
     return validate_exact_name_status_surface(
         name_status_lines,
         {"M": {"build_v400_fixed_release_zip_from_head.ps1"}},
+    )
+
+
+def validate_stage3_path_length_corrective_protected_delta(name_status_lines: list[str]) -> bool:
+    return validate_exact_name_status_surface(
+        name_status_lines,
+        {"M": STAGE3_PATH_LENGTH_CORRECTIVE_PROTECTED},
     )
 
 
@@ -795,6 +857,98 @@ def stage3_builder_auth_guard_corrective_committed_surface_self_check() -> dict[
     }
 
 
+def stage3_path_length_corrective_dirty_surface_self_check() -> dict[str, bool]:
+    first = sorted(STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED)[0]
+    exact = [(" M", path) for path in sorted(STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED)]
+    return {
+        "exact_m4_accepted": dirty_surface_is_exact(exact, STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED),
+        "missing_path_rejected": not dirty_surface_is_exact(exact[:-1], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED),
+        "unexpected_path_rejected": not dirty_surface_is_exact(
+            [*exact, (" M", "README.md")], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "duplicate_path_rejected": not dirty_surface_is_exact(
+            [*exact, exact[0]], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "staged_rejected": not dirty_surface_is_exact(
+            [*exact[1:], ("M ", first)], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "untracked_rejected": not dirty_surface_is_exact(
+            [*exact, ("??", "scratch.txt")], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "status_a_rejected": not dirty_surface_is_exact(
+            [*exact[1:], (" A", first)], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "status_d_rejected": not dirty_surface_is_exact(
+            [*exact[1:], (" D", first)], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "status_r_rejected": not dirty_surface_is_exact(
+            [*exact[1:], ("R ", first)], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+        "status_c_rejected": not dirty_surface_is_exact(
+            [*exact[1:], ("C ", first)], STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED
+        ),
+    }
+
+
+def stage3_path_length_corrective_committed_surface_self_check() -> dict[str, bool]:
+    first = sorted(STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED)[0]
+    exact = [f"M\t{path}" for path in sorted(STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED)]
+    return {
+        "exact_one_commit_m4_accepted": validate_stage3_path_length_corrective_committed_surface(1, exact),
+        "count_0_rejected": not validate_stage3_path_length_corrective_committed_surface(0, exact),
+        "count_2_rejected": not validate_stage3_path_length_corrective_committed_surface(2, exact),
+        "missing_path_rejected": not validate_stage3_path_length_corrective_committed_surface(1, exact[:-1]),
+        "unexpected_path_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact, "M\tREADME.md"]
+        ),
+        "duplicate_path_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact, exact[0]]
+        ),
+        "status_a_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact[1:], "A\t" + first]
+        ),
+        "status_d_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact[1:], "D\t" + first]
+        ),
+        "status_r_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact[1:], "R100\told\t" + first]
+        ),
+        "status_c_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact[1:], "C100\told\t" + first]
+        ),
+        "malformed_line_rejected": not validate_stage3_path_length_corrective_committed_surface(
+            1, [*exact[1:], "M " + first]
+        ),
+    }
+
+
+def stage3_path_length_corrective_protected_delta_self_check() -> dict[str, bool]:
+    exact = [f"M\t{path}" for path in sorted(STAGE3_PATH_LENGTH_CORRECTIVE_PROTECTED)]
+    first = sorted(STAGE3_PATH_LENGTH_CORRECTIVE_PROTECTED)[0]
+    return {
+        "exact_builder_m2_accepted": validate_stage3_path_length_corrective_protected_delta(exact),
+        "empty_rejected": not validate_stage3_path_length_corrective_protected_delta([]),
+        "missing_rejected": not validate_stage3_path_length_corrective_protected_delta(exact[:-1]),
+        "unexpected_rejected": not validate_stage3_path_length_corrective_protected_delta(
+            [*exact, "M\tscripts/check_v400_fixed_release_zip.py"]
+        ),
+        "duplicate_rejected": not validate_stage3_path_length_corrective_protected_delta([*exact, exact[0]]),
+        "status_a_rejected": not validate_stage3_path_length_corrective_protected_delta(
+            [*exact[1:], "A\t" + first]
+        ),
+        "status_d_rejected": not validate_stage3_path_length_corrective_protected_delta(
+            [*exact[1:], "D\t" + first]
+        ),
+        "status_r_rejected": not validate_stage3_path_length_corrective_protected_delta(
+            [*exact[1:], "R100\told\t" + first]
+        ),
+        "status_c_rejected": not validate_stage3_path_length_corrective_protected_delta(
+            [*exact[1:], "C100\told\t" + first]
+        ),
+        "malformed_line_rejected": not validate_stage3_path_length_corrective_protected_delta(["M " + first]),
+    }
+
+
 def acceptance_sync_origin_state_self_check() -> dict[str, bool]:
     synthetic_head = "f" * 40
     unrelated = "1" * 40
@@ -882,6 +1036,37 @@ def stage3_builder_auth_guard_corrective_origin_state_self_check() -> dict[str, 
         "determine_mode_references_origin_helper": "stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation"
         in determine_names,
         "dirty_mode_maintained": "DIRTY_STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_CANDIDATE" in determine_consts,
+    }
+
+
+def stage3_path_length_corrective_origin_state_self_check() -> dict[str, bool]:
+    synthetic_head = "c" * 40
+    unrelated = "4" * 40
+    expected_message = "Stage 3 path-length corrective origin policy reached before committed surface validation"
+    try:
+        stage3_path_length_corrective_clean_mode_after_surface_validation(
+            False, synthetic_head, CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT
+        )
+        blocked_before_surface_validation = False
+    except AssertionError as exc:
+        blocked_before_surface_validation = str(exc) == expected_message
+    determine_names = set(determine_mode.__code__.co_names)
+    determine_consts = set(determine_mode.__code__.co_consts)
+    return {
+        "base_origin_accepted_as_not_pushed": stage3_path_length_corrective_origin_state(
+            synthetic_head, CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT
+        )
+        == "NOT_PUSHED",
+        "head_origin_accepted_as_pushed": stage3_path_length_corrective_origin_state(
+            synthetic_head, synthetic_head
+        )
+        == "PUSHED",
+        "unrelated_origin_rejected": stage3_path_length_corrective_origin_state(synthetic_head, unrelated) is None,
+        "empty_origin_rejected": stage3_path_length_corrective_origin_state(synthetic_head, "") is None,
+        "origin_policy_blocked_before_surface_validation": blocked_before_surface_validation,
+        "determine_mode_references_origin_helper": "stage3_path_length_corrective_clean_mode_after_surface_validation"
+        in determine_names,
+        "dirty_mode_maintained": "DIRTY_STAGE3_PATH_LENGTH_CORRECTIVE_CANDIDATE" in determine_consts,
     }
 
 
@@ -1392,9 +1577,17 @@ def builder_has_correct_stage3_authorization_marker() -> bool:
     return stage3_authorization_marker_assignment_is_exact(read("build_v400_fixed_release_zip_from_head.ps1"))
 
 
-def normalized_stage3_builder_sha256(builder_bytes: bytes) -> str:
-    normalized = builder_bytes.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+def normalized_source_sha256(source_bytes: bytes) -> str:
+    normalized = source_bytes.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
     return sha256(normalized).hexdigest().upper()
+
+
+def normalized_stage3_builder_sha256(builder_bytes: bytes) -> str:
+    return normalized_source_sha256(builder_bytes)
+
+
+def normalized_generic_builder_sha256(builder_bytes: bytes) -> str:
+    return normalized_source_sha256(builder_bytes)
 
 
 def builder_has_expected_stage3_builder_normalized_sha256() -> bool:
@@ -1404,22 +1597,48 @@ def builder_has_expected_stage3_builder_normalized_sha256() -> bool:
     )
 
 
+def builder_has_expected_generic_builder_normalized_sha256() -> bool:
+    return (
+        normalized_generic_builder_sha256((ROOT / "build_release.bat").read_bytes())
+        == EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256
+    )
+
+
 def check_builder_stage3_normalized_sha256() -> None:
     if not builder_has_expected_stage3_builder_normalized_sha256():
         die("Stage 3 builder normalized SHA-256 is not exact")
+
+
+def check_builder_generic_normalized_sha256() -> None:
+    if not builder_has_expected_generic_builder_normalized_sha256():
+        die("Generic builder normalized SHA-256 is not exact")
 
 
 def stage3_authorization_marker_runtime_connection_self_check() -> dict[str, bool]:
     exact_names = stage3_authorization_marker_assignment_is_exact.__code__.co_names
     check_names = check_builder_stage3_authorization_marker_assignment.__code__.co_names
     sha_check_names = check_builder_stage3_normalized_sha256.__code__.co_names
+    generic_sha_check_names = check_builder_generic_normalized_sha256.__code__.co_names
     check_builder_names = check_builder.__code__.co_names
+    short_contract_names = fixed_builder_short_worktree_contract_is_present.__code__.co_names
+    generic_contract_names = generic_builder_short_package_staging_contract_is_present.__code__.co_names
+    determine_names = determine_mode.__code__.co_names
+    protected_names = check_protected_surface.__code__.co_names
     main_names = main.__code__.co_names
     return {
         "pure_assignment_validator_callable": callable(executable_stage3_authorization_marker_assignments),
         "exact_assignment_validator_callable": callable(stage3_authorization_marker_assignment_is_exact),
         "builder_guard_callable": callable(check_builder_stage3_authorization_marker_assignment),
         "normalized_sha_guard_callable": callable(check_builder_stage3_normalized_sha256),
+        "generic_normalized_sha_guard_callable": callable(check_builder_generic_normalized_sha256),
+        "fixed_builder_canonical_short_assignment_helper_callable": callable(
+            fixed_builder_has_canonical_short_worktree_assignment
+        ),
+        "fixed_builder_short_worktree_contract_callable": callable(fixed_builder_short_worktree_contract_is_present),
+        "generic_builder_short_package_contract_callable": callable(generic_builder_short_package_staging_contract_is_present),
+        "generic_builder_atomic_slot_claim_helper_callable": callable(
+            generic_builder_atomic_slot_claim_contract_is_present
+        ),
         "check_builder_callable": callable(check_builder),
         "main_callable": callable(main),
         "exact_validator_uses_pure_helper_once": exact_names.count(
@@ -1432,12 +1651,39 @@ def stage3_authorization_marker_runtime_connection_self_check() -> dict[str, boo
             "builder_has_expected_stage3_builder_normalized_sha256"
         )
         == 1,
+        "generic_sha_guard_uses_expected_sha_helper_once": generic_sha_check_names.count(
+            "builder_has_expected_generic_builder_normalized_sha256"
+        )
+        == 1,
         "check_builder_uses_builder_guard_once": check_builder_names.count(
             "check_builder_stage3_authorization_marker_assignment"
         )
         == 1,
         "check_builder_uses_normalized_sha_guard_once": check_builder_names.count("check_builder_stage3_normalized_sha256")
         == 1,
+        "check_builder_uses_generic_normalized_sha_guard_once": check_builder_names.count(
+            "check_builder_generic_normalized_sha256"
+        )
+        == 1,
+        "check_builder_uses_fixed_short_contract_once": check_builder_names.count(
+            "fixed_builder_short_worktree_contract_is_present"
+        )
+        == 1,
+        "fixed_short_contract_uses_canonical_assignment_helper_once": short_contract_names.count(
+            "fixed_builder_has_canonical_short_worktree_assignment"
+        )
+        == 1,
+        "check_builder_uses_generic_short_contract_once": check_builder_names.count(
+            "generic_builder_short_package_staging_contract_is_present"
+        )
+        == 1,
+        "generic_short_contract_uses_atomic_slot_claim_helper_once": generic_contract_names.count(
+            "generic_builder_atomic_slot_claim_contract_is_present"
+        )
+        == 1,
+        "determine_mode_uses_r10_dirty_validator": "STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED" in determine_names,
+        "protected_surface_uses_r10_protected_validator": "validate_stage3_path_length_corrective_protected_delta"
+        in protected_names,
         "main_default_path_uses_check_builder_once": main_names.count("check_builder") == 1,
     }
 
@@ -1811,6 +2057,29 @@ def stage3_builder_normalized_sha256_self_check() -> dict[str, bool]:
     }
 
 
+def generic_builder_normalized_sha256_self_check() -> dict[str, bool]:
+    current = (ROOT / "build_release.bat").read_bytes()
+    normalized = current.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    crlf = normalized.replace(b"\n", b"\r\n")
+    one_byte_mutation = current[:-1] + (b"\n" if current[-1:] != b"\n" else b"X")
+    path_marker_mutation = current.replace(b"\\d%%s", b"\\long_slot%%s", 1)
+    added_statement = current + b"\necho unexpected\n"
+    return {
+        "current_builder_bytes_accepted": normalized_generic_builder_sha256(current)
+        == EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256,
+        "lf_form_accepted": normalized_generic_builder_sha256(normalized)
+        == EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256,
+        "crlf_form_accepted": normalized_generic_builder_sha256(crlf)
+        == EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256,
+        "one_byte_content_mutation_rejected": normalized_generic_builder_sha256(one_byte_mutation)
+        != EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256,
+        "path_marker_mutation_rejected": normalized_generic_builder_sha256(path_marker_mutation)
+        != EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256,
+        "added_executable_statement_rejected": normalized_generic_builder_sha256(added_statement)
+        != EXPECTED_GENERIC_BUILDER_NORMALIZED_SHA256,
+    }
+
+
 def stage3_authorization_contract_self_check() -> dict[str, bool]:
     lf = "Control D Stage 3 authorization:\nAUTHORIZED_FOR_ONE_TIME_BUILD"
     crlf = "Control D Stage 3 authorization:\r\nAUTHORIZED_FOR_ONE_TIME_BUILD"
@@ -1876,11 +2145,32 @@ def check_committed_stage3_authorization_sync_surface() -> None:
 
 
 def check_committed_stage3_builder_auth_guard_corrective_surface() -> None:
-    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE3_AUTHORIZATION_COMMIT}..HEAD"))
-    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE3_AUTHORIZATION_COMMIT}..HEAD").splitlines()
+    commit_count = int(
+        git_out(
+            "rev-list",
+            "--count",
+            f"{CONTROL_D_STAGE3_AUTHORIZATION_COMMIT}..{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}",
+        )
+    )
+    lines = git_out(
+        "diff",
+        "--name-status",
+        f"{CONTROL_D_STAGE3_AUTHORIZATION_COMMIT}..{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}",
+    ).splitlines()
     if not validate_stage3_builder_auth_guard_corrective_committed_surface(commit_count, lines):
         die("Clean committed Stage 3 builder authorization guard corrective surface is not exact one-commit M3")
-    check_stage3_builder_auth_guard_corrective_protected_delta(CONTROL_D_STAGE3_AUTHORIZATION_COMMIT, "HEAD")
+    check_stage3_builder_auth_guard_corrective_protected_delta(
+        CONTROL_D_STAGE3_AUTHORIZATION_COMMIT,
+        CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT,
+    )
+
+
+def check_committed_stage3_path_length_corrective_surface() -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}..HEAD"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}..HEAD").splitlines()
+    if not validate_stage3_path_length_corrective_committed_surface(commit_count, lines):
+        die("Clean committed Stage 3 path-length corrective surface is not exact one-commit M4")
+    check_stage3_path_length_corrective_protected_delta(CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT, "HEAD")
 
 
 def clean_committed_source_guard_plan():
@@ -1891,6 +2181,7 @@ def clean_committed_source_guard_plan():
         check_committed_stage2_acceptance_sync_surface,
         check_committed_stage3_authorization_sync_surface,
         check_committed_stage3_builder_auth_guard_corrective_surface,
+        check_committed_stage3_path_length_corrective_surface,
     )
 
 
@@ -1910,11 +2201,12 @@ def clean_committed_source_guard_plan_self_check() -> dict[str, bool]:
         "check_committed_stage2_acceptance_sync_surface",
         "check_committed_stage3_authorization_sync_surface",
         "check_committed_stage3_builder_auth_guard_corrective_surface",
+        "check_committed_stage3_path_length_corrective_surface",
     ]
     code_names = set(verify_clean_source_tree.__code__.co_names)
     return {
         "exact_order": names == expected,
-        "guard_count_exact_6": len(plan) == 6,
+        "guard_count_exact_7": len(plan) == 7,
         "all_callable": all(callable(guard) for guard in plan),
         "no_duplicate_guards": len(set(names)) == len(names),
         "source_tree_runtime_uses_shared_guard_plan": "check_clean_committed_source_guards" in code_names,
@@ -1944,6 +2236,9 @@ def determine_mode() -> str:
             if head == CONTROL_D_STAGE3_AUTHORIZATION_COMMIT and origin == CONTROL_D_STAGE3_AUTHORIZATION_COMMIT:
                 check_dirty_surface(entries, STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_MODIFIED)
                 return "DIRTY_STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_CANDIDATE"
+            if head == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT and origin == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT:
+                check_dirty_surface(entries, STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED)
+                return "DIRTY_STAGE3_PATH_LENGTH_CORRECTIVE_CANDIDATE"
             die("dirty candidate HEAD mismatch")
         if origin != CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
             die("dirty candidate origin/main mismatch")
@@ -1965,7 +2260,10 @@ def determine_mode() -> str:
         return stage3_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
     check_committed_stage3_authorization_sync_surface()
     check_committed_stage3_builder_auth_guard_corrective_surface()
-    return stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(True, head, origin)
+    if head == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT:
+        return stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(True, head, origin)
+    check_committed_stage3_path_length_corrective_surface()
+    return stage3_path_length_corrective_clean_mode_after_surface_validation(True, head, origin)
 
 
 def check_versions() -> None:
@@ -2073,6 +2371,8 @@ def check_builder() -> None:
         "AUTHORIZED_FOR_ONE_TIME_BUILD",
         "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED",
         "git worktree add --detach",
+        "[PathBudget] maximum projected worktree path:",
+        "Temporary worktree path budget exceeded before git worktree add.",
         "build_release.bat release",
         "$buildInvocationCount++",
         "verification_status: not-run",
@@ -2081,6 +2381,11 @@ def check_builder() -> None:
         require(text, needle, "builder")
     check_builder_stage3_authorization_marker_assignment(text)
     check_builder_stage3_normalized_sha256()
+    check_builder_generic_normalized_sha256()
+    if not fixed_builder_short_worktree_contract_is_present():
+        die("Fixed builder short worktree path contract is missing")
+    if not generic_builder_short_package_staging_contract_is_present():
+        die("Generic builder short package staging contract is missing")
 
 
 def check_no_release_outputs() -> None:
@@ -2133,6 +2438,10 @@ def check_protected_surface(mode: str) -> None:
         if not validate_stage3_builder_auth_guard_corrective_protected_delta(lines):
             die("Dirty Stage 3 builder authorization guard corrective protected delta is not exact builder M")
         return
+    if mode == "DIRTY_STAGE3_PATH_LENGTH_CORRECTIVE_CANDIDATE":
+        if not validate_stage3_path_length_corrective_protected_delta(lines):
+            die("Dirty Stage 3 path-length corrective protected delta is not exact builder M2")
+        return
     if not validate_empty_protected_delta(lines):
         die("Protected product/build/release surface diff is not empty")
 
@@ -2156,6 +2465,12 @@ def check_stage3_builder_auth_guard_corrective_protected_delta(start: str, end: 
     lines = git_out("diff", "--name-status", f"{start}..{end}", "--", *PROTECTED_PATHS).splitlines()
     if not validate_stage3_builder_auth_guard_corrective_protected_delta(lines):
         die("Stage 3 builder authorization guard corrective protected delta is not exact builder M")
+
+
+def check_stage3_path_length_corrective_protected_delta(start: str, end: str) -> None:
+    lines = git_out("diff", "--name-status", f"{start}..{end}", "--", *PROTECTED_PATHS).splitlines()
+    if not validate_stage3_path_length_corrective_protected_delta(lines):
+        die("Stage 3 path-length corrective protected delta is not exact builder M2")
 
 
 ALLOWED_POST_SOURCE_HEAD_SURFACE = {
@@ -2384,6 +2699,14 @@ def check_static_corrective_assertions() -> None:
         die("Stage 3 builder authorization guard corrective committed surface validator self-check failed")
     if not all(stage3_builder_auth_guard_corrective_origin_state_self_check().values()):
         die("Stage 3 builder authorization guard corrective origin-state validator self-check failed")
+    if not all(stage3_path_length_corrective_dirty_surface_self_check().values()):
+        die("Stage 3 path-length corrective dirty surface validator self-check failed")
+    if not all(stage3_path_length_corrective_committed_surface_self_check().values()):
+        die("Stage 3 path-length corrective committed surface validator self-check failed")
+    if not all(stage3_path_length_corrective_protected_delta_self_check().values()):
+        die("Stage 3 path-length corrective protected delta validator self-check failed")
+    if not all(stage3_path_length_corrective_origin_state_self_check().values()):
+        die("Stage 3 path-length corrective origin-state validator self-check failed")
     if not all(stage3_authorization_contract_self_check().values()):
         die("Stage 3 authorization marker contract self-check failed")
     if not all(stage3_authorization_marker_assignment_self_check().values()):
@@ -2394,6 +2717,14 @@ def check_static_corrective_assertions() -> None:
         die("Stage 3 authorization marker backtick escape self-check failed")
     if not all(stage3_builder_normalized_sha256_self_check().values()):
         die("Stage 3 builder normalized SHA-256 self-check failed")
+    if not all(generic_builder_normalized_sha256_self_check().values()):
+        die("Generic builder normalized SHA-256 self-check failed")
+    if not all(fixed_builder_short_worktree_assignment_self_check().values()):
+        die("Fixed builder canonical short worktree assignment self-check failed")
+    if not all(generic_builder_atomic_slot_claim_self_check().values()):
+        die("Generic builder atomic slot claim self-check failed")
+    if not all(path_budget_self_check().values()):
+        die("path-budget self-check failed")
     if not current_state_prose_is_consistent(current_text):
         die("Stage 3 current-state prose consistency failed")
     if not all(current_state_prose_consistency_self_check().values()):
@@ -2440,6 +2771,1095 @@ def repository_source_tree_uses_shared_flutter_test_command() -> bool:
 
 def temporary_extraction_uses_shared_flutter_test_command() -> bool:
     return flutter_test_command("flutter")[1:] == ["test", "--no-pub", "--reporter", "expanded"]
+
+
+def path_budget(paths: list[str], root_length: int, limit: int = PATH_BUDGET_LIMIT) -> dict[str, int | bool]:
+    if root_length < 0:
+        return {"valid": False, "count": 0, "maximum_relative_path": -1, "root_length": root_length, "maximum_projected_path": -1, "limit": limit}
+    if not paths:
+        return {"valid": False, "count": 0, "maximum_relative_path": -1, "root_length": root_length, "maximum_projected_path": -1, "limit": limit}
+    seen: set[str] = set()
+    maximum = 0
+    for raw in paths:
+        path = raw.replace("\\", "/")
+        parts = PurePosixPath(path).parts
+        if (
+            not path
+            or path.startswith("/")
+            or re.match(r"^[A-Za-z]:/", path)
+            or ".." in parts
+            or path in seen
+        ):
+            return {"valid": False, "count": len(paths), "maximum_relative_path": -1, "root_length": root_length, "maximum_projected_path": -1, "limit": limit}
+        seen.add(path)
+        maximum = max(maximum, len(path))
+    projected = root_length + 1 + maximum
+    return {
+        "valid": projected <= limit,
+        "count": len(paths),
+        "maximum_relative_path": maximum,
+        "root_length": root_length,
+        "maximum_projected_path": projected,
+        "limit": limit,
+    }
+
+
+def tracked_paths_at(commit: str = "HEAD") -> list[str]:
+    return git_out("ls-tree", "-r", "--name-only", commit).splitlines()
+
+
+def current_tracked_path_budget() -> dict[str, int | bool]:
+    paths = tracked_paths_at("HEAD")
+    temp_base = ROOT.parent / "temp"
+    fixed_root = temp_base / "d4w_12345678" / "w"
+    package_root = temp_base / "d0" / "DailyRhythmCompanion"
+    fixed = path_budget(paths, len(str(fixed_root)))
+    package = path_budget(paths, len(str(package_root)))
+    return {
+        "tracked_file_count": fixed["count"],
+        "maximum_relative_path": fixed["maximum_relative_path"],
+        "fixed_worktree_root_length": fixed["root_length"],
+        "fixed_maximum_projected_path": fixed["maximum_projected_path"],
+        "generic_package_destination_root_length": package["root_length"],
+        "generic_maximum_projected_path": package["maximum_projected_path"],
+        "limit": PATH_BUDGET_LIMIT,
+    }
+
+
+def path_budget_self_check() -> dict[str, bool]:
+    paths = tracked_paths_at("HEAD")
+    maximum = max(len(path.replace("\\", "/")) for path in paths)
+    temp_base = ROOT.parent / "temp"
+    fixed_root = temp_base / "d4w_12345678" / "w"
+    package_root = temp_base / "d0" / "DailyRhythmCompanion"
+    old_fixed_root = temp_base / "DRC_v400_ControlD_Stage3_build_retry_20260907_095136" / "TEMP" / (
+        "DailyRhythmCompanion_v400_fixed_" + "a" * 32
+    ) / "committed_head"
+    old_package_root = temp_base / "DRC_v400_ControlD_Stage3_build_retry_20260907_095136" / "TEMP" / (
+        "DailyRhythmCompanion_release_temp_20260907_000000_32767"
+    ) / "DailyRhythmCompanion"
+    boundary_path = "a" * 10
+    return {
+        "fixed_current_plan_under_limit": bool(path_budget(paths, len(str(fixed_root)))["valid"]),
+        "generic_current_plan_under_limit": bool(path_budget(paths, len(str(package_root)))["valid"]),
+        "old_fixed_long_prefix_rejected": not bool(path_budget(paths, len(str(old_fixed_root)))["valid"]),
+        "old_generic_long_prefix_rejected": not bool(path_budget(paths, len(str(old_package_root)))["valid"]),
+        "too_long_temp_base_rejected": not bool(path_budget([boundary_path], PATH_BUDGET_LIMIT)["valid"]),
+        "relative_path_boundary_failure_rejected": not bool(
+            path_budget(["a" * (PATH_BUDGET_LIMIT + 1 - len(str(fixed_root)))], len(str(fixed_root)))["valid"]
+        ),
+        "exactly_259_accepted": bool(path_budget([boundary_path], PATH_BUDGET_LIMIT - 1 - len(boundary_path))["valid"]),
+        "260_rejected": not bool(path_budget([boundary_path], PATH_BUDGET_LIMIT - len(boundary_path))["valid"]),
+        "negative_length_rejected": not bool(path_budget([boundary_path], -1)["valid"]),
+        "empty_tracked_path_collection_rejected": not bool(path_budget([], len(str(fixed_root)))["valid"]),
+        "duplicate_tracked_paths_rejected": not bool(path_budget(["a/b.txt", "a/b.txt"], len(str(fixed_root)))["valid"]),
+        "absolute_relative_path_rejected": not bool(path_budget(["C:/tmp/a.txt"], len(str(fixed_root)))["valid"]),
+        "traversal_relative_path_rejected": not bool(path_budget(["../a.txt"], len(str(fixed_root)))["valid"]),
+        "current_maximum_relative_path_measured": maximum > 0,
+    }
+
+
+def powershell_brace_delta(line: str) -> int:
+    scrubbed = re.sub(r'"(?:`.|[^"`])*"|\'[^\']*\'', "", line)
+    return scrubbed.count("{") - scrubbed.count("}")
+
+
+def powershell_executable_line_records_with_lexical_state(text: str) -> tuple[list[tuple[str, int]], bool]:
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    records: list[tuple[str, int]] = []
+    in_block_comment = False
+    in_single_quoted_string = False
+    in_double_quoted_string = False
+    here_string_end: str | None = None
+
+    for line_index, raw_line in enumerate(lines):
+        if here_string_end is not None:
+            if raw_line.strip() == here_string_end:
+                here_string_end = None
+            continue
+
+        code = ""
+        brace_delta = 0
+        i = 0
+        while i < len(raw_line):
+            if in_block_comment:
+                end = raw_line.find("#>", i)
+                if end == -1:
+                    i = len(raw_line)
+                    continue
+                in_block_comment = False
+                i = end + 2
+                continue
+            if in_single_quoted_string:
+                if raw_line[i] == "'":
+                    if i + 1 < len(raw_line) and raw_line[i + 1] == "'":
+                        i += 2
+                        continue
+                    in_single_quoted_string = False
+                i += 1
+                continue
+            if in_double_quoted_string:
+                if raw_line[i] == "`":
+                    if i + 1 < len(raw_line):
+                        i += 2
+                        continue
+                    if line_index + 1 >= len(lines):
+                        return records, False
+                    i += 1
+                    continue
+                if raw_line[i] == '"':
+                    in_double_quoted_string = False
+                i += 1
+                continue
+            if raw_line.startswith("<#", i):
+                in_block_comment = True
+                i += 2
+                continue
+            if raw_line[i] == "#":
+                break
+            if raw_line.startswith("@'", i) or raw_line.startswith('@"', i):
+                here_string_end = "'@" if raw_line.startswith("@'", i) else '"@'
+                break
+            if raw_line[i] == "'":
+                code += raw_line[i]
+                i += 1
+                while i < len(raw_line):
+                    code += raw_line[i]
+                    if raw_line[i] == "'":
+                        if i + 1 < len(raw_line) and raw_line[i + 1] == "'":
+                            i += 1
+                            code += raw_line[i]
+                        else:
+                            i += 1
+                            break
+                    i += 1
+                else:
+                    in_single_quoted_string = True
+                continue
+            if raw_line[i] == '"':
+                code += raw_line[i]
+                i += 1
+                while i < len(raw_line):
+                    code += raw_line[i]
+                    if raw_line[i] == "`":
+                        if i + 1 < len(raw_line):
+                            i += 1
+                            code += raw_line[i]
+                        elif line_index + 1 >= len(lines):
+                            return records, False
+                        i += 1
+                        continue
+                    if raw_line[i] == '"':
+                        i += 1
+                        break
+                    i += 1
+                else:
+                    in_double_quoted_string = True
+                continue
+            if raw_line[i] == "`":
+                if i + 1 < len(raw_line):
+                    code += raw_line[i : i + 2]
+                    i += 2
+                    continue
+                if line_index + 1 >= len(lines):
+                    return records, False
+                i += 1
+                continue
+            if raw_line[i] == "{":
+                brace_delta += 1
+            elif raw_line[i] == "}":
+                brace_delta -= 1
+            code += raw_line[i]
+            i += 1
+        if code.strip():
+            records.append((code, brace_delta))
+
+    return (
+        records,
+        not in_block_comment
+        and not in_single_quoted_string
+        and not in_double_quoted_string
+        and here_string_end is None,
+    )
+
+
+def powershell_executable_lines_with_lexical_state(text: str) -> tuple[list[str], bool]:
+    records, complete = powershell_executable_line_records_with_lexical_state(text)
+    return [line for line, _ in records], complete
+
+
+TEMP_ROOT_VARIABLE_PATTERN = (
+    r"(?:\$\{(?:(?:script|local|global|private):)?tempRoot\}"
+    r"|\$(?:(?:script|local|global|private):)?tempRoot)(?![A-Za-z0-9_])"
+)
+TEMP_ROOT_MUTATION = re.compile(
+    rf"(?i)(?:\+\+|--)\s*{TEMP_ROOT_VARIABLE_PATTERN}|"
+    rf"{TEMP_ROOT_VARIABLE_PATTERN}\s*(?:\+\+|--|\?\?=|\+=|-=|\*=|/=|%=|=)(?![=])"
+)
+TEMP_ROOT_NULL_INITIALIZER = re.compile(
+    rf"(?i)^\s*{TEMP_ROOT_VARIABLE_PATTERN}\s*=\s*\$null\s*$"
+)
+TEMP_ROOT_PLAIN_NULL_INITIALIZER = re.compile(r"^\s*\$tempRoot\s*=\s*\$null\s*$")
+TEMP_ROOT_NULL_INITIALIZER_EVENT = "NULL_INITIALIZER"
+TEMP_ROOT_CANONICAL_ASSIGNMENT_EVENT = "CANONICAL_ASSIGNMENT"
+
+
+def powershell_unescaped_subexpressions(value: str) -> tuple[list[str], bool]:
+    subexpressions: list[str] = []
+    i = 0
+    while i < len(value):
+        if value[i] == "`":
+            i += 2
+            continue
+        if value.startswith("$(", i):
+            start = i + 2
+            depth = 1
+            j = start
+            in_single = False
+            in_double = False
+            while j < len(value):
+                if in_single:
+                    if value[j] == "'":
+                        if j + 1 < len(value) and value[j + 1] == "'":
+                            j += 2
+                            continue
+                        in_single = False
+                    j += 1
+                    continue
+                if in_double:
+                    if value[j] == "`":
+                        j += 2
+                        continue
+                    if value[j] == '"':
+                        in_double = False
+                    j += 1
+                    continue
+                if value[j] == "'":
+                    in_single = True
+                elif value[j] == '"':
+                    in_double = True
+                elif value[j] == "(":
+                    depth += 1
+                elif value[j] == ")":
+                    depth -= 1
+                    if depth == 0:
+                        subexpressions.append(value[start:j])
+                        i = j + 1
+                        break
+                j += 1
+            else:
+                return subexpressions, False
+            continue
+        i += 1
+    return subexpressions, True
+
+
+def powershell_line_code_and_subexpressions(line: str) -> tuple[str, list[str], bool]:
+    code = ""
+    subexpressions: list[str] = []
+    i = 0
+    while i < len(line):
+        if line[i] == "`":
+            code += "  "
+            i += 2
+            continue
+        if line[i] == "'":
+            code += " "
+            i += 1
+            while i < len(line):
+                if line[i] == "'":
+                    if i + 1 < len(line) and line[i + 1] == "'":
+                        i += 2
+                        continue
+                    i += 1
+                    break
+                i += 1
+            else:
+                return code, subexpressions, False
+            continue
+        if line[i] == '"':
+            code += " "
+            start = i + 1
+            i += 1
+            content = ""
+            while i < len(line):
+                if line[i] == "`":
+                    if i + 1 < len(line):
+                        content += line[i : i + 2]
+                        i += 2
+                        continue
+                    return code, subexpressions, False
+                if line[i] == '"':
+                    found, complete = powershell_unescaped_subexpressions(content)
+                    subexpressions.extend(found)
+                    if not complete:
+                        return code, subexpressions, False
+                    i += 1
+                    break
+                content += line[i]
+                i += 1
+            else:
+                return code, subexpressions, False
+            code += " " * (i - start)
+            continue
+        code += line[i]
+        i += 1
+    return code, subexpressions, True
+
+
+def powershell_double_here_string_subexpressions(text: str) -> tuple[list[str], bool]:
+    subexpressions: list[str] = []
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    in_block_comment = False
+    in_double_here = False
+    for line in lines:
+        stripped = line.strip()
+        if in_double_here:
+            if stripped == '"@':
+                in_double_here = False
+                continue
+            found, complete = powershell_unescaped_subexpressions(line)
+            subexpressions.extend(found)
+            if not complete:
+                return subexpressions, False
+            continue
+        if in_block_comment:
+            end = line.find("#>")
+            if end == -1:
+                continue
+            in_block_comment = False
+            line = line[end + 2 :]
+            stripped = line.strip()
+        if stripped.startswith("<#"):
+            if "#>" not in stripped:
+                in_block_comment = True
+            continue
+        if stripped.startswith('@"'):
+            in_double_here = stripped != '"@'
+    return subexpressions, not in_block_comment and not in_double_here
+
+
+def fixed_builder_temp_root_mutation_events(text: str) -> tuple[list[str], bool]:
+    executable_records, complete = powershell_executable_line_records_with_lexical_state(text)
+    here_subexpressions, here_complete = powershell_double_here_string_subexpressions(text)
+    if not complete or not here_complete:
+        return [], False
+    events: list[str] = []
+    depth = 0
+    disallowed_depth: int | None = None
+    for line, brace_delta in executable_records:
+        if disallowed_depth is None and (
+            re.match(r"^\s*function\b", line, re.IGNORECASE)
+            or re.match(r"^\s*if\s*\(\s*(?:\$false|0)\s*\)", line, re.IGNORECASE)
+        ):
+            disallowed_depth = depth
+        reachable = disallowed_depth is None
+        code, subexpressions, line_complete = powershell_line_code_and_subexpressions(line)
+        if not line_complete:
+            return [], False
+        if FIXED_BUILDER_CANONICAL_SHORT_WORKTREE_ASSIGNMENT.match(line):
+            events.append(
+                TEMP_ROOT_CANONICAL_ASSIGNMENT_EVENT
+                if reachable
+                else "NONCANONICAL_TEMP_ROOT_EVENT: " + line.strip()
+            )
+        elif TEMP_ROOT_PLAIN_NULL_INITIALIZER.match(code) and reachable and depth == 0:
+            events.append(TEMP_ROOT_NULL_INITIALIZER_EVENT)
+        elif TEMP_ROOT_MUTATION.search(code):
+            events.append("NONCANONICAL_TEMP_ROOT_EVENT: " + line.strip())
+        for subexpression in subexpressions:
+            if TEMP_ROOT_MUTATION.search(subexpression):
+                events.append("NONCANONICAL_TEMP_ROOT_EVENT: " + subexpression.strip())
+        depth += brace_delta
+        if depth < 0:
+            return [], False
+        if disallowed_depth is not None and depth <= disallowed_depth:
+            disallowed_depth = None
+    if depth != 0:
+        return [], False
+    for subexpression in here_subexpressions:
+        if TEMP_ROOT_MUTATION.search(subexpression):
+            events.append("NONCANONICAL_TEMP_ROOT_EVENT: " + subexpression.strip())
+    return events, True
+
+
+def fixed_builder_canonical_short_worktree_assignments(text: str) -> list[str]:
+    executable_records, complete = powershell_executable_line_records_with_lexical_state(text)
+    if not complete:
+        return []
+    matches: list[str] = []
+    disallowed_depth: int | None = None
+    depth = 0
+    for line, brace_delta in executable_records:
+        if disallowed_depth is not None:
+            depth += brace_delta
+            if depth < 0:
+                return []
+            if depth <= disallowed_depth:
+                disallowed_depth = None
+            continue
+        if re.match(r"^\s*function\b", line, re.IGNORECASE) or re.match(
+            r"^\s*if\s*\(\s*(?:\$false|0)\s*\)", line, re.IGNORECASE
+        ):
+            disallowed_depth = depth
+            depth += brace_delta
+            if depth < 0:
+                return []
+            if depth <= disallowed_depth:
+                disallowed_depth = None
+            continue
+        if FIXED_BUILDER_CANONICAL_SHORT_WORKTREE_ASSIGNMENT.match(line):
+            matches.append(line)
+        depth += brace_delta
+        if depth < 0:
+            return []
+    return matches if depth == 0 else []
+
+
+def fixed_builder_has_canonical_short_worktree_assignment(text: str | None = None) -> bool:
+    if text is None:
+        text = read("build_v400_fixed_release_zip_from_head.ps1")
+    events, complete = fixed_builder_temp_root_mutation_events(text)
+    return bool(
+        complete
+        and events == [TEMP_ROOT_NULL_INITIALIZER_EVENT, TEMP_ROOT_CANONICAL_ASSIGNMENT_EVENT]
+    )
+
+
+def fixed_builder_short_worktree_assignment_self_check() -> dict[str, bool]:
+    canonical = (
+        '$tempRoot = Join-Path ([IO.Path]::GetTempPath()) '
+        '("d4w_" + [Guid]::NewGuid().ToString("N").Substring(0, 8))'
+    )
+    spaced = (
+        '  $tempRoot   =   Join-Path   ( [IO.Path] :: GetTempPath( ) )   '
+        '( "d4w_"   +   [Guid] :: NewGuid( ) . ToString( "N" ) . Substring( 0, 8 ) )  '
+    )
+    null_initializer = "$tempRoot = $null"
+    valid = null_initializer + "\n" + canonical
+    expected_sequence = [TEMP_ROOT_NULL_INITIALIZER_EVENT, TEMP_ROOT_CANONICAL_ASSIGNMENT_EVENT]
+    current_events, current_complete = fixed_builder_temp_root_mutation_events(
+        read("build_v400_fixed_release_zip_from_head.ps1")
+    )
+    return {
+        "current_builder_accepted": fixed_builder_has_canonical_short_worktree_assignment(),
+        "current_builder_mutation_event_sequence_exact": current_complete and current_events == expected_sequence,
+        "exact_null_initializer_followed_by_canonical_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            valid
+        ),
+        "lf_variant_accepted": fixed_builder_has_canonical_short_worktree_assignment(valid + "\n"),
+        "crlf_variant_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            null_initializer + "\r\n" + canonical + "\r\n"
+        ),
+        "read_only_temp_root_references_after_canonical_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\nWrite-Host $tempRoot\nJoin-Path $tempRoot "w"'
+        ),
+        "harmless_operator_whitespace_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            null_initializer + "\n" + spaced
+        ),
+        "missing_rejected": not fixed_builder_has_canonical_short_worktree_assignment("Write-Host 'missing'\n"),
+        "canonical_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(canonical),
+        "null_initializer_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(null_initializer),
+        "null_after_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n" + null_initializer
+        ),
+        "null_before_and_after_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            null_initializer + "\n" + canonical + "\n" + null_initializer
+        ),
+        "duplicate_null_before_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            null_initializer + "\n" + null_initializer + "\n" + canonical
+        ),
+        "duplicate_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n" + canonical
+        ),
+        "braced_null_initializer_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "${tempRoot} = $null\n" + canonical
+        ),
+        "scoped_null_before_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "$script:tempRoot = $null\n" + canonical
+        ),
+        "scoped_null_after_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n$script:tempRoot = $null"
+        ),
+        "block_comment_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "<#\n" + valid + "\n#>"
+        ),
+        "string_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment('"' + valid + '"'),
+        "single_quoted_string_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "'" + valid + "'"
+        ),
+        "multiline_double_quoted_string_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            '"before\n' + valid + '\nafter"'
+        ),
+        "multiline_single_quoted_string_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "'before\n" + valid + "\nafter'"
+        ),
+        "double_quoted_here_string_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            '@"\n' + valid + '\n"@'
+        ),
+        "single_quoted_here_string_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "@'\n" + valid + "\n'@"
+        ),
+        "inline_block_comment_then_canonical_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            null_initializer + "\n<# harmless #> " + canonical
+        ),
+        "unrelated_comment_string_here_string_then_canonical_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            "<# $tempRoot = nope #>\n'ignored'\n@'\nignored\n'@\n" + valid
+        ),
+        "never_called_function_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "function Invoke-Unused {\n" + canonical + "\n}"
+        ),
+        "false_branch_only_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "if ($false) {\n" + canonical + "\n}"
+        ),
+        "function_null_initializer_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "function Invoke-Unused {\n" + null_initializer + "\n}\n" + canonical
+        ),
+        "false_branch_null_initializer_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "if ($false) {\n" + null_initializer + "\n}\n" + canonical
+        ),
+        "subexpression_null_assignment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            'Write-Host "$($tempRoot = $null)"' + "\n" + canonical
+        ),
+        "double_quoted_here_string_subexpression_null_assignment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            '@"\n$($tempRoot = $null)\n"@\n' + canonical
+        ),
+        "comment_null_text_ignored": fixed_builder_has_canonical_short_worktree_assignment(
+            "# $tempRoot = $null\n" + valid
+        ),
+        "literal_string_null_text_ignored": fixed_builder_has_canonical_short_worktree_assignment(
+            "'$tempRoot = $null'\n" + valid
+        ),
+        "single_quoted_here_string_null_text_ignored": fixed_builder_has_canonical_short_worktree_assignment(
+            "@'\n$tempRoot = $null\n'@\n" + valid
+        ),
+        "helper_return_type_is_exact_bool": type(fixed_builder_has_canonical_short_worktree_assignment(canonical))
+        is bool,
+        "canonical_plus_plain_override_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\n$tempRoot = "C:\\evil"'
+        ),
+        "plain_override_before_canonical_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            '$tempRoot = "C:\\evil"\n' + canonical
+        ),
+        "canonical_plus_compound_assignment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\n$tempRoot += "evil"'
+        ),
+        "canonical_plus_prefix_increment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n++$tempRoot"
+        ),
+        "canonical_plus_postfix_increment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n$tempRoot++"
+        ),
+        "canonical_plus_braced_scoped_assignment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\n${script:tempRoot} = "C:\\evil"'
+        ),
+        "canonical_plus_expandable_string_subexpression_override_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\nWrite-Host "$($tempRoot = ''C:\\evil'')"'
+        ),
+        "canonical_plus_double_here_string_subexpression_override_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\n@"\n$($tempRoot = ''C:\\evil'')\n"@'
+        ),
+        "mutation_text_in_comment_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\n# $tempRoot = "C:\\evil"'
+        ),
+        "mutation_text_in_single_quoted_string_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n'$tempRoot = \"C:\\evil\"'"
+        ),
+        "read_only_temp_root_references_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\nWrite-Host $tempRoot\nJoin-Path $tempRoot "w"'
+        ),
+        "escaped_dollar_mutation_text_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\nWrite-Host "`$tempRoot = ''C:\\evil''"'
+        ),
+        "unclosed_subexpression_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + '\nWrite-Host "$($tempRoot = ''C:\\evil''"'
+        ),
+        "multiline_double_quoted_string_braces_ignored_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            '"}"\n' + valid + '\n"{"'
+        ),
+        "multiline_single_quoted_string_braces_ignored_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            "'}'\n" + valid + "\n'{'"
+        ),
+        "block_comment_braces_ignored_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            "<# } #>\n" + valid + "\n<# { #>"
+        ),
+        "here_string_braces_ignored_accepted": fixed_builder_has_canonical_short_worktree_assignment(
+            '@"\n}\n"@\n' + valid + '\n@"\n{\n"@'
+        ),
+        "unclosed_block_comment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "<#\n" + valid
+        ),
+        "unclosed_double_quoted_string_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            '"before\n' + valid
+        ),
+        "unclosed_single_quoted_string_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            "'before\n" + valid
+        ),
+        "unclosed_here_string_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            '@"\n' + valid
+        ),
+        "duplicate_executable_assignment_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            valid + "\n" + "if ($true) {\n" + canonical + "\n}"
+        ),
+        "unrelated_variable_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace("$tempRoot", "$otherRoot")
+        ),
+        "d4x_prefix_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace('"d4w_"', '"d4x_"')
+        ),
+        "wrong_tostring_format_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace('ToString("N")', 'ToString("D")')
+        ),
+        "substring_start_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace("Substring(0, 8)", "Substring(1, 8)")
+        ),
+        "substring_length_7_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace("Substring(0, 8)", "Substring(0, 7)")
+        ),
+        "substring_length_9_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace("Substring(0, 8)", "Substring(0, 9)")
+        ),
+        "newguid_missing_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace("[Guid]::NewGuid()", '"12345678"')
+        ),
+        "gettemppath_missing_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            canonical.replace("([IO.Path]::GetTempPath())", '"C:\\tmp"')
+        ),
+        "worktree_child_marker_alone_rejected": not fixed_builder_has_canonical_short_worktree_assignment(
+            'Join-Path $tempRoot "w"'
+        ),
+        "old_impossible_fragment_not_required": (
+            fixed_builder_has_canonical_short_worktree_assignment(valid)
+            and '".Substring(0, 8)' not in canonical
+        ),
+    }
+
+
+def fixed_builder_short_worktree_contract_is_present() -> bool:
+    text = read("build_v400_fixed_release_zip_from_head.ps1")
+    return fixed_builder_has_canonical_short_worktree_assignment(text) and all(
+        needle in text
+        for needle in (
+            'Join-Path $tempRoot "w"',
+            "Get-TrackedPathBudget",
+            "[PathBudget] maximum projected worktree path:",
+            "Temporary worktree path budget exceeded before git worktree add.",
+            "Limit = 259",
+            "git worktree add --detach $worktreeRoot $headCommit",
+        )
+    )
+
+
+def generic_builder_atomic_slot_claim_contract_is_present(text: str | None = None) -> bool:
+    if text is None:
+        text = read("build_release.bat")
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    executable_lines = [
+        line.rstrip()
+        for line in normalized.split("\n")
+        if line.strip()
+        and not line.lstrip().lower().startswith(("rem ", "::"))
+        and (
+            not line.lstrip().lower().startswith("echo ")
+            or line.strip() == "echo [Error] Slots d0 through d9 are already in use."
+        )
+    ]
+    executable = "\n".join(executable_lines)
+    required = (
+        "set \"TEMP_ROOT=\"",
+        "set \"TEMP_ROOT_OWNED=0\"",
+        "for %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT (",
+        "mkdir \"%TEMP_BASE%\\d%%s\" >nul 2>nul",
+        "if not errorlevel 1 (",
+        "set \"TEMP_ROOT=%TEMP_BASE%\\d%%s\"",
+        "set \"TEMP_ROOT_OWNED=1\"",
+        "set \"TEMP_DIR=%TEMP_ROOT%\\%PACKAGE_ROOT_NAME%\"",
+        "if not \"%TEMP_ROOT_OWNED%\"==\"1\" exit /b 0",
+        "Remove-Item -LiteralPath $p -Recurse -Force",
+    )
+    if any(needle not in executable for needle in required):
+        return False
+    if "Slots d0 through d9 are already in use." not in normalized:
+        return False
+    if "if not defined TEMP_ROOT if not exist" in normalized:
+        return False
+    if executable.count('mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul') != 1:
+        return False
+    if executable_lines.count('set "TEMP_ROOT="') != 1 or executable_lines.count('set "TEMP_ROOT_OWNED=0"') != 1:
+        return False
+    loop_line = "for %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT ("
+    if executable_lines.count(loop_line) != 1:
+        return False
+
+    def batch_paren_delta(line: str) -> int:
+        scrubbed = ""
+        in_quote = False
+        i = 0
+        while i < len(line):
+            if line[i] == '"':
+                in_quote = not in_quote
+            elif not in_quote:
+                scrubbed += line[i]
+            i += 1
+        return scrubbed.count("(") - scrubbed.count(")")
+
+    def matching_block_end(start: int) -> int:
+        depth = batch_paren_delta(executable_lines[start])
+        if depth <= 0:
+            return -1
+        for index in range(start + 1, len(executable_lines)):
+            depth += batch_paren_delta(executable_lines[index])
+            if depth == 0:
+                return index
+            if depth < 0:
+                return -1
+        return -1
+
+    def block_depths_before() -> list[int]:
+        depths: list[int] = []
+        depth = 0
+        for line in executable_lines:
+            depths.append(depth)
+            depth += batch_paren_delta(line)
+            if depth < 0:
+                return []
+        return depths if depth == 0 else []
+
+    init_root = executable_lines.index('set "TEMP_ROOT="')
+    init_owned = executable_lines.index('set "TEMP_ROOT_OWNED=0"')
+    loop_start = executable_lines.index(loop_line)
+    depths_before = block_depths_before()
+    if not depths_before or depths_before[loop_start] != 0:
+        return False
+    loop_end = matching_block_end(loop_start)
+    if not (init_root < init_owned < loop_start and loop_end != -1):
+        return False
+    pre_claim = "\n".join(executable_lines[:loop_start]).lower()
+    if (
+        "remove-item" in pre_claim
+        or "rmdir" in pre_claim
+        or "rd /s" in pre_claim
+        or "call :cleanup_temp" in pre_claim
+        or "call :cleanup_temp_silent" in pre_claim
+    ):
+        return False
+    loop_body = executable_lines[loop_start + 1 : loop_end]
+    if loop_body.count('  mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul') + loop_body.count(
+        'mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul'
+    ) != 1:
+        return False
+    mkdir_slot = next(
+        (
+            index
+            for index in range(loop_start + 1, loop_end)
+            if executable_lines[index].strip() == 'mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul'
+        ),
+        -1,
+    )
+    success_if = mkdir_slot + 1
+    if success_if >= loop_end or executable_lines[success_if].strip() != "if not errorlevel 1 (":
+        return False
+    success_end = matching_block_end(success_if)
+    if success_end == -1 or success_end > loop_end:
+        return False
+    set_temp_indices = [
+        index
+        for index, line in enumerate(executable_lines)
+        if line.strip() == 'set "TEMP_ROOT=%TEMP_BASE%\\d%%s"'
+    ]
+    set_owned_indices = [
+        index for index, line in enumerate(executable_lines) if line.strip() == 'set "TEMP_ROOT_OWNED=1"'
+    ]
+    if len(set_temp_indices) != 1 or len(set_owned_indices) != 1:
+        return False
+    set_temp = set_temp_indices[0]
+    set_owned = set_owned_indices[0]
+    if not (success_if < set_temp < set_owned < success_end):
+        return False
+    success_child_depth = depths_before[success_if] + 1
+    if depths_before[set_temp] != success_child_depth or depths_before[set_owned] != success_child_depth:
+        return False
+    if set_temp != success_if + 1 or set_owned != success_if + 2:
+        return False
+    for index, line in enumerate(executable_lines):
+        stripped_lower = line.strip().lower()
+        if stripped_lower.startswith('set "temp_root=') and index not in {init_root, set_temp}:
+            return False
+        if stripped_lower.startswith('set "temp_root_owned=1"') and index != set_owned:
+            return False
+    set_dir_indices = [
+        index
+        for index, line in enumerate(executable_lines)
+        if line.strip() == 'set "TEMP_DIR=%TEMP_ROOT%\\%PACKAGE_ROOT_NAME%"'
+    ]
+    if len(set_dir_indices) != 1:
+        return False
+    set_dir = set_dir_indices[0]
+    temp_dir_mkdir = next(
+        (
+            index
+            for index, line in enumerate(executable_lines)
+            if line.strip() == 'mkdir "%TEMP_DIR%" >nul 2>nul'
+        ),
+        -1,
+    )
+    cleanup_guard_count = executable.count('if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0')
+    if cleanup_guard_count != 2 or temp_dir_mkdir <= set_dir or set_dir <= set_owned:
+        return False
+    no_slot_if = "if not defined TEMP_ROOT ("
+    no_slot_if_indices = [
+        index for index, line in enumerate(executable_lines) if line.strip() == no_slot_if
+    ]
+    if len(no_slot_if_indices) != 1:
+        return False
+    no_slot_start = no_slot_if_indices[0]
+    no_slot_end = matching_block_end(no_slot_start)
+    if (
+        no_slot_end == -1
+        or depths_before[no_slot_start] != 0
+        or no_slot_start <= loop_end
+        or no_slot_end >= set_dir
+    ):
+        return False
+    if any(line.strip().lower() == "exit /b 1" for line in executable_lines[loop_end + 1 : no_slot_start]):
+        return False
+    no_slot = normalized.find("Slots d0 through d9 are already in use.")
+    no_slot_if_text = normalized.find("\n" + no_slot_if, normalized.find(loop_line))
+    no_slot_block_end_text = normalized.find("\n)", no_slot_if_text)
+    if no_slot == -1 or no_slot_if_text == -1 or no_slot_block_end_text == -1:
+        return False
+    if not (no_slot_if_text < no_slot < no_slot_block_end_text):
+        return False
+    cleanup_call_after_no_slot = normalized.find("call :cleanup_temp", no_slot, normalized.find('set "TEMP_DIR='))
+    if cleanup_call_after_no_slot != -1:
+        return False
+    no_slot_body = executable_lines[no_slot_start + 1 : no_slot_end]
+    no_slot_direct_indices = [
+        index
+        for index in range(no_slot_start + 1, no_slot_end)
+        if depths_before[index] == depths_before[no_slot_start] + 1
+    ]
+    no_slot_direct_lines = [executable_lines[index].strip() for index in no_slot_direct_indices]
+    if no_slot_direct_lines.count("echo [Error] Slots d0 through d9 are already in use.") != 1:
+        return False
+    if sum(1 for line in no_slot_direct_lines if line.lower() == "exit /b 1") != 1:
+        return False
+    if no_slot_body.count("  echo [Error] Slots d0 through d9 are already in use.") + no_slot_body.count(
+        "echo [Error] Slots d0 through d9 are already in use."
+    ) != 1:
+        return False
+    if sum(1 for line in no_slot_body if line.strip().lower() == "exit /b 1") != 1:
+        return False
+    for label in (":cleanup_temp_silent", ":cleanup_temp"):
+        if executable_lines.count(label) != 1:
+            return False
+        label_index = executable_lines.index(label)
+        if label_index + 1 >= len(executable_lines):
+            return False
+        if executable_lines[label_index + 1] != 'if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0':
+            return False
+        next_label = next(
+            (
+                index
+                for index in range(label_index + 1, len(executable_lines))
+                if executable_lines[index].startswith(":")
+            ),
+            len(executable_lines),
+        )
+        guarded_body = "\n".join(executable_lines[label_index + 2 : next_label])
+        if "Remove-Item -LiteralPath $p -Recurse -Force" not in guarded_body:
+            return False
+    cleanup = executable.find(":cleanup_temp")
+    return no_slot < cleanup
+
+
+def generic_builder_atomic_slot_claim_self_check() -> dict[str, bool]:
+    current = read("build_release.bat")
+    minimal = """
+set "TEMP_ROOT="
+set "TEMP_ROOT_OWNED=0"
+for %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT (
+  mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul
+  if not errorlevel 1 (
+    set "TEMP_ROOT=%TEMP_BASE%\\d%%s"
+    set "TEMP_ROOT_OWNED=1"
+    )
+)
+if not defined TEMP_ROOT (
+  echo [Error] Slots d0 through d9 are already in use.
+  exit /b 1
+)
+set "TEMP_DIR=%TEMP_ROOT%\\%PACKAGE_ROOT_NAME%"
+mkdir "%TEMP_DIR%" >nul 2>nul
+:cleanup_temp_silent
+if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0
+Remove-Item -LiteralPath $p -Recurse -Force
+:cleanup_temp
+if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0
+Remove-Item -LiteralPath $p -Recurse -Force
+"""
+    return {
+        "current_corrected_builder_accepted": generic_builder_atomic_slot_claim_contract_is_present(current),
+        "atomic_d0_to_d9_claim_accepted": generic_builder_atomic_slot_claim_contract_is_present(minimal),
+        "if_not_exist_slot_selection_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                "for %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT (",
+                "for %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT if not exist \"%TEMP_BASE%\\d%%s\" (",
+            )
+        ),
+        "temp_root_set_before_directory_claim_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul\n  if not errorlevel 1 (\n    set "TEMP_ROOT=%TEMP_BASE%\\d%%s"',
+                'set "TEMP_ROOT=%TEMP_BASE%\\d%%s"\n  mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul\n  if not errorlevel 1 (',
+            )
+        ),
+        "temp_dir_only_mkdir_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace('mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul', 'mkdir "%TEMP_DIR%" >nul 2>nul')
+        ),
+        "cleanup_without_ownership_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace('if not "%TEMP_ROOT_OWNED%"=="1" exit /b 0\n', "")
+        ),
+        "valid_conditional_no_slot_block_accepted": generic_builder_atomic_slot_claim_contract_is_present(minimal),
+        "success_assignments_direct_children_accepted": generic_builder_atomic_slot_claim_contract_is_present(minimal),
+        "success_assignments_nested_in_false_if_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                '  if not errorlevel 1 (\n    set "TEMP_ROOT=%TEMP_BASE%\\d%%s"\n    set "TEMP_ROOT_OWNED=1"\n    )',
+                '  if not errorlevel 1 (\n    if 0==1 (\n      set "TEMP_ROOT=%TEMP_BASE%\\d%%s"\n      set "TEMP_ROOT_OWNED=1"\n    )\n    )',
+            )
+        ),
+        "success_assignments_nested_in_another_if_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                '  if not errorlevel 1 (\n    set "TEMP_ROOT=%TEMP_BASE%\\d%%s"\n    set "TEMP_ROOT_OWNED=1"\n    )',
+                '  if not errorlevel 1 (\n    if not defined TEMP_ROOT (\n      set "TEMP_ROOT=%TEMP_BASE%\\d%%s"\n      set "TEMP_ROOT_OWNED=1"\n    )\n    )',
+            )
+        ),
+        "no_slot_message_exit_direct_children_accepted": generic_builder_atomic_slot_claim_contract_is_present(minimal),
+        "no_slot_message_exit_nested_in_false_if_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'if not defined TEMP_ROOT (\n  echo [Error] Slots d0 through d9 are already in use.\n  exit /b 1\n)',
+                'if not defined TEMP_ROOT (\n  if 0==1 (\n    echo [Error] Slots d0 through d9 are already in use.\n    exit /b 1\n  )\n)',
+            )
+        ),
+        "no_slot_exit_nested_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                '  exit /b 1',
+                '  if 0==1 (\n    exit /b 1\n  )',
+            )
+        ),
+        "no_slot_message_nested_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                '  echo [Error] Slots d0 through d9 are already in use.',
+                '  if 0==1 (\n    echo [Error] Slots d0 through d9 are already in use.\n  )',
+            )
+        ),
+        "direct_body_duplicate_exit_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace('  exit /b 1', '  exit /b 1\n  exit /b 1')
+        ),
+        "unconditional_no_slot_exit_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'if not defined TEMP_ROOT (\n  echo [Error] Slots d0 through d9 are already in use.\n  exit /b 1\n)',
+                'echo [Error] Slots d0 through d9 are already in use.\nexit /b 1',
+            )
+        ),
+        "missing_no_slot_if_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace('if not defined TEMP_ROOT (', 'REM missing no-slot if (')
+        ),
+        "duplicate_no_slot_block_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'set "TEMP_DIR=%TEMP_ROOT%\\%PACKAGE_ROOT_NAME%"',
+                'if not defined TEMP_ROOT (\n  echo [Error] Slots d0 through d9 are already in use.\n  exit /b 1\n)\nset "TEMP_DIR=%TEMP_ROOT%\\%PACKAGE_ROOT_NAME%"',
+            )
+        ),
+        "claim_loop_wrapped_in_false_branch_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            "if 0==1 (\n" + minimal + "\n)"
+        ),
+        "no_slot_block_wrapped_in_false_branch_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'if not defined TEMP_ROOT (\n  echo [Error] Slots d0 through d9 are already in use.\n  exit /b 1\n)',
+                'if 0==1 (\nif not defined TEMP_ROOT (\n  echo [Error] Slots d0 through d9 are already in use.\n  exit /b 1\n)\n)',
+            )
+        ),
+        "no_slot_message_outside_conditional_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'if not defined TEMP_ROOT (\n  echo [Error] Slots d0 through d9 are already in use.\n  exit /b 1\n)',
+                'echo [Error] Slots d0 through d9 are already in use.\nif not defined TEMP_ROOT (\n  exit /b 1\n)',
+            )
+        ),
+        "pre_claim_cleanup_call_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace('set "TEMP_ROOT_OWNED=0"\nfor %%s', 'set "TEMP_ROOT_OWNED=0"\ncall :cleanup_temp\nfor %%s')
+        ),
+        "pre_claim_cleanup_silent_call_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'set "TEMP_ROOT_OWNED=0"\nfor %%s',
+                'set "TEMP_ROOT_OWNED=0"\ncall :cleanup_temp_silent\nfor %%s',
+            )
+        ),
+        "unguarded_temp_root_assignment_after_success_block_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                "echo [Error] Slots d0 through d9 are already in use.",
+                'set "TEMP_ROOT=%TEMP_BASE%\\d9"\necho [Error] Slots d0 through d9 are already in use.',
+            )
+        ),
+        "unguarded_ownership_assignment_after_success_block_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                "echo [Error] Slots d0 through d9 are already in use.",
+                'set "TEMP_ROOT_OWNED=1"\necho [Error] Slots d0 through d9 are already in use.',
+            )
+        ),
+        "ownership_guard_moved_below_cleanup_work_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                ':cleanup_temp\nif not "%TEMP_ROOT_OWNED%"=="1" exit /b 0\nRemove-Item',
+                ':cleanup_temp\nif exist "%TEMP_ROOT%" echo cleanup\nif not "%TEMP_ROOT_OWNED%"=="1" exit /b 0\nRemove-Item',
+            )
+        ),
+        "claim_before_slot_cleanup_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'set "TEMP_ROOT_OWNED=0"\nfor %%s',
+                'set "TEMP_ROOT_OWNED=0"\nrmdir /s /q "%TEMP_BASE%\\d0"\nfor %%s',
+            )
+        ),
+        "single_cleanup_label_guarded_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(':cleanup_temp_silent', ':cleanup_temp')
+        ),
+        "slot_mkdir_assignment_gap_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                'mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul\n  if not errorlevel 1 (',
+                'mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul\n  set "TEMP_ROOT_OWNED=1"\n  if not errorlevel 1 (',
+            )
+        ),
+        "pre_existing_slot_cleanup_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace(
+                "echo [Error] Slots d0 through d9 are already in use.",
+                "echo [Error] Slots d0 through d9 are already in use.\ncall :cleanup_temp",
+            )
+        ),
+        "missing_claim_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal.replace('mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul', "")
+        ),
+        "duplicate_claim_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            minimal + '\nfor %%s in (0 1 2 3 4 5 6 7 8 9) do if not defined TEMP_ROOT (\n  mkdir "%TEMP_BASE%\\d%%s" >nul 2>nul\n)\n'
+        ),
+        "comment_marker_only_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            "REM " + minimal.replace("\n", "\nREM ")
+        ),
+        "string_marker_only_rejected": not generic_builder_atomic_slot_claim_contract_is_present(
+            "echo " + minimal.replace("\n", "\necho ")
+        ),
+    }
+
+
+def generic_builder_short_package_staging_contract_is_present() -> bool:
+    text = read("build_release.bat")
+    return generic_builder_atomic_slot_claim_contract_is_present(text) and all(
+        needle in text
+        for needle in (
+            "for %%s in (0 1 2 3 4 5 6 7 8 9)",
+            r"%TEMP_BASE%\d%%s",
+            "[PathBudget] package source maximum relative path:",
+            "[PathBudget] maximum projected package path:",
+            "Slots d0 through d9 are already in use.",
+        )
+    ) and "DailyRhythmCompanion_release_temp_%TIMESTAMP%_%RANDOM%" not in text
 
 
 def source_diff_guard_rejects_arbitrary_product_change() -> bool:
@@ -2894,11 +4314,20 @@ def main() -> None:
         stage3_builder_dirty_checks = stage3_builder_auth_guard_corrective_dirty_surface_self_check()
         stage3_builder_committed_checks = stage3_builder_auth_guard_corrective_committed_surface_self_check()
         stage3_builder_origin_checks = stage3_builder_auth_guard_corrective_origin_state_self_check()
+        stage3_path_dirty_checks = stage3_path_length_corrective_dirty_surface_self_check()
+        stage3_path_committed_checks = stage3_path_length_corrective_committed_surface_self_check()
+        stage3_path_protected_checks = stage3_path_length_corrective_protected_delta_self_check()
+        stage3_path_origin_checks = stage3_path_length_corrective_origin_state_self_check()
         stage3_marker_contract_checks = stage3_authorization_contract_self_check()
         stage3_marker_assignment_checks = stage3_authorization_marker_assignment_self_check()
         stage3_marker_expandable_subexpression_checks = stage3_authorization_marker_expandable_subexpression_self_check()
         stage3_marker_backtick_checks = stage3_authorization_marker_backtick_escape_self_check()
         stage3_builder_normalized_sha_checks = stage3_builder_normalized_sha256_self_check()
+        generic_builder_normalized_sha_checks = generic_builder_normalized_sha256_self_check()
+        fixed_builder_short_assignment_checks = fixed_builder_short_worktree_assignment_self_check()
+        generic_builder_atomic_slot_claim_checks = generic_builder_atomic_slot_claim_self_check()
+        path_budget_checks = path_budget_self_check()
+        current_budget = current_tracked_path_budget()
         prose_checks = current_state_prose_consistency_self_check()
         clean_guard_plan_checks = clean_committed_source_guard_plan_self_check()
         flutter_plan_checks = {
@@ -3038,6 +4467,22 @@ def main() -> None:
             f"{all(stage3_builder_origin_checks.values())}"
         )
         print(
+            "v400_stage3_path_length_corrective_dirty_exact_m4_validator_self_check: "
+            f"{all(stage3_path_dirty_checks.values())}"
+        )
+        print(
+            "v400_stage3_path_length_corrective_future_clean_exact_one_commit_m4_validator_self_check: "
+            f"{all(stage3_path_committed_checks.values())}"
+        )
+        print(
+            "v400_stage3_path_length_corrective_protected_exact_builder_m2_self_check: "
+            f"{all(stage3_path_protected_checks.values())}"
+        )
+        print(
+            "v400_stage3_path_length_corrective_origin_state_validator_self_check: "
+            f"{all(stage3_path_origin_checks.values())}"
+        )
+        print(
             "v400_stage3_authorization_marker_contract_self_check: "
             f"{all(stage3_marker_contract_checks.values())}"
         )
@@ -3090,6 +4535,50 @@ def main() -> None:
             f"{builder_has_expected_stage3_builder_normalized_sha256()}"
         )
         print(
+            "v400_generic_builder_normalized_sha256_self_check: "
+            f"{all(generic_builder_normalized_sha_checks.values())}"
+        )
+        print(
+            "v400_generic_builder_normalized_sha256_current: "
+            f"{builder_has_expected_generic_builder_normalized_sha256()}"
+        )
+        print(
+            "v400_fixed_builder_canonical_short_worktree_assignment_self_check: "
+            f"{all(fixed_builder_short_assignment_checks.values())}"
+        )
+        print(
+            "v400_fixed_builder_canonical_short_worktree_assignment_occurrences: "
+            f"{len(fixed_builder_canonical_short_worktree_assignments(read('build_v400_fixed_release_zip_from_head.ps1')))}"
+        )
+        print(
+            "v400_fixed_builder_temp_root_mutation_event_sequence: "
+            f"{fixed_builder_temp_root_mutation_events(read('build_v400_fixed_release_zip_from_head.ps1'))[0]}"
+        )
+        print(
+            "v400_generic_builder_atomic_slot_claim_self_check: "
+            f"{all(generic_builder_atomic_slot_claim_checks.values())}"
+        )
+        print(f"v400_path_budget_self_check: {all(path_budget_checks.values())}")
+        print(f"v400_current_tracked_file_count: {current_budget['tracked_file_count']}")
+        print(f"v400_current_maximum_relative_path: {current_budget['maximum_relative_path']}")
+        print(
+            "v400_fixed_builder_short_worktree_contract: "
+            f"{fixed_builder_short_worktree_contract_is_present()}"
+        )
+        print(
+            "v400_generic_builder_short_package_staging_contract: "
+            f"{generic_builder_short_package_staging_contract_is_present()}"
+        )
+        print(f"v400_fixed_worktree_root_length: {current_budget['fixed_worktree_root_length']}")
+        print(f"v400_fixed_maximum_projected_worktree_path: {current_budget['fixed_maximum_projected_path']}")
+        print(
+            "v400_generic_package_destination_root_length: "
+            f"{current_budget['generic_package_destination_root_length']}"
+        )
+        print(f"v400_generic_maximum_projected_package_path: {current_budget['generic_maximum_projected_path']}")
+        print(f"v400_path_budget_limit: {current_budget['limit']}")
+        print(f"v400_prior_long_layouts_rejected: {path_budget_checks['old_fixed_long_prefix_rejected'] and path_budget_checks['old_generic_long_prefix_rejected']}")
+        print(
             "v400_current_state_prose_consistency_self_check: "
             f"{all(prose_checks.values())}"
         )
@@ -3106,8 +4595,8 @@ def main() -> None:
             "False"
         )
         print(
-            "v400_clean_committed_source_guard_plan_count_exact_6: "
-            f"{clean_guard_plan_checks['guard_count_exact_6']}"
+            "v400_clean_committed_source_guard_plan_count_exact_7: "
+            f"{clean_guard_plan_checks['guard_count_exact_7']}"
         )
         print("v400_fixed_release_zip_builder_invocation_count: 0")
         print("v400_fixed_release_zip_built: False")
