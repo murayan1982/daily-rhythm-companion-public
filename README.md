@@ -11,9 +11,9 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
-Current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
-Current implementation state: STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+Current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
+Current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
+Current implementation state: STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: `4cae15573f3332cbc476557461babdfe2eb3c0bf`
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -101,11 +101,11 @@ Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSH
 Control D Stage 1 implementation commit: `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`
 Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 2 acceptance-sync commit: `697d0918cb8a6de5c0459324464b7d7e376b3a5a`
-Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
-Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
-Control E: FUTURE / NOT_AUTHORIZED
-fixed ZIP builder invocation count: 0
-fixed ZIP: NOT_BUILT
+Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
+Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control E: NOT_AUTHORIZED
+fixed ZIP builder invocation count: 1
+fixed ZIP: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
 Control D Stage 2 source preflight HEAD: `eb68cf9334f46a30c0c06d3921d59f56abb540bb`
@@ -7079,3 +7079,6 @@ verifier, rebuild or replace the fixed ZIP, modify the annotated tag or GitHub
 Release, upload another asset, repeat provider/network/microphone/STT/TTS/VTS
 execution, commit, or push.
 <!-- RT-9E-FINAL-DOCS-SYNC:END -->
+
+
+Control D Stage 4 authorization-sync status: IMPLEMENTED / AWAITING_REVIEW. Stage 3 fixed ZIP build is COMPLETED / PASS / ACCEPTED, the artifact tuple is RECORDED, Stage 4 same-artifact verification is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. Stage 3 builder rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.

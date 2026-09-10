@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """DRC v4.0.0 Control D fixed-ZIP tooling gate.
 
-Default mode validates the exact Stage 3 authorization-sync candidate or its
+Default mode validates the exact Stage 4 authorization-sync candidate or its
 exact one-commit clean committed form without network, credentials, Flutter execution,
 builder invocation, or artifact creation. ``--source-tree`` accepts the already
-completed Stage 2 source preflight state, while ``--release-zip`` remains
-blocked until a later authorization marker is committed.
+completed Stage 2 source preflight state, while ``--release-zip`` requires the
+committed and pushed Stage 4 same-artifact authorization-sync guard.
 """
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT = "eb68cf9334f46a30c0c06d3921d59f56abb54
 CONTROL_D_STAGE2_ACCEPTANCE_COMMIT = "697d0918cb8a6de5c0459324464b7d7e376b3a5a"
 CONTROL_D_STAGE3_AUTHORIZATION_COMMIT = "0f7418100beaedd764d4c0821973b23fa20327a2"
 CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT = "3193aa6aa8eb5e8e0140fc0235d5f4ecfd6ac4f3"
+CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT = "46f5af49106c6ecc0d478a425cf709cf511da1be"
 EXPECTED_BACKEND_VERSION = "4.0.0"
 EXPECTED_FLUTTER_VERSION = "4.0.0+5"
 EXPECTED_BACKEND_TESTS = 479
@@ -45,6 +46,10 @@ ZIP_PATTERN = re.compile(r"^DailyRhythmCompanion_v4\.0\.0_\d{8}_\d{6}\.zip$")
 STAGE2_AUTHORIZATION = "AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT"
 STAGE3_AUTHORIZATION = "AUTHORIZED_FOR_ONE_TIME_BUILD"
 STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
+EXPECTED_FIXED_ZIP_SOURCE_HEAD = CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT
+EXPECTED_FIXED_ZIP_BASENAME = "DailyRhythmCompanion_v4.0.0_20260908_173440.zip"
+EXPECTED_FIXED_ZIP_SIZE = 3018230
+EXPECTED_FIXED_ZIP_SHA256 = "f02b43a219d7e89fd9e40dd6c1f7cd588076de7b260d6085ffa99966b3c49142"
 EXPECTED_STAGE3_AUTHORIZATION_MARKER_ASSIGNMENT = (
     '$stage3AuthorizationMarker = "Control D Stage 3 authorization:\\s*`r?`nAUTHORIZED_FOR_ONE_TIME_BUILD"'
 )
@@ -74,6 +79,7 @@ EXPECTED_MODIFIED = STAGE2A_MODIFIED
 EXPECTED_ADDED: set[str] = set()
 STAGE2_ACCEPTANCE_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE3_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
+STAGE4_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_MODIFIED = {
     "build_v400_fixed_release_zip_from_head.ps1",
     "scripts/check_v400_fixed_release_zip.py",
@@ -126,15 +132,102 @@ STAGE1_PROTECTED_EXPECTED_BY_STATUS = {
 }
 STALE_STAGE3_CURRENT_STATE_PHRASES = (
     "future accepted document adds the tooling-defined Stage 3 one-time-build authorization marker",
+    "future accepted document adds the tooling-defined Stage 4 same-artifact authorization marker",
     "future Stage 3/4 authorization absence",
     "When authorized in the future, actual build must create",
     "Current checkpoint: DRC v4.0.0 Release Preparation Protocol Control D Stage 2 Acceptance Sync",
+    "Stage 4 authorization-marker absence",
+    "Stage 3 authorization-sync candidate does not run the builder while it is dirty",
+    "Stage 3 is authorized for exactly one fixed ZIP build but has not run",
+    "Stage 4 remains blocked pending the Stage 3 artifact",
+    "BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED",
 )
-REQUIRED_STAGE3_CURRENT_STATE_PHRASES = (
-    "Stage 3 authorization-sync candidate does not run the builder while it is dirty, unreviewed, unaccepted, uncommitted, and unpushed.",
-    "After Stage 3 authorization-sync is reviewed, accepted, committed, and pushed, the accepted marker authorizes only the fixed ZIP exact one-time build, and the builder still requires separate explicit user build approval.",
-    "Stage 4 remains future and not authorized until a future accepted document adds the tooling-defined Stage 4 same-artifact authorization marker.",
+REQUIRED_STAGE4_CURRENT_STATE_PHRASES = (
+    "Stage 3 fixed ZIP build completed, passed, and is accepted.",
+    "The Stage 3 one-time build authorization is consumed; Stage 3 builder rerun is forbidden.",
+    "Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed.",
+    "After commit/push, Stage 4 verifier still needs separate explicit approval.",
+    "Stage 4 verifier does not call the builder; failure does not rebuild.",
+    "Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.",
 )
+CURRENT_STAGE4_PROSE_DOCS = (
+    "docs/v400_release_preparation_protocol.md",
+    "docs/v400_release_candidate_metadata.md",
+)
+V3_HISTORICAL_DOCS = (
+    "README.md",
+    "roadmap.md",
+    "tasklist.md",
+    "scripts/README.md",
+)
+V3_HISTORICAL_SECTION_MARKERS = (
+    ("<!-- RT-9B-RELEASE-READINESS:BEGIN -->", "<!-- RT-9B-RELEASE-READINESS:END -->"),
+    ("<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->", "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->"),
+)
+REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES = (
+    "Control D Stage 3: Build exactly once COMPLETED / PASS / ACCEPTED",
+    "Control D Stage 4: Same-artifact verification and tuple record AUTHORIZED / NOT_RUN",
+    "Control E: Publication NOT_AUTHORIZED / NOT_RUN",
+    "DRC v4.0.0: NOT_RELEASED",
+    "Stage 4 authorization marker count is exact 2",
+    "Dirty default mode validates the exact M12 authorization-sync candidate surface",
+    "fixed ZIP exact-one artifact",
+    "the exact artifact was created and its tuple is recorded",
+    EXPECTED_FIXED_ZIP_BASENAME,
+    str(EXPECTED_FIXED_ZIP_SIZE),
+    EXPECTED_FIXED_ZIP_SHA256.upper(),
+    EXPECTED_FIXED_ZIP_SOURCE_HEAD,
+    "Stage 3 one-time build authorization token is consumed",
+    "current documentation count is 0",
+    "release ZIP verifier remains unreachable until Stage 4 authorization-sync is clean, committed, and pushed",
+    "Stage 4 same-artifact verification itself has not run",
+    "Control D Stage 4 same-artifact verification is authorized but not run",
+    "Control E is not authorized",
+    "tag/publication are not run",
+    "DRC v4.0.0 is not released",
+)
+STALE_CURRENT_STAGE4_REVIEW_PHRASES = (
+    "Control D Stage 3: Build exactly once AUTHORIZED / NOT_RUN",
+    "Control D Stage 4: Same-artifact verification and tuple record BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED",
+    "Control E: Publication FUTURE / NOT_AUTHORIZED",
+    "Stage 3 is authorized for exactly one fixed ZIP build but has not run",
+    "Stage 4 remains blocked pending the Stage 3 artifact",
+    "blocked pending the Stage 3 artifact",
+    "future/not authorized",
+    "future accepted document adds the tooling-defined Stage 4 same-artifact authorization marker",
+    "Stage 4 authorization-marker absence",
+    "dirty/clean Stage 3 authorization-sync surface checks",
+    "Stage 3 authorization-sync candidate does not run the builder while it is dirty",
+    "artifact absent",
+)
+REQUIRED_V3_HISTORICAL_PHRASES = (
+    "v3.0.0 fixed ZIP: NOT_BUILT",
+    "RT-9c Stage 2 builder invocation count: 0",
+    "RT-9c Stage 2 fixed ZIP built: false",
+    "fixed ZIP builder invocation count: 0",
+)
+V3_CONTAMINATION_PHRASES = (
+    EXPECTED_FIXED_ZIP_BASENAME,
+    EXPECTED_FIXED_ZIP_SHA256.upper(),
+    EXPECTED_FIXED_ZIP_SOURCE_HEAD,
+    "Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED",
+    "Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN",
+    "RT-9c Stage 2 builder invocation count: 1",
+    "RT-9c Stage 2 fixed ZIP built: true / unverified",
+    "fixed ZIP builder invocation count: 1",
+)
+TASKLIST_CURRENT_IMPLEMENTATION_STEP = (
+    "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync"
+)
+STAGE2_HISTORY_EVIDENCE_DOCS = (
+    "README.md",
+    "roadmap.md",
+    "docs/v400_fixed_release_zip.md",
+    "docs/v400_release_preparation_protocol.md",
+)
+HISTORICAL_NO_BUILD_CONTROL_BLOCKS = ("Control B", "Control C")
+ACTIVE_STAGE4_STOP_RULE_HEADING = "## Stage 4 Authorization-Sync Stop Rule"
+STALE_STAGE3_STOP_RULE_HEADING = "## Stage 3 Authorization-Sync Stop Rule"
 COORDINATION_DOCS = (
     "README.md",
     "roadmap.md",
@@ -227,7 +320,7 @@ class ModePolicy:
 
 DEFAULT_MODE_POLICY = ModePolicy(
     name="default",
-    artifact_policy="artifact-absent",
+    artifact_policy="mode-dependent",
     current_doc_checks_required=True,
     source_tree_verification_required=False,
     release_zip_verification_required=False,
@@ -414,6 +507,13 @@ def validate_stage3_path_length_corrective_committed_surface(
     )
 
 
+def validate_stage4_authorization_sync_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, STAGE4_AUTHORIZATION_SYNC_MODIFIED)
+
+
 def acceptance_sync_origin_state(head: str, origin: str) -> str | None:
     if not origin:
         return None
@@ -473,11 +573,36 @@ def stage3_builder_auth_guard_corrective_origin_state(head: str, origin: str) ->
 def stage3_path_length_corrective_origin_state(head: str, origin: str) -> str | None:
     if not origin:
         return None
-    if origin == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT and head != origin:
+    if origin == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT and head == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT:
         return "NOT_PUSHED"
-    if origin == head and head != CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT:
+    if origin == head and head == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT:
         return "PUSHED"
     return None
+
+
+def stage4_authorization_sync_origin_state(head: str, origin: str) -> str | None:
+    if not origin:
+        return None
+    if origin == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT and head != origin:
+        return "NOT_PUSHED"
+    if origin == head and head != CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT:
+        return "PUSHED"
+    return None
+
+
+def stage4_authorization_sync_clean_mode_after_surface_validation(
+    surface_validated: bool,
+    head: str,
+    origin: str,
+) -> str:
+    if not surface_validated:
+        raise AssertionError("Stage 4 authorization-sync origin policy reached before committed surface validation")
+    state = stage4_authorization_sync_origin_state(head, origin)
+    if state == "NOT_PUSHED":
+        return "CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC_NOT_PUSHED"
+    if state == "PUSHED":
+        return "CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC"
+    raise AssertionError("Clean Stage 4 authorization-sync origin/main state is invalid")
 
 
 def stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(
@@ -1040,7 +1165,7 @@ def stage3_builder_auth_guard_corrective_origin_state_self_check() -> dict[str, 
 
 
 def stage3_path_length_corrective_origin_state_self_check() -> dict[str, bool]:
-    synthetic_head = "c" * 40
+    synthetic_head = CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT
     unrelated = "4" * 40
     expected_message = "Stage 3 path-length corrective origin policy reached before committed surface validation"
     try:
@@ -1072,33 +1197,509 @@ def stage3_path_length_corrective_origin_state_self_check() -> dict[str, bool]:
 
 def current_state_prose_is_consistent(text: str) -> bool:
     compacted = compact(text)
-    return all(phrase in compacted for phrase in REQUIRED_STAGE3_CURRENT_STATE_PHRASES) and not any(
+    return all(phrase in compacted for phrase in REQUIRED_STAGE4_CURRENT_STATE_PHRASES) and not any(
         phrase in compacted for phrase in STALE_STAGE3_CURRENT_STATE_PHRASES
     )
 
 
 def current_state_prose_consistency_self_check() -> dict[str, bool]:
-    corrected = "\n".join(REQUIRED_STAGE3_CURRENT_STATE_PHRASES)
+    corrected = "\n".join(REQUIRED_STAGE4_CURRENT_STATE_PHRASES)
     stale = corrected + "\nfuture Stage 3/4 authorization absence"
-    missing = "\n".join(REQUIRED_STAGE3_CURRENT_STATE_PHRASES[:-1])
+    missing = "\n".join(REQUIRED_STAGE4_CURRENT_STATE_PHRASES[:-1])
     stage4_future = corrected + "\nfuture accepted document adds the tooling-defined Stage 4 same-artifact authorization marker"
     return {
         "corrected_current_state_prose_accepted": current_state_prose_is_consistent(corrected),
-        "stale_stage3_phrase_rejected": not current_state_prose_is_consistent(stale),
+        "stale_stage4_phrase_rejected": not current_state_prose_is_consistent(stale),
         "required_current_state_phrase_missing_rejected": not current_state_prose_is_consistent(missing),
-        "stage4_future_boundary_prose_accepted": current_state_prose_is_consistent(stage4_future),
+        "stage4_future_boundary_prose_rejected": not current_state_prose_is_consistent(stage4_future),
     }
 
 
-def stage3_authorization_contract_is_present(text: str) -> bool:
-    return (
-        re.search(
-        rf"Control D Stage 3 authorization:\s*\r?\n\s*{re.escape(STAGE3_AUTHORIZATION)}",
-        text,
-        )
-        is not None
-        and not old_stage3_authorization_contract_is_present(text)
+def extract_bounded_section(text: str, start: str, end: str) -> str | None:
+    start_count = text.count(start)
+    end_count = text.count(end)
+    if start_count != 1 or end_count != 1:
+        return None
+    start_index = text.index(start)
+    end_index = text.index(end, start_index)
+    if end_index <= start_index:
+        return None
+    return text[start_index : end_index + len(end)]
+
+
+def current_stage4_review_text() -> str:
+    return "\n".join(read(relative) for relative in CURRENT_STAGE4_PROSE_DOCS)
+
+
+def current_stage4_review_prose_is_consistent(text: str) -> bool:
+    compacted = compact(text)
+    return all(phrase in compacted for phrase in REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES) and not any(
+        phrase in compacted for phrase in STALE_CURRENT_STAGE4_REVIEW_PHRASES
     )
+
+
+def current_stage4_review_prose_self_check() -> dict[str, bool]:
+    corrected = "\n".join(REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES)
+    stale = corrected + "\nStage 4 remains blocked pending the Stage 3 artifact."
+    future_marker = corrected + "\nfuture accepted document adds the tooling-defined Stage 4 same-artifact authorization marker"
+    mixed = corrected + "\nStage 3 is authorized for exactly one fixed ZIP build but has not run."
+    missing = "\n".join(REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES[:-1])
+    return {
+        "corrected_current_protocol_and_metadata_accepted": current_stage4_review_prose_is_consistent(corrected),
+        "stale_stage4_blocked_rejected": not current_stage4_review_prose_is_consistent(stale),
+        "future_stage4_marker_wording_rejected": not current_stage4_review_prose_is_consistent(future_marker),
+        "mixed_stale_and_corrected_rejected": not current_stage4_review_prose_is_consistent(mixed),
+        "required_current_stage4_phrase_missing_rejected": not current_stage4_review_prose_is_consistent(missing),
+    }
+
+
+def historical_v3_sections_are_clean(text: str) -> bool:
+    sections: list[str] = []
+    for start, end in V3_HISTORICAL_SECTION_MARKERS:
+        section = extract_bounded_section(text, start, end)
+        if section is None:
+            return False
+        sections.append(section)
+    compacted = compact("\n".join(sections))
+    return all(phrase in compacted for phrase in REQUIRED_V3_HISTORICAL_PHRASES) and not any(
+        phrase in compacted for phrase in V3_CONTAMINATION_PHRASES
+    )
+
+
+def historical_v3_contamination_self_check() -> dict[str, bool]:
+    clean = "\n".join(
+        (
+            "<!-- RT-9B-RELEASE-READINESS:BEGIN -->",
+            "v3.0.0 fixed ZIP: NOT_BUILT",
+            "<!-- RT-9B-RELEASE-READINESS:END -->",
+            "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->",
+            "RT-9c Stage 2 builder invocation count: 0",
+            "RT-9c Stage 2 fixed ZIP built: false",
+            "fixed ZIP builder invocation count: 0",
+            "v3.0.0 fixed ZIP: NOT_BUILT",
+            "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->",
+        )
+    )
+    contaminated = clean.replace("v3.0.0 fixed ZIP: NOT_BUILT", f"v3.0.0 fixed ZIP: release/{EXPECTED_FIXED_ZIP_BASENAME}", 1)
+    current_stage4_leak = clean.replace(
+        "fixed ZIP builder invocation count: 0",
+        "Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN\nfixed ZIP builder invocation count: 0",
+    )
+    unrelated_historical = clean + "\nLegacy v2.0.0 fixed ZIP: NOT_BUILT"
+    duplicate_section = clean + "\n" + clean
+    missing_section = "\n".join(clean.splitlines()[:3])
+    return {
+        "v3_clean_historical_sections_accepted": historical_v3_sections_are_clean(clean),
+        "v3_v4_basename_contamination_rejected": not historical_v3_sections_are_clean(contaminated),
+        "v3_current_stage4_status_contamination_rejected": not historical_v3_sections_are_clean(current_stage4_leak),
+        "unrelated_historical_text_accepted": historical_v3_sections_are_clean(unrelated_historical),
+        "duplicate_bounded_section_rejected": not historical_v3_sections_are_clean(duplicate_section),
+        "missing_bounded_section_rejected": not historical_v3_sections_are_clean(missing_section),
+    }
+
+
+def tasklist_current_implementation_step_is_current(text: str) -> bool:
+    return re.search(
+        rf"(?m)^current implementation step:\s*{re.escape(TASKLIST_CURRENT_IMPLEMENTATION_STEP)}$",
+        norm(text),
+    ) is not None
+
+
+def stage2_history_evidence_text(relative: str, text: str) -> str | None:
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    if relative in {"README.md", "roadmap.md"}:
+        match = re.search(
+            r"Control D Stage 2 source preflight HEAD:.*?Control D Stage 2 DRC_v4\.0\.0 tag:\s*NOT_CREATED",
+            normalized,
+            flags=re.DOTALL,
+        )
+        return match.group(0) if match else None
+    if relative == "docs/v400_fixed_release_zip.md":
+        match = re.search(
+            r"## Stage 2 Accepted Source Preflight.*?```text\n(?P<section>.*?)\n```",
+            normalized,
+            flags=re.DOTALL,
+        )
+        return match.group("section") if match else None
+    if relative == "docs/v400_release_preparation_protocol.md":
+        match = re.search(
+            r"Stage 2 accepted evidence:\n\n```text\n(?P<section>.*?)\n```",
+            normalized,
+            flags=re.DOTALL,
+        )
+        return match.group("section") if match else None
+    return None
+
+
+def stage2_history_evidence_is_clean(relative: str, text: str) -> bool:
+    evidence = stage2_history_evidence_text(relative, text)
+    if evidence is None:
+        return False
+    compacted = compact(evidence)
+    builder_is_zero = (
+        "Control D Stage 2 release builder invocation: 0" in compacted
+        or "release builder invocation: 0" in compacted
+    )
+    fixed_zip_not_built = (
+        "Control D Stage 2 fixed ZIP: NOT_BUILT" in compacted
+        or "fixed ZIP: NOT_BUILT" in compacted
+    )
+    current_stage_leaked = any(
+        phrase in evidence
+        for phrase in (
+            EXPECTED_FIXED_ZIP_BASENAME,
+            "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED",
+            "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN",
+        )
+    )
+    return builder_is_zero and fixed_zip_not_built and not current_stage_leaked
+
+
+def stage2_history_evidence_self_check() -> dict[str, bool]:
+    readme_clean = "\n".join(
+        (
+            "Control D Stage 2 source preflight HEAD: abc",
+            "Control D Stage 2 release builder invocation: 0",
+            "Control D Stage 2 fixed ZIP: NOT_BUILT",
+            "Control D Stage 2 DRC_v4.0.0 tag: NOT_CREATED",
+        )
+    )
+    fixed_clean = "\n".join(
+        (
+            "## Stage 2 Accepted Source Preflight",
+            "Stage 2 clean committed source preflight completed.",
+            "```text",
+            "release builder invocation:",
+            "0",
+            "",
+            "fixed ZIP:",
+            "NOT_BUILT",
+            "```",
+            "At the Stage 2 checkpoint, Stage 3 was authorized.",
+        )
+    )
+    protocol_clean = "\n".join(
+        (
+            "Stage 2 accepted evidence:",
+            "",
+            "```text",
+            "release builder invocation:",
+            "0",
+            "",
+            "fixed ZIP:",
+            "NOT_BUILT",
+            "```",
+        )
+    )
+    protocol_current_block_mixed = protocol_clean.replace(
+        "fixed ZIP:\nNOT_BUILT",
+        "fixed ZIP:\nNOT_BUILT\nControl D Stage 4:\nSAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN",
+    )
+    contaminated = fixed_clean.replace("NOT_BUILT", f"release/{EXPECTED_FIXED_ZIP_BASENAME}")
+    return {
+        "readme_style_clean_accepted": stage2_history_evidence_is_clean("README.md", readme_clean),
+        "roadmap_style_clean_accepted": stage2_history_evidence_is_clean("roadmap.md", readme_clean),
+        "fixed_doc_clean_accepted": stage2_history_evidence_is_clean("docs/v400_fixed_release_zip.md", fixed_clean),
+        "protocol_doc_clean_accepted": stage2_history_evidence_is_clean(
+            "docs/v400_release_preparation_protocol.md",
+            protocol_clean,
+        ),
+        "protocol_current_block_mixed_rejected": not stage2_history_evidence_is_clean(
+            "docs/v400_release_preparation_protocol.md",
+            protocol_current_block_mixed,
+        ),
+        "current_fixed_zip_basename_rejected": not stage2_history_evidence_is_clean(
+            "docs/v400_fixed_release_zip.md",
+            contaminated,
+        ),
+        "missing_not_built_rejected": not stage2_history_evidence_is_clean(
+            "docs/v400_fixed_release_zip.md",
+            fixed_clean.replace("NOT_BUILT", "MISSING"),
+        ),
+    }
+
+
+def protocol_control_block(text: str, control: str) -> str | None:
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    match = re.search(
+        rf"## {re.escape(control)} Boundary\n(?P<section>.*?)(?=\n## Control [A-Z] Boundary|\n## Future Control E|\Z)",
+        normalized,
+        flags=re.DOTALL,
+    )
+    return match.group("section") if match else None
+
+
+def protocol_historical_no_build_blocks_are_clean(text: str) -> bool:
+    for control in HISTORICAL_NO_BUILD_CONTROL_BLOCKS:
+        section = protocol_control_block(text, control)
+        if section is None:
+            return False
+        compacted = compact(section)
+        if "fixed ZIP builder invocation count: 0" not in compacted:
+            return False
+        if "fixed ZIP: NOT_BUILT" not in compacted:
+            return False
+        if EXPECTED_FIXED_ZIP_BASENAME in section:
+            return False
+        if "fixed ZIP builder invocation count:\n1" in section:
+            return False
+    return True
+
+
+def fixed_zip_contract_stop_rule_is_current(text: str) -> bool:
+    return ACTIVE_STAGE4_STOP_RULE_HEADING in text and STALE_STAGE3_STOP_RULE_HEADING not in text
+
+
+def top_level_status_section(text: str) -> str | None:
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    matches = list(re.finditer(r"(?m)^## Status\s*\n", normalized))
+    if len(matches) != 1:
+        return None
+    start = matches[0].end()
+    next_heading = re.search(r"(?m)^## [^\n]*\n", normalized[start:])
+    end = start + next_heading.start() if next_heading else len(normalized)
+    return normalized[start:end]
+
+
+def exact_status_value_is_present(section: str, label: str, value: str) -> bool:
+    lines = section.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    label_line = f"{label}:"
+    inline_line = f"{label}: {value}"
+    matches = 0
+    for index, line in enumerate(lines):
+        if line == inline_line:
+            matches += 1
+        elif line == label_line:
+            value_index = index + 1
+            if value_index < len(lines) and lines[value_index] == value:
+                matches += 1
+            else:
+                return False
+        elif line.startswith(label_line):
+            return False
+    if matches != 1:
+        return False
+    return True
+
+
+def protocol_current_status_is_correct(text: str) -> bool:
+    section = top_level_status_section(text)
+    if section is None:
+        return False
+    expected_zip = f"release/{EXPECTED_FIXED_ZIP_BASENAME}"
+    required = (
+        ("Current checkpoint", "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync"),
+        ("Control D Stage 3", "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"),
+        ("Control D Stage 4", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN"),
+        ("Control E", "NOT_AUTHORIZED"),
+        ("fixed ZIP builder invocation count", "1"),
+        ("fixed ZIP", expected_zip),
+        ("annotated tag", "NOT_CREATED"),
+        ("GitHub Release", "NOT_CREATED"),
+        ("DRC v4.0.0", "NOT_RELEASED"),
+    )
+    if not all(exact_status_value_is_present(section, label, value) for label, value in required):
+        return False
+    v4_basenames = re.findall(r"DailyRhythmCompanion_v4\.0\.0_\d{8}_\d{6}\.zip", section)
+    if any(basename != EXPECTED_FIXED_ZIP_BASENAME for basename in v4_basenames):
+        return False
+    return True
+
+
+def r7_current_status_self_check() -> dict[str, bool]:
+    status = "\n".join(
+        (
+            "## Status",
+            "Current checkpoint:",
+            "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync",
+            "Control D Stage 3:",
+            "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED",
+            "Control D Stage 4:",
+            "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN",
+            "Control E:",
+            "NOT_AUTHORIZED",
+            "fixed ZIP builder invocation count:",
+            "1",
+            "fixed ZIP:",
+            f"release/{EXPECTED_FIXED_ZIP_BASENAME}",
+            "annotated tag:",
+            "NOT_CREATED",
+            "GitHub Release:",
+            "NOT_CREATED",
+            "DRC v4.0.0:",
+            "NOT_RELEASED",
+        )
+    )
+    historical = "\n".join(
+        (
+            "## Control B Boundary",
+            "fixed ZIP builder invocation count:",
+            "0",
+            "fixed ZIP:",
+            "NOT_BUILT",
+            "## Control C Boundary",
+            "fixed ZIP builder invocation count:",
+            "0",
+            "fixed ZIP:",
+            "NOT_BUILT",
+        )
+    )
+    return {
+        "corrected_current_status_accepted": protocol_current_status_is_correct(status),
+        "current_status_with_historical_no_build_accepted": protocol_current_status_is_correct(status + "\n" + historical),
+        "current_builder_count_zero_rejected": not protocol_current_status_is_correct(
+            status.replace("fixed ZIP builder invocation count:\n1", "fixed ZIP builder invocation count:\n0")
+        ),
+        "current_builder_count_ten_rejected": not protocol_current_status_is_correct(
+            status.replace("fixed ZIP builder invocation count:\n1", "fixed ZIP builder invocation count:\n10")
+        ),
+        "current_builder_count_extra_rejected": not protocol_current_status_is_correct(
+            status.replace("fixed ZIP builder invocation count:\n1", "fixed ZIP builder invocation count:\n1 extra")
+        ),
+        "current_fixed_zip_not_built_rejected": not protocol_current_status_is_correct(
+            status.replace(f"release/{EXPECTED_FIXED_ZIP_BASENAME}", "NOT_BUILT")
+        ),
+        "wrong_basename_rejected": not protocol_current_status_is_correct(
+            status.replace(EXPECTED_FIXED_ZIP_BASENAME, "DailyRhythmCompanion_v4.0.0_20991231_235959.zip")
+        ),
+        "missing_exact_zip_path_rejected": not protocol_current_status_is_correct(
+            status.replace(f"release/{EXPECTED_FIXED_ZIP_BASENAME}", EXPECTED_FIXED_ZIP_BASENAME)
+        ),
+        "fixed_zip_bak_suffix_rejected": not protocol_current_status_is_correct(
+            status.replace(f"release/{EXPECTED_FIXED_ZIP_BASENAME}", f"release/{EXPECTED_FIXED_ZIP_BASENAME}.bak")
+        ),
+        "not_created_extra_rejected": not protocol_current_status_is_correct(
+            status.replace("annotated tag:\nNOT_CREATED", "annotated tag:\nNOT_CREATED_EXTRA")
+        ),
+        "not_run_extra_rejected": not protocol_current_status_is_correct(
+            status.replace("AUTHORIZED / NOT_RUN", "AUTHORIZED / NOT_RUN_EXTRA")
+        ),
+        "checkpoint_trailing_text_rejected": not protocol_current_status_is_correct(
+            status.replace(
+                "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync",
+                "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync trailing text",
+            )
+        ),
+        "stage3_stale_authorization_rejected": not protocol_current_status_is_correct(
+            status.replace("BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED", "BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN")
+        ),
+        "stage4_completion_rejected": not protocol_current_status_is_correct(
+            status.replace("SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / COMPLETED / PASS / ACCEPTED")
+        ),
+        "control_e_authorization_rejected": not protocol_current_status_is_correct(
+            status.replace("Control E:\nNOT_AUTHORIZED", "Control E:\nAUTHORIZED")
+        ),
+        "released_tag_release_created_claims_rejected": not protocol_current_status_is_correct(
+            status.replace("DRC v4.0.0:\nNOT_RELEASED", "DRC v4.0.0:\nRELEASED")
+            .replace("annotated tag:\nNOT_CREATED", "annotated tag:\nCREATED")
+            .replace("GitHub Release:\nNOT_CREATED", "GitHub Release:\nCREATED")
+        ),
+        "missing_status_section_rejected": not protocol_current_status_is_correct(status.replace("## Status\n", "")),
+        "duplicate_status_section_rejected": not protocol_current_status_is_correct(status + "\n## Status\nextra"),
+        "duplicate_required_label_rejected": not protocol_current_status_is_correct(
+            status.replace("Control E:\nNOT_AUTHORIZED", "Control E:\nNOT_AUTHORIZED\nControl E:\nNOT_AUTHORIZED")
+        ),
+    }
+
+
+def r5_document_correction_self_check() -> dict[str, bool]:
+    clean_protocol = "\n".join(
+        (
+            "## Control B Boundary",
+            "fixed ZIP builder invocation count:",
+            "0",
+            "fixed ZIP:",
+            "NOT_BUILT",
+            "## Control C Boundary",
+            "fixed ZIP builder invocation count:",
+            "0",
+            "fixed ZIP:",
+            "NOT_BUILT",
+            "## Control D Boundary",
+        )
+    )
+    contaminated_protocol = clean_protocol.replace("NOT_BUILT", f"release/{EXPECTED_FIXED_ZIP_BASENAME}", 1)
+    count_one_protocol = clean_protocol.replace("fixed ZIP builder invocation count:\n0", "fixed ZIP builder invocation count:\n1", 1)
+    clean_contract = ACTIVE_STAGE4_STOP_RULE_HEADING + "\nStage 4 authorization-sync stops as a dirty exact candidate."
+    stale_contract = clean_contract + "\n" + STALE_STAGE3_STOP_RULE_HEADING
+    return {
+        "historical_control_b_c_no_build_accepted": protocol_historical_no_build_blocks_are_clean(clean_protocol),
+        "historical_current_fixed_zip_leak_rejected": not protocol_historical_no_build_blocks_are_clean(contaminated_protocol),
+        "historical_builder_count_one_rejected": not protocol_historical_no_build_blocks_are_clean(count_one_protocol),
+        "active_stage4_stop_rule_accepted": fixed_zip_contract_stop_rule_is_current(clean_contract),
+        "stale_stage3_stop_rule_rejected": not fixed_zip_contract_stop_rule_is_current(stale_contract),
+    }
+
+
+def stage4_content_review_runtime_connection_self_check() -> dict[str, bool]:
+    current_doc_names = check_current_docs.__code__.co_names
+    static_assertion_names = check_static_corrective_assertions.__code__.co_names
+    guard_names = check_stage4_content_review_guards.__code__.co_names
+    determine_names = determine_mode.__code__.co_names
+    release_zip_guard_names = check_clean_committed_pushed_stage4_authorization_sync_for_release_zip.__code__.co_names
+    stage3_path_names = check_committed_stage3_path_length_corrective_surface.__code__.co_names
+    stage3_path_consts = check_committed_stage3_path_length_corrective_surface.__code__.co_consts
+    return {
+        "current_stage4_guard_callable": callable(check_stage4_content_review_guards),
+        "stage4_committed_surface_callable": callable(check_committed_stage4_authorization_sync_surface),
+        "r6_current_status_guard_callable": callable(check_r6_current_status_guards),
+        "current_docs_references_guard_once": current_doc_names.count("check_stage4_content_review_guards") == 1,
+        "static_assertions_reference_current_self_check_once": static_assertion_names.count("current_stage4_review_prose_self_check") == 1,
+        "static_assertions_reference_historical_self_check_once": static_assertion_names.count("historical_v3_contamination_self_check") == 1,
+        "static_assertions_reference_stage2_history_self_check_once": static_assertion_names.count("stage2_history_evidence_self_check") == 1,
+        "static_assertions_reference_r5_document_self_check_once": static_assertion_names.count("r5_document_correction_self_check") == 1,
+        "static_assertions_reference_r7_current_status_self_check_once": static_assertion_names.count("r7_current_status_self_check") == 1,
+        "stage4_guard_references_v3_guard_once": guard_names.count("historical_v3_sections_are_clean") == 1,
+        "stage4_guard_references_tasklist_step_once": guard_names.count("tasklist_current_implementation_step_is_current") == 1,
+        "stage4_guard_references_stage2_history_once": guard_names.count("stage2_history_evidence_is_clean") == 1,
+        "stage4_guard_references_r5_docs_once": guard_names.count("check_r5_document_correction_guards") == 1,
+        "stage4_guard_references_r6_current_status_once": guard_names.count("check_r6_current_status_guards") == 1,
+        "determine_mode_references_stage4_committed_surface": determine_names.count("check_committed_stage4_authorization_sync_surface") == 1,
+        "release_zip_guard_references_stage4_committed_surface": release_zip_guard_names.count("check_committed_stage4_authorization_sync_surface") == 1,
+        "stage3_path_check_references_fixed_end_commit": "CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT" in stage3_path_names,
+        "stage3_path_check_does_not_use_head_literal_end": "..HEAD" not in stage3_path_consts and "HEAD" not in stage3_path_consts,
+    }
+
+
+def check_stage4_content_review_guards() -> None:
+    if not current_stage4_review_prose_is_consistent(current_stage4_review_text()):
+        die("Stage 4 current protocol/metadata content-review guard failed")
+    for relative in V3_HISTORICAL_DOCS:
+        if not historical_v3_sections_are_clean(read(relative)):
+            die(f"Historical v3 section contamination guard failed: {relative}")
+    if not tasklist_current_implementation_step_is_current(read("tasklist.md")):
+        die("tasklist current implementation step is not Stage 4 Authorization Sync")
+    for relative in STAGE2_HISTORY_EVIDENCE_DOCS:
+        if not stage2_history_evidence_is_clean(relative, read(relative)):
+            die(f"Stage 2 history evidence guard failed: {relative}")
+    check_r5_document_correction_guards()
+    check_r6_current_status_guards()
+
+
+def check_r5_document_correction_guards() -> None:
+    protocol = read("docs/v400_release_preparation_protocol.md")
+    fixed_zip_contract = read("docs/v400_fixed_release_zip.md")
+    if "Current checkpoint:\nDRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync" not in protocol:
+        die("protocol current checkpoint is not Stage 4 Authorization Sync")
+    if "Control D Stage 2 authorization-sync" in protocol:
+        die("stale Stage 2 authorization-sync checkpoint remains")
+    if not protocol_historical_no_build_blocks_are_clean(protocol):
+        die("Control B/C historical no-build block guard failed")
+    if not fixed_zip_contract_stop_rule_is_current(fixed_zip_contract):
+        die("fixed ZIP contract active Stage 4 stop rule guard failed")
+
+
+def check_r6_current_status_guards() -> None:
+    if not protocol_current_status_is_correct(read("docs/v400_release_preparation_protocol.md")):
+        die("protocol current top-level Status block guard failed")
+
+
+def stage3_authorization_contract_is_present(text: str) -> bool:
+    canonical_marker_pattern = (
+        rf"Control D Stage 3 authorization:\s*\r?\n\s*{re.escape(STAGE3_AUTHORIZATION)}"
+    )
+    canonical_marker_occurrences = list(re.finditer(canonical_marker_pattern, text))
+    return len(canonical_marker_occurrences) == 1 and not old_stage3_authorization_contract_is_present(text)
 
 
 def old_stage3_authorization_contract_is_present(text: str) -> bool:
@@ -2084,17 +2685,32 @@ def stage3_authorization_contract_self_check() -> dict[str, bool]:
     lf = "Control D Stage 3 authorization:\nAUTHORIZED_FOR_ONE_TIME_BUILD"
     crlf = "Control D Stage 3 authorization:\r\nAUTHORIZED_FOR_ONE_TIME_BUILD"
     old = "Control D Stage 3:\nAUTHORIZED_FOR_ONE_TIME_BUILD"
+    duplicate = lf + "\n" + lf
+    crlf_duplicate = crlf + "\r\n" + crlf
+    mixed_lf_crlf_duplicate = lf + "\n" + crlf
+    adjacent_duplicate = lf + lf
     missing_token = "Control D Stage 3 authorization:\nNOT_AUTHORIZED"
+    missing_marker = "Control D Stage 3 build is complete"
+    partial_marker = "Control D Stage 3 authorization:"
+    malformed_marker = "Control D Stage 3 authorization: AUTHORIZED_FOR_ONE_TIME_BUILD"
     new_plus_old = lf + "\n" + old
     unrelated_between = "Control D Stage 3 authorization:\nnot related\nAUTHORIZED_FOR_ONE_TIME_BUILD"
     return {
         "lf_contract_accepted": stage3_authorization_contract_is_present(lf),
         "crlf_contract_accepted": stage3_authorization_contract_is_present(crlf),
-        "current_docs_contract_accepted": stage3_authorization_contract_is_present(current_docs_text()),
         "old_stage3_label_rejected": not stage3_authorization_contract_is_present(old),
         "new_plus_old_rejected": not stage3_authorization_contract_is_present(new_plus_old),
+        "duplicate_marker_rejected": not stage3_authorization_contract_is_present(duplicate),
+        "crlf_duplicate_marker_rejected": not stage3_authorization_contract_is_present(crlf_duplicate),
+        "mixed_lf_crlf_duplicate_marker_rejected": not stage3_authorization_contract_is_present(
+            mixed_lf_crlf_duplicate
+        ),
+        "adjacent_duplicate_marker_rejected": not stage3_authorization_contract_is_present(adjacent_duplicate),
         "authorization_label_missing_rejected": not stage3_authorization_contract_is_present(old),
         "token_missing_rejected": not stage3_authorization_contract_is_present(missing_token),
+        "marker_missing_rejected": not stage3_authorization_contract_is_present(missing_marker),
+        "partial_marker_rejected": not stage3_authorization_contract_is_present(partial_marker),
+        "malformed_marker_rejected": not stage3_authorization_contract_is_present(malformed_marker),
         "unrelated_between_label_and_token_rejected": not stage3_authorization_contract_is_present(unrelated_between),
         "builder_marker_assignment_correct": builder_has_correct_stage3_authorization_marker(),
         "builder_normalized_sha_correct": builder_has_expected_stage3_builder_normalized_sha256(),
@@ -2166,11 +2782,26 @@ def check_committed_stage3_builder_auth_guard_corrective_surface() -> None:
 
 
 def check_committed_stage3_path_length_corrective_surface() -> None:
-    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}..HEAD"))
-    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}..HEAD").splitlines()
+    revision_range = f"{CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT}..{CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT}"
+    commit_count = int(git_out("rev-list", "--count", revision_range))
+    lines = git_out("diff", "--name-status", revision_range).splitlines()
     if not validate_stage3_path_length_corrective_committed_surface(commit_count, lines):
         die("Clean committed Stage 3 path-length corrective surface is not exact one-commit M4")
-    check_stage3_path_length_corrective_protected_delta(CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT, "HEAD")
+    check_stage3_path_length_corrective_protected_delta(
+        CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT,
+        CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT,
+    )
+
+
+def check_committed_stage4_authorization_sync_surface(head: str = "HEAD") -> None:
+    revision_range = f"{CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT}..{head}"
+    commit_count = int(git_out("rev-list", "--count", revision_range))
+    lines = git_out("diff", "--name-status", revision_range).splitlines()
+    if not validate_stage4_authorization_sync_committed_surface(commit_count, lines):
+        die("Clean committed Stage 4 authorization-sync surface is not exact one-commit M12")
+    protected = git_out("diff", "--name-status", revision_range, "--", *PROTECTED_PATHS).splitlines()
+    if not validate_empty_protected_delta(protected):
+        die("Stage 4 authorization-sync protected delta is not empty")
 
 
 def clean_committed_source_guard_plan():
@@ -2239,6 +2870,10 @@ def determine_mode() -> str:
             if head == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT and origin == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT:
                 check_dirty_surface(entries, STAGE3_PATH_LENGTH_CORRECTIVE_MODIFIED)
                 return "DIRTY_STAGE3_PATH_LENGTH_CORRECTIVE_CANDIDATE"
+            if head == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT and origin == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT:
+                check_dirty_surface(entries, STAGE4_AUTHORIZATION_SYNC_MODIFIED)
+                check_expected_fixed_zip_tuple()
+                return "DIRTY_STAGE4_AUTHORIZATION_SYNC_CANDIDATE"
             die("dirty candidate HEAD mismatch")
         if origin != CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
             die("dirty candidate origin/main mismatch")
@@ -2263,7 +2898,11 @@ def determine_mode() -> str:
     if head == CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT:
         return stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(True, head, origin)
     check_committed_stage3_path_length_corrective_surface()
-    return stage3_path_length_corrective_clean_mode_after_surface_validation(True, head, origin)
+    if head == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT:
+        return stage3_path_length_corrective_clean_mode_after_surface_validation(True, head, origin)
+    check_committed_stage4_authorization_sync_surface("HEAD")
+    check_expected_fixed_zip_tuple()
+    return stage4_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
 
 
 def check_versions() -> None:
@@ -2276,9 +2915,9 @@ def check_current_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization"),
-            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization"),
-            ("current implementation state", "STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
+            ("current small commit", "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync"),
+            ("current implementation", "DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync"),
+            ("current implementation state", "STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW"),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", BASELINE),
             ("Control D", "CURRENT / NOT_COMPLETED"),
@@ -2286,12 +2925,12 @@ def check_current_docs() -> None:
             ("Control D Stage 1 implementation commit", CONTROL_D_STAGE1_COMMIT),
             ("Control D Stage 1 surface", "13 files / M10 A3 D0"),
             ("Control D Stage 2", "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED"),
-            ("Control D Stage 3", "BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN"),
-            ("Control D Stage 4", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED"),
-            ("Control E", "FUTURE / NOT_AUTHORIZED"),
+            ("Control D Stage 3", "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"),
+            ("Control D Stage 4", "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN"),
+            ("Control E", "NOT_AUTHORIZED"),
             ("DRC v4.0.0", "NOT_RELEASED"),
-            ("fixed ZIP builder invocation count", "0"),
-            ("fixed ZIP", "NOT_BUILT"),
+            ("fixed ZIP builder invocation count", "1"),
+            ("fixed ZIP", "release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip"),
             ("annotated tag", "NOT_CREATED"),
             ("GitHub Release", "NOT_CREATED"),
         ):
@@ -2305,44 +2944,45 @@ def check_current_docs() -> None:
         "scripts/check_v400_fixed_release_zip.py",
         "13 files / M10 A3 D0",
         "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED",
-        "AUTHORIZED_FOR_ONE_TIME_BUILD",
+        "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION",
     ):
         require(protocol, needle, "protocol")
 
     contract = read("docs/v400_fixed_release_zip.md")
     for needle in (
         "credential-free, provider-free, private-evidence-free",
-        "builder invocation count:\n0",
-        "fixed ZIP:\nNOT_BUILT",
-        "release source HEAD:\nNOT_RECORDED",
+        "builder invocation count:\n1",
+        "fixed ZIP:\nrelease/DailyRhythmCompanion_v4.0.0_20260908_173440.zip",
+        "release source HEAD:\n46f5af49106c6ecc0d478a425cf709cf511da1be",
         "verification HEAD:\nNOT_RECORDED",
-        "fixed ZIP SHA-256:\nNOT_RECORDED",
+        "fixed ZIP SHA-256:\nF02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142",
         "AI Character Framework is not bundled.",
-        "## Stage 3 Authorization-Sync Stop Rule",
+        "## Stage 4 Authorization-Sync Stop Rule",
     ):
         require(contract, needle, "fixed ZIP contract")
+    reject(contract, "## Stage 3 Authorization-Sync Stop Rule", "stale fixed ZIP stop rule")
     if current_docs_text().count(STAGE2_ACCEPTED) != 2:
         die("Stage 2 accepted marker occurrence is not exact 2")
     if current_docs_text().count(STAGE2_AUTHORIZATION) != 0:
         die("Stage 2 authorization marker was not consumed")
-    if current_docs_text().count(STAGE3_AUTHORIZATION) != 2:
-        die("Stage 3 authorization marker occurrence is not exact 2")
-    require(protocol, STAGE3_AUTHORIZATION, "Stage 3 protocol authorization token")
-    require(contract, STAGE3_AUTHORIZATION, "Stage 3 fixed ZIP authorization token")
-    for token in (STAGE4_AUTHORIZATION,):
-        reject(protocol, token, "future documentation authorization token")
-        reject(contract, token, "future documentation authorization token")
+    if current_docs_text().count(STAGE3_AUTHORIZATION) != 0:
+        die("Stage 3 authorization marker was not consumed")
+    if current_docs_text().count(STAGE4_AUTHORIZATION) != 2:
+        die("Stage 4 authorization marker occurrence is not exact 2")
+    require(protocol, STAGE4_AUTHORIZATION, "Stage 4 protocol authorization token")
+    require(contract, STAGE4_AUTHORIZATION, "Stage 4 fixed ZIP authorization token")
+    check_stage4_content_review_guards()
 
     record = read("docs/v400_release_record.md")
     for label, value in (
         ("Status", "PREPARED / NOT_RELEASED"),
-        ("release source HEAD", "NOT_RECORDED"),
+        ("release source HEAD", EXPECTED_FIXED_ZIP_SOURCE_HEAD),
         ("verification HEAD", "NOT_RECORDED"),
-        ("fixed ZIP basename", "NOT_BUILT"),
-        ("fixed ZIP size", "NOT_RECORDED"),
-        ("fixed ZIP SHA-256", "NOT_RECORDED"),
-        ("fixed ZIP builder invocation count", "0"),
-        ("same-artifact verification", "NOT_COMPLETED"),
+        ("fixed ZIP basename", EXPECTED_FIXED_ZIP_BASENAME),
+        ("fixed ZIP size", "3018230 bytes"),
+        ("fixed ZIP SHA-256", EXPECTED_FIXED_ZIP_SHA256.upper()),
+        ("fixed ZIP builder invocation count", "1"),
+        ("same-artifact verification", "AUTHORIZED / NOT_RUN"),
         ("explicit final operator approval", "NOT_RECEIVED"),
         ("annotated tag publication", "NOT_CREATED"),
         ("GitHub Release publication", "NOT_CREATED"),
@@ -2526,6 +3166,49 @@ def check_post_source_head_surface(expected_head: str, verification_head: str) -
         die("post-source HEAD surface invalidates the fixed ZIP artifact")
 
 
+def check_clean_committed_pushed_stage4_authorization_sync_for_release_zip(
+    path: Path,
+    expected_sha: str | None,
+    expected_head: str | None,
+) -> None:
+    if expected_head != EXPECTED_FIXED_ZIP_SOURCE_HEAD:
+        die("--expected-source-head must match the Stage 3 release source HEAD")
+    if expected_sha != EXPECTED_FIXED_ZIP_SHA256:
+        die("--expected-sha256 must match the recorded Stage 3 fixed ZIP SHA-256")
+    if path.name != EXPECTED_FIXED_ZIP_BASENAME:
+        die("--release-zip basename must match the recorded Stage 3 artifact")
+    if git_out("branch", "--show-current") != "main":
+        die("--release-zip requires main")
+    if git_out("diff", "--cached", "--name-status"):
+        die("--release-zip requires empty Git index")
+    head = git_out("rev-parse", "HEAD")
+    origin = git_out("rev-parse", "origin/main")
+    if head != origin:
+        die("--release-zip requires HEAD == origin/main")
+    check_committed_stage4_authorization_sync_surface("HEAD")
+    mode = stage4_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
+    if not release_zip_reachability(mode):
+        die("--release-zip requires committed and pushed Stage 4 authorization-sync")
+    if not docs_have_stage4_authorization():
+        die("Release ZIP verification is blocked until Control D Stage 4 authorization.")
+    check_expected_fixed_zip_tuple()
+    check_post_source_head_surface(expected_head, head)
+
+
+def release_zip_runtime_guard_plan_self_check() -> dict[str, bool]:
+    verify_names = verify_release_zip.__code__.co_names
+    guard_names = check_clean_committed_pushed_stage4_authorization_sync_for_release_zip.__code__.co_names
+    return {
+        "release_zip_dispatch_uses_stage4_guard": "check_clean_committed_pushed_stage4_authorization_sync_for_release_zip" in verify_names,
+        "stage4_guard_uses_docs_guard": "docs_have_stage4_authorization" in guard_names,
+        "stage4_guard_uses_exact_artifact_tuple_guard": "check_expected_fixed_zip_tuple" in guard_names,
+        "stage4_guard_uses_committed_surface_guard": "check_committed_stage4_authorization_sync_surface" in guard_names,
+        "dirty_candidate_reachability_false": not release_zip_reachability("DIRTY_STAGE4_AUTHORIZATION_SYNC_CANDIDATE"),
+        "clean_not_pushed_reachability_false": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC_NOT_PUSHED"),
+        "clean_pushed_reachability_true": release_zip_reachability("CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC"),
+    }
+
+
 def check_source_only_hygiene() -> None:
     tracked = git_out("ls-files").splitlines()
     for relative in tracked:
@@ -2559,8 +3242,7 @@ def check_no_contradictions() -> None:
         "annotated tag: CREATED",
         "GitHub Release: CREATED",
         "Control E: AUTHORIZED",
-        "fixed ZIP builder invocation count:\n1",
-        STAGE4_AUTHORIZATION,
+        "Control D Stage 3:\nBUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN",
     ):
         reject(text, needle, "current-state contradiction")
 
@@ -2596,6 +3278,61 @@ def stage4_zip_verification_is_authorized(text: str) -> bool:
     return STAGE4_AUTHORIZATION in text and STAGE3_ARTIFACT_READY in text
 
 
+def stage4_zip_verification_completed(text: str) -> bool:
+    return "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / COMPLETED" in text
+
+
+def control_e_is_authorized(text: str) -> bool:
+    return re.search(r"Control E:\s*\r?\n\s*AUTHORIZED\b", text) is not None
+
+
+def stage4_lifecycle_contract_is_valid(text: str) -> bool:
+    return (
+        text.count(STAGE2_ACCEPTED) == 2
+        and text.count(STAGE2_AUTHORIZATION) == 0
+        and text.count(STAGE3_ARTIFACT_READY) == 2
+        and text.count(STAGE3_AUTHORIZATION) == 0
+        and text.count(STAGE4_AUTHORIZATION) == 2
+        and not stage3_build_is_authorized(text)
+        and stage4_zip_verification_is_authorized(text)
+        and not stage4_zip_verification_completed(text)
+        and not control_e_is_authorized(text)
+    )
+
+
+def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
+    text = current_docs_text()
+    stage3_token_restored = text + "\nControl D Stage 3 authorization:\n" + STAGE3_AUTHORIZATION
+    stage3_artifact_missing = text.replace(STAGE3_ARTIFACT_READY, "", 1)
+    stage3_artifact_duplicate = text + "\n" + STAGE3_ARTIFACT_READY
+    stage4_token_missing = text.replace(STAGE4_AUTHORIZATION, "", 1)
+    stage4_token_duplicate = text + "\nControl D Stage 4 authorization:\n" + STAGE4_AUTHORIZATION
+    stage4_completed = text.replace(
+        "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN",
+        "SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / COMPLETED / PASS / ACCEPTED",
+        1,
+    )
+    control_e_authorized = text.replace("Control E:\nNOT_AUTHORIZED", "Control E:\nAUTHORIZED", 1)
+    return {
+        "current_stage4_docs_stage2_accepted_exact_2": text.count(STAGE2_ACCEPTED) == 2,
+        "current_stage4_docs_stage2_authorization_absent": text.count(STAGE2_AUTHORIZATION) == 0,
+        "current_stage4_docs_stage3_artifact_ready_exact_2": text.count(STAGE3_ARTIFACT_READY) == 2,
+        "current_stage4_docs_stage3_authorization_absent": text.count(STAGE3_AUTHORIZATION) == 0,
+        "current_stage4_docs_stage4_authorization_exact_2": text.count(STAGE4_AUTHORIZATION) == 2,
+        "current_stage4_docs_actual_build_authorization_false": not stage3_build_is_authorized(text),
+        "current_stage4_docs_same_artifact_authorization_true": stage4_zip_verification_is_authorized(text),
+        "current_stage4_docs_stage4_verification_not_completed": not stage4_zip_verification_completed(text),
+        "current_stage4_docs_control_e_authorization_false": not control_e_is_authorized(text),
+        "stage3_token_restored_rejected": not stage4_lifecycle_contract_is_valid(stage3_token_restored),
+        "stage3_artifact_missing_rejected": not stage4_lifecycle_contract_is_valid(stage3_artifact_missing),
+        "stage3_artifact_duplicate_rejected": not stage4_lifecycle_contract_is_valid(stage3_artifact_duplicate),
+        "stage4_token_missing_rejected": not stage4_lifecycle_contract_is_valid(stage4_token_missing),
+        "stage4_token_duplicate_rejected": not stage4_lifecycle_contract_is_valid(stage4_token_duplicate),
+        "stage4_completed_rejected": not stage4_lifecycle_contract_is_valid(stage4_completed),
+        "control_e_authorized_rejected": not stage4_lifecycle_contract_is_valid(control_e_authorized),
+    }
+
+
 def check_stage2a_authorization_boundary() -> None:
     current_text = current_docs_text()
     if current_text.count(STAGE2_ACCEPTED) != 2:
@@ -2604,12 +3341,14 @@ def check_stage2a_authorization_boundary() -> None:
         die("Stage 2 authorization marker was not consumed")
     if not docs_have_stage2_authorization():
         die("Stage 2 authorization is missing from current docs")
-    if current_text.count(STAGE3_AUTHORIZATION) != 2:
-        die("Stage 3 authorization marker occurrence is not exact 2")
-    if not docs_have_stage3_authorization():
-        die("Stage 3 authorization is missing from current docs")
-    if docs_have_stage4_authorization():
-        die("Stage 4 is unexpectedly authorized by current docs")
+    if current_text.count(STAGE3_AUTHORIZATION) != 0:
+        die("Stage 3 authorization marker was not consumed")
+    if docs_have_stage3_authorization():
+        die("Stage 3 build authorization must be consumed by current docs")
+    if current_text.count(STAGE4_AUTHORIZATION) != 2:
+        die("Stage 4 authorization marker occurrence is not exact 2")
+    if not docs_have_stage4_authorization():
+        die("Stage 4 authorization is missing from current docs")
 
 
 def check_static_corrective_assertions() -> None:
@@ -2617,7 +3356,7 @@ def check_static_corrective_assertions() -> None:
     default_policy = mode_policy(False, None)
     source_policy = mode_policy(True, None)
     release_policy = mode_policy(False, Path("release/DailyRhythmCompanion_v4.0.0_20991231_235959.zip"))
-    if default_policy.artifact_policy != "artifact-absent":
+    if default_policy.artifact_policy != "mode-dependent":
         die("default mode artifact policy mismatch")
     if source_policy.artifact_policy != "artifact-absent":
         die("source-tree mode artifact policy mismatch")
@@ -2637,14 +3376,16 @@ def check_static_corrective_assertions() -> None:
         die("Stage 2 authorization marker was not consumed")
     if not stage2_is_authorized_or_accepted(current_text):
         die("current docs do not authorize Stage 2")
-    if current_text.count(STAGE3_AUTHORIZATION) != 2:
-        die("Stage 3 authorization marker occurrence is not exact 2")
-    if not stage3_build_is_authorized(current_text):
-        die("current docs do not authorize Stage 3")
-    if stage4_zip_verification_is_authorized(current_text):
-        die("current docs unexpectedly authorize Stage 4")
-    synthetic_stage3 = current_text + "\n" + STAGE2_ACCEPTED + "\n" + STAGE3_AUTHORIZATION
-    synthetic_stage4 = current_text + "\n" + STAGE3_ARTIFACT_READY + "\n" + STAGE4_AUTHORIZATION
+    if current_text.count(STAGE3_AUTHORIZATION) != 0:
+        die("Stage 3 authorization marker was not consumed")
+    if stage3_build_is_authorized(current_text):
+        die("current docs must not authorize another Stage 3 build")
+    if current_text.count(STAGE4_AUTHORIZATION) != 2:
+        die("Stage 4 authorization marker occurrence is not exact 2")
+    if not stage4_zip_verification_is_authorized(current_text):
+        die("current docs do not authorize Stage 4")
+    synthetic_stage3 = current_text + "\n" + STAGE2_ACCEPTED + "\n" + "Control D Stage 3 authorization:\n" + STAGE3_AUTHORIZATION
+    synthetic_stage4 = current_text + "\n" + STAGE3_ARTIFACT_READY + "\n" + "Control D Stage 4 authorization:\n" + STAGE4_AUTHORIZATION
     if not stage3_build_is_authorized(synthetic_stage3):
         die("synthetic Stage 3 docs cannot reach source-tree/build policy")
     if not stage4_zip_verification_is_authorized(synthetic_stage4):
@@ -2707,8 +3448,18 @@ def check_static_corrective_assertions() -> None:
         die("Stage 3 path-length corrective protected delta validator self-check failed")
     if not all(stage3_path_length_corrective_origin_state_self_check().values()):
         die("Stage 3 path-length corrective origin-state validator self-check failed")
+    if not all(stage4_authorization_sync_dirty_surface_self_check().values()):
+        die("Stage 4 authorization-sync dirty surface validator self-check failed")
+    if not all(stage4_authorization_sync_committed_surface_self_check().values()):
+        die("Stage 4 authorization-sync committed surface validator self-check failed")
+    if not all(stage4_authorization_sync_origin_state_self_check().values()):
+        die("Stage 4 authorization-sync origin-state validator self-check failed")
+    if not all(fixed_zip_tuple_self_check().values()):
+        die("Stage 4 fixed ZIP tuple self-check failed")
     if not all(stage3_authorization_contract_self_check().values()):
         die("Stage 3 authorization marker contract self-check failed")
+    if not all(stage4_lifecycle_contract_self_check().values()):
+        die("Stage 4 lifecycle contract self-check failed")
     if not all(stage3_authorization_marker_assignment_self_check().values()):
         die("Stage 3 authorization marker assignment self-check failed")
     if not all(stage3_authorization_marker_expandable_subexpression_self_check().values()):
@@ -2726,9 +3477,21 @@ def check_static_corrective_assertions() -> None:
     if not all(path_budget_self_check().values()):
         die("path-budget self-check failed")
     if not current_state_prose_is_consistent(current_text):
-        die("Stage 3 current-state prose consistency failed")
+        die("Stage 4 current-state prose consistency failed")
     if not all(current_state_prose_consistency_self_check().values()):
-        die("Stage 3 current-state prose consistency self-check failed")
+        die("Stage 4 current-state prose consistency self-check failed")
+    if not all(current_stage4_review_prose_self_check().values()):
+        die("Stage 4 current protocol/metadata content-review self-check failed")
+    if not all(historical_v3_contamination_self_check().values()):
+        die("Historical v3 contamination self-check failed")
+    if not all(stage2_history_evidence_self_check().values()):
+        die("Stage 2 history evidence self-check failed")
+    if not all(r5_document_correction_self_check().values()):
+        die("R5 document correction self-check failed")
+    if not all(r7_current_status_self_check().values()):
+        die("R7 current Status block self-check failed")
+    if not all(stage4_content_review_runtime_connection_self_check().values()):
+        die("Stage 4 content-review runtime connection self-check failed")
     if not all(clean_committed_source_guard_plan_self_check().values()):
         die("clean committed source guard plan self-check failed")
     if flutter_test_command("flutter") != ["flutter", "test", "--no-pub", "--reporter", "expanded"]:
@@ -2737,6 +3500,8 @@ def check_static_corrective_assertions() -> None:
         die("repository source-tree path does not use shared Flutter test command")
     if not temporary_extraction_uses_shared_flutter_test_command():
         die("temporary extraction path does not use shared Flutter test command")
+    if not all(release_zip_runtime_guard_plan_self_check().values()):
+        die("release-zip runtime Stage 4 guard plan self-check failed")
 
 
 def mode_policy(source_tree: bool, release_zip: Path | None) -> ModePolicy:
@@ -4157,8 +4922,7 @@ def verify_release_zip(
     with_builds: bool,
     flutter_command: str | None,
 ) -> None:
-    if not docs_have_stage4_authorization():
-        die("Release ZIP verification is blocked until Control D Stage 4 authorization.")
+    check_clean_committed_pushed_stage4_authorization_sync_for_release_zip(path, expected_sha, expected_head)
     if not path.is_file() or not ZIP_PATTERN.fullmatch(path.name):
         die("invalid v4 fixed ZIP path")
     if not expected_sha or not re.fullmatch(r"[0-9a-f]{64}", expected_sha):
@@ -4267,7 +5031,12 @@ def main() -> None:
     same_artifact_verified = False
     if policy.current_doc_checks_required:
         check_current_docs()
-    if policy.artifact_policy == "artifact-absent":
+    if policy.name == "default":
+        if stage4_authorization_sync_modes(mode):
+            check_expected_fixed_zip_tuple()
+        else:
+            check_release_outputs_absent()
+    elif policy.artifact_policy == "artifact-absent":
         check_release_outputs_absent()
     if policy.name == "default":
         check_protected_surface(mode)
@@ -4327,8 +5096,18 @@ def main() -> None:
         fixed_builder_short_assignment_checks = fixed_builder_short_worktree_assignment_self_check()
         generic_builder_atomic_slot_claim_checks = generic_builder_atomic_slot_claim_self_check()
         path_budget_checks = path_budget_self_check()
+        stage4_dirty_checks = stage4_authorization_sync_dirty_surface_self_check()
+        stage4_committed_checks = stage4_authorization_sync_committed_surface_self_check()
+        stage4_origin_checks = stage4_authorization_sync_origin_state_self_check()
+        fixed_zip_tuple_checks = fixed_zip_tuple_self_check()
+        release_zip_guard_checks = release_zip_runtime_guard_plan_self_check()
         current_budget = current_tracked_path_budget()
         prose_checks = current_state_prose_consistency_self_check()
+        current_stage4_review_checks = current_stage4_review_prose_self_check()
+        historical_v3_checks = historical_v3_contamination_self_check()
+        content_review_connection_checks = stage4_content_review_runtime_connection_self_check()
+        if not all(content_review_connection_checks.values()):
+            die("Stage 4 content-review runtime connection self-check failed")
         clean_guard_plan_checks = clean_committed_source_guard_plan_self_check()
         flutter_plan_checks = {
             "repository_with_package_config": flutter_dependency_plan(False, True) == "use-existing-package-config",
@@ -4336,7 +5115,7 @@ def main() -> None:
             "temporary_with_package_config": flutter_dependency_plan(True, True) == "use-existing-package-config",
             "temporary_without_package_config": flutter_dependency_plan(True, False) == "pub-get-offline",
         }
-        print("v400_fixed_release_zip_tooling_status: stage3-authorization-sync-implemented-awaiting-review")
+        print("v400_fixed_release_zip_tooling_status: stage4-authorization-sync-implemented-awaiting-review")
         print(
             "v400_fixed_release_zip_exact_stage1_surface: "
             f"{stage1_surface_checks['exact_m10_a3_accepted']}"
@@ -4482,9 +5261,17 @@ def main() -> None:
             "v400_stage3_path_length_corrective_origin_state_validator_self_check: "
             f"{all(stage3_path_origin_checks.values())}"
         )
+        print(f"v400_stage4_authorization_sync_dirty_exact_m12_validator_self_check: {all(stage4_dirty_checks.values())}")
+        print(f"v400_stage4_authorization_sync_future_clean_exact_one_commit_m12_validator_self_check: {all(stage4_committed_checks.values())}")
+        print(f"v400_stage4_authorization_sync_origin_state_validator_self_check: {all(stage4_origin_checks.values())}")
+        print(f"v400_stage4_fixed_zip_exact_tuple_self_check: {all(fixed_zip_tuple_checks.values())}")
         print(
             "v400_stage3_authorization_marker_contract_self_check: "
             f"{all(stage3_marker_contract_checks.values())}"
+        )
+        print(
+            "v400_stage4_lifecycle_contract_self_check: "
+            f"{all(stage4_lifecycle_contract_self_check().values())}"
         )
         print(
             "v400_stage3_authorization_marker_lf_crlf_self_check: "
@@ -4583,8 +5370,20 @@ def main() -> None:
             f"{all(prose_checks.values())}"
         )
         print(
-            "v400_stale_stage3_current_state_phrase_rejected: "
-            f"{prose_checks['stale_stage3_phrase_rejected']}"
+            "v400_stale_stage4_current_state_phrase_rejected: "
+            f"{prose_checks['stale_stage4_phrase_rejected']}"
+        )
+        print(
+            "v400_current_stage4_content_review_self_check: "
+            f"{all(current_stage4_review_checks.values())}"
+        )
+        print(
+            "v400_historical_v3_contamination_self_check: "
+            f"{all(historical_v3_checks.values())}"
+        )
+        print(
+            "v400_stage4_content_review_runtime_connection_self_check: "
+            f"{all(content_review_connection_checks.values())}"
         )
         print(
             "v400_source_tree_path_reaches_clean_committed_guard: "
@@ -4598,24 +5397,28 @@ def main() -> None:
             "v400_clean_committed_source_guard_plan_count_exact_7: "
             f"{clean_guard_plan_checks['guard_count_exact_7']}"
         )
-        print("v400_fixed_release_zip_builder_invocation_count: 0")
-        print("v400_fixed_release_zip_built: False")
+        print("v400_fixed_release_zip_builder_invocation_count: 1")
+        print("v400_fixed_release_zip_built: True / unverified")
         print("v400_control_d_stage2_accepted: True")
         print("v400_control_d_stage2_authorization_token_occurrence: 0")
         print("v400_control_d_stage2_executed: True")
         print("v400_control_d_stage2_acceptance_sync_commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a")
-        print("v400_control_d_stage3_authorization_token_occurrence: 2")
-        print("v400_control_d_stage3_authorized: True")
-        print("v400_control_d_stage3_build_status: authorized-not-run")
-        print("v400_control_d_stage4_authorized: False")
-        print("v400_default_mode_uses_artifact_absent_policy: True")
+        print("v400_control_d_stage3_authorization_token_occurrence: 0")
+        print("v400_control_d_stage3_build_authorized: False")
+        print("v400_control_d_stage3_build_status: completed-pass-accepted")
+        print("v400_control_d_stage4_authorized: True")
+        print("v400_default_mode_uses_mode_dependent_artifact_policy: True")
         print("v400_source_tree_mode_uses_artifact_absent_policy: True")
         print("v400_release_zip_mode_uses_exact_supplied_artifact_policy: True")
         print("v400_release_zip_mode_does_not_call_absent_artifact_gate: True")
+        print(f"v400_release_zip_runtime_stage4_guard_plan_self_check: {all(release_zip_guard_checks.values())}")
+        print(f"v400_dirty_candidate_release_verifier_reachability: {release_zip_guard_checks['dirty_candidate_reachability_false']}")
+        print(f"v400_clean_not_pushed_release_verifier_reachability: {release_zip_guard_checks['clean_not_pushed_reachability_false']}")
+        print(f"v400_clean_pushed_release_verifier_reachability: {release_zip_guard_checks['clean_pushed_reachability_true']}")
         print("v400_current_docs_stage2_accepted: True")
         print("v400_stage2_accepted_marker_occurrence: 2")
-        print("v400_current_docs_stage3_authorization: True")
-        print("v400_current_docs_stage4_authorization: False")
+        print("v400_current_docs_stage3_authorization: False")
+        print("v400_current_docs_stage4_authorization: True")
         print("v400_synthetic_stage3_docs_can_reach_source_tree_policy: True")
         print("v400_synthetic_stage4_docs_can_reach_release_zip_policy: True")
         print("v400_known_scanner_fixtures_exact_count: 2")
@@ -4697,6 +5500,114 @@ def main() -> None:
     print("v400_release_mode_not_blocked_by_absent_artifact_gate: True")
     print("v400_control_e_authorized: False")
     print("[v400-fixed-release-zip-check] OK")
+
+def stage4_authorization_sync_modes(mode: str) -> bool:
+    return mode in {
+        "DIRTY_STAGE4_AUTHORIZATION_SYNC_CANDIDATE",
+        "CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC_NOT_PUSHED",
+        "CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC",
+    }
+
+
+def expected_fixed_zip_path(root: Path = ROOT) -> Path:
+    return root / "release" / EXPECTED_FIXED_ZIP_BASENAME
+
+
+def fixed_zip_tuple_is_exact(root: Path = ROOT, tag_present: bool = False) -> bool:
+    if tag_present:
+        return False
+    release_root = root / "release"
+    path = release_root / EXPECTED_FIXED_ZIP_BASENAME
+    if not release_root.is_dir() or not path.is_file():
+        return False
+    matches = sorted(release_root.glob("DailyRhythmCompanion_v4.0.0_*.zip"))
+    if len(matches) != 1 or matches[0].name != EXPECTED_FIXED_ZIP_BASENAME:
+        return False
+    if matches[0].resolve().parent != release_root.resolve():
+        return False
+    data = path.read_bytes()
+    return len(data) == EXPECTED_FIXED_ZIP_SIZE and sha256(data).hexdigest() == EXPECTED_FIXED_ZIP_SHA256
+
+
+def check_expected_fixed_zip_tuple() -> None:
+    if git_out("tag", "--list", "DRC_v4.0.0"):
+        raise AssertionError("DRC_v4.0.0 tag exists")
+    if not fixed_zip_tuple_is_exact():
+        raise AssertionError("fixed ZIP tuple is not exact")
+
+
+def stage4_authorization_sync_dirty_surface_self_check() -> dict[str, bool]:
+    first = sorted(STAGE4_AUTHORIZATION_SYNC_MODIFIED)[0]
+    exact = [(" M", path) for path in sorted(STAGE4_AUTHORIZATION_SYNC_MODIFIED)]
+    return {
+        "exact_m12_accepted": dirty_surface_is_exact(exact, STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "missing_path_rejected": not dirty_surface_is_exact(exact[:-1], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "unexpected_path_rejected": not dirty_surface_is_exact([*exact, (" M", "backend/app/version.py")], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "duplicate_path_rejected": not dirty_surface_is_exact([*exact, exact[0]], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "staged_rejected": not dirty_surface_is_exact([*exact[1:], ("M ", first)], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "untracked_rejected": not dirty_surface_is_exact([*exact, ("??", "scratch.txt")], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "status_a_rejected": not dirty_surface_is_exact([*exact[1:], (" A", first)], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "status_d_rejected": not dirty_surface_is_exact([*exact[1:], (" D", first)], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "status_r_rejected": not dirty_surface_is_exact([*exact[1:], ("R ", first)], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+        "status_c_rejected": not dirty_surface_is_exact([*exact[1:], ("C ", first)], STAGE4_AUTHORIZATION_SYNC_MODIFIED),
+    }
+
+
+def stage4_authorization_sync_committed_surface_self_check() -> dict[str, bool]:
+    first = sorted(STAGE4_AUTHORIZATION_SYNC_MODIFIED)[0]
+    exact = [f"M\t{path}" for path in sorted(STAGE4_AUTHORIZATION_SYNC_MODIFIED)]
+    return {
+        "exact_one_commit_m12_accepted": validate_stage4_authorization_sync_committed_surface(1, exact),
+        "count_0_rejected": not validate_stage4_authorization_sync_committed_surface(0, exact),
+        "count_2_rejected": not validate_stage4_authorization_sync_committed_surface(2, exact),
+        "missing_path_rejected": not validate_stage4_authorization_sync_committed_surface(1, exact[:-1]),
+        "unexpected_path_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact, "M\tbackend/app/version.py"]),
+        "duplicate_path_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact, exact[0]]),
+        "status_a_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact[1:], "A\t" + first]),
+        "status_d_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact[1:], "D\t" + first]),
+        "status_r_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact[1:], "R100\told\t" + first]),
+        "status_c_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact[1:], "C100\told\t" + first]),
+        "malformed_line_rejected": not validate_stage4_authorization_sync_committed_surface(1, [*exact[1:], "M " + first]),
+    }
+
+
+def stage4_authorization_sync_origin_state_self_check() -> dict[str, bool]:
+    head = "1" * 40
+    return {
+        "base_origin_accepted_as_not_pushed": stage4_authorization_sync_origin_state(head, CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT) == "NOT_PUSHED",
+        "head_origin_accepted_as_pushed": stage4_authorization_sync_origin_state(head, head) == "PUSHED",
+        "unrelated_origin_rejected": stage4_authorization_sync_origin_state(head, "2" * 40) is None,
+        "empty_origin_rejected": stage4_authorization_sync_origin_state(head, "") is None,
+        "origin_policy_blocked_before_surface_validation": _stage4_origin_policy_blocks_before_surface_validation(),
+        "determine_mode_references_origin_helper": "stage4_authorization_sync_clean_mode_after_surface_validation" in determine_mode.__code__.co_names,
+        "dirty_mode_maintained": stage4_authorization_sync_modes("DIRTY_STAGE4_AUTHORIZATION_SYNC_CANDIDATE"),
+    }
+
+
+def _stage4_origin_policy_blocks_before_surface_validation() -> bool:
+    try:
+        stage4_authorization_sync_clean_mode_after_surface_validation(False, "1" * 40, "1" * 40)
+    except AssertionError:
+        return True
+    return False
+
+
+def fixed_zip_tuple_self_check() -> dict[str, bool]:
+    return {
+        "actual_tuple_accepted": fixed_zip_tuple_is_exact(),
+        "tag_present_rejected": not fixed_zip_tuple_is_exact(tag_present=True),
+        "expected_basename_exact": EXPECTED_FIXED_ZIP_BASENAME == "DailyRhythmCompanion_v4.0.0_20260908_173440.zip",
+        "expected_size_exact": EXPECTED_FIXED_ZIP_SIZE == 3018230,
+        "expected_sha_exact": EXPECTED_FIXED_ZIP_SHA256 == "f02b43a219d7e89fd9e40dd6c1f7cd588076de7b260d6085ffa99966b3c49142",
+        "expected_source_head_exact": EXPECTED_FIXED_ZIP_SOURCE_HEAD == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT,
+    }
+
+
+def release_zip_reachability(mode: str) -> bool:
+    return mode == "CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC"
+
+
+
 
 
 if __name__ == "__main__":

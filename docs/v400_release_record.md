@@ -7,7 +7,7 @@ Status:
 PREPARED / NOT_RELEASED
 
 Current phase:
-Control D Stage 3 Authorization STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+Control D Stage 4 Authorization Sync STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 release version:
 v4.0.0
@@ -58,35 +58,35 @@ Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTE
 
 Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 ```
 
 ## Release Tuple
 
 ```text
 release source HEAD:
-NOT_RECORDED
+46f5af49106c6ecc0d478a425cf709cf511da1be
 
 verification HEAD:
 NOT_RECORDED
 
 fixed ZIP basename:
-NOT_BUILT
+DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 fixed ZIP size:
-NOT_RECORDED
+3018230 bytes
 
 fixed ZIP SHA-256:
-NOT_RECORDED
+F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142
 
 fixed ZIP builder invocation count:
-0
+1
 
 same-artifact verification:
-NOT_COMPLETED
+AUTHORIZED / NOT_RUN
 
 release-package hygiene:
 NOT_COMPLETED
@@ -168,3 +168,6 @@ artifact SHA-256
 ```
 
 Do not blur them into one generic HEAD.
+
+
+Control D Stage 4 authorization-sync status: IMPLEMENTED / AWAITING_REVIEW. Stage 3 fixed ZIP build is COMPLETED / PASS / ACCEPTED, the artifact tuple is RECORDED, Stage 4 same-artifact verification is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. Stage 3 builder rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.

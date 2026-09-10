@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
+DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
+DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 3 Authorization
+DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
 
 Current implementation state:
-STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -119,19 +119,19 @@ Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTE
 Control D Stage 2 acceptance-sync commit:
 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 
 Control E:
-FUTURE / NOT_AUTHORIZED
+NOT_AUTHORIZED
 
 fixed ZIP builder invocation count:
-0
+1
 
 fixed ZIP:
-NOT_BUILT
+release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 annotated tag:
 NOT_CREATED
@@ -239,18 +239,21 @@ COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 3:
 Build exactly once
-AUTHORIZED / NOT_RUN
+COMPLETED / PASS / ACCEPTED
 
-Control D Stage 3 authorization:
-AUTHORIZED_FOR_ONE_TIME_BUILD
+Control D Stage 4 authorization:
+AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION
 
 Control D Stage 4:
 Same-artifact verification and tuple record
-BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+AUTHORIZED / NOT_RUN
 
 Control E:
 Publication
-FUTURE / NOT_AUTHORIZED
+NOT_AUTHORIZED / NOT_RUN
+
+DRC v4.0.0:
+NOT_RELEASED
 ```
 
 Completion or acceptance of one control does not authorize the next control.
@@ -331,7 +334,7 @@ creation, or publication.
 Control C is the accepted release-candidate verification and no-build preflight.
 It ran full source/runtime regressions, configured coexistence verification,
 and source-only release-package hygiene preflight. The current checkpoint is
-Control D Stage 2 authorization-sync.
+Control D Stage 4 Authorization Sync.
 
 ```text
 Control C:
@@ -356,8 +359,9 @@ fixed ZIP:
 NOT_BUILT
 ```
 
-Control C is a no-build preflight. The fixed ZIP builder invocation count remains
-`0`. Control C does not execute a real provider, read credentials or `.env`
+Control C was a historical no-build preflight. Its fixed ZIP builder invocation
+count was `0`, and its fixed ZIP state was `NOT_BUILT`. Control C does not
+execute a real provider, read credentials or `.env`
 contents, use microphone/STT/LLM/TTS/audio playback/VTube Studio/motion, run
 private operators, start the Backend server, perform loopback HTTP operator
 execution, access external networks, build Flutter release artifacts, invoke a
@@ -385,19 +389,19 @@ Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTE
 
 Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 
 silent rebuild:
 NO
 
 fixed ZIP builder invocation count:
-0
+1
 
 fixed ZIP:
-NOT_BUILT
+release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 publication:
 NO
@@ -466,24 +470,24 @@ Stage 1 added `docs/v400_fixed_release_zip.md`,
 `scripts/check_v400_fixed_release_zip.py`.
 
 `-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
-generic ZIP, create a fixed ZIP, create a tag, or publish. Stage 3
-authorization-sync candidate does not run the builder while it is dirty,
-unreviewed, unaccepted, uncommitted, and unpushed. After Stage 3
-authorization-sync is reviewed, accepted, committed, and pushed, the accepted
-marker authorizes only the fixed ZIP exact one-time build, and the builder still
-requires separate explicit user build approval. The release ZIP verifier must
-remain inert unless a future accepted document adds the tooling-defined Stage 4
-same-artifact authorization marker. Stage 4 remains future and not authorized
-until a future accepted document adds the tooling-defined Stage 4 same-artifact
-authorization marker. The current Stage 3 authorization-sync
-records the Stage 3 authorization marker while preserving the accepted Stage 2
-preflight evidence and consumed Stage 2 authorization marker.
+generic ZIP, create a fixed ZIP, create a tag, or publish. The current Stage 4
+authorization marker count is exact 2 across the current v4 documents. Dirty
+default mode validates the exact M12 authorization-sync candidate surface, the
+fixed ZIP exact-one artifact, and the recorded tuple for
+`DailyRhythmCompanion_v4.0.0_20260908_173440.zip` with size `3018230`,
+SHA-256 `F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142`,
+and source HEAD `46f5af49106c6ecc0d478a425cf709cf511da1be`. The Stage 3
+one-time build authorization token is consumed; current documentation count is
+0 and builder rerun is forbidden. The release ZIP verifier remains unreachable
+until Stage 4 authorization-sync is clean, committed, and pushed. Stage 4
+same-artifact verification itself has not run. Control E is not authorized.
 
 Mode-specific ordering is part of the fixed ZIP tooling contract. Default mode
 is limited to Stage 2 accepted static/current-state checks, consumed Stage 2
-authorization-token absence, Stage 2 accepted marker exactness, Stage 3
-authorization-marker exactness, Stage 4 authorization-marker absence, and exact
-dirty/clean Stage 3 authorization-sync surface checks.
+authorization-token absence, Stage 2 accepted marker exactness, consumed Stage 3
+authorization-token absence, Stage 4 authorization-marker exactness, fixed ZIP
+tuple preservation, and exact dirty/clean Stage 4 authorization-sync surface
+checks.
 Source-tree mode requires Stage 2 accepted state and uses the
 fixed-ZIP absent policy. Release-ZIP mode requires Stage 4 authorization plus a
 Stage 3 artifact-ready accepted state and verifies exactly one supplied fixed
@@ -511,6 +515,9 @@ declare exactly `4.0.0+5`, duplicate active version declarations are rejected,
 and ZIP/source mismatch is rejected. The checker's mode dispatcher and
 deterministic self-checks use the same mode-policy contract.
 
+
+Stage 3 fixed ZIP build completed, passed, and is accepted. The Stage 3 one-time build authorization is consumed; Stage 3 builder rerun is forbidden. The fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 verifies only the same basename, size, SHA-256, and release source HEAD recorded here. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Stage 4 verifier does not call the builder; failure does not rebuild. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync. DRC v4.0.0 remains NOT_RELEASED, the DRC_v4.0.0 tag is NOT_CREATED, GitHub Release is NOT_CREATED, and Control E is NOT_AUTHORIZED.
+
 ## Future Control E
 
 Control E is future work under separate exact review. It may perform publication
@@ -521,7 +528,7 @@ sync. Control E owns tag, GitHub Release, and publication.
 
 ```text
 Control E:
-FUTURE / NOT_AUTHORIZED
+NOT_AUTHORIZED
 
 annotated tag:
 NOT_CREATED
@@ -652,7 +659,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control B:
 CLOSED
@@ -673,19 +680,19 @@ Control D Stage 2:
 CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 
 Control D Stage 3:
-BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 
 DRC v4.0.0:
 NOT_RELEASED
 
 fixed ZIP builder invocation count:
-0
+1
 
 fixed ZIP:
-NOT_BUILT
+release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 annotated tag:
 NOT_CREATED

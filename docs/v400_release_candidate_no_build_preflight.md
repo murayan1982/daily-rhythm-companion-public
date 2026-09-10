@@ -28,10 +28,10 @@ Flutter candidate:
 4.0.0+5
 
 fixed ZIP builder invocation count:
-0
+1
 
 fixed ZIP:
-NOT_BUILT
+release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 Control D:
 CURRENT / NOT_COMPLETED
@@ -46,13 +46,13 @@ Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTE
 
 Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 
 Control E:
-FUTURE / NOT_AUTHORIZED
+NOT_AUTHORIZED
 ```
 
 ## Verification Matrix
@@ -226,3 +226,6 @@ build/package scripts
 release artifacts
 existing tags
 ```
+
+
+Control D Stage 4 authorization-sync status: IMPLEMENTED / AWAITING_REVIEW. Stage 3 fixed ZIP build is COMPLETED / PASS / ACCEPTED, the artifact tuple is RECORDED, Stage 4 same-artifact verification is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. Stage 3 builder rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.

@@ -4,7 +4,7 @@
 
 ```text
 Status:
-STAGE3_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
 
 Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -28,37 +28,37 @@ Control D Stage 2 acceptance-sync commit:
 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
 Control D Stage 3:
-BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 3 authorization:
-AUTHORIZED_FOR_ONE_TIME_BUILD
+Control D Stage 4 authorization:
+AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 
 Control E:
-FUTURE / NOT_AUTHORIZED
+NOT_AUTHORIZED
 
 builder invocation count:
-0
+1
 
 fixed ZIP:
-NOT_BUILT
+release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 release source HEAD:
-NOT_RECORDED
+46f5af49106c6ecc0d478a425cf709cf511da1be
 
 verification HEAD:
 NOT_RECORDED
 
 fixed ZIP basename:
-NOT_BUILT
+DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 fixed ZIP size:
-NOT_RECORDED
+3018230 bytes
 
 fixed ZIP SHA-256:
-NOT_RECORDED
+F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142
 
 annotated tag:
 NOT_CREATED
@@ -122,13 +122,18 @@ DRC_v4.0.0 tag:
 NOT_CREATED
 ```
 
-Stage 2 acceptance is committed, pushed, and closed. Stage 3 is authorized for
-exactly one fixed ZIP build. This does not approve Stage 4, Control E, package
-creation, tag creation, GitHub Release creation, or publication.
+At the Stage 2 checkpoint, Stage 2 acceptance was committed, pushed, and
+closed, and Stage 3 was authorized for exactly one fixed ZIP build. That
+historical Stage 3 authorization has now been consumed by the accepted Stage 3
+build. It does not approve another Stage 3 build, Stage 4 execution, Control E,
+package creation, tag creation, GitHub Release creation, or publication.
 
 `-PreflightOnly` must not create a worktree, run `build_release.bat`, create a
 generic ZIP, create a fixed ZIP, create a tag, or publish. It must report
 builder invocation count `0`.
+
+
+Stage 3 fixed ZIP build completed, passed, and is accepted. The Stage 3 one-time build authorization is consumed; Stage 3 builder rerun is forbidden. The fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 verifies only the same basename, size, SHA-256, and release source HEAD recorded here. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Stage 4 verifier does not call the builder; failure does not rebuild. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync. DRC v4.0.0 remains NOT_RELEASED, the DRC_v4.0.0 tag is NOT_CREATED, GitHub Release is NOT_CREATED, and Control E is NOT_AUTHORIZED.
 
 ## Builder Contract
 
@@ -176,14 +181,11 @@ overwrite: forbidden
 python scripts\check_v400_fixed_release_zip.py --source-tree --with-flutter --with-builds --flutter-command <ABSOLUTE_FLUTTER_COMMAND>
 ```
 
-The actual build path is authorized only by the current accepted document marker
-above, and only for one fixed ZIP build.
+The actual build path was authorized by the then-current accepted Stage 3
+document marker, and only for one fixed ZIP build. That build completed, passed,
+and is accepted; the builder must not be rerun.
 
-Stage 3 authorization-sync candidate does not run the builder while it is dirty,
-unreviewed, unaccepted, uncommitted, and unpushed. After Stage 3
-authorization-sync is reviewed, accepted, committed, and pushed, the accepted
-marker authorizes only the fixed ZIP exact one-time build, and the builder still
-requires separate explicit user build approval.
+
 
 The authorized one-time build must create a detached temporary worktree from
 exact committed HEAD, verify that worktree HEAD, run `build_release.bat release`
@@ -209,27 +211,28 @@ scripts/check_v400_fixed_release_zip.py
 Modes:
 
 ```text
-default: Stage 3 authorization-sync dirty candidate or exact clean committed authorization static gate
+default: Stage 4 authorization-sync dirty candidate or exact clean committed authorization static gate
 --source-tree: authorized clean committed main no-artifact preflight
---release-zip: future same fixed ZIP verification
+--release-zip: committed/pushed Stage 4 same-artifact verification path, still requiring separate explicit execution approval
 ```
 
-The verifier must not invoke the builder. The release ZIP verifier must verify
-only the supplied fixed ZIP and must remain inert unless a future accepted
-document adds the tooling-defined Stage 4 same-artifact authorization marker.
+The verifier must not invoke the builder.
 
 Release ZIP verification must not mutate the ZIP and must keep release source
 HEAD, verification HEAD, and artifact SHA-256 separate.
 
-Mode dispatch is strict. Default mode validates Stage 2 accepted current-state
-documentation, consumed Stage 2 authorization-token absence, Stage 2 accepted
-marker exactness, Stage 3 authorization-marker exactness, Stage 4
-authorization-marker absence, fixed ZIP absence, and exact dirty/clean Stage 3
-authorization-sync static checks. Source-tree mode is mutually exclusive with release-ZIP mode and
-requires Control D Stage 2 accepted state before clean committed source/runtime
-preflight. Release-ZIP
-mode is mutually exclusive with source-tree mode and verifies the exact supplied
-artifact instead of applying the absent-artifact gate.
+Mode dispatch is strict. Default dirty mode validates the exact Control D Stage 4
+authorization-sync M12 candidate surface, requires exactly one fixed ZIP
+artifact, and matches its basename, size, SHA-256, and source HEAD against the
+recorded tuple. Current docs must contain exactly two Stage 4 authorization
+markers and zero Stage 3 one-time build authorization tokens. Stage 4
+same-artifact verification is authorized but not run; the release-ZIP verifier
+remains unreachable until the Stage 4 authorization-sync is clean, committed,
+and pushed. Control E remains not authorized. Source-tree mode is mutually
+exclusive with release-ZIP mode and requires Control D Stage 2 accepted state
+before clean committed source/runtime preflight. Release-ZIP mode is mutually
+exclusive with source-tree mode and verifies the exact supplied artifact instead
+of applying the source-tree artifact gate.
 
 The release-ZIP verifier applies `scripts/check_release_package.py` without
 weakening the generic scanner. The only tolerated scanner findings are known
@@ -306,10 +309,10 @@ After a source-affecting corrective, any existing artifact is invalidated. A
 verifier-only corrective may be recorded only by keeping release source HEAD,
 verification HEAD, and artifact SHA-256 distinct.
 
-## Stage 3 Authorization-Sync Stop Rule
+## Stage 4 Authorization-Sync Stop Rule
 
-Stage 3 authorization-sync stops as a dirty exact candidate for external diff
-review. It does not stage, commit, push, run another Control D Stage 2
-source-tree preflight, run the Stage 3 build, run Control D Stage 4, build a
-fixed ZIP outside that separately approved build, package, tag, create a GitHub Release, publish, or clean release
-artifacts.
+Stage 4 authorization-sync stops as a dirty exact candidate for external diff
+review. The current dirty R5 candidate does not stage, commit, push, invoke
+`--release-zip`, rerun the builder, run another Control D Stage 2 source-tree
+preflight, build or replace a fixed ZIP, package, tag, create a GitHub Release,
+publish, authorize Control E, or clean release artifacts.

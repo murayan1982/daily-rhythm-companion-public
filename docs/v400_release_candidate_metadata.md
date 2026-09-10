@@ -34,10 +34,10 @@ planned tag:
 DRC_v4.0.0
 
 fixed ZIP:
-NOT_BUILT
+release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 
 builder invocation count:
-0
+1
 
 GitHub Release:
 NOT_CREATED
@@ -64,13 +64,13 @@ Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTE
 
 Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 
-Control D Stage 3: BUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN
+Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
 Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / BLOCKED_PENDING_STAGE3_ARTIFACT / NOT_AUTHORIZED
+SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
 
 Control E:
-FUTURE / NOT_AUTHORIZED
+NOT_AUTHORIZED
 ```
 
 ## Version Ownership
@@ -92,7 +92,15 @@ Control C owns the accepted release-candidate verification and no-build
 preflight. Control D Stage 1 added credential-free fixed ZIP tooling and is
 closed at commit `a204f6b11d25baeea67b7b7be8860c9a4f9ea945`. Control D Stage
 2 clean committed source preflight completed, passed, and is accepted, committed,
-and pushed. Stage 3 is authorized for exactly one fixed ZIP build but has not
-run. Stage 4 remains
-blocked pending the Stage 3 artifact. Control E owns publication and remains
-future/not authorized.
+and pushed. Control D Stage 3 fixed ZIP build is completed and passed; the exact
+artifact was created and its tuple is recorded as
+`DailyRhythmCompanion_v4.0.0_20260908_173440.zip`, size `3018230`, SHA-256
+`F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142`, source HEAD
+`46f5af49106c6ecc0d478a425cf709cf511da1be`. Control D Stage 4 same-artifact
+verification is authorized but not run. Control E is not authorized,
+tag/publication are not run, and DRC v4.0.0 is not released. Stage 3 builder
+rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or
+regenerated. Stage 4 authorization-sync candidate cannot run release-zip
+verifier until reviewed, accepted, committed, and pushed. After commit/push,
+Stage 4 verifier still needs separate explicit approval. Verification HEAD
+remains NOT_RECORDED until Stage 4 execution acceptance-sync.
