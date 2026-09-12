@@ -11,9 +11,9 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
-Current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
-Current implementation state: STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+Current small commit: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
+Current implementation: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
+Current implementation state: STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: `4cae15573f3332cbc476557461babdfe2eb3c0bf`
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -102,7 +102,17 @@ Control D Stage 1 implementation commit: `a204f6b11d25baeea67b7b7be8860c9a4f9ea9
 Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 2 acceptance-sync commit: `697d0918cb8a6de5c0459324464b7d7e376b3a5a`
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
-Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync: COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+Control D Stage 4 authorization-sync commit: 0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+Stage 4 invocation 1: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+verification verdict: NOT_REACHED
+failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
+ZIP structural/version checks reached before failure: PASS
+extracted compileall: PASS
+extracted Backend pytest: PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+fixed ZIP preservation: PRESERVED
+Stage 4 retry: NOT_AUTHORIZED / NOT_RUN
 Control E: NOT_AUTHORIZED
 fixed ZIP builder invocation count: 1
 fixed ZIP: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
@@ -4314,7 +4324,8 @@ Day3 adds the Character-aware mood choice copy matrix:
 python scripts\check_v150_mood_personalization_day3.py
 ```
 
-It defines character-specific presentation copy for `energetic`, `normal`, and `tired` across ミナ, ソラ, and レイ while preserving the stable mood ID contract. Day3 does not change `AdviceRequest.mood`, `DailyRecord.mood`, advice basis labels, mock behavior, or release artifacts.
+It defines character-specific presentation copy for `energetic`,
+ormal`, and `tired` across ミナ, ソラ, and レイ while preserving the stable mood ID contract. Day3 does not change `AdviceRequest.mood`, `DailyRecord.mood`, advice basis labels, mock behavior, or release artifacts.
 
 
 ## v1.5.0 Day4 Flutter mood choice display copy
@@ -4347,7 +4358,8 @@ Day6 defines the lightweight profile/preference boundary before implementing use
 python scripts\check_v150_mood_personalization_day6.py
 ```
 
-The boundary allows future app-level hints such as `nickname`, `preferred_mood_labels`, `advice_focus_preference`, and `tone_preference`, but Day6 does not add profile persistence, backend user-profile endpoints, AdviceRequest schema changes, DailyRecord schema changes, provider memory, or medical profiling.
+The boundary allows future app-level hints such as
+ickname`, `preferred_mood_labels`, `advice_focus_preference`, and `tone_preference`, but Day6 does not add profile persistence, backend user-profile endpoints, AdviceRequest schema changes, DailyRecord schema changes, provider memory, or medical profiling.
 
 
 ## v1.5.0 Day7 aggregate readiness
@@ -4995,7 +5007,8 @@ cd ..
 
 See [docs/v200_real_google_health_sleep_data_execution_evidence.md](docs/v200_real_google_health_sleep_data_execution_evidence.md).
 
-Configured real Google Health sleep-data execution evidence remains operator-only. Accepted evidence requires explicit opt-in, the real Google Health API gate, OAuth availability, real API request confirmation, real sleep-data fetch success, SleepSummary normalization, backend real-data source confirmation, and smartphone Web UI real-source confirmation. `mock_data`, `fixture_data`, `fallback_data`, `simulated_data`, `skipped`, `unavailable`, `oauth_missing`, `token_invalid`, `api_failed`, `normalization_failed`, `backend_not_called`, `web_ui_not_confirmed`, and `error` states must not be counted as real Google Health success. Public evidence must remain marker-only and must not include client secrets, tokens, authorization headers, raw health payloads, raw sleep events, precise personal sleep timestamps, raw LAN IPs, private paths, raw screenshots, browser storage dumps, or local token files.
+Configured real Google Health sleep-data execution evidence remains operator-only. Accepted evidence requires explicit opt-in, the real Google Health API gate, OAuth availability, real API request confirmation, real sleep-data fetch success, SleepSummary normalization, backend real-data source confirmation, and smartphone Web UI real-source confirmation. `mock_data`, `fixture_data`, `fallback_data`, `simulated_data`, `skipped`, `unavailable`, `oauth_missing`, `token_invalid`, `api_failed`,
+ormalization_failed`, `backend_not_called`, `web_ui_not_confirmed`, and `error` states must not be counted as real Google Health success. Public evidence must remain marker-only and must not include client secrets, tokens, authorization headers, raw health payloads, raw sleep events, precise personal sleep timestamps, raw LAN IPs, private paths, raw screenshots, browser storage dumps, or local token files.
 
 Day66 does not complete v2.0.0 by itself. Web image display, public repo final sweep, final aggregate verification, and fixed v2.0.0 release zip verification remain required.
 
@@ -6101,7 +6114,8 @@ unconfigured startup, configured idle startup with opt-in off, speaking mock
 completion with cue `speaking` and 2/2 commands, `unknown` pre-import ignore
 with 0/0 commands, and local reset/opt-out returning to idle/off. The accepted
 screens showed `adapter=mock`, `real_adapter_enabled=false`,
-`provider_execution_attempted=false`, and `network_execution=false`.
+`provider_execution_attempted=false`, and
+etwork_execution=false`.
 Per-Apply and reset/opt-out transport limits are additionally locked by the
 focused Flutter tests.
 
@@ -6175,7 +6189,8 @@ acceptance-sync commit/push: NOT_AUTHORIZED
 ```
 
 The released root-public Framework motion types and `create_motion_session()`
-remain available, but real adapters report typed `not_implemented` and
+remain available, but real adapters report typed
+ot_implemented` and
 `real_adapter_supported=false`. DRC must not compensate with Framework
 internal/provider imports or a DRC-owned VTS/provider bypass. RT-7 runtime
 implementation remains blocked until a released Framework real-motion adapter
@@ -7081,4 +7096,4 @@ execution, commit, or push.
 <!-- RT-9E-FINAL-DOCS-SYNC:END -->
 
 
-Control D Stage 4 authorization-sync status: IMPLEMENTED / AWAITING_REVIEW. Stage 3 fixed ZIP build is COMPLETED / PASS / ACCEPTED, the artifact tuple is RECORDED, Stage 4 same-artifact verification is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. Stage 3 builder rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is NOT_AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED.

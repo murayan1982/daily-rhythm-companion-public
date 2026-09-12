@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
+DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
 
 Current small commit:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
+DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
 
 Current implementation:
-DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
+DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
 
 Current implementation state:
-STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -121,8 +121,38 @@ Control D Stage 2 acceptance-sync commit:
 
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+
+Control D Stage 4 authorization-sync commit:
+0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+release-package scanner known fixtures:
+EXACT_EXPECTED_FINDINGS / ACCEPTED
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
+
+extracted Backend pytest:
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 Control E:
 NOT_AUTHORIZED
@@ -168,8 +198,21 @@ source-only no-build preflight while preserving package, tag, and publication
 boundaries. Control D Stage 1 added fixed ZIP tooling and is closed. Control D
 Stage 2 clean committed source preflight completed, passed, and is accepted.
 
-DRC v4.0.0 can proceed to a separately authorized Stage 3 build request because
-the accepted Stage 2 source preflight preserved its bounded release scope:
+Control D Stage 3 fixed ZIP build completed, passed, and is accepted. Control D
+Stage 4 authorization-sync completed and was committed, pushed, reviewed, and
+accepted at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1
+was executed exactly once and failed before a conclusive verdict; the failure
+class is `NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE`.
+
+The release-package scanner findings were the exact accepted source-matched
+fixtures. ZIP structure/version checks passed, and extracted compileall passed.
+The extracted Backend pytest process completed, but its result/count was not
+evaluated because output emission raised `UnicodeEncodeError`. The Stage 4
+conclusive verdict was not reached. The fixed ZIP remains preserved. Stage 4
+retry is `NOT_AUTHORIZED / NOT_RUN`, Control E is `NOT_AUTHORIZED`, and DRC
+v4.0.0 remains `NOT_RELEASED`.
+
+The accepted Stage 2 source preflight preserved the bounded release scope:
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
 production unified real STT -> streaming LLM -> TTS -> motion runtime.
 
@@ -241,12 +284,20 @@ Control D Stage 3:
 Build exactly once
 COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4 authorization:
-AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
 
-Control D Stage 4:
-Same-artifact verification and tuple record
-AUTHORIZED / NOT_RUN
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 Control E:
 Publication
@@ -334,7 +385,7 @@ creation, or publication.
 Control C is the accepted release-candidate verification and no-build preflight.
 It ran full source/runtime regressions, configured coexistence verification,
 and source-only release-package hygiene preflight. The current checkpoint is
-Control D Stage 4 Authorization Sync.
+Control D Stage 4 Verifier Output Encoding Corrective R1.
 
 ```text
 Control C:
@@ -391,8 +442,38 @@ Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a
 
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+
+Control D Stage 4 authorization-sync commit:
+0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+release-package scanner known fixtures:
+EXACT_EXPECTED_FINDINGS / ACCEPTED
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
+
+extracted Backend pytest:
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 silent rebuild:
 NO
@@ -516,7 +597,7 @@ and ZIP/source mismatch is rejected. The checker's mode dispatcher and
 deterministic self-checks use the same mode-policy contract.
 
 
-Stage 3 fixed ZIP build completed, passed, and is accepted. The Stage 3 one-time build authorization is consumed; Stage 3 builder rerun is forbidden. The fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 verifies only the same basename, size, SHA-256, and release source HEAD recorded here. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Stage 4 verifier does not call the builder; failure does not rebuild. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync. DRC v4.0.0 remains NOT_RELEASED, the DRC_v4.0.0 tag is NOT_CREATED, GitHub Release is NOT_CREATED, and Control E is NOT_AUTHORIZED.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is NOT_AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. The exact artifact was created and its tuple is recorded; Stage 3 one-time build authorization token is consumed; current documentation count is 0. The release-ZIP verifier remains unreachable in default corrective mode; Stage 4 invocation 1 executed and failed before verdict, and retry is not authorized.
 
 ## Future Control E
 
@@ -627,7 +708,7 @@ NO
 
 ```text
 exact surface:
-13 files / M10 A3 D0
+12 files / M12 A0 D0
 
 MODIFY:
 README.md
@@ -638,13 +719,13 @@ docs/DRC_v400_goal_checklist_small_commit.md
 docs/v400_release_preparation_protocol.md
 docs/v400_release_candidate_metadata.md
 docs/v400_release_candidate_no_build_preflight.md
+docs/v400_fixed_release_zip.md
 docs/v400_release_record.md
+scripts/check_v400_fixed_release_zip.py
 scripts/check_v400_release_candidate_no_build_preflight.py
 
 ADD:
-docs/v400_fixed_release_zip.md
-build_v400_fixed_release_zip_from_head.ps1
-scripts/check_v400_fixed_release_zip.py
+0
 
 DELETE:
 0
@@ -659,7 +740,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
 
 Control B:
 CLOSED
@@ -682,8 +763,38 @@ CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUS
 Control D Stage 3:
 BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+
+Control D Stage 4 authorization-sync commit:
+0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+release-package scanner known fixtures:
+EXACT_EXPECTED_FINDINGS / ACCEPTED
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
+
+extracted Backend pytest:
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 DRC v4.0.0:
 NOT_RELEASED

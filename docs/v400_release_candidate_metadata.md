@@ -66,8 +66,38 @@ Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a
 
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+
+Control D Stage 4 authorization-sync commit:
+0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+release-package scanner known fixtures:
+EXACT_EXPECTED_FINDINGS / ACCEPTED
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
+
+extracted Backend pytest:
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 Control E:
 NOT_AUTHORIZED
@@ -96,11 +126,4 @@ and pushed. Control D Stage 3 fixed ZIP build is completed and passed; the exact
 artifact was created and its tuple is recorded as
 `DailyRhythmCompanion_v4.0.0_20260908_173440.zip`, size `3018230`, SHA-256
 `F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142`, source HEAD
-`46f5af49106c6ecc0d478a425cf709cf511da1be`. Control D Stage 4 same-artifact
-verification is authorized but not run. Control E is not authorized,
-tag/publication are not run, and DRC v4.0.0 is not released. Stage 3 builder
-rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or
-regenerated. Stage 4 authorization-sync candidate cannot run release-zip
-verifier until reviewed, accepted, committed, and pushed. After commit/push,
-Stage 4 verifier still needs separate explicit approval. Verification HEAD
-remains NOT_RECORDED until Stage 4 execution acceptance-sync.
+`46f5af49106c6ecc0d478a425cf709cf511da1be`. Control D Stage 4 authorization-sync is committed, pushed, reviewed, accepted, and closed at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was executed exactly once and failed before verdict with failure class `NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE`. Retry is not authorized or run. Control E is not authorized, tag/publication are not run, and DRC v4.0.0 is not released.

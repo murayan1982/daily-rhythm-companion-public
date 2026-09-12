@@ -7,7 +7,7 @@ Status:
 PREPARED / NOT_RELEASED
 
 Current phase:
-Control D Stage 4 Authorization Sync STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+Control D Stage 4 Verifier Output Encoding Corrective R1 STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
 
 release version:
 v4.0.0
@@ -60,8 +60,38 @@ Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a
 
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+
+Control D Stage 4 authorization-sync commit:
+0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+release-package scanner known fixtures:
+EXACT_EXPECTED_FINDINGS / ACCEPTED
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
+
+extracted Backend pytest:
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 ```
 
 ## Release Tuple
@@ -86,19 +116,37 @@ fixed ZIP builder invocation count:
 1
 
 same-artifact verification:
-AUTHORIZED / NOT_RUN
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 
 release-package hygiene:
-NOT_COMPLETED
+EXACT_EXPECTED_FINDINGS / ACCEPTED
 
 ZIP CRC/single-package-root verification:
-NOT_COMPLETED
+PASS
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
 
 extracted ZIP Backend verification:
-NOT_RUN
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
 
 extracted ZIP Flutter verification/builds:
-NOT_RUN
+NOT_REACHED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 verifier rebuilt artifact:
 false
@@ -170,4 +218,4 @@ artifact SHA-256
 Do not blur them into one generic HEAD.
 
 
-Control D Stage 4 authorization-sync status: IMPLEMENTED / AWAITING_REVIEW. Stage 3 fixed ZIP build is COMPLETED / PASS / ACCEPTED, the artifact tuple is RECORDED, Stage 4 same-artifact verification is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. Stage 3 builder rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is NOT_AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED.

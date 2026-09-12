@@ -4,7 +4,7 @@
 
 ```text
 Status:
-STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
 
 Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -30,11 +30,38 @@ Control D Stage 2 acceptance-sync commit:
 Control D Stage 3:
 BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
 
-Control D Stage 4 authorization:
-AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION
+Control D Stage 4 authorization-sync:
+COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
 
-Control D Stage 4:
-SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync commit:
+0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+
+Stage 4 invocation 1:
+EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+
+verification verdict:
+NOT_REACHED
+
+failure class:
+NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+
+release-package scanner known fixtures:
+EXACT_EXPECTED_FINDINGS / ACCEPTED
+
+ZIP structural/version checks reached before failure:
+PASS
+
+extracted compileall:
+PASS
+
+extracted Backend pytest:
+PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+
+fixed ZIP preservation:
+PRESERVED
+
+Stage 4 retry:
+NOT_AUTHORIZED / NOT_RUN
 
 Control E:
 NOT_AUTHORIZED
@@ -133,7 +160,7 @@ generic ZIP, create a fixed ZIP, create a tag, or publish. It must report
 builder invocation count `0`.
 
 
-Stage 3 fixed ZIP build completed, passed, and is accepted. The Stage 3 one-time build authorization is consumed; Stage 3 builder rerun is forbidden. The fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 verifies only the same basename, size, SHA-256, and release source HEAD recorded here. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Stage 4 verifier does not call the builder; failure does not rebuild. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync. DRC v4.0.0 remains NOT_RELEASED, the DRC_v4.0.0 tag is NOT_CREATED, GitHub Release is NOT_CREATED, and Control E is NOT_AUTHORIZED.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is NOT_AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED.
 
 ## Builder Contract
 
@@ -190,8 +217,7 @@ and is accepted; the builder must not be rerun.
 The authorized one-time build must create a detached temporary worktree from
 exact committed HEAD, verify that worktree HEAD, run `build_release.bat release`
 exactly once, carry forward only the generic timestamp, move the final ZIP to
-`release`, output basename, size, SHA-256, and source HEAD, leave verification
-status `not-run`, and clean temporary state even on failure. It must refuse
+`release`, output basename, size, SHA-256, and source HEAD, leave verification status `not-run`, and clean temporary state even on failure. It must refuse
 silent rebuild, overwrite, or replacement.
 
 The fixed basename must be:
@@ -221,18 +247,7 @@ The verifier must not invoke the builder.
 Release ZIP verification must not mutate the ZIP and must keep release source
 HEAD, verification HEAD, and artifact SHA-256 separate.
 
-Mode dispatch is strict. Default dirty mode validates the exact Control D Stage 4
-authorization-sync M12 candidate surface, requires exactly one fixed ZIP
-artifact, and matches its basename, size, SHA-256, and source HEAD against the
-recorded tuple. Current docs must contain exactly two Stage 4 authorization
-markers and zero Stage 3 one-time build authorization tokens. Stage 4
-same-artifact verification is authorized but not run; the release-ZIP verifier
-remains unreachable until the Stage 4 authorization-sync is clean, committed,
-and pushed. Control E remains not authorized. Source-tree mode is mutually
-exclusive with release-ZIP mode and requires Control D Stage 2 accepted state
-before clean committed source/runtime preflight. Release-ZIP mode is mutually
-exclusive with source-tree mode and verifies the exact supplied artifact instead
-of applying the source-tree artifact gate.
+Mode dispatch is strict. Default dirty mode validates the exact Control D Stage 4 verifier output-encoding corrective M12 candidate surface, requires exactly one fixed ZIP artifact, and matches its basename, size, SHA-256, and source HEAD against the recorded tuple. Current docs must contain zero Stage 4 same-artifact authorization markers and zero Stage 3 one-time build authorization tokens. Stage 4 invocation 1 executed and failed before verdict; retry is not authorized and the release-ZIP verifier remains unreachable in default corrective mode. Control E remains not authorized. Source-tree mode is mutually exclusive with release-ZIP mode and requires Control D Stage 2 accepted state before clean committed source/runtime preflight. Release-ZIP mode is mutually exclusive with source-tree mode and verifies the exact supplied artifact instead of applying the source-tree artifact gate.
 
 The release-ZIP verifier applies `scripts/check_release_package.py` without
 weakening the generic scanner. The only tolerated scanner findings are known
@@ -309,7 +324,7 @@ After a source-affecting corrective, any existing artifact is invalidated. A
 verifier-only corrective may be recorded only by keeping release source HEAD,
 verification HEAD, and artifact SHA-256 distinct.
 
-## Stage 4 Authorization-Sync Stop Rule
+## Stage 4 Verifier Output-Encoding Corrective R1 Stop Rule
 
 Stage 4 authorization-sync stops as a dirty exact candidate for external diff
 review. The current dirty R5 candidate does not stage, commit, push, invoke

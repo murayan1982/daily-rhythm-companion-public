@@ -13,20 +13,21 @@ Done:
 * Flutter Windows build PASS
 * Flutter APK debug build PASS
 * Stage 2 acceptance-sync commit/push
+* Stage 3 fixed ZIP builder execution exactly once
+* Stage 4 authorization-sync commit/push/review/acceptance/closure
+* Stage 4 initial verifier invocation exactly once / execution failed / verdict not reached
 
 Current:
 
-* Stage 3 authorization-sync implementation
+* Stage 4 verifier output-encoding corrective R1 implementation
 * Browser ChatGPT diff review
 * User implementation acceptance
-* Codex authorization-sync commit after approval
+* Codex corrective commit after approval
 * Normal push after user approval
 
 Not yet run:
 
-* Fixed ZIP builder execution
-* Same fixed ZIP artifact verification
-* Release tuple recording
+* Stage 4 retry verifier
 * Annotated tag creation
 * GitHub Release creation
 * Publication
@@ -60,10 +61,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
-current implementation step: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
-current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
-current implementation state: STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
+current small commit: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
+current implementation step: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
+current implementation: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
+current implementation state: STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -150,7 +151,17 @@ Control D Stage 1 implementation commit: a204f6b11d25baeea67b7b7be8860c9a4f9ea94
 Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
-Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync: COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+Control D Stage 4 authorization-sync commit: 0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+Stage 4 invocation 1: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+verification verdict: NOT_REACHED
+failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
+ZIP structural/version checks reached before failure: PASS
+extracted compileall: PASS
+extracted Backend pytest: PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+fixed ZIP preservation: PRESERVED
+Stage 4 retry: NOT_AUTHORIZED / NOT_RUN
 Control E: NOT_AUTHORIZED / NOT_RUN
 fixed ZIP builder invocation count: 1
 fixed ZIP: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
@@ -3199,7 +3210,8 @@ acceptance-sync commit/push: NOT_AUTHORIZED
 
 - [x] RT-5f4 acceptance sync `ca1bd17...` をbaselineとして固定
 - [x] 既存Backend motion-demo route/service/modelを棚卸し
-- [x] `accepted=false` / `not_started` / `motion_sent=false` を固定
+- [x] `accepted=false` /
+ot_started` / `motion_sent=false` を固定
 - [x] `vts_connection_used=false` と実VTS未接続を固定
 - [x] DRC独自motion vocabularyを固定
 - [x] Flutter static character presentationとidle/loading/speakingを固定
@@ -3494,7 +3506,8 @@ acceptance-sync commit/push: NOT_AUTHORIZED
 
 - [x] accepted RT-6 mock-motion execution and presentation pathをfreeze
 - [x] FW v5.4.0 root-public motion exportsをinventory
-- [x] `real_adapter_supported=false`とtyped `not_implemented`を確認
+- [x] `real_adapter_supported=false`とtyped
+ot_implemented`を確認
 - [x] VTS WebSocket/token/private model/Live2D runtime/provider SDK未使用を記録
 - [x] DRCのFW internal/provider importと独自VTS/provider bypass禁止を維持
 - [x] FW real adapterに必要なminimum root-public contractを定義

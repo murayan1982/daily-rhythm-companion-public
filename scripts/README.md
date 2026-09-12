@@ -18,9 +18,9 @@ completed development line: v2.1.0 COMPLETED / ACCEPTED
 W-1: COMPLETED / ACCEPTED
 W-2: COMPLETED / ACCEPTED
 W-3: COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
-current implementation state: STAGE4_AUTHORIZATION_SYNC / IMPLEMENTED / AWAITING_REVIEW
-current implementation: DRC v4.0.0 Release Preparation Protocol Control D Stage 4 Authorization Sync
+current small commit: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
+current implementation state: STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
+current implementation: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -107,7 +107,17 @@ Control D Stage 1 implementation commit: a204f6b11d25baeea67b7b7be8860c9a4f9ea94
 Control D Stage 2: CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 2 acceptance-sync commit: 697d0918cb8a6de5c0459324464b7d7e376b3a5a
 Control D Stage 3: BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED
-Control D Stage 4: SAME_ARTIFACT_VERIFICATION_AND_TUPLE_RECORD / AUTHORIZED / NOT_RUN
+Control D Stage 4 authorization-sync: COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED
+Control D Stage 4 authorization-sync commit: 0a6e6e65f8c775022471018bc3ca6c03b2ed588b
+Stage 4 invocation 1: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+verification verdict: NOT_REACHED
+failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
+ZIP structural/version checks reached before failure: PASS
+extracted compileall: PASS
+extracted Backend pytest: PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED
+fixed ZIP preservation: PRESERVED
+Stage 4 retry: NOT_AUTHORIZED / NOT_RUN
 Control E: NOT_AUTHORIZED
 fixed ZIP builder invocation count: 1
 fixed ZIP: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
@@ -1184,7 +1194,8 @@ python scripts\smoke_v200_real_tts_web_runtime_contract.py
 python scripts\smoke_v200_fw_voice_output_boundary_for_drc.py
 ```
 
-The handoff smoke uses a temporary dummy mp3 and checks the opaque URL, actual backend file route, `audio/mpeg`, `no-store`, `nosniff`, managed-directory boundary, unsupported-format rejection, and traversal rejection. It does not call a provider, validate real audio content, start backend/Web, play audio, inspect screenshots, or accept `real_tts_web_audio_output`.
+The handoff smoke uses a temporary dummy mp3 and checks the opaque URL, actual backend file route, `audio/mpeg`,
+`no-store`, `nosniff`, managed-directory boundary, unsupported-format rejection, and traversal rejection. It does not call a provider, validate real audio content, start backend/Web, play audio, inspect screenshots, or accept `real_tts_web_audio_output`.
 
 The public repository cleanup rule is:
 
@@ -7269,7 +7280,8 @@ Configured local operator acceptance later passed with explicit opt-in,
 explicit enqueue, real FW root-public synthesis, natural audible playback, and
 an explicit flush during active playback. Flush ended with `completed`,
 cleared pending `0`, local stop requested/succeeded `true`, phase `idle`,
-pending `0`, and active `no`. Cleanup stopped both runtimes, restored FW real
+pending `0`, and active
+o`. Cleanup stopped both runtimes, restored FW real
 provider gates to disabled, removed three operator artifact files and private
 logs/backups, and left both working trees clean.
 
@@ -8877,4 +8889,4 @@ execution, commit, or push.
 <!-- RT-9E-FINAL-DOCS-SYNC:END -->
 
 
-Control D Stage 4 authorization-sync status: IMPLEMENTED / AWAITING_REVIEW. Stage 3 fixed ZIP build is COMPLETED / PASS / ACCEPTED, the artifact tuple is RECORDED, Stage 4 same-artifact verification is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. Stage 3 builder rerun is forbidden; the fixed ZIP must not be deleted, renamed, overwritten, or regenerated. Stage 4 authorization-sync candidate cannot run release-zip verifier until reviewed, accepted, committed, and pushed. After commit/push, Stage 4 verifier still needs separate explicit approval. Verification HEAD remains NOT_RECORDED until Stage 4 execution acceptance-sync.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is NOT_AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED.
