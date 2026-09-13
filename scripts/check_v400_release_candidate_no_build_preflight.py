@@ -7,6 +7,7 @@ from pathlib import Path, PurePosixPath
 import re
 import sys
 import subprocess
+import unicodedata
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,9 +21,11 @@ CONTROL_D_STAGE3_AUTHORIZATION_COMMIT = "0f7418100beaedd764d4c0821973b23fa20327a
 CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT = "3193aa6aa8eb5e8e0140fc0235d5f4ecfd6ac4f3"
 CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT = "46f5af49106c6ecc0d478a425cf709cf511da1be"
 CONTROL_D_STAGE4_AUTHORIZATION_SYNC_COMMIT = "0a6e6e65f8c775022471018bc3ca6c03b2ed588b"
+CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT = "4a5e848458445f170da53d4b60781154e65117ec"
 STAGE2_AUTHORIZATION = "AUTHORIZED_FOR_CLEAN_COMMITTED_SOURCE_PREFLIGHT"
 STAGE3_AUTHORIZATION = "AUTHORIZED_FOR_ONE_TIME_BUILD"
 STAGE4_AUTHORIZATION = "AUTHORIZED_FOR_SAME_ARTIFACT_VERIFICATION"
+STAGE4_RETRY_AUTHORIZATION = "AUTHORIZED_FOR_EXACTLY_ONE_SAME_ARTIFACT_RETRY"
 EXPECTED_FIXED_ZIP_SOURCE_HEAD = CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT
 EXPECTED_FIXED_ZIP_BASENAME = "DailyRhythmCompanion_v4.0.0_20260908_173440.zip"
 EXPECTED_FIXED_ZIP_SIZE = 3018230
@@ -58,6 +61,7 @@ STAGE2_ACCEPTANCE_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE3_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE4_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_MODIFIED = STAGE2A_MODIFIED
+STAGE4_RETRY_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_MODIFIED = {
     "build_v400_fixed_release_zip_from_head.ps1",
     "scripts/check_v400_fixed_release_zip.py",
@@ -95,6 +99,33 @@ CURRENT_DOCS = (
     "docs/v400_release_candidate_no_build_preflight.md",
     "docs/v400_fixed_release_zip.md",
 )
+STAGE4_RETRY_CURRENT_HEADING = "## Stage 4 Retry Authorization Sync Corrective R5 Current Section"
+STAGE4_RETRY_TOKEN_DOCS = {
+    "docs/v400_fixed_release_zip.md",
+    "docs/v400_release_preparation_protocol.md",
+}
+STAGE4_RETRY_RETAINED_HEADING_FAMILY_CASE_COUNT = 18
+STAGE4_RETRY_R5_SUFFIX_FAMILY_CASE_COUNT = 10
+STAGE4_RETRY_CANONICAL_LINES = (
+    "Current checkpoint: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5",
+    "Current implementation state: CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW",
+    f"Output-encoding corrective commit: {CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT}",
+    "Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED",
+    "Stage 4 invocation 1 verification verdict: NOT_REACHED",
+    "Stage 4 retry: AUTHORIZED / NOT_RUN",
+    "Cumulative completed Stage 4 verifier invocations: 1",
+    "Next authorized invocation number: 2",
+    "Retry invocation budget: EXACTLY_ONE",
+    "No third invocation authorized: TRUE",
+    f"fixed ZIP basename: {EXPECTED_FIXED_ZIP_BASENAME}",
+    f"fixed ZIP size: {EXPECTED_FIXED_ZIP_SIZE}",
+    f"fixed ZIP SHA-256: {EXPECTED_FIXED_ZIP_SHA256.upper()}",
+    f"fixed ZIP source HEAD: {EXPECTED_FIXED_ZIP_SOURCE_HEAD}",
+    "fixed ZIP UTC timestamp: 2026-09-08 08:35:05",
+    "Control E: NOT_AUTHORIZED",
+    "DRC v4.0.0: NOT_RELEASED",
+)
+STAGE4_RETRY_TOKEN_LINE = f"Control D Stage 4 retry authorization: {STAGE4_RETRY_AUTHORIZATION}"
 PROTECTED_PATHS = (
     "backend/app/version.py",
     "app/pubspec.yaml",
@@ -141,7 +172,7 @@ REQUIRED_STAGE4_CURRENT_STATE_PHRASES = (
     "failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE",
     "Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED",
     "The fixed ZIP is PRESERVED",
-    "Stage 4 retry is NOT_AUTHORIZED / NOT_RUN",
+    "Stage 4 retry is AUTHORIZED / NOT_RUN",
 )
 STALE_CURRENT_PURPOSE_PHRASES = (
     "DRC v4.0.0 can proceed to a separately authorized Stage 3 build request because",
@@ -158,7 +189,7 @@ REQUIRED_CURRENT_PURPOSE_PHRASES = (
     "output emission raised UnicodeEncodeError",
     "Stage 4 conclusive verdict was not reached",
     "fixed ZIP remains preserved",
-    "Stage 4 retry is NOT_AUTHORIZED / NOT_RUN",
+    "Stage 4 retry is AUTHORIZED / NOT_RUN",
     "Control E is NOT_AUTHORIZED",
     "DRC v4.0.0 remains NOT_RELEASED",
     "bounded release scope: bounded coexistence adoption",
@@ -184,7 +215,7 @@ REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES = (
     "verdict is NOT_REACHED",
     "failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE",
     "Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED",
-    "Stage 4 retry is NOT_AUTHORIZED / NOT_RUN",
+    "Stage 4 retry is AUTHORIZED / NOT_RUN",
     "Control E is NOT_AUTHORIZED",
     "DRC v4.0.0 is NOT_RELEASED",
     "Stage 4 authorization marker was consumed",
@@ -196,9 +227,9 @@ REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES = (
     EXPECTED_FIXED_ZIP_SOURCE_HEAD,
     "Stage 3 one-time build authorization token is consumed",
     "current documentation count is 0",
-    "release-ZIP verifier remains unreachable in default corrective mode",
+    "release-ZIP verifier remains unreachable while dirty or not pushed",
     "Stage 4 invocation 1 executed and failed before verdict",
-    "retry is not authorized",
+    "retry is authorized only for invocation number 2",
     "Control E is not authorized",
     "tag/publication are not run",
     "DRC v4.0.0 is not released",
@@ -234,7 +265,7 @@ V3_CONTAMINATION_PHRASES = (
     "fixed ZIP builder invocation count: 1",
 )
 TASKLIST_CURRENT_IMPLEMENTATION_STEP = (
-    "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1"
+    "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"
 )
 STAGE2_HISTORY_EVIDENCE_DOCS = (
     "README.md",
@@ -483,6 +514,13 @@ def validate_stage4_verifier_output_encoding_corrective_committed_surface(
     return validate_exact_committed_surface(commit_count, name_status_lines, STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_MODIFIED)
 
 
+def validate_stage4_retry_authorization_sync_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+) -> bool:
+    return validate_exact_committed_surface(commit_count, name_status_lines, STAGE4_RETRY_AUTHORIZATION_SYNC_MODIFIED)
+
+
 def acceptance_sync_origin_state(head: str, origin: str) -> str | None:
     if not origin:
         return None
@@ -614,6 +652,31 @@ def stage4_verifier_output_encoding_corrective_clean_mode_after_surface_validati
     if state == "PUSHED":
         return "CLEAN_COMMITTED_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE"
     raise AssertionError("Clean Stage 4 verifier output-encoding corrective origin/main state is invalid")
+
+
+def stage4_retry_authorization_sync_origin_state(head: str, origin: str) -> str | None:
+    if not origin:
+        return None
+    if origin == CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT and head != origin:
+        return "NOT_PUSHED"
+    if origin == head and head != CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT:
+        return "PUSHED"
+    return None
+
+
+def stage4_retry_authorization_sync_clean_mode_after_surface_validation(
+    surface_validated: bool,
+    head: str,
+    origin: str,
+) -> str:
+    if not surface_validated:
+        raise AssertionError("Stage 4 retry authorization-sync origin policy reached before committed surface validation")
+    state = stage4_retry_authorization_sync_origin_state(head, origin)
+    if state == "NOT_PUSHED":
+        return "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC_NOT_PUSHED"
+    if state == "PUSHED":
+        return "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC"
+    raise AssertionError("Clean Stage 4 retry authorization-sync origin/main state is invalid")
 
 
 def stage3_path_length_corrective_clean_mode_after_surface_validation(
@@ -1422,7 +1485,7 @@ def protocol_current_status_is_correct(text: str) -> bool:
         return False
     expected_zip = f"release/{EXPECTED_FIXED_ZIP_BASENAME}"
     required = (
-        ("Current checkpoint", "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1"),
+        ("Current checkpoint", "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"),
         ("Control D Stage 3", "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"),
         ("Control D Stage 4 authorization-sync", "COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED"),
         ("Stage 4 invocation 1", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
@@ -1432,7 +1495,10 @@ def protocol_current_status_is_correct(text: str) -> bool:
         ("ZIP structural/version checks reached before failure", "PASS"),
         ("extracted compileall", "PASS"),
         ("extracted Backend pytest", "PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED"),
-        ("Stage 4 retry", "NOT_AUTHORIZED / NOT_RUN"),
+        ("Stage 4 retry", "AUTHORIZED / NOT_RUN"),
+            ("Cumulative completed Stage 4 verifier invocations", "1"),
+            ("Next authorized invocation number", "2"),
+            ("Retry invocation budget", "EXACTLY_ONE"),
         ("Control E", "NOT_AUTHORIZED"),
         ("fixed ZIP builder invocation count", "1"),
         ("fixed ZIP", expected_zip),
@@ -1453,7 +1519,7 @@ def r7_current_status_self_check() -> dict[str, bool]:
         (
             "## Status",
             "Current checkpoint:",
-            "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1",
+            "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5",
             "Control D Stage 3:",
             "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED",
             "Control D Stage 4 authorization-sync:",
@@ -1473,7 +1539,13 @@ def r7_current_status_self_check() -> dict[str, bool]:
             "extracted Backend pytest:",
             "PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED",
             "Stage 4 retry:",
-            "NOT_AUTHORIZED / NOT_RUN",
+            "AUTHORIZED / NOT_RUN",
+            "Cumulative completed Stage 4 verifier invocations:",
+            "1",
+            "Next authorized invocation number:",
+            "2",
+            "Retry invocation budget:",
+            "EXACTLY_ONE",
             "Control E:",
             "NOT_AUTHORIZED",
             "fixed ZIP builder invocation count:",
@@ -1530,12 +1602,12 @@ def r7_current_status_self_check() -> dict[str, bool]:
             status.replace("annotated tag:\nNOT_CREATED", "annotated tag:\nNOT_CREATED_EXTRA")
         ),
         "not_run_extra_rejected": not protocol_current_status_is_correct(
-            status.replace("Stage 4 retry:\nNOT_AUTHORIZED / NOT_RUN", "Stage 4 retry:\nNOT_AUTHORIZED / NOT_RUN_EXTRA")
+            status.replace("Stage 4 retry:\nAUTHORIZED / NOT_RUN", "Stage 4 retry:\nAUTHORIZED / NOT_RUN_EXTRA")
         ),
         "checkpoint_trailing_text_rejected": not protocol_current_status_is_correct(
             status.replace(
-                "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1",
-                "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1 trailing text",
+                "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5",
+                "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5 trailing text",
             )
         ),
         "stage3_stale_authorization_rejected": not protocol_current_status_is_correct(
@@ -1630,8 +1702,8 @@ def check_stage4_content_review_guards() -> None:
 def check_r5_document_correction_guards() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     fixed_zip_contract = read("docs/v400_fixed_release_zip.md")
-    if "Current checkpoint:\nDRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1" not in protocol:
-        raise AssertionError("protocol current checkpoint is not Stage 4 verifier output-encoding corrective R1")
+    if "Current checkpoint:\nDRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5" not in protocol:
+        raise AssertionError("protocol current checkpoint is not Stage 4 retry authorization-sync corrective R2")
     if "Control D Stage 2 authorization-sync" in protocol:
         raise AssertionError("stale Stage 2 authorization-sync checkpoint remains")
     if not protocol_historical_no_build_blocks_are_clean(protocol):
@@ -2687,6 +2759,96 @@ def control_e_is_authorized(text: str) -> bool:
     return re.search(r"Control E:\s*\r?\n\s*AUTHORIZED\b", text) is not None
 
 
+def stage4_retry_current_sections(text: str) -> list[str]:
+    normalized = norm(text)
+    for line in normalized.splitlines():
+        if stage4_retry_current_heading_family(line) and line != STAGE4_RETRY_CURRENT_HEADING:
+            return []
+    matches = list(re.finditer(rf"(?m)^{re.escape(STAGE4_RETRY_CURRENT_HEADING)}\n", normalized))
+    sections: list[str] = []
+    for match in matches:
+        start = match.end()
+        next_heading = re.search(r"(?m)^## ", normalized[start:])
+        end = start + next_heading.start() if next_heading else len(normalized)
+        section = normalized[start:end].strip("\n")
+        if STAGE4_RETRY_CURRENT_HEADING in section:
+            return []
+        sections.append(section)
+    return sections
+
+
+def stage4_retry_heading_compare_key(line: str) -> str:
+    folded = unicodedata.normalize("NFKC", line).casefold()
+    folded = re.sub(r"^[ \t]*#{1,6}[ \t]*", "", folded)
+    return re.sub(r"[^0-9a-z]+", "", folded)
+
+
+def stage4_retry_current_heading_family(line: str) -> bool:
+    stripped = line.lstrip(" \t")
+    if not stripped.startswith("#"):
+        return False
+    key = stage4_retry_heading_compare_key(line)
+    return key.startswith("stage4retryauthorizationsynccorrective")
+
+
+def stage4_retry_section_is_valid(section: str, token_required: bool) -> bool:
+    lines = section.splitlines()
+    expected = list(STAGE4_RETRY_CANONICAL_LINES)
+    if token_required:
+        expected.append(STAGE4_RETRY_TOKEN_LINE)
+    return lines == expected
+
+
+def stage4_retry_authorization_contract_is_present_in_docs() -> bool:
+    return stage4_retry_authorization_contract_is_present_for_doc_texts(
+        {relative: read(relative) for relative in CURRENT_DOCS}
+    )
+
+
+def stage4_retry_authorization_contract_is_present_for_doc_texts(doc_texts: dict[str, str]) -> bool:
+    token_count = 0
+    for relative in CURRENT_DOCS:
+        text = doc_texts.get(relative, "")
+        sections = stage4_retry_current_sections(text)
+        if len(sections) != 1:
+            return False
+        token_required = relative in STAGE4_RETRY_TOKEN_DOCS
+        if not stage4_retry_section_is_valid(sections[0], token_required):
+            return False
+        file_token_count = norm(text).count(STAGE4_RETRY_AUTHORIZATION)
+        if token_required:
+            if file_token_count != 1:
+                return False
+            token_count += file_token_count
+        elif file_token_count != 0:
+            return False
+    return token_count == len(STAGE4_RETRY_TOKEN_DOCS)
+
+
+def stage4_retry_authorization_contract_is_present(text: str) -> bool:
+    normalized = norm(text)
+    sections = stage4_retry_current_sections(normalized)
+    if len(sections) != len(CURRENT_DOCS):
+        return False
+    token_sections = 0
+    for section in sections:
+        has_token = STAGE4_RETRY_AUTHORIZATION in section
+        if not stage4_retry_section_is_valid(section, has_token):
+            return False
+        if has_token:
+            token_sections += 1
+    return (
+        token_sections == len(STAGE4_RETRY_TOKEN_DOCS)
+        and normalized.count(STAGE4_RETRY_AUTHORIZATION) == len(STAGE4_RETRY_TOKEN_DOCS)
+        and normalized.count(STAGE4_AUTHORIZATION) == 0
+        and "Stage 4 invocation 1:\nEXACTLY_ONCE_EXECUTED / EXECUTION_FAILED" in normalized
+        and "verification verdict:\nNOT_REACHED" in normalized
+        and "No third invocation is authorized" in normalized
+        and not stage4_zip_verification_completed(normalized)
+        and not control_e_is_authorized(normalized)
+    )
+
+
 def stage4_lifecycle_contract_is_valid(text: str) -> bool:
     return (
         text.count(STAGE2_ACCEPTED) == 2
@@ -2694,17 +2856,81 @@ def stage4_lifecycle_contract_is_valid(text: str) -> bool:
         and text.count(STAGE3_ARTIFACT_READY) == 2
         and text.count(STAGE3_AUTHORIZATION) == 0
         and text.count(STAGE4_AUTHORIZATION) == 0
+        and stage4_retry_authorization_contract_is_present(text)
         and not stage3_build_is_authorized(text)
         and not stage4_zip_verification_is_authorized(text)
         and not stage4_zip_verification_completed(text)
         and not control_e_is_authorized(text)
         and "Stage 4 invocation 1:\nEXACTLY_ONCE_EXECUTED / EXECUTION_FAILED" in text
-        and "Stage 4 retry:\nNOT_AUTHORIZED / NOT_RUN" in text
+        and "Stage 4 retry:\nAUTHORIZED / NOT_RUN" in text
     )
 
 
 def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
     text = current_docs_text()
+    docs = {relative: read(relative) for relative in CURRENT_DOCS}
+    first_section = stage4_retry_current_sections(text)[0]
+    canonical_non_token = "\n".join(STAGE4_RETRY_CANONICAL_LINES)
+    canonical_token = canonical_non_token + "\n" + STAGE4_RETRY_TOKEN_LINE
+
+    def malformed_section(mutated_section: str) -> str:
+        return text.replace(first_section, mutated_section, 1)
+
+    wrong_mapping_docs = dict(docs)
+    wrong_mapping_docs["README.md"] = wrong_mapping_docs["README.md"].replace(
+        canonical_non_token,
+        canonical_token,
+        1,
+    )
+    wrong_mapping_docs["docs/v400_fixed_release_zip.md"] = wrong_mapping_docs[
+        "docs/v400_fixed_release_zip.md"
+    ].replace("\n" + STAGE4_RETRY_TOKEN_LINE, "", 1)
+    def appended_heading_rejected(relative: str, heading: str) -> bool:
+        mutated = dict(docs)
+        mutated[relative] = mutated[relative] + "\n" + heading + "\nStage 4 retry: NOT_AUTHORIZED / NOT_RUN\n"
+        return not stage4_retry_authorization_contract_is_present_for_doc_texts(mutated)
+
+    heading_lookalike_cases = {
+        "lowercase_heading_appended_rejected": "## stage 4 retry authorization sync corrective r5 current section",
+        "uppercase_heading_appended_rejected": "## STAGE 4 RETRY AUTHORIZATION SYNC CORRECTIVE R5 CURRENT SECTION",
+        "mixed_case_heading_appended_rejected": "## Stage 4 retry Authorization Sync Corrective R5 Current Section",
+        "extra_space_heading_appended_rejected": "## Stage  4 Retry Authorization Sync Corrective R5 Current Section",
+        "tabs_between_words_heading_appended_rejected": "## Stage\t4\tRetry\tAuthorization\tSync\tCorrective\tR5\tCurrent\tSection",
+        "trailing_space_heading_appended_rejected": STAGE4_RETRY_CURRENT_HEADING + " ",
+        "leading_punctuation_heading_appended_rejected": "## - Stage 4 Retry Authorization Sync Corrective R5 Current Section",
+        "trailing_punctuation_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section ###",
+        "missing_space_after_hashes_heading_appended_rejected": "##Stage 4 Retry Authorization Sync Corrective R5 Current Section",
+        "three_hash_heading_appended_rejected": "### Stage 4 Retry Authorization Sync Corrective R5 Current Section",
+        "fullwidth_heading_appended_rejected": "## \uff33\uff54\uff41\uff47\uff45 \uff14 Retry Authorization Sync Corrective R5 Current Section",
+        "historical_r3_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R3 Current Section",
+        "duplicate_canonical_heading_appended_rejected": STAGE4_RETRY_CURRENT_HEADING,
+        "exact_plus_lowercase_duplicate_rejected": "## stage 4 retry authorization sync corrective r5 current section",
+        "exact_plus_uppercase_duplicate_rejected": "## STAGE 4 RETRY AUTHORIZATION SYNC CORRECTIVE R5 CURRENT SECTION",
+        "exact_plus_mixed_case_duplicate_rejected": "## Stage 4 retry Authorization Sync Corrective R5 Current Section",
+        "exact_plus_whitespace_normalized_duplicate_rejected": "## Stage  4 Retry Authorization Sync Corrective R5 Current Section",
+        "malformed_duplicate_bad_retry_status_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section\nStage 4 retry: NOT_AUTHORIZED / NOT_RUN",
+    }
+    heading_family_case_count = len(heading_lookalike_cases)
+    r5_suffix_family_cases = {
+        "r5_suffix_extra_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section extra",
+        "r5_suffix_bak_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section.bak",
+        "r5_suffix_underscore_extra_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section_EXTRA",
+        "r5_suffix_section2_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section2",
+        "r5_suffix_not_authorized_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section NOT_AUTHORIZED",
+        "r5_middle_review_section_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Review Section",
+        "r5_suffix_backup_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section / backup",
+        "r5_suffix_disabled_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section: disabled",
+        "r4_current_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R4 Current Section",
+        "r3_current_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R3 Current Section",
+    }
+    r5_suffix_family_case_count = len(r5_suffix_family_cases)
+    unrelated_historical_heading_docs = dict(docs)
+    unrelated_historical_heading_docs["README.md"] = (
+        unrelated_historical_heading_docs["README.md"]
+        + "\n## Historical Stage 4 Retry Authorization Sync Corrective R5 Current Section\n"
+        + "Historical note: unrelated heading outside the protected prefix family.\n"
+    )
+
     stage3_token_restored = text + "\nControl D Stage 3 authorization:\n" + STAGE3_AUTHORIZATION
     stage3_artifact_missing = text.replace(STAGE3_ARTIFACT_READY, "", 1)
     stage3_artifact_duplicate = text + "\n" + STAGE3_ARTIFACT_READY
@@ -2715,17 +2941,110 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
         "Stage 4 invocation 1:\nCOMPLETED / PASS / ACCEPTED",
     )
     control_e_authorized = text.replace("Control E:\nNOT_AUTHORIZED", "Control E:\nAUTHORIZED", 1)
+
     return {
-        "current_stage4_docs_stage2_accepted_exact_2": text.count(STAGE2_ACCEPTED) == 2,
-        "current_stage4_docs_stage2_authorization_absent": text.count(STAGE2_AUTHORIZATION) == 0,
-        "current_stage4_docs_stage3_artifact_ready_exact_2": text.count(STAGE3_ARTIFACT_READY) == 2,
-        "current_stage4_docs_stage3_authorization_absent": text.count(STAGE3_AUTHORIZATION) == 0,
-        "current_stage4_docs_stage4_authorization_absent": text.count(STAGE4_AUTHORIZATION) == 0,
-        "current_stage4_docs_actual_build_authorization_false": not stage3_build_is_authorized(text),
-        "current_stage4_docs_same_artifact_retry_authorization_false": not stage4_zip_verification_is_authorized(text),
-        "current_stage4_docs_stage4_invocation_failed": "Stage 4 invocation 1:\nEXACTLY_ONCE_EXECUTED / EXECUTION_FAILED" in text,
-        "current_stage4_docs_stage4_verification_not_completed": not stage4_zip_verification_completed(text),
-        "current_stage4_docs_control_e_authorization_false": not control_e_is_authorized(text),
+        "canonical_non_token_section_accepted": stage4_retry_section_is_valid(canonical_non_token, False),
+        "canonical_designated_token_section_accepted": stage4_retry_section_is_valid(canonical_token, True),
+        "actual_docs_guard_accepted": stage4_retry_authorization_contract_is_present_in_docs(),
+        "historical_evidence_outside_section_accepted": stage4_lifecycle_contract_is_valid(
+            text + "\nHistorical bounded evidence: Stage 4 invocation 3 was not authorized.\n"
+        ),
+        "wrong_token_document_mapping_rejected": not stage4_retry_authorization_contract_is_present_for_doc_texts(wrong_mapping_docs),
+        "total_token_count_exact_2": current_docs_text().count(STAGE4_RETRY_AUTHORIZATION) == 2,
+        "heading_family_case_count_exact_18": heading_family_case_count == STAGE4_RETRY_RETAINED_HEADING_FAMILY_CASE_COUNT,
+        "r5_suffix_family_case_count_exact_10": r5_suffix_family_case_count == STAGE4_RETRY_R5_SUFFIX_FAMILY_CASE_COUNT,
+        "unrelated_historical_heading_outside_prefix_accepted": stage4_retry_authorization_contract_is_present_for_doc_texts(unrelated_historical_heading_docs),
+        "lowercase_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["lowercase_heading_appended_rejected"]),
+        "uppercase_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["uppercase_heading_appended_rejected"]),
+        "mixed_case_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["mixed_case_heading_appended_rejected"]),
+        "extra_space_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["extra_space_heading_appended_rejected"]),
+        "tabs_between_words_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["tabs_between_words_heading_appended_rejected"]),
+        "trailing_space_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["trailing_space_heading_appended_rejected"]),
+        "leading_punctuation_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["leading_punctuation_heading_appended_rejected"]),
+        "trailing_punctuation_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["trailing_punctuation_heading_appended_rejected"]),
+        "missing_space_after_hashes_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["missing_space_after_hashes_heading_appended_rejected"]),
+        "three_hash_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["three_hash_heading_appended_rejected"]),
+        "fullwidth_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["fullwidth_heading_appended_rejected"]),
+        "historical_r3_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["historical_r3_heading_appended_rejected"]),
+        "duplicate_canonical_heading_appended_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["duplicate_canonical_heading_appended_rejected"]),
+        "exact_plus_lowercase_duplicate_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["exact_plus_lowercase_duplicate_rejected"]),
+        "exact_plus_uppercase_duplicate_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["exact_plus_uppercase_duplicate_rejected"]),
+        "exact_plus_mixed_case_duplicate_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["exact_plus_mixed_case_duplicate_rejected"]),
+        "exact_plus_whitespace_normalized_duplicate_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["exact_plus_whitespace_normalized_duplicate_rejected"]),
+        "malformed_duplicate_bad_retry_status_rejected": appended_heading_rejected("README.md", heading_lookalike_cases["malformed_duplicate_bad_retry_status_rejected"]),
+        "r5_suffix_extra_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_extra_heading_appended_rejected"]),
+        "r5_suffix_bak_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_bak_heading_appended_rejected"]),
+        "r5_suffix_underscore_extra_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_underscore_extra_heading_appended_rejected"]),
+        "r5_suffix_section2_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_section2_heading_appended_rejected"]),
+        "r5_suffix_not_authorized_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_not_authorized_heading_appended_rejected"]),
+        "r5_middle_review_section_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_middle_review_section_heading_appended_rejected"]),
+        "r5_suffix_backup_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_backup_heading_appended_rejected"]),
+        "r5_suffix_disabled_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r5_suffix_disabled_heading_appended_rejected"]),
+        "r4_current_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r4_current_heading_appended_rejected"]),
+        "r3_current_heading_appended_rejected": appended_heading_rejected("README.md", r5_suffix_family_cases["r3_current_heading_appended_rejected"]),
+        "heading_trailing_space_rejected": not stage4_lifecycle_contract_is_valid(
+            text.replace(STAGE4_RETRY_CURRENT_HEADING, STAGE4_RETRY_CURRENT_HEADING + " ", 1)
+        ),
+        "heading_lowercase_rejected": not stage4_lifecycle_contract_is_valid(
+            text.replace(STAGE4_RETRY_CURRENT_HEADING, STAGE4_RETRY_CURRENT_HEADING.lower(), 1)
+        ),
+        "duplicate_exact_heading_rejected": not stage4_lifecycle_contract_is_valid(
+            text + "\n" + STAGE4_RETRY_CURRENT_HEADING + "\n" + canonical_non_token
+        ),
+        "missing_heading_rejected": not stage4_lifecycle_contract_is_valid(
+            text.replace(STAGE4_RETRY_CURRENT_HEADING, "## Stage 4 Retry Authorization Sync Missing Current Section", 1)
+        ),
+        "additional_line_inside_block_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section + "\nRetry override: AUTHORIZED / NOT_RUN")
+        ),
+        "invocation_3_spaced_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section + "\nStage 4 invocation 3 : AUTHORIZED / NOT_RUN")
+        ),
+        "invocation_03_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section + "\nStage 4 invocation 03: AUTHORIZED / NOT_RUN")
+        ),
+        "retry_status_spaced_not_authorized_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section.replace("Stage 4 retry: AUTHORIZED / NOT_RUN", "Stage 4 retry : NOT_AUTHORIZED / NOT_RUN"))
+        ),
+        "retry_override_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section + "\nRetry override: AUTHORIZED / NOT_RUN")
+        ),
+        "label_tab_before_colon_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section.replace("Stage 4 retry:", "Stage 4 retry\t:"))
+        ),
+        "label_space_before_colon_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section.replace("Stage 4 retry:", "Stage 4 retry :"))
+        ),
+        "doubled_colon_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section.replace("Stage 4 retry:", "Stage 4 retry::"))
+        ),
+        "duplicated_canonical_field_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section.replace("Next authorized invocation number: 2", "Next authorized invocation number: 2\nNext authorized invocation number: 2", 1))
+        ),
+        "reordered_canonical_fields_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section.replace("Stage 4 retry: AUTHORIZED / NOT_RUN\nCumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 1\nStage 4 retry: AUTHORIZED / NOT_RUN", 1))
+        ),
+        "token_bak_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + ".bak", 1)),
+        "token_extra_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + " extra", 1)),
+        "token_suffix_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + "_EXTRA", 1)),
+        "token_wrong_case_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION.lower(), 1)),
+        "token_prefixed_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, "X" + STAGE4_RETRY_AUTHORIZATION, 1)),
+        "token_suffixed_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + "X", 1)),
+        "invocation_02_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 02", 1)),
+        "invocation_3_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 3", 1)),
+        "invocation_03_value_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 03", 1)),
+        "invocation_20_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 20", 1)),
+        "cumulative_01_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 01", 1)),
+        "cumulative_2_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 2", 1)),
+        "cumulative_10_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 10", 1)),
+        "budget_two_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget: EXACTLY_ONE", "Retry invocation budget: TWO", 1)),
+        "budget_suffix_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget: EXACTLY_ONE", "Retry invocation budget: EXACTLY_ONE_EXTRA", 1)),
+        "third_invocation_same_line_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section + "\nStage 4 invocation 3: AUTHORIZED / NOT_RUN")
+        ),
+        "third_invocation_two_line_rejected": not stage4_lifecycle_contract_is_valid(
+            malformed_section(first_section + "\nStage 4 invocation 3:\nAUTHORIZED / NOT_RUN")
+        ),
         "stage3_token_restored_rejected": not stage4_lifecycle_contract_is_valid(stage3_token_restored),
         "stage3_artifact_missing_rejected": not stage4_lifecycle_contract_is_valid(stage3_artifact_missing),
         "stage3_artifact_duplicate_rejected": not stage4_lifecycle_contract_is_valid(stage3_artifact_duplicate),
@@ -2734,7 +3053,6 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
         "stage4_completed_rejected": not stage4_lifecycle_contract_is_valid(stage4_completed),
         "control_e_authorized_rejected": not stage4_lifecycle_contract_is_valid(control_e_authorized),
     }
-
 
 def check_committed_stage2a_surface() -> None:
     commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE1_COMMIT}..{CONTROL_D_STAGE2A_COMMIT}"))
@@ -2831,6 +3149,22 @@ def check_committed_stage4_verifier_output_encoding_corrective_surface(head: str
         raise AssertionError("Stage 4 verifier output-encoding corrective protected delta is not empty")
 
 
+def check_committed_stage4_retry_authorization_sync_surface(head: str = "HEAD") -> None:
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT}..{head}"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT}..{head}").splitlines()
+    if not validate_stage4_retry_authorization_sync_committed_surface(commit_count, lines):
+        raise AssertionError("Clean committed Stage 4 retry authorization-sync surface is not exact one-commit M12")
+    protected = git_out(
+        "diff",
+        "--name-status",
+        f"{CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT}..{head}",
+        "--",
+        *PROTECTED_PATHS,
+    ).splitlines()
+    if not validate_empty_protected_delta(protected):
+        raise AssertionError("Stage 4 retry authorization-sync protected delta is not empty")
+
+
 def determine_mode() -> str:
     if git_out("branch", "--show-current") != "main":
         raise AssertionError("Unexpected branch")
@@ -2865,6 +3199,13 @@ def determine_mode() -> str:
                 check_dirty_surface(entries, STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_MODIFIED)
                 check_expected_fixed_zip_tuple()
                 return "DIRTY_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_CANDIDATE"
+            if (
+                head == CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT
+                and origin == CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT
+            ):
+                check_dirty_surface(entries, STAGE4_RETRY_AUTHORIZATION_SYNC_MODIFIED)
+                check_expected_fixed_zip_tuple()
+                return "DIRTY_STAGE4_RETRY_AUTHORIZATION_SYNC_CANDIDATE"
             raise AssertionError("Dirty candidate HEAD mismatch")
         if origin != CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
             raise AssertionError("Dirty candidate origin/main mismatch")
@@ -2895,9 +3236,12 @@ def determine_mode() -> str:
     if head == CONTROL_D_STAGE4_AUTHORIZATION_SYNC_COMMIT:
         check_expected_fixed_zip_tuple()
         return stage4_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
-    check_committed_stage4_verifier_output_encoding_corrective_surface("HEAD")
+    check_committed_stage4_verifier_output_encoding_corrective_surface(CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT)
     check_expected_fixed_zip_tuple()
-    return stage4_verifier_output_encoding_corrective_clean_mode_after_surface_validation(True, head, origin)
+    if head == CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT:
+        return stage4_verifier_output_encoding_corrective_clean_mode_after_surface_validation(True, head, origin)
+    check_committed_stage4_retry_authorization_sync_surface("HEAD")
+    return stage4_retry_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
 
 
 def check_versions() -> None:
@@ -2910,9 +3254,12 @@ def check_release_state_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1"),
-            ("current implementation", "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1"),
-            ("current implementation state", "STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW"),
+            ("current small commit", "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"),
+            ("current implementation", "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"),
+            (
+                "current implementation state",
+                "CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW",
+            ),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", CONTROL_C_COMMIT),
             ("Control D", "CURRENT / NOT_COMPLETED"),
@@ -2926,7 +3273,10 @@ def check_release_state_docs() -> None:
             ("verification verdict", "NOT_REACHED"),
             ("failure class", "NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE"),
             ("release-package scanner known fixtures", "EXACT_EXPECTED_FINDINGS / ACCEPTED"),
-            ("Stage 4 retry", "NOT_AUTHORIZED / NOT_RUN"),
+            ("Stage 4 retry", "AUTHORIZED / NOT_RUN"),
+            ("Cumulative completed Stage 4 verifier invocations", "1"),
+            ("Next authorized invocation number", "2"),
+            ("Retry invocation budget", "EXACTLY_ONE"),
             ("Control E", "NOT_AUTHORIZED"),
             ("DRC v4.0.0", "NOT_RELEASED"),
             ("fixed ZIP builder invocation count", "1"),
@@ -2941,7 +3291,7 @@ def check_protocol_and_records() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     for needle in (
         "Control D Stage 1",
-        "STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW",
+        "CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW",
         "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED",
         "13 files / M10 A3 D0",
         "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED",
@@ -2969,7 +3319,10 @@ def check_protocol_and_records() -> None:
     record = read("docs/v400_release_record.md")
     for label, value in (
         ("Status", "PREPARED / NOT_RELEASED"),
-        ("Current phase", "Control D Stage 4 Verifier Output Encoding Corrective R1 STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW"),
+        (
+            "Current phase",
+            "CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW",
+        ),
         ("Control C verification baseline", CONTROL_C_BASELINE),
         ("Control C implementation commit", CONTROL_C_COMMIT),
         ("Control D Stage 1", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
@@ -2985,7 +3338,10 @@ def check_protocol_and_records() -> None:
         ("same-artifact verification", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
         ("verification verdict", "NOT_REACHED"),
         ("failure class", "NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE"),
-        ("Stage 4 retry", "NOT_AUTHORIZED / NOT_RUN"),
+        ("Stage 4 retry", "AUTHORIZED / NOT_RUN"),
+            ("Cumulative completed Stage 4 verifier invocations", "1"),
+            ("Next authorized invocation number", "2"),
+            ("Retry invocation budget", "EXACTLY_ONE"),
         ("explicit final operator approval", "NOT_RECEIVED"),
         ("annotated tag publication", "NOT_CREATED"),
         ("GitHub Release publication", "NOT_CREATED"),
@@ -3153,16 +3509,65 @@ def check_protocol_and_records() -> None:
         raise AssertionError("safe output emission self-check failed")
     if current_text.count(STAGE4_AUTHORIZATION) != 0:
         raise AssertionError("Stage 4 authorization marker was not consumed")
+    if current_text.count(STAGE4_RETRY_AUTHORIZATION) != len(STAGE4_RETRY_TOKEN_DOCS):
+        raise AssertionError("Stage 4 retry authorization token occurrence is not exact 2")
+    if not stage4_retry_authorization_contract_is_present_in_docs():
+        raise AssertionError("Stage 4 retry authorization contract is malformed")
     if current_text.count(PENDING_POST_EDIT_MARKER) != 0:
         raise AssertionError("PENDING_POST_EDIT_VERIFICATION marker is present in current docs")
+
+
+ALLOWED_POST_SOURCE_HEAD_SURFACE = CURRENT_DOCS
+
+
+def validate_post_source_head_surface(
+    changed_paths: list[str],
+    deleted_paths: list[str],
+    rename_or_copy_paths: list[str],
+    commit_count: int,
+) -> bool:
+    if commit_count == 0:
+        return not changed_paths and not deleted_paths and not rename_or_copy_paths
+    if commit_count > 3:
+        return False
+    if deleted_paths or rename_or_copy_paths:
+        return False
+    changed = {path.replace("\\", "/") for path in changed_paths}
+    return bool(changed) and changed <= set(ALLOWED_POST_SOURCE_HEAD_SURFACE)
+
+
+def post_source_head_surface_matrix_self_check() -> dict[str, bool]:
+    changed = ["README.md"]
+    return {
+        "count_0_accepted": validate_post_source_head_surface([], [], [], 0),
+        "count_1_accepted": validate_post_source_head_surface(changed, [], [], 1),
+        "count_2_accepted": validate_post_source_head_surface(changed, [], [], 2),
+        "count_3_accepted": validate_post_source_head_surface(changed, [], [], 3),
+        "count_4_rejected": not validate_post_source_head_surface(changed, [], [], 4),
+    }
+
+
+def release_zip_reachability_matrix_self_check() -> dict[str, bool]:
+    malformed = current_docs_text().replace(
+        "Retry invocation budget: EXACTLY_ONE",
+        "Retry invocation budget: EXACTLY_ONE_EXTRA",
+        1,
+    )
+    return {
+        "dirty_retry_authorization_candidate_blocked": not release_zip_reachability("DIRTY_STAGE4_RETRY_AUTHORIZATION_SYNC_CANDIDATE"),
+        "clean_not_pushed_retry_authorization_state_blocked": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC_NOT_PUSHED"),
+        "clean_pushed_retry_authorization_state_reachable": release_zip_reachability("CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC"),
+        "old_initial_stage4_authorization_state_blocked": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC"),
+        "verifier_output_corrective_state_blocked": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE"),
+        "malformed_retry_contract_blocked": not stage4_retry_authorization_contract_is_present(malformed),
+    }
 
 
 def check_no_release_outputs() -> None:
     if git_out("tag", "--list", "DRC_v4.0.0"):
         raise AssertionError("DRC_v4.0.0 tag exists")
-    release_root = ROOT / "release"
-    if release_root.exists() and any(release_root.glob("DailyRhythmCompanion_v4.0.0_*.zip")):
-        raise AssertionError("v4.0.0 release ZIP exists")
+    if not fixed_zip_tuple_is_exact():
+        raise AssertionError("preserved v4.0.0 fixed ZIP tuple is not exact")
 
 
 def path_budget(paths: list[str], root_length: int, limit: int = PATH_BUDGET_LIMIT) -> dict[str, int | bool]:
@@ -4050,6 +4455,9 @@ def main() -> None:
     current_stage4_review_checks = current_stage4_review_prose_self_check()
     historical_v3_checks = historical_v3_contamination_self_check()
     content_review_connection_checks = stage4_content_review_runtime_connection_self_check()
+    lifecycle_checks = stage4_lifecycle_contract_self_check()
+    reachability_matrix_checks = release_zip_reachability_matrix_self_check()
+    post_source_matrix_checks = post_source_head_surface_matrix_self_check()
     if not all(content_review_connection_checks.values()):
         raise AssertionError("Stage 4 content-review runtime connection self-check failed")
     check_versions()
@@ -4214,7 +4622,19 @@ def main() -> None:
     )
     print(
         "v400_release_candidate_no_build_preflight_stage4_lifecycle_contract_self_check: "
-        f"{all(stage4_lifecycle_contract_self_check().values())}"
+        f"{all(lifecycle_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage4_retained_heading_family_case_count: "
+        f"{STAGE4_RETRY_RETAINED_HEADING_FAMILY_CASE_COUNT}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage4_r5_suffix_middle_version_case_count: "
+        f"{STAGE4_RETRY_R5_SUFFIX_FAMILY_CASE_COUNT}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_stage4_lifecycle_contract_self_check_count: "
+        f"{len(lifecycle_checks)}"
     )
     print(
         "v400_release_candidate_no_build_preflight_stage3_authorization_marker_lf_crlf_self_check: "
@@ -4337,7 +4757,35 @@ def main() -> None:
     )
     print(
         "v400_release_candidate_no_build_preflight_control_d_stage4_corrective_status: "
-        "stage4-verifier-output-encoding-corrective-r1-implemented-awaiting-review"
+        "stage4-retry-authorization-sync-corrective-r5-implemented-static-verified-awaiting-re-review"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_release_zip_reachability_matrix_self_check: "
+        f"{all(reachability_matrix_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_dirty_retry_authorization_candidate_blocked: "
+        f"{reachability_matrix_checks['dirty_retry_authorization_candidate_blocked']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_clean_not_pushed_retry_authorization_state_blocked: "
+        f"{reachability_matrix_checks['clean_not_pushed_retry_authorization_state_blocked']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_clean_pushed_retry_authorization_state_reachable: "
+        f"{reachability_matrix_checks['clean_pushed_retry_authorization_state_reachable']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_malformed_retry_contract_blocked: "
+        f"{reachability_matrix_checks['malformed_retry_contract_blocked']}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_post_source_head_surface_count_matrix_self_check: "
+        f"{all(post_source_matrix_checks.values())}"
+    )
+    print(
+        "v400_release_candidate_no_build_preflight_post_source_head_surface_count_matrix_0_1_2_3_accepted_4_rejected: "
+        f"{post_source_matrix_checks['count_0_accepted'] and post_source_matrix_checks['count_1_accepted'] and post_source_matrix_checks['count_2_accepted'] and post_source_matrix_checks['count_3_accepted'] and post_source_matrix_checks['count_4_rejected']}"
     )
     print("v400_release_candidate_no_build_preflight_backend_version: 4.0.0")
     print("v400_release_candidate_no_build_preflight_flutter_version: 4.0.0+5")
@@ -4351,7 +4799,8 @@ def main() -> None:
     print("v400_release_candidate_no_build_preflight_github_release_created: False")
     print("v400_release_candidate_no_build_preflight_stage3_authorization_token_occurrence: 0")
     print("v400_release_candidate_no_build_preflight_stage3_build_authorized: False")
-    print("v400_release_candidate_no_build_preflight_stage4_retry_authorized: False")
+    print("v400_release_candidate_no_build_preflight_stage4_retry_authorized: True")
+    print("v400_release_candidate_no_build_preflight_stage4_retry_invocation_count: 0")
     print("v400_release_candidate_no_build_preflight_stage_commit_push_authorized: False")
     print("v400_release_candidate_no_build_preflight_package_tag_publication_authorized: False")
     print("[v400-release-candidate-no-build-preflight-check] OK")
@@ -4364,6 +4813,9 @@ def stage4_authorization_sync_modes(mode: str) -> bool:
         "DIRTY_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_CANDIDATE",
         "CLEAN_COMMITTED_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_NOT_PUSHED",
         "CLEAN_COMMITTED_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE",
+        "DIRTY_STAGE4_RETRY_AUTHORIZATION_SYNC_CANDIDATE",
+        "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC_NOT_PUSHED",
+        "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC",
     }
 
 
@@ -4500,7 +4952,7 @@ def fixed_zip_tuple_self_check() -> dict[str, bool]:
 
 
 def release_zip_reachability(mode: str) -> bool:
-    return mode == "CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC"
+    return mode == "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC"
 
 
 

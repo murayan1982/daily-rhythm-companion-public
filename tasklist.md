@@ -61,10 +61,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
-current implementation step: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
-current implementation: DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1
-current implementation state: STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_R1 / IMPLEMENTED / AWAITING_REVIEW
+current small commit: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+current implementation step: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+current implementation: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+current implementation state: CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -4390,3 +4390,27 @@ verifier, rebuild or replace the fixed ZIP, modify the annotated tag or GitHub
 Release, upload another asset, repeat provider/network/microphone/STT/TTS/VTS
 execution, commit, or push.
 <!-- RT-9E-FINAL-DOCS-SYNC:END -->
+## Stage 4 Retry Authorization Sync Corrective R5 Current Section
+Current checkpoint: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+Current implementation state: CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW
+Output-encoding corrective commit: 4a5e848458445f170da53d4b60781154e65117ec
+Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+Stage 4 invocation 1 verification verdict: NOT_REACHED
+Stage 4 retry: AUTHORIZED / NOT_RUN
+Cumulative completed Stage 4 verifier invocations: 1
+Next authorized invocation number: 2
+Retry invocation budget: EXACTLY_ONE
+No third invocation authorized: TRUE
+fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
+fixed ZIP size: 3018230
+fixed ZIP SHA-256: F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142
+fixed ZIP source HEAD: 46f5af49106c6ecc0d478a425cf709cf511da1be
+fixed ZIP UTC timestamp: 2026-09-08 08:35:05
+Control E: NOT_AUTHORIZED
+DRC v4.0.0: NOT_RELEASED
+
+## Stage 4 Retry Authorization Notes
+
+Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
+
+The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Only invocation number 2 is authorized. Automatic retry is forbidden. Any result from invocation 2 must stop further execution. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
