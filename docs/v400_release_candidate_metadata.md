@@ -97,7 +97,7 @@ fixed ZIP preservation:
 PRESERVED
 
 Stage 4 retry:
-AUTHORIZED / NOT_RUN
+CONSUMED / FAILED
 
 Control E:
 NOT_AUTHORIZED
@@ -127,17 +127,27 @@ artifact was created and its tuple is recorded as
 `DailyRhythmCompanion_v4.0.0_20260908_173440.zip`, size `3018230`, SHA-256
 `F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142`, source HEAD
 `46f5af49106c6ecc0d478a425cf709cf511da1be`. Control D Stage 4 authorization-sync is committed, pushed, reviewed, accepted, and closed at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was executed exactly once and failed before verdict with failure class `NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE`. Retry is not authorized or run. Control E is not authorized, tag/publication are not run, and DRC v4.0.0 is not released.
-## Stage 4 Retry Authorization Sync Corrective R5 Current Section
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
-Current implementation state: CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW
-Output-encoding corrective commit: 4a5e848458445f170da53d4b60781154e65117ec
+the exact artifact was created and its tuple is recorded
+release-ZIP verifier remains unreachable from the current corrective modes
+## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section
+Current checkpoint: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
+Current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Retry authorization-sync corrective commit: 3eb5c950759ade484b094bd15c9db726a73068aa
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
-Stage 4 invocation 1 verification verdict: NOT_REACHED
-Stage 4 retry: AUTHORIZED / NOT_RUN
-Cumulative completed Stage 4 verifier invocations: 1
-Next authorized invocation number: 2
-Retry invocation budget: EXACTLY_ONE
-No third invocation authorized: TRUE
+Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+Stage 4 invocation 2 failure class: NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE
+Stage 4 invocation 2 Backend result: 272 passed / 207 setup errors
+Stage 4 invocation 2 first conclusive failure: PermissionError / WinError 5 on pytest default shared user TEMP root
+Stage 4 verification verdict: NOT_REACHED
+release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
+Stage 4 retry: CONSUMED / FAILED
+Cumulative completed Stage 4 verifier invocations: 2
+Retry invocation count: 1
+Retry invocation budget remaining: 0
+Next authorized invocation number: NOT_AUTHORIZED
+Invocation 3 authorized: FALSE
+Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230
 fixed ZIP SHA-256: F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142
@@ -150,4 +160,4 @@ DRC v4.0.0: NOT_RELEASED
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Only invocation number 2 is authorized. Automatic retry is forbidden. Any result from invocation 2 must stop further execution. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Invocation 2 consumed the complete retry budget. Automatic retry is forbidden. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.

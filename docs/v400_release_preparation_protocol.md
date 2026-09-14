@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
 
 Current small commit:
-DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
 
 Current implementation:
-DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
+DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
 
 Current implementation state:
-CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW
+CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -152,16 +152,16 @@ fixed ZIP preservation:
 PRESERVED
 
 Stage 4 retry:
-AUTHORIZED / NOT_RUN
+CONSUMED / FAILED
 
 Cumulative completed Stage 4 verifier invocations:
-1
-
-Next authorized invocation number:
 2
 
-Retry invocation budget:
-EXACTLY_ONE
+Next authorized invocation number:
+NOT_AUTHORIZED
+
+Retry invocation budget remaining:
+0
 
 Control E:
 NOT_AUTHORIZED
@@ -217,12 +217,13 @@ The release-package scanner findings were the exact accepted source-matched
 fixtures. ZIP structure/version checks passed, and extracted compileall passed.
 The extracted Backend pytest process completed, but its result/count was not
 evaluated because output emission raised `UnicodeEncodeError`. The Stage 4
-conclusive verdict was not reached. The fixed ZIP remains preserved. Stage 4 retry is AUTHORIZED / NOT_RUN, Control E is `NOT_AUTHORIZED`, and DRC
+conclusive verdict was not reached. The fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED, Control E is `NOT_AUTHORIZED`, and DRC
 v4.0.0 remains `NOT_RELEASED`.
 
 The accepted Stage 2 source preflight preserved the bounded release scope:
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
 production unified real STT -> streaming LLM -> TTS -> motion runtime.
+Current guard statements: Control D Stage 4 authorization-sync completed and was committed, pushed, reviewed, and accepted. Stage 4 invocation 1 was executed exactly once and failed. failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. scanner findings were the exact accepted source-matched fixtures. extracted Backend pytest process completed, but its result/count was not evaluated. Stage 4 invocation 2 was executed exactly once and failed. pytest default shared user TEMP root. 272 passed / 207 setup errors. Stage 4 conclusive verdict was not reached. fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED. Invocation 3 is not authorized. Control E is NOT_AUTHORIZED. DRC v4.0.0 remains NOT_RELEASED. bounded release scope: bounded coexistence adoption. does not claim that Framework v6.0.0 provides a production unified real STT -> streaming LLM -> TTS -> motion runtime.
 
 ## Accepted Starting State
 
@@ -305,16 +306,16 @@ failure class:
 NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 
 Stage 4 retry:
-AUTHORIZED / NOT_RUN
+CONSUMED / FAILED
 
 Cumulative completed Stage 4 verifier invocations:
-1
-
-Next authorized invocation number:
 2
 
-Retry invocation budget:
-EXACTLY_ONE
+Next authorized invocation number:
+NOT_AUTHORIZED
+
+Retry invocation budget remaining:
+0
 
 Control E:
 Publication
@@ -490,16 +491,16 @@ fixed ZIP preservation:
 PRESERVED
 
 Stage 4 retry:
-AUTHORIZED / NOT_RUN
+CONSUMED / FAILED
 
 Cumulative completed Stage 4 verifier invocations:
-1
-
-Next authorized invocation number:
 2
 
-Retry invocation budget:
-EXACTLY_ONE
+Next authorized invocation number:
+NOT_AUTHORIZED
+
+Retry invocation budget remaining:
+0
 
 silent rebuild:
 NO
@@ -623,7 +624,7 @@ and ZIP/source mismatch is rejected. The checker's mode dispatcher and
 deterministic self-checks use the same mode-policy contract.
 
 
-Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is AUTHORIZED / NOT_RUN, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. The exact artifact was created and its tuple is recorded; Stage 3 one-time build authorization token is consumed; current documentation count is 0. The release-ZIP verifier remains unreachable in default corrective mode; Stage 4 invocation 1 executed and failed before verdict, and retry is authorized only for invocation number 2.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Stage 4 invocation 2 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED with NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE after Backend pytest reported 272 passed / 207 setup errors from PermissionError / WinError 5 on pytest default shared user TEMP root. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is CONSUMED / FAILED, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. The exact artifact was created and its tuple is recorded; Stage 3 one-time build authorization token is consumed; current documentation count is 0. The release-ZIP verifier remains unreachable in default corrective mode; Stage 4 invocation 1 executed and failed before verdict, and retry budget is consumed and Invocation 3 is not authorized.
 
 ## Future Control E
 
@@ -766,7 +767,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW
+CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control B:
 CLOSED
@@ -820,16 +821,16 @@ fixed ZIP preservation:
 PRESERVED
 
 Stage 4 retry:
-AUTHORIZED / NOT_RUN
+CONSUMED / FAILED
 
 Cumulative completed Stage 4 verifier invocations:
-1
-
-Next authorized invocation number:
 2
 
-Retry invocation budget:
-EXACTLY_ONE
+Next authorized invocation number:
+NOT_AUTHORIZED
+
+Retry invocation budget remaining:
+0
 
 DRC v4.0.0:
 NOT_RELEASED
@@ -864,17 +865,25 @@ NOT_AUTHORIZED / NOT_RUN
 publication:
 NOT_AUTHORIZED / NOT_RUN
 ```
-## Stage 4 Retry Authorization Sync Corrective R5 Current Section
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5
-Current implementation state: CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW
-Output-encoding corrective commit: 4a5e848458445f170da53d4b60781154e65117ec
+## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section
+Current checkpoint: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
+Current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Retry authorization-sync corrective commit: 3eb5c950759ade484b094bd15c9db726a73068aa
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
-Stage 4 invocation 1 verification verdict: NOT_REACHED
-Stage 4 retry: AUTHORIZED / NOT_RUN
-Cumulative completed Stage 4 verifier invocations: 1
-Next authorized invocation number: 2
-Retry invocation budget: EXACTLY_ONE
-No third invocation authorized: TRUE
+Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
+Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
+Stage 4 invocation 2 failure class: NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE
+Stage 4 invocation 2 Backend result: 272 passed / 207 setup errors
+Stage 4 invocation 2 first conclusive failure: PermissionError / WinError 5 on pytest default shared user TEMP root
+Stage 4 verification verdict: NOT_REACHED
+release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
+Stage 4 retry: CONSUMED / FAILED
+Cumulative completed Stage 4 verifier invocations: 2
+Retry invocation count: 1
+Retry invocation budget remaining: 0
+Next authorized invocation number: NOT_AUTHORIZED
+Invocation 3 authorized: FALSE
+Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230
 fixed ZIP SHA-256: F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142
@@ -882,10 +891,10 @@ fixed ZIP source HEAD: 46f5af49106c6ecc0d478a425cf709cf511da1be
 fixed ZIP UTC timestamp: 2026-09-08 08:35:05
 Control E: NOT_AUTHORIZED
 DRC v4.0.0: NOT_RELEASED
-Control D Stage 4 retry authorization: AUTHORIZED_FOR_EXACTLY_ONE_SAME_ARTIFACT_RETRY
+Historical consumed Control D Stage 4 retry authorization: AUTHORIZED_FOR_EXACTLY_ONE_SAME_ARTIFACT_RETRY
 
 ## Stage 4 Retry Authorization Notes
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Only invocation number 2 is authorized. Automatic retry is forbidden. Any result from invocation 2 must stop further execution. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Invocation 2 consumed the complete retry budget. Automatic retry is forbidden. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.

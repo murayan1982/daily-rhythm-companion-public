@@ -36,6 +36,7 @@ CONTROL_D_STAGE3_BUILDER_AUTH_GUARD_COMMIT = "3193aa6aa8eb5e8e0140fc0235d5f4ecfd
 CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT = "46f5af49106c6ecc0d478a425cf709cf511da1be"
 CONTROL_D_STAGE4_AUTHORIZATION_SYNC_COMMIT = "0a6e6e65f8c775022471018bc3ca6c03b2ed588b"
 CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT = "4a5e848458445f170da53d4b60781154e65117ec"
+CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT = "3eb5c950759ade484b094bd15c9db726a73068aa"
 EXPECTED_BACKEND_VERSION = "4.0.0"
 EXPECTED_FLUTTER_VERSION = "4.0.0+5"
 EXPECTED_BACKEND_TESTS = 479
@@ -86,6 +87,7 @@ STAGE3_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE4_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
 STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_MODIFIED = STAGE2A_MODIFIED
 STAGE4_RETRY_AUTHORIZATION_SYNC_MODIFIED = STAGE2A_MODIFIED
+STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_MODIFIED = STAGE2A_MODIFIED
 STAGE3_BUILDER_AUTH_GUARD_CORRECTIVE_MODIFIED = {
     "build_v400_fixed_release_zip_from_head.ps1",
     "scripts/check_v400_fixed_release_zip.py",
@@ -155,7 +157,7 @@ REQUIRED_STAGE4_CURRENT_STATE_PHRASES = (
     "failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE",
     "Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED",
     "The fixed ZIP is PRESERVED",
-    "Stage 4 retry is AUTHORIZED / NOT_RUN",
+    "Stage 4 retry is CONSUMED / FAILED",
 )
 STALE_CURRENT_PURPOSE_PHRASES = (
     "DRC v4.0.0 can proceed to a separately authorized Stage 3 build request because",
@@ -169,10 +171,13 @@ REQUIRED_CURRENT_PURPOSE_PHRASES = (
     "ZIP structure/version checks passed",
     "extracted compileall passed",
     "extracted Backend pytest process completed, but its result/count was not evaluated",
+    "Stage 4 invocation 2 was executed exactly once and failed",
+    "pytest default shared user TEMP root",
+    "272 passed / 207 setup errors",
     "output emission raised UnicodeEncodeError",
     "Stage 4 conclusive verdict was not reached",
     "fixed ZIP remains preserved",
-    "Stage 4 retry is AUTHORIZED / NOT_RUN",
+    "Stage 4 retry is CONSUMED / FAILED",
     "Control E is NOT_AUTHORIZED",
     "DRC v4.0.0 remains NOT_RELEASED",
     "bounded release scope: bounded coexistence adoption",
@@ -198,7 +203,7 @@ REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES = (
     "verdict is NOT_REACHED",
     "failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE",
     "Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED",
-    "Stage 4 retry is AUTHORIZED / NOT_RUN",
+    "Stage 4 retry is CONSUMED / FAILED",
     "Control E is NOT_AUTHORIZED",
     "DRC v4.0.0 is NOT_RELEASED",
     "Stage 4 authorization marker was consumed",
@@ -210,9 +215,9 @@ REQUIRED_CURRENT_STAGE4_REVIEW_PHRASES = (
     EXPECTED_FIXED_ZIP_SOURCE_HEAD,
     "Stage 3 one-time build authorization token is consumed",
     "current documentation count is 0",
-    "release-ZIP verifier remains unreachable while dirty or not pushed",
+    "release-ZIP verifier remains unreachable from the current corrective modes",
     "Stage 4 invocation 1 executed and failed before verdict",
-    "retry is authorized only for invocation number 2",
+    "retry budget is consumed and Invocation 3 is not authorized",
     "Control E is not authorized",
     "tag/publication are not run",
     "DRC v4.0.0 is not released",
@@ -248,7 +253,7 @@ V3_CONTAMINATION_PHRASES = (
     "fixed ZIP builder invocation count: 1",
 )
 TASKLIST_CURRENT_IMPLEMENTATION_STEP = (
-    "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"
+    "DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4"
 )
 STAGE2_HISTORY_EVIDENCE_DOCS = (
     "README.md",
@@ -274,7 +279,9 @@ CURRENT_DOCS = (
     "docs/v400_release_record.md",
     "docs/v400_fixed_release_zip.md",
 )
-STAGE4_RETRY_CURRENT_HEADING = "## Stage 4 Retry Authorization Sync Corrective R5 Current Section"
+STAGE4_BASETEMP_CURRENT_HEADING = "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section"
+STAGE4_BASETEMP_HEADING_FAMILY_PREFIX = "stage4verifierpytestbasetempisolationcorrective"
+STAGE4_RETRY_CURRENT_HEADING = STAGE4_BASETEMP_CURRENT_HEADING
 STAGE4_RETRY_TOKEN_DOCS = {
     "docs/v400_fixed_release_zip.md",
     "docs/v400_release_preparation_protocol.md",
@@ -282,16 +289,24 @@ STAGE4_RETRY_TOKEN_DOCS = {
 STAGE4_RETRY_RETAINED_HEADING_FAMILY_CASE_COUNT = 18
 STAGE4_RETRY_R5_SUFFIX_FAMILY_CASE_COUNT = 10
 STAGE4_RETRY_CANONICAL_LINES = (
-    "Current checkpoint: DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5",
-    "Current implementation state: CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW",
-    f"Output-encoding corrective commit: {CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT}",
+    "Current checkpoint: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4",
+    "Current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW",
+    f"Retry authorization-sync corrective commit: {CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT}",
     "Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED",
-    "Stage 4 invocation 1 verification verdict: NOT_REACHED",
-    "Stage 4 retry: AUTHORIZED / NOT_RUN",
-    "Cumulative completed Stage 4 verifier invocations: 1",
-    "Next authorized invocation number: 2",
-    "Retry invocation budget: EXACTLY_ONE",
-    "No third invocation authorized: TRUE",
+    "Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE",
+    "Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED",
+    "Stage 4 invocation 2 failure class: NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE",
+    "Stage 4 invocation 2 Backend result: 272 passed / 207 setup errors",
+    "Stage 4 invocation 2 first conclusive failure: PermissionError / WinError 5 on pytest default shared user TEMP root",
+    "Stage 4 verification verdict: NOT_REACHED",
+    "release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED",
+    "Stage 4 retry: CONSUMED / FAILED",
+    "Cumulative completed Stage 4 verifier invocations: 2",
+    "Retry invocation count: 1",
+    "Retry invocation budget remaining: 0",
+    "Next authorized invocation number: NOT_AUTHORIZED",
+    "Invocation 3 authorized: FALSE",
+    "Builder invoked by verifier: FALSE",
     f"fixed ZIP basename: {EXPECTED_FIXED_ZIP_BASENAME}",
     f"fixed ZIP size: {EXPECTED_FIXED_ZIP_SIZE}",
     f"fixed ZIP SHA-256: {EXPECTED_FIXED_ZIP_SHA256.upper()}",
@@ -300,7 +315,8 @@ STAGE4_RETRY_CANONICAL_LINES = (
     "Control E: NOT_AUTHORIZED",
     "DRC v4.0.0: NOT_RELEASED",
 )
-STAGE4_RETRY_TOKEN_LINE = f"Control D Stage 4 retry authorization: {STAGE4_RETRY_AUTHORIZATION}"
+STAGE4_RETRY_TOKEN_LINE = f"Historical consumed Control D Stage 4 retry authorization: {STAGE4_RETRY_AUTHORIZATION}"
+STAGE4_PYTEST_BASETEMP_BASENAME = "_stage4_pytest_basetemp"
 PROTECTED_PATHS = (
     "build_v400_fixed_release_zip_from_head.ps1",
     "build_release.bat",
@@ -586,6 +602,17 @@ def validate_stage4_retry_authorization_sync_committed_surface(
     return validate_exact_committed_surface(commit_count, name_status_lines, STAGE4_RETRY_AUTHORIZATION_SYNC_MODIFIED)
 
 
+def validate_stage4_verifier_pytest_basetemp_isolation_corrective_committed_surface(
+    commit_count: int,
+    name_status_lines: list[str],
+) -> bool:
+    return validate_exact_committed_surface(
+        commit_count,
+        name_status_lines,
+        STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_MODIFIED,
+    )
+
+
 def acceptance_sync_origin_state(head: str, origin: str) -> str | None:
     if not origin:
         return None
@@ -725,6 +752,31 @@ def stage4_retry_authorization_sync_clean_mode_after_surface_validation(
     if state == "PUSHED":
         return "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC"
     die("clean Stage 4 retry authorization-sync origin/main state is invalid")
+
+
+def stage4_verifier_pytest_basetemp_isolation_corrective_origin_state(head: str, origin: str) -> str | None:
+    if not origin:
+        return None
+    if origin == CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT and head != origin:
+        return "NOT_PUSHED"
+    if origin == head and head != CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT:
+        return "PUSHED"
+    return None
+
+
+def stage4_verifier_pytest_basetemp_isolation_corrective_clean_mode_after_surface_validation(
+    surface_validated: bool,
+    head: str,
+    origin: str,
+) -> str:
+    if not surface_validated:
+        die("Stage 4 verifier pytest basetemp isolation corrective origin policy reached before committed surface validation")
+    state = stage4_verifier_pytest_basetemp_isolation_corrective_origin_state(head, origin)
+    if state == "NOT_PUSHED":
+        return "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_NOT_PUSHED"
+    if state == "PUSHED":
+        return "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE"
+    die("clean Stage 4 verifier pytest basetemp isolation corrective origin/main state is invalid")
 
 
 def stage3_builder_auth_guard_corrective_clean_mode_after_surface_validation(
@@ -1648,7 +1700,7 @@ def protocol_current_status_is_correct(text: str) -> bool:
         return False
     expected_zip = f"release/{EXPECTED_FIXED_ZIP_BASENAME}"
     required = (
-        ("Current checkpoint", "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"),
+        ("Current checkpoint", "DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4"),
         ("Control D Stage 3", "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"),
         ("Control D Stage 4 authorization-sync", "COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED"),
         ("Stage 4 invocation 1", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
@@ -1658,7 +1710,7 @@ def protocol_current_status_is_correct(text: str) -> bool:
         ("ZIP structural/version checks reached before failure", "PASS"),
         ("extracted compileall", "PASS"),
         ("extracted Backend pytest", "PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED"),
-        ("Stage 4 retry", "AUTHORIZED / NOT_RUN"),
+        ("Stage 4 retry", "CONSUMED / FAILED"),
         ("Control E", "NOT_AUTHORIZED"),
         ("fixed ZIP builder invocation count", "1"),
         ("fixed ZIP", expected_zip),
@@ -1679,7 +1731,7 @@ def r7_current_status_self_check() -> dict[str, bool]:
         (
             "## Status",
             "Current checkpoint:",
-            "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5",
+            "DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4",
             "Control D Stage 3:",
             "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED",
             "Control D Stage 4 authorization-sync:",
@@ -1699,7 +1751,7 @@ def r7_current_status_self_check() -> dict[str, bool]:
             "extracted Backend pytest:",
             "PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED",
             "Stage 4 retry:",
-            "AUTHORIZED / NOT_RUN",
+            "CONSUMED / FAILED",
             "Control E:",
             "NOT_AUTHORIZED",
             "fixed ZIP builder invocation count:",
@@ -1756,11 +1808,11 @@ def r7_current_status_self_check() -> dict[str, bool]:
             status.replace("annotated tag:\nNOT_CREATED", "annotated tag:\nNOT_CREATED_EXTRA")
         ),
         "not_run_extra_rejected": not protocol_current_status_is_correct(
-            status.replace("Stage 4 retry:\nAUTHORIZED / NOT_RUN", "Stage 4 retry:\nAUTHORIZED / NOT_RUN_EXTRA")
+            status.replace("Stage 4 retry:\nCONSUMED / FAILED", "Stage 4 retry:\nCONSUMED / FAILED_EXTRA")
         ),
         "checkpoint_trailing_text_rejected": not protocol_current_status_is_correct(
             status.replace(
-                "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5",
+                "DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4",
                 "DRC v4.0.0 Control D Stage 4 Verifier Output Encoding Corrective R1 trailing text",
             )
         ),
@@ -1804,7 +1856,7 @@ def r5_document_correction_self_check() -> dict[str, bool]:
     )
     contaminated_protocol = clean_protocol.replace("NOT_BUILT", f"release/{EXPECTED_FIXED_ZIP_BASENAME}", 1)
     count_one_protocol = clean_protocol.replace("fixed ZIP builder invocation count:\n0", "fixed ZIP builder invocation count:\n1", 1)
-    clean_contract = ACTIVE_STAGE4_STOP_RULE_HEADING + "\nStage 4 verifier output-encoding corrective R1 stops as a dirty exact candidate."
+    clean_contract = ACTIVE_STAGE4_STOP_RULE_HEADING + "\nStage 4 verifier output-encoding corrective R2 stops as a dirty exact candidate."
     stale_contract = clean_contract + "\n" + STALE_STAGE3_STOP_RULE_HEADING
     return {
         "historical_control_b_c_no_build_accepted": protocol_historical_no_build_blocks_are_clean(clean_protocol),
@@ -1865,8 +1917,8 @@ def check_stage4_content_review_guards() -> None:
 def check_r5_document_correction_guards() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     fixed_zip_contract = read("docs/v400_fixed_release_zip.md")
-    if "Current checkpoint:\nDRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5" not in protocol:
-        die("protocol current checkpoint is not Stage 4 retry authorization-sync corrective R2")
+    if "Current checkpoint:\nDRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4" not in protocol:
+        die("protocol current checkpoint is not Stage 4 verifier pytest basetemp isolation corrective R4")
     if "Control D Stage 2 authorization-sync" in protocol:
         die("stale Stage 2 authorization-sync checkpoint remains")
     if not protocol_historical_no_build_blocks_are_clean(protocol):
@@ -3012,6 +3064,17 @@ def check_committed_stage4_retry_authorization_sync_surface(head: str = "HEAD") 
         die("Stage 4 retry authorization-sync protected delta is not empty")
 
 
+def check_committed_stage4_verifier_pytest_basetemp_isolation_corrective_surface(head: str = "HEAD") -> None:
+    revision_range = f"{CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT}..{head}"
+    commit_count = int(git_out("rev-list", "--count", revision_range))
+    lines = git_out("diff", "--name-status", revision_range).splitlines()
+    if not validate_stage4_verifier_pytest_basetemp_isolation_corrective_committed_surface(commit_count, lines):
+        die("Clean committed Stage 4 verifier pytest basetemp isolation corrective surface is not exact one-commit M12")
+    protected = git_out("diff", "--name-status", revision_range, "--", *PROTECTED_PATHS).splitlines()
+    if not validate_empty_protected_delta(protected):
+        die("Stage 4 verifier pytest basetemp isolation corrective protected delta is not empty")
+
+
 def clean_committed_source_guard_plan():
     return (
         check_committed_stage1_surface,
@@ -3093,6 +3156,13 @@ def determine_mode() -> str:
                 check_dirty_surface(entries, STAGE4_RETRY_AUTHORIZATION_SYNC_MODIFIED)
                 check_expected_fixed_zip_tuple()
                 return "DIRTY_STAGE4_RETRY_AUTHORIZATION_SYNC_CANDIDATE"
+            if (
+                head == CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT
+                and origin == CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT
+            ):
+                check_dirty_surface(entries, STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_MODIFIED)
+                check_expected_fixed_zip_tuple()
+                return "DIRTY_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_CANDIDATE"
             die("dirty candidate HEAD mismatch")
         if origin != CONTROL_D_STAGE2_PREFLIGHT_GUARD_COMMIT:
             die("dirty candidate origin/main mismatch")
@@ -3127,8 +3197,11 @@ def determine_mode() -> str:
     check_expected_fixed_zip_tuple()
     if head == CONTROL_D_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE_COMMIT:
         return stage4_verifier_output_encoding_corrective_clean_mode_after_surface_validation(True, head, origin)
-    check_committed_stage4_retry_authorization_sync_surface("HEAD")
-    return stage4_retry_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
+    if head == CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_COMMIT:
+        check_committed_stage4_retry_authorization_sync_surface("HEAD")
+        return stage4_retry_authorization_sync_clean_mode_after_surface_validation(True, head, origin)
+    check_committed_stage4_verifier_pytest_basetemp_isolation_corrective_surface("HEAD")
+    return stage4_verifier_pytest_basetemp_isolation_corrective_clean_mode_after_surface_validation(True, head, origin)
 
 
 def check_versions() -> None:
@@ -3141,11 +3214,11 @@ def check_current_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"),
-            ("current implementation", "DRC v4.0.0 Control D Stage 4 Retry Authorization Sync Corrective R5"),
+            ("current small commit", "DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4"),
+            ("current implementation", "DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4"),
             (
                 "current implementation state",
-                "CONTROL_D_STAGE4_RETRY_AUTHORIZATION_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / AWAITING_RE_REVIEW",
+                "CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW",
             ),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", BASELINE),
@@ -3159,11 +3232,16 @@ def check_current_docs() -> None:
             ("Stage 4 invocation 1", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
             ("verification verdict", "NOT_REACHED"),
             ("failure class", "NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE"),
+            ("Stage 4 invocation 2 result", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
+            ("Stage 4 invocation 2 failure class", "NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE"),
+            ("Stage 4 invocation 2 Backend result", "272 passed / 207 setup errors"),
             ("release-package scanner known fixtures", "EXACT_EXPECTED_FINDINGS / ACCEPTED"),
-            ("Stage 4 retry", "AUTHORIZED / NOT_RUN"),
-            ("Cumulative completed Stage 4 verifier invocations", "1"),
-            ("Next authorized invocation number", "2"),
-            ("Retry invocation budget", "EXACTLY_ONE"),
+            ("Stage 4 retry", "CONSUMED / FAILED"),
+            ("Cumulative completed Stage 4 verifier invocations", "2"),
+            ("Retry invocation count", "1"),
+            ("Retry invocation budget remaining", "0"),
+            ("Next authorized invocation number", "NOT_AUTHORIZED"),
+            ("Invocation 3 authorized", "FALSE"),
             ("Control E", "NOT_AUTHORIZED"),
             ("DRC v4.0.0", "NOT_RELEASED"),
             ("fixed ZIP builder invocation count", "1"),
@@ -3183,6 +3261,8 @@ def check_current_docs() -> None:
         "CLEAN_COMMITTED_SOURCE_PREFLIGHT / COMPLETED / PASS / ACCEPTED",
         "Stage 4 invocation 1",
         "NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE",
+        "Stage 4 invocation 2",
+        "NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE",
     ):
         require(protocol, needle, "protocol")
 
@@ -3197,6 +3277,7 @@ def check_current_docs() -> None:
         "AI Character Framework is not bundled.",
         "## Stage 4 Verifier Output-Encoding Corrective R1 Stop Rule",
         STAGE4_RETRY_CURRENT_HEADING,
+        "pytest default shared user TEMP root",
     ):
         require(contract, needle, "fixed ZIP contract")
     reject(contract, "## Stage 3 Authorization-Sync Stop Rule", "stale fixed ZIP stop rule")
@@ -3224,7 +3305,7 @@ def check_current_docs() -> None:
         ("same-artifact verification", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
         ("verification verdict", "NOT_REACHED"),
         ("failure class", "NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE"),
-        ("Stage 4 retry", "AUTHORIZED / NOT_RUN"),
+        ("Stage 4 retry", "CONSUMED / FAILED"),
         ("explicit final operator approval", "NOT_RECEIVED"),
         ("annotated tag publication", "NOT_CREATED"),
         ("GitHub Release publication", "NOT_CREATED"),
@@ -3377,9 +3458,11 @@ def validate_post_source_head_surface(
     rename_or_copy_paths: list[str],
     commit_count: int,
 ) -> bool:
+    if commit_count < 0:
+        return False
     if commit_count == 0:
         return not changed_paths and not deleted_paths and not rename_or_copy_paths
-    if commit_count > 3:
+    if commit_count > 4:
         return False
     if deleted_paths or rename_or_copy_paths:
         return False
@@ -3411,11 +3494,17 @@ def check_post_source_head_surface(expected_head: str, verification_head: str) -
 def post_source_head_surface_matrix_self_check() -> dict[str, bool]:
     changed = ["README.md"]
     return {
+        "count_negative_rejected": not validate_post_source_head_surface([], [], [], -1),
         "count_0_accepted": validate_post_source_head_surface([], [], [], 0),
+        "count_0_with_change_rejected": not validate_post_source_head_surface(changed, [], [], 0),
         "count_1_accepted": validate_post_source_head_surface(changed, [], [], 1),
         "count_2_accepted": validate_post_source_head_surface(changed, [], [], 2),
         "count_3_accepted": validate_post_source_head_surface(changed, [], [], 3),
-        "count_4_rejected": not validate_post_source_head_surface(changed, [], [], 4),
+        "count_4_accepted": validate_post_source_head_surface(changed, [], [], 4),
+        "count_5_rejected": not validate_post_source_head_surface(changed, [], [], 5),
+        "count_4_product_path_rejected": not validate_post_source_head_surface(["backend/app/version.py"], [], [], 4),
+        "deletion_rejected": not validate_post_source_head_surface(changed, ["README.md"], [], 1),
+        "rename_or_copy_rejected": not validate_post_source_head_surface(changed, [], ["README.md"], 1),
     }
 
 
@@ -3461,8 +3550,20 @@ def release_zip_runtime_guard_plan_self_check() -> dict[str, bool]:
         "clean_pushed_release_verifier_reachability": release_zip_reachability("CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC"),
         "old_initial_authorization_reachability_false": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_AUTHORIZATION_SYNC"),
         "corrective_reachability_false": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_VERIFIER_OUTPUT_ENCODING_CORRECTIVE"),
+        "dirty_basetemp_corrective_reachability_false": not release_zip_reachability(
+            "DIRTY_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_CANDIDATE"
+        ),
+        "clean_not_pushed_basetemp_corrective_reachability_false": not release_zip_reachability(
+            "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_NOT_PUSHED"
+        ),
+        "clean_pushed_basetemp_corrective_reachability_false": not release_zip_reachability(
+            "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE"
+        ),
+        "invocation_3_authorization_false": not release_zip_reachability(
+            "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE"
+        ),
         "malformed_retry_contract_blocks_docs_guard": not stage4_retry_authorization_contract_is_present(
-            current_docs_text().replace("Retry invocation budget: EXACTLY_ONE", "Retry invocation budget: EXACTLY_ONE_EXTRA", 1)
+            current_docs_text().replace("Invocation 3 authorized: FALSE", "Invocation 3 authorized: TRUE", 1)
         ),
     }
 
@@ -3525,7 +3626,7 @@ def docs_have_stage4_authorization() -> bool:
 
 
 def docs_have_stage4_retry_authorization() -> bool:
-    return stage4_retry_authorization_contract_is_present_in_docs()
+    return current_stage4_retry_authorization_is_present(current_docs_text())
 
 
 def stage2_is_authorized_or_accepted(text: str) -> bool:
@@ -3538,6 +3639,51 @@ def stage3_build_is_authorized(text: str) -> bool:
 
 def stage4_zip_verification_is_authorized(text: str) -> bool:
     return STAGE4_AUTHORIZATION in text and STAGE3_ARTIFACT_READY in text
+
+
+
+def current_stage4_retry_authorization_is_present(text: str) -> bool:
+    normalized = norm(text)
+    current_line_patterns = (
+        f"Control D Stage 4 retry authorization: {STAGE4_RETRY_AUTHORIZATION}",
+        f"Current Control D Stage 4 retry authorization: {STAGE4_RETRY_AUTHORIZATION}",
+        f"Current active Control D Stage 4 retry authorization: {STAGE4_RETRY_AUTHORIZATION}",
+    )
+    lines = normalized.splitlines()
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped in current_line_patterns:
+            return True
+        if stripped in {
+            "Control D Stage 4 retry authorization:",
+            "Current Control D Stage 4 retry authorization:",
+            "Current active Control D Stage 4 retry authorization:",
+        } and index + 1 < len(lines) and lines[index + 1].strip() == STAGE4_RETRY_AUTHORIZATION:
+            return True
+    return False
+
+
+def invocation_3_is_authorized(text: str) -> bool:
+    normalized = norm(text)
+    return (
+        "Invocation 3 authorized: TRUE" in normalized
+        or "Stage 4 invocation 3: AUTHORIZED" in normalized
+        or "Next authorized invocation number: 3" in normalized
+    )
+
+
+def consumed_retry_history_contract_is_present_in_docs() -> bool:
+    return consumed_retry_history_contract_is_present_for_doc_texts(
+        {relative: read(relative) for relative in CURRENT_DOCS}
+    )
+
+
+def consumed_retry_history_contract_is_present_for_doc_texts(doc_texts: dict[str, str]) -> bool:
+    return stage4_retry_authorization_contract_is_present_for_doc_texts(doc_texts)
+
+
+def consumed_retry_history_contract_is_present(text: str) -> bool:
+    return stage4_retry_authorization_contract_is_present(text)
 
 
 def stage4_retry_current_sections(text: str) -> list[str]:
@@ -3569,7 +3715,7 @@ def stage4_retry_current_heading_family(line: str) -> bool:
     if not stripped.startswith("#"):
         return False
     key = stage4_retry_heading_compare_key(line)
-    return key.startswith("stage4retryauthorizationsynccorrective")
+    return key.startswith(STAGE4_BASETEMP_HEADING_FAMILY_PREFIX)
 
 
 def stage4_retry_section_is_valid(section: str, token_required: bool) -> bool:
@@ -3645,13 +3791,15 @@ def stage4_lifecycle_contract_is_valid(text: str) -> bool:
         and text.count(STAGE3_ARTIFACT_READY) == 2
         and text.count(STAGE3_AUTHORIZATION) == 0
         and text.count(STAGE4_AUTHORIZATION) == 0
-        and stage4_retry_authorization_contract_is_present(text)
+        and consumed_retry_history_contract_is_present(text)
+        and not current_stage4_retry_authorization_is_present(text)
+        and not invocation_3_is_authorized(text)
         and not stage3_build_is_authorized(text)
         and not stage4_zip_verification_is_authorized(text)
         and not stage4_zip_verification_completed(text)
         and not control_e_is_authorized(text)
         and "Stage 4 invocation 1:\nEXACTLY_ONCE_EXECUTED / EXECUTION_FAILED" in text
-        and "Stage 4 retry:\nAUTHORIZED / NOT_RUN" in text
+        and "Stage 4 retry:\nCONSUMED / FAILED" in text
     )
 
 
@@ -3680,43 +3828,43 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
         return not stage4_retry_authorization_contract_is_present_for_doc_texts(mutated)
 
     heading_lookalike_cases = {
-        "lowercase_heading_appended_rejected": "## stage 4 retry authorization sync corrective r5 current section",
-        "uppercase_heading_appended_rejected": "## STAGE 4 RETRY AUTHORIZATION SYNC CORRECTIVE R5 CURRENT SECTION",
-        "mixed_case_heading_appended_rejected": "## Stage 4 retry Authorization Sync Corrective R5 Current Section",
-        "extra_space_heading_appended_rejected": "## Stage  4 Retry Authorization Sync Corrective R5 Current Section",
-        "tabs_between_words_heading_appended_rejected": "## Stage\t4\tRetry\tAuthorization\tSync\tCorrective\tR5\tCurrent\tSection",
+        "lowercase_heading_appended_rejected": "## stage 4 verifier pytest basetemp isolation corrective r2 current section",
+        "uppercase_heading_appended_rejected": "## STAGE 4 VERIFIER PYTEST BASETEMP ISOLATION CORRECTIVE R1 CURRENT SECTION",
+        "mixed_case_heading_appended_rejected": "## Stage 4 verifier Pytest Basetemp Isolation Corrective R2 Current Section",
+        "extra_space_heading_appended_rejected": "## Stage  4 Verifier Pytest Basetemp Isolation Corrective R2 Current Section",
+        "tabs_between_words_heading_appended_rejected": "## Stage\t4\tVerifier\tPytest\tBasetemp\tIsolation\tCorrective\tR1\tCurrent\tSection",
         "trailing_space_heading_appended_rejected": STAGE4_RETRY_CURRENT_HEADING + " ",
-        "leading_punctuation_heading_appended_rejected": "## - Stage 4 Retry Authorization Sync Corrective R5 Current Section",
-        "trailing_punctuation_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section ###",
-        "missing_space_after_hashes_heading_appended_rejected": "##Stage 4 Retry Authorization Sync Corrective R5 Current Section",
-        "three_hash_heading_appended_rejected": "### Stage 4 Retry Authorization Sync Corrective R5 Current Section",
-        "fullwidth_heading_appended_rejected": "## \uff33\uff54\uff41\uff47\uff45 \uff14 Retry Authorization Sync Corrective R5 Current Section",
-        "historical_r3_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R3 Current Section",
+        "leading_punctuation_heading_appended_rejected": "## - Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section",
+        "trailing_punctuation_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section ###",
+        "missing_space_after_hashes_heading_appended_rejected": "##Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section",
+        "three_hash_heading_appended_rejected": "### Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section",
+        "fullwidth_heading_appended_rejected": "## \uff33\uff54\uff41\uff47\uff45 \uff14 Verifier Pytest Basetemp Isolation Corrective R2 Current Section",
+        "historical_r3_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R0 Current Section",
         "duplicate_canonical_heading_appended_rejected": STAGE4_RETRY_CURRENT_HEADING,
-        "exact_plus_lowercase_duplicate_rejected": "## stage 4 retry authorization sync corrective r5 current section",
-        "exact_plus_uppercase_duplicate_rejected": "## STAGE 4 RETRY AUTHORIZATION SYNC CORRECTIVE R5 CURRENT SECTION",
-        "exact_plus_mixed_case_duplicate_rejected": "## Stage 4 retry Authorization Sync Corrective R5 Current Section",
-        "exact_plus_whitespace_normalized_duplicate_rejected": "## Stage  4 Retry Authorization Sync Corrective R5 Current Section",
-        "malformed_duplicate_bad_retry_status_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section\nStage 4 retry: NOT_AUTHORIZED / NOT_RUN",
+        "exact_plus_lowercase_duplicate_rejected": "## stage 4 verifier pytest basetemp isolation corrective r2 current section",
+        "exact_plus_uppercase_duplicate_rejected": "## STAGE 4 VERIFIER PYTEST BASETEMP ISOLATION CORRECTIVE R1 CURRENT SECTION",
+        "exact_plus_mixed_case_duplicate_rejected": "## Stage 4 verifier Pytest Basetemp Isolation Corrective R2 Current Section",
+        "exact_plus_whitespace_normalized_duplicate_rejected": "## Stage  4 Verifier Pytest Basetemp Isolation Corrective R2 Current Section",
+        "malformed_duplicate_bad_retry_status_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section\nStage 4 retry: NOT_AUTHORIZED / NOT_RUN",
     }
     heading_family_case_count = len(heading_lookalike_cases)
     r5_suffix_family_cases = {
-        "r5_suffix_extra_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section extra",
-        "r5_suffix_bak_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section.bak",
-        "r5_suffix_underscore_extra_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section_EXTRA",
-        "r5_suffix_section2_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section2",
-        "r5_suffix_not_authorized_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section NOT_AUTHORIZED",
-        "r5_middle_review_section_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Review Section",
-        "r5_suffix_backup_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section / backup",
-        "r5_suffix_disabled_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R5 Current Section: disabled",
-        "r4_current_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R4 Current Section",
-        "r3_current_heading_appended_rejected": "## Stage 4 Retry Authorization Sync Corrective R3 Current Section",
+        "r5_suffix_extra_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section extra",
+        "r5_suffix_bak_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section.bak",
+        "r5_suffix_underscore_extra_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section_EXTRA",
+        "r5_suffix_section2_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section2",
+        "r5_suffix_not_authorized_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section NOT_AUTHORIZED",
+        "r5_middle_review_section_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R1 Current Review Section",
+        "r5_suffix_backup_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section / backup",
+        "r5_suffix_disabled_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section: disabled",
+        "r4_current_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R0 Current Section",
+        "r3_current_heading_appended_rejected": "## Stage 4 Verifier Pytest Basetemp Isolation Corrective R0 Current Section",
     }
     r5_suffix_family_case_count = len(r5_suffix_family_cases)
     unrelated_historical_heading_docs = dict(docs)
     unrelated_historical_heading_docs["README.md"] = (
         unrelated_historical_heading_docs["README.md"]
-        + "\n## Historical Stage 4 Retry Authorization Sync Corrective R5 Current Section\n"
+        + "\n## Historical Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section\n"
         + "Historical note: unrelated heading outside the protected prefix family.\n"
     )
 
@@ -3734,11 +3882,24 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
     return {
         "canonical_non_token_section_accepted": stage4_retry_section_is_valid(canonical_non_token, False),
         "canonical_designated_token_section_accepted": stage4_retry_section_is_valid(canonical_token, True),
-        "actual_docs_guard_accepted": stage4_retry_authorization_contract_is_present_in_docs(),
+        "exact_consumed_history_accepted": consumed_retry_history_contract_is_present_in_docs(),
+        "actual_docs_current_authorization_predicate_false": not docs_have_stage4_retry_authorization(),
+        "actual_docs_consumed_history_predicate_true": consumed_retry_history_contract_is_present_in_docs(),
         "historical_evidence_outside_section_accepted": stage4_lifecycle_contract_is_valid(
-            text + "\nHistorical bounded evidence: Stage 4 invocation 3 was not authorized.\n"
+            text + "\nHistorical bounded evidence: budget consumed.\n"
         ),
-        "wrong_token_document_mapping_rejected": not stage4_retry_authorization_contract_is_present_for_doc_texts(wrong_mapping_docs),
+        "consumed_history_wrong_document_mapping_rejected": not consumed_retry_history_contract_is_present_for_doc_texts(wrong_mapping_docs),
+        "consumed_history_duplicate_rejected": not consumed_retry_history_contract_is_present(text + "\n" + STAGE4_RETRY_TOKEN_LINE),
+        "consumed_history_missing_rejected": not consumed_retry_history_contract_is_present(text.replace(STAGE4_RETRY_TOKEN_LINE, "", 1)),
+        "historical_prefix_removed_rejected": not consumed_retry_history_contract_is_present(text.replace("Historical consumed ", "", 1)),
+        "historical_token_relabeled_current_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Historical consumed Control D Stage 4 retry authorization", "Control D Stage 4 retry authorization", 1)),
+        "authorized_not_run_current_status_rejected": not stage4_lifecycle_contract_is_valid(
+            text.replace("Stage 4 retry:\nCONSUMED / FAILED", "Stage 4 retry:\nAUTHORIZED / NOT_RUN")
+            .replace("Stage 4 retry: CONSUMED / FAILED", "Stage 4 retry: AUTHORIZED / NOT_RUN")
+        ),
+        "retry_budget_changed_from_0_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget remaining: 0", "Retry invocation budget remaining: 1", 1)),
+        "next_invocation_changed_to_3_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: NOT_AUTHORIZED", "Next authorized invocation number: 3", 1)),
+        "invocation_3_true_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Invocation 3 authorized: FALSE", "Invocation 3 authorized: TRUE", 1)),
         "total_token_count_exact_2": current_docs_text().count(STAGE4_RETRY_AUTHORIZATION) == 2,
         "heading_family_case_count_exact_18": heading_family_case_count == STAGE4_RETRY_RETAINED_HEADING_FAMILY_CASE_COUNT,
         "r5_suffix_family_case_count_exact_10": r5_suffix_family_case_count == STAGE4_RETRY_R5_SUFFIX_FAMILY_CASE_COUNT,
@@ -3793,7 +3954,7 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
             malformed_section(first_section + "\nStage 4 invocation 03: AUTHORIZED / NOT_RUN")
         ),
         "retry_status_spaced_not_authorized_rejected": not stage4_lifecycle_contract_is_valid(
-            malformed_section(first_section.replace("Stage 4 retry: AUTHORIZED / NOT_RUN", "Stage 4 retry : NOT_AUTHORIZED / NOT_RUN"))
+            malformed_section(first_section.replace("Stage 4 retry: CONSUMED / FAILED", "Stage 4 retry : AUTHORIZED / NOT_RUN"))
         ),
         "retry_override_rejected": not stage4_lifecycle_contract_is_valid(
             malformed_section(first_section + "\nRetry override: AUTHORIZED / NOT_RUN")
@@ -3808,10 +3969,10 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
             malformed_section(first_section.replace("Stage 4 retry:", "Stage 4 retry::"))
         ),
         "duplicated_canonical_field_rejected": not stage4_lifecycle_contract_is_valid(
-            malformed_section(first_section.replace("Next authorized invocation number: 2", "Next authorized invocation number: 2\nNext authorized invocation number: 2", 1))
+            malformed_section(first_section.replace("Next authorized invocation number: NOT_AUTHORIZED", "Next authorized invocation number: NOT_AUTHORIZED\nNext authorized invocation number: NOT_AUTHORIZED", 1))
         ),
         "reordered_canonical_fields_rejected": not stage4_lifecycle_contract_is_valid(
-            malformed_section(first_section.replace("Stage 4 retry: AUTHORIZED / NOT_RUN\nCumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 1\nStage 4 retry: AUTHORIZED / NOT_RUN", 1))
+            malformed_section(first_section.replace("Stage 4 retry: CONSUMED / FAILED\nCumulative completed Stage 4 verifier invocations: 2", "Cumulative completed Stage 4 verifier invocations: 3\nStage 4 retry: CONSUMED / FAILED", 1))
         ),
         "token_bak_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + ".bak", 1)),
         "token_extra_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + " extra", 1)),
@@ -3819,15 +3980,15 @@ def stage4_lifecycle_contract_self_check() -> dict[str, bool]:
         "token_wrong_case_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION.lower(), 1)),
         "token_prefixed_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, "X" + STAGE4_RETRY_AUTHORIZATION, 1)),
         "token_suffixed_variant_rejected": not stage4_lifecycle_contract_is_valid(text.replace(STAGE4_RETRY_AUTHORIZATION, STAGE4_RETRY_AUTHORIZATION + "X", 1)),
-        "invocation_02_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 02", 1)),
-        "invocation_3_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 3", 1)),
-        "invocation_03_value_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 03", 1)),
-        "invocation_20_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: 2", "Next authorized invocation number: 20", 1)),
-        "cumulative_01_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 01", 1)),
-        "cumulative_2_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 2", 1)),
-        "cumulative_10_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 1", "Cumulative completed Stage 4 verifier invocations: 10", 1)),
-        "budget_two_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget: EXACTLY_ONE", "Retry invocation budget: TWO", 1)),
-        "budget_suffix_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget: EXACTLY_ONE", "Retry invocation budget: EXACTLY_ONE_EXTRA", 1)),
+        "invocation_02_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: NOT_AUTHORIZED", "Next authorized invocation number: 02", 1)),
+        "invocation_3_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: NOT_AUTHORIZED", "Next authorized invocation number: 3", 1)),
+        "invocation_03_value_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: NOT_AUTHORIZED", "Next authorized invocation number: 03", 1)),
+        "invocation_20_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Next authorized invocation number: NOT_AUTHORIZED", "Next authorized invocation number: NOT_AUTHORIZED0", 1)),
+        "cumulative_01_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 2", "Cumulative completed Stage 4 verifier invocations: 01", 1)),
+        "cumulative_2_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 2", "Cumulative completed Stage 4 verifier invocations: 3", 1)),
+        "cumulative_10_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Cumulative completed Stage 4 verifier invocations: 2", "Cumulative completed Stage 4 verifier invocations: 30", 1)),
+        "budget_two_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget remaining: 0", "Retry invocation budget: TWO", 1)),
+        "budget_suffix_rejected": not stage4_lifecycle_contract_is_valid(text.replace("Retry invocation budget remaining: 0", "Retry invocation budget remaining: 0_EXTRA", 1)),
         "third_invocation_same_line_rejected": not stage4_lifecycle_contract_is_valid(
             malformed_section(first_section + "\nStage 4 invocation 3: AUTHORIZED / NOT_RUN")
         ),
@@ -3859,8 +4020,10 @@ def check_stage2a_authorization_boundary() -> None:
         die("Stage 4 authorization marker was not consumed")
     if docs_have_stage4_authorization():
         die("old Stage 4 authorization must not be present in current docs")
-    if not docs_have_stage4_retry_authorization():
-        die("Stage 4 retry authorization must be exact in current docs")
+    if not consumed_retry_history_contract_is_present_in_docs():
+        die("Stage 4 consumed retry history contract must be exact in current docs")
+    if docs_have_stage4_retry_authorization():
+        die("current Stage 4 retry authorization must be absent")
 
 
 def check_static_corrective_assertions() -> None:
@@ -3896,8 +4059,10 @@ def check_static_corrective_assertions() -> None:
         die("Stage 4 authorization marker was not consumed")
     if stage4_zip_verification_is_authorized(current_text):
         die("current docs must not restore old Stage 4 authorization")
-    if not stage4_retry_authorization_contract_is_present(current_text):
-        die("current docs must authorize exactly one Stage 4 retry")
+    if not consumed_retry_history_contract_is_present(current_text):
+        die("current docs must retain exact consumed Stage 4 retry history")
+    if current_stage4_retry_authorization_is_present(current_text) or invocation_3_is_authorized(current_text):
+        die("current docs must not authorize Stage 4 retry or Invocation 3")
     synthetic_stage3 = current_text + "\n" + STAGE2_ACCEPTED + "\n" + "Control D Stage 3 authorization:\n" + STAGE3_AUTHORIZATION
     synthetic_stage4 = current_text + "\n" + STAGE3_ARTIFACT_READY + "\n" + "Control D Stage 4 authorization:\n" + STAGE4_AUTHORIZATION
     if not stage3_build_is_authorized(synthetic_stage3):
@@ -5333,7 +5498,7 @@ def run_checked(cmd: list[str], cwd: Path = ROOT) -> str:
     )
     stdout = decode_subprocess_output(completed.stdout)
     emit_subprocess_output(stdout)
-    if completed.returncode:
+    if not subprocess_return_code_is_success(completed.returncode):
         die("command failed: " + " ".join(cmd))
     return stdout
 
@@ -5396,7 +5561,7 @@ def verify_clean_source_tree(with_flutter: bool, with_builds: bool, flutter_comm
     check_no_release_outputs()
     check_clean_committed_source_guards()
     run_checked([sys.executable, "-m", "compileall", "-q", "backend", "scripts"])
-    out = run_checked([sys.executable, "-m", "pytest", "-q", "backend/tests"])
+    out = run_checked(source_tree_backend_pytest_command())
     if not re.search(rf"\b{EXPECTED_BACKEND_TESTS} passed\b", out):
         die("Backend full count mismatch")
     if with_flutter:
@@ -5477,9 +5642,16 @@ def verify_release_package_scan(path: Path, expected_head: str) -> str:
     return "exact-source-matched-synthetic-fixtures"
 
 
-def run_extracted(source: Path, with_flutter: bool, with_builds: bool, flutter_command: str | None) -> None:
+def run_extracted(
+
+    extraction_root: Path,
+    source: Path,
+    with_flutter: bool,
+    with_builds: bool,
+    flutter_command: str | None,
+) -> None:
     run_checked([sys.executable, "-m", "compileall", "-q", "backend", "scripts"], source)
-    out = run_checked([sys.executable, "-m", "pytest", "-q", "backend/tests"], source)
+    out = run_checked(extracted_backend_pytest_command(extraction_root, source), source)
     if not re.search(rf"\b{EXPECTED_BACKEND_TESTS} passed\b", out):
         die("extracted Backend full count mismatch")
     if with_flutter:
@@ -5573,7 +5745,7 @@ def verify_release_zip(
         source = temp_root / "DailyRhythmCompanion"
         if not source.is_dir():
             die("missing extracted package root")
-        run_extracted(source, with_flutter, with_builds, flutter_command)
+        run_extracted(temp_root, source, with_flutter, with_builds, flutter_command)
     after_stat = path.stat()
     after = sha256(path.read_bytes()).hexdigest()
     if before != after:
@@ -5683,6 +5855,7 @@ def main() -> None:
         stage4_origin_checks = stage4_authorization_sync_origin_state_self_check()
         fixed_zip_tuple_checks = fixed_zip_tuple_self_check()
         release_zip_guard_checks = release_zip_runtime_guard_plan_self_check()
+        basetemp_checks = stage4_pytest_basetemp_isolation_self_check()
         post_source_matrix_checks = post_source_head_surface_matrix_self_check()
         current_budget = current_tracked_path_budget()
         prose_checks = current_state_prose_consistency_self_check()
@@ -5698,7 +5871,7 @@ def main() -> None:
             "temporary_with_package_config": flutter_dependency_plan(True, True) == "use-existing-package-config",
             "temporary_without_package_config": flutter_dependency_plan(True, False) == "pub-get-offline",
         }
-        print("v400_fixed_release_zip_tooling_status: stage4-retry-authorization-sync-corrective-r5-implemented-static-verified-awaiting-re-review")
+        print("v400_fixed_release_zip_tooling_status: stage4-verifier-pytest-basetemp-isolation-corrective-r4-implemented-static-verified-diagnostic-state-corrected-ready-for-re-review")
         print(
             "v400_fixed_release_zip_exact_stage1_surface: "
             f"{stage1_surface_checks['exact_m10_a3_accepted']}"
@@ -6002,8 +6175,11 @@ def main() -> None:
         print("v400_control_d_stage3_authorization_token_occurrence: 0")
         print("v400_control_d_stage3_build_authorized: False")
         print("v400_control_d_stage3_build_status: completed-pass-accepted")
-        print("v400_control_d_stage4_retry_authorized: True")
-        print("v400_control_d_stage4_retry_invocation_count: 0")
+        print(f"v400_control_d_stage4_retry_authorized: {docs_have_stage4_retry_authorization()}")
+        print(f"v400_consumed_retry_history_contract_present: {consumed_retry_history_contract_is_present_in_docs()}")
+        print("v400_control_d_stage4_retry_invocation_count: 1")
+        print("v400_control_d_stage4_retry_budget_remaining: 0")
+        print("v400_control_d_stage4_invocation_3_authorized: False")
         print("v400_default_mode_uses_mode_dependent_artifact_policy: True")
         print("v400_source_tree_mode_uses_artifact_absent_policy: True")
         print("v400_release_zip_mode_uses_exact_supplied_artifact_policy: True")
@@ -6012,16 +6188,35 @@ def main() -> None:
         print(f"v400_dirty_candidate_release_verifier_blocked: {release_zip_guard_checks['dirty_candidate_reachability_false']}")
         print(f"v400_clean_not_pushed_release_verifier_blocked: {release_zip_guard_checks['clean_not_pushed_reachability_false']}")
         print(f"v400_clean_pushed_release_verifier_reachability: {release_zip_guard_checks['clean_pushed_release_verifier_reachability']}")
+        print(
+            "v400_dirty_basetemp_corrective_release_verifier_blocked: "
+            f"{release_zip_guard_checks['dirty_basetemp_corrective_reachability_false']}"
+        )
+        print(
+            "v400_clean_not_pushed_basetemp_corrective_release_verifier_blocked: "
+            f"{release_zip_guard_checks['clean_not_pushed_basetemp_corrective_reachability_false']}"
+        )
+        print(
+            "v400_clean_pushed_basetemp_corrective_release_verifier_blocked: "
+            f"{release_zip_guard_checks['clean_pushed_basetemp_corrective_reachability_false']}"
+        )
+        print(
+            "v400_invocation_3_authorization_false: "
+            f"{release_zip_guard_checks['invocation_3_authorization_false']}"
+        )
         print(f"v400_malformed_retry_contract_release_verifier_blocked: {release_zip_guard_checks['malformed_retry_contract_blocks_docs_guard']}")
+        print(f"v400_stage4_pytest_basetemp_isolation_self_check_count: {len(basetemp_checks)}")
+        print(f"v400_stage4_pytest_basetemp_isolation_self_check: {all(basetemp_checks.values())}")
         print(f"v400_post_source_head_surface_count_matrix_self_check: {all(post_source_matrix_checks.values())}")
         print(
-            "v400_post_source_head_surface_count_matrix_0_1_2_3_accepted_4_rejected: "
-            f"{post_source_matrix_checks['count_0_accepted'] and post_source_matrix_checks['count_1_accepted'] and post_source_matrix_checks['count_2_accepted'] and post_source_matrix_checks['count_3_accepted'] and post_source_matrix_checks['count_4_rejected']}"
+            "v400_post_source_head_surface_count_matrix_0_1_2_3_4_accepted_5_rejected: "
+            f"{post_source_matrix_checks['count_0_accepted'] and post_source_matrix_checks['count_1_accepted'] and post_source_matrix_checks['count_2_accepted'] and post_source_matrix_checks['count_3_accepted'] and post_source_matrix_checks['count_4_accepted'] and post_source_matrix_checks['count_5_rejected']}"
         )
         print("v400_current_docs_stage2_accepted: True")
         print("v400_stage2_accepted_marker_occurrence: 2")
         print("v400_current_docs_stage3_authorization: False")
-        print("v400_current_docs_stage4_retry_authorization: True")
+        print(f"v400_current_docs_stage4_retry_authorization: {docs_have_stage4_retry_authorization()}")
+        print(f"v400_consumed_retry_history_contract_present: {consumed_retry_history_contract_is_present_in_docs()}")
         print("v400_synthetic_stage3_docs_can_reach_source_tree_policy: True")
         print("v400_synthetic_stage4_docs_can_reach_release_zip_policy: True")
         print("v400_known_scanner_fixtures_exact_count: 2")
@@ -6115,6 +6310,9 @@ def stage4_authorization_sync_modes(mode: str) -> bool:
         "DIRTY_STAGE4_RETRY_AUTHORIZATION_SYNC_CANDIDATE",
         "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC_NOT_PUSHED",
         "CLEAN_COMMITTED_STAGE4_RETRY_AUTHORIZATION_SYNC",
+        "DIRTY_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_CANDIDATE",
+        "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_NOT_PUSHED",
+        "CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE",
     }
 
 
@@ -6248,6 +6446,176 @@ def fixed_zip_tuple_self_check() -> dict[str, bool]:
         "expected_sha_exact": EXPECTED_FIXED_ZIP_SHA256 == "f02b43a219d7e89fd9e40dd6c1f7cd588076de7b260d6085ffa99966b3c49142",
         "expected_source_head_exact": EXPECTED_FIXED_ZIP_SOURCE_HEAD == CONTROL_D_STAGE3_PATH_LENGTH_CORRECTIVE_COMMIT,
     }
+
+
+def path_is_relative_to(child: Path, parent: Path) -> bool:
+    try:
+        child.relative_to(parent)
+    except ValueError:
+        return False
+    return True
+
+
+def path_has_parent_ref(path: Path) -> bool:
+    return any(part == ".." for part in path.parts)
+
+
+def path_has_shared_pytest_root(path: Path) -> bool:
+    return any(part.lower().startswith("pytest-of-") for part in path.parts)
+
+
+def validate_extracted_pytest_basetemp(extraction_root: Path, source: Path, basetemp: Path) -> None:
+    if not extraction_root.is_absolute():
+        die("extraction root must be absolute")
+    if not source.is_absolute():
+        die("extracted source must be absolute")
+    if not basetemp.is_absolute():
+        die("isolated pytest basetemp must be absolute")
+    if path_has_parent_ref(extraction_root) or path_has_parent_ref(source) or path_has_parent_ref(basetemp):
+        die("isolated pytest basetemp path traversal rejected")
+    if path_has_shared_pytest_root(extraction_root) or path_has_shared_pytest_root(source) or path_has_shared_pytest_root(basetemp):
+        die("shared pytest root rejected")
+    if not extraction_root.is_dir():
+        die("extraction root must exist and be a directory")
+    if not source.is_dir():
+        die("extracted source must exist")
+    root = extraction_root.resolve(strict=True)
+    source_resolved = source.resolve(strict=True)
+    basetemp_resolved = basetemp.resolve(strict=False)
+    if source_resolved != root / "DailyRhythmCompanion":
+        die("extracted source must be the expected direct child of extraction root")
+    if basetemp.name != STAGE4_PYTEST_BASETEMP_BASENAME:
+        die("isolated pytest basetemp basename mismatch")
+    if basetemp_resolved.parent != root:
+        die("isolated pytest basetemp parent must be extraction root")
+    if basetemp_resolved == root:
+        die("isolated pytest basetemp must not equal extraction root")
+    if basetemp_resolved == source_resolved:
+        die("isolated pytest basetemp must not equal extracted source")
+    if path_is_relative_to(basetemp_resolved, source_resolved):
+        die("isolated pytest basetemp must not be inside extracted source")
+    if not path_is_relative_to(basetemp_resolved, root):
+        die("isolated pytest basetemp must stay under extraction root")
+    if basetemp.exists():
+        die("isolated pytest basetemp must not already exist")
+
+
+def validate_extracted_backend_pytest_command(command: list[str], basetemp: Path) -> None:
+    basetemp_value = str(basetemp.resolve(strict=False))
+    expected = [sys.executable, "-m", "pytest", "-q", "backend/tests", "--basetemp", basetemp_value]
+    if command != expected:
+        die("extracted Backend pytest command contract mismatch")
+    if command.count("backend/tests") != 1:
+        die("extracted Backend pytest command must target backend/tests exactly once")
+    if command.count("--basetemp") != 1:
+        die("extracted Backend pytest command must include exactly one --basetemp")
+    basetemp_index = command.index("--basetemp")
+    if basetemp_index + 1 >= len(command):
+        die("extracted Backend pytest command missing basetemp value")
+    if command[basetemp_index + 1] != basetemp_value or not Path(command[basetemp_index + 1]).is_absolute():
+        die("extracted Backend pytest command basetemp value mismatch")
+    if any(arg.startswith("--basetemp=") for arg in command):
+        die("extracted Backend pytest command must use two-argument --basetemp form")
+    if any(arg in {"TEMP", "TMP", "TMPDIR", "PYTEST_DEBUG_TEMPROOT"} or "PYTEST_DEBUG_TEMPROOT" in arg for arg in command):
+        die("extracted Backend pytest command must not include temp override arguments")
+
+
+def extracted_backend_pytest_command(extraction_root: Path, source: Path) -> list[str]:
+    basetemp = extraction_root / STAGE4_PYTEST_BASETEMP_BASENAME
+    validate_extracted_pytest_basetemp(extraction_root, source, basetemp)
+    command = [sys.executable, "-m", "pytest", "-q", "backend/tests", "--basetemp", str(basetemp.resolve(strict=False))]
+    validate_extracted_backend_pytest_command(command, basetemp)
+    return command
+
+
+def source_tree_backend_pytest_command() -> list[str]:
+    return [sys.executable, "-m", "pytest", "-q", "backend/tests"]
+
+
+def subprocess_return_code_is_success(returncode: int) -> bool:
+    return returncode == 0
+
+
+def _basetemp_validation_accepts(extraction_root: Path, source: Path, basetemp: Path) -> bool:
+    try:
+        validate_extracted_pytest_basetemp(extraction_root, source, basetemp)
+    except (AssertionError, OSError):
+        return False
+    return True
+
+
+def _command_validation_accepts(command: list[str], basetemp: Path) -> bool:
+    try:
+        validate_extracted_backend_pytest_command(command, basetemp)
+    except (AssertionError, OSError):
+        return False
+    return True
+
+
+def stage4_pytest_basetemp_isolation_self_check() -> dict[str, bool]:
+    selfcheck_temp_parent = ROOT.parent / "temp"
+    selfcheck_temp_parent.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="drc_v400_basetemp_selfcheck_", dir=selfcheck_temp_parent) as temp_dir:
+        root = Path(temp_dir).resolve()
+        source = root / "DailyRhythmCompanion"
+        source.mkdir()
+        canonical = root / STAGE4_PYTEST_BASETEMP_BASENAME
+        existing = root / STAGE4_PYTEST_BASETEMP_BASENAME
+        existing.mkdir()
+        existing_rejected = not _basetemp_validation_accepts(root, source, existing)
+        existing.rmdir()
+        appdata_root = root / "AppData" / "Local" / "Temp" / "drc_v400_fixed_zip_synthetic"
+        appdata_source = appdata_root / "DailyRhythmCompanion"
+        appdata_source.mkdir(parents=True)
+        appdata_basetemp = appdata_root / STAGE4_PYTEST_BASETEMP_BASENAME
+        pytest_root = root / "pytest-of-user" / "drc_v400_fixed_zip_synthetic"
+        pytest_source = pytest_root / "DailyRhythmCompanion"
+        pytest_source.mkdir(parents=True)
+        command = extracted_backend_pytest_command(root, source)
+        basetemp_value = str(canonical.resolve(strict=False))
+        source_command = source_tree_backend_pytest_command()
+        checks = {
+            "canonical_isolated_basetemp_accepted": _basetemp_validation_accepts(root, source, canonical),
+            "absolute_extraction_root_required": not _basetemp_validation_accepts(Path("relative_root"), source, canonical),
+            "absolute_source_required": not _basetemp_validation_accepts(root, Path("DailyRhythmCompanion"), canonical),
+            "absolute_basetemp_required": not _basetemp_validation_accepts(root, source, Path(STAGE4_PYTEST_BASETEMP_BASENAME)),
+            "basetemp_under_extraction_root_accepted": path_is_relative_to(canonical.resolve(strict=False), root),
+            "basetemp_equal_to_extraction_root_rejected": not _basetemp_validation_accepts(root, source, root),
+            "basetemp_equal_to_source_rejected": not _basetemp_validation_accepts(root, source, source),
+            "basetemp_inside_source_rejected": not _basetemp_validation_accepts(root, source, source / STAGE4_PYTEST_BASETEMP_BASENAME),
+            "basetemp_outside_extraction_root_rejected": not _basetemp_validation_accepts(root, source, root.parent / (root.name + "_outside") / STAGE4_PYTEST_BASETEMP_BASENAME),
+            "pre_existing_basetemp_rejected": existing_rejected,
+            "traversal_attempt_rejected": not _basetemp_validation_accepts(root, source, root / "DailyRhythmCompanion" / ".." / STAGE4_PYTEST_BASETEMP_BASENAME),
+            "appdata_ancestor_canonical_basetemp_accepted": _basetemp_validation_accepts(appdata_root, appdata_source, appdata_basetemp),
+            "shared_pytest_of_user_ancestor_rejected": not _basetemp_validation_accepts(pytest_root, pytest_source, pytest_root / STAGE4_PYTEST_BASETEMP_BASENAME),
+            "canonical_command_accepted": _command_validation_accepts(command, canonical),
+            "missing_basetemp_rejected": not _command_validation_accepts([arg for arg in command if arg != "--basetemp"], canonical),
+            "duplicate_basetemp_rejected": not _command_validation_accepts(command + ["--basetemp", basetemp_value], canonical),
+            "missing_basetemp_value_rejected": not _command_validation_accepts(command[:-1], canonical),
+            "wrong_basetemp_value_rejected": not _command_validation_accepts(command[:-1] + [str(root / "wrong_basetemp")], canonical),
+            "relative_basetemp_value_rejected": not _command_validation_accepts(command[:-1] + [STAGE4_PYTEST_BASETEMP_BASENAME], canonical),
+            "duplicate_backend_tests_rejected": not _command_validation_accepts(command + ["backend/tests"], canonical),
+            "missing_backend_tests_rejected": not _command_validation_accepts([arg for arg in command if arg != "backend/tests"], canonical),
+            "equals_form_basetemp_rejected": not _command_validation_accepts(command[:-2] + ["--basetemp=" + basetemp_value], canonical),
+            "temp_override_argument_rejected": not _command_validation_accepts(command + ["PYTEST_DEBUG_TEMPROOT=" + str(root)], canonical),
+            "environment_variable_temp_override_not_used": "environ" not in extracted_backend_pytest_command.__code__.co_names,
+            "extracted_pytest_command_targets_backend_tests_once": command.count("backend/tests") == 1,
+            "expected_479_pass_guard_retained": EXPECTED_BACKEND_TESTS == 479,
+            "return_code_0_accepted": subprocess_return_code_is_success(0),
+            "return_code_1_rejected": not subprocess_return_code_is_success(1),
+            "return_code_2_rejected": not subprocess_return_code_is_success(2),
+            "nonzero_pytest_return_code_remains_fatal": "subprocess_return_code_is_success" in run_checked.__code__.co_names if "run_checked" in globals() else True,
+            "output_emission_failure_cannot_bypass_return_code": safe_output_emission_self_check()["output_emission_failure_cannot_bypass_return_code"] and not subprocess_return_code_is_success(1),
+            "source_tree_pytest_command_remains_unchanged": source_command == [sys.executable, "-m", "pytest", "-q", "backend/tests"] and "--basetemp" not in source_command,
+            "dirty_corrective_mode_cannot_reach_release_zip": not release_zip_reachability("DIRTY_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_CANDIDATE"),
+            "clean_not_pushed_corrective_mode_cannot_reach_release_zip": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_NOT_PUSHED"),
+            "clean_pushed_corrective_mode_cannot_reach_release_zip": not release_zip_reachability("CLEAN_COMMITTED_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE"),
+            "current_active_stage4_retry_authorization_false": not docs_have_stage4_retry_authorization(),
+            "invocation_3_authorization_false": not invocation_3_is_authorized(current_docs_text()),
+            "consumed_retry_history_contract_present": consumed_retry_history_contract_is_present_in_docs(),
+            "command_uses_absolute_isolated_basetemp": basetemp_value in command,
+        }
+        return checks
 
 
 def release_zip_reachability(mode: str) -> bool:
