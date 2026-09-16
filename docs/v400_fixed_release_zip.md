@@ -4,7 +4,7 @@
 
 ```text
 Status:
-CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+CONTROL_D_STAGE4_INVOCATION_3_AUTHORIZATION_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / VERSION_INDEPENDENT_HEADING_FAMILY_GUARD_VERIFIED / RUNTIME_EXACT_AUTHORIZATION_GUARD_VERIFIED / R4_LINEAGE_GUARD_VERIFIED / POST_SOURCE_MATRIX_0_TO_5_VERIFIED / UTF8_LF_ONLY / CLEAN_NOT_PUSHED_AND_PUSHED_DISPATCH_SIMULATED / INVOCATION_3_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -331,10 +331,10 @@ review. The current dirty R5 candidate does not stage, commit, push, invoke
 `--release-zip`, rerun the builder, run another Control D Stage 2 source-tree
 preflight, build or replace a fixed ZIP, package, tag, create a GitHub Release,
 publish, authorize Control E, or clean release artifacts.
-## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
-Current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
-Retry authorization-sync corrective commit: 3eb5c950759ade484b094bd15c9db726a73068aa
+## Stage 4 Invocation 3 Authorization Sync Corrective R3 Current Section
+Current checkpoint: DRC v4.0.0 Control D Stage 4 Invocation 3 Authorization Sync Corrective R3
+Current implementation state: CONTROL_D_STAGE4_INVOCATION_3_AUTHORIZATION_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / VERSION_INDEPENDENT_HEADING_FAMILY_GUARD_VERIFIED / RUNTIME_EXACT_AUTHORIZATION_GUARD_VERIFIED / R4_LINEAGE_GUARD_VERIFIED / POST_SOURCE_MATRIX_0_TO_5_VERIFIED / UTF8_LF_ONLY / CLEAN_NOT_PUSHED_AND_PUSHED_DISPATCH_SIMULATED / INVOCATION_3_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Basetemp isolation corrective commit: 8b745b75dfefc359c32f2c86e9b58c356ece55ac
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
 Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -343,12 +343,16 @@ Stage 4 invocation 2 Backend result: 272 passed / 207 setup errors
 Stage 4 invocation 2 first conclusive failure: PermissionError / WinError 5 on pytest default shared user TEMP root
 Stage 4 verification verdict: NOT_REACHED
 release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
-Stage 4 retry: CONSUMED / FAILED
+Historical Stage 4 retry: CONSUMED / FAILED
 Cumulative completed Stage 4 verifier invocations: 2
-Retry invocation count: 1
-Retry invocation budget remaining: 0
-Next authorized invocation number: NOT_AUTHORIZED
-Invocation 3 authorized: FALSE
+Historical retry invocation count: 1
+Historical retry budget remaining: 0
+Next authorized invocation number: 3
+Invocation 3 authorized: TRUE
+Invocation 3 completed invocation count: 0
+Invocation 3 explicit authorization budget: 1
+Invocation 3 explicit authorization budget remaining: 1
+Invocation 3 execution eligibility: REQUIRES_CLEAN_COMMITTED_PUSHED_AUTHORIZATION_SYNC
 Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230
@@ -358,6 +362,7 @@ fixed ZIP UTC timestamp: 2026-09-08 08:35:05
 Control E: NOT_AUTHORIZED
 DRC v4.0.0: NOT_RELEASED
 Historical consumed Control D Stage 4 retry authorization: AUTHORIZED_FOR_EXACTLY_ONE_SAME_ARTIFACT_RETRY
+Invocation 3 authorization: AUTHORIZED_FOR_EXACTLY_ONE_SAME_ARTIFACT_INVOCATION_3
 
 ## Stage 4 Retry Authorization Notes
 

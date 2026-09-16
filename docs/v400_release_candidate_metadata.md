@@ -129,10 +129,10 @@ artifact was created and its tuple is recorded as
 `46f5af49106c6ecc0d478a425cf709cf511da1be`. Control D Stage 4 authorization-sync is committed, pushed, reviewed, accepted, and closed at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was executed exactly once and failed before verdict with failure class `NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE`. Retry is not authorized or run. Control E is not authorized, tag/publication are not run, and DRC v4.0.0 is not released.
 the exact artifact was created and its tuple is recorded
 release-ZIP verifier remains unreachable from the current corrective modes
-## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
-Current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
-Retry authorization-sync corrective commit: 3eb5c950759ade484b094bd15c9db726a73068aa
+## Stage 4 Invocation 3 Authorization Sync Corrective R3 Current Section
+Current checkpoint: DRC v4.0.0 Control D Stage 4 Invocation 3 Authorization Sync Corrective R3
+Current implementation state: CONTROL_D_STAGE4_INVOCATION_3_AUTHORIZATION_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / VERSION_INDEPENDENT_HEADING_FAMILY_GUARD_VERIFIED / RUNTIME_EXACT_AUTHORIZATION_GUARD_VERIFIED / R4_LINEAGE_GUARD_VERIFIED / POST_SOURCE_MATRIX_0_TO_5_VERIFIED / UTF8_LF_ONLY / CLEAN_NOT_PUSHED_AND_PUSHED_DISPATCH_SIMULATED / INVOCATION_3_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Basetemp isolation corrective commit: 8b745b75dfefc359c32f2c86e9b58c356ece55ac
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
 Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -141,12 +141,16 @@ Stage 4 invocation 2 Backend result: 272 passed / 207 setup errors
 Stage 4 invocation 2 first conclusive failure: PermissionError / WinError 5 on pytest default shared user TEMP root
 Stage 4 verification verdict: NOT_REACHED
 release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
-Stage 4 retry: CONSUMED / FAILED
+Historical Stage 4 retry: CONSUMED / FAILED
 Cumulative completed Stage 4 verifier invocations: 2
-Retry invocation count: 1
-Retry invocation budget remaining: 0
-Next authorized invocation number: NOT_AUTHORIZED
-Invocation 3 authorized: FALSE
+Historical retry invocation count: 1
+Historical retry budget remaining: 0
+Next authorized invocation number: 3
+Invocation 3 authorized: TRUE
+Invocation 3 completed invocation count: 0
+Invocation 3 explicit authorization budget: 1
+Invocation 3 explicit authorization budget remaining: 1
+Invocation 3 execution eligibility: REQUIRES_CLEAN_COMMITTED_PUSHED_AUTHORIZATION_SYNC
 Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230

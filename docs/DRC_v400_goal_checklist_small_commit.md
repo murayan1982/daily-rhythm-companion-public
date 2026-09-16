@@ -1,6 +1,6 @@
 # DRC v4.0.0 Goal Checklist
 
-Status: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Status: DRC v4.0.0 Control D Stage 4 Invocation 3 Authorization Sync Corrective R3 CONTROL_D_STAGE4_INVOCATION_3_AUTHORIZATION_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / VERSION_INDEPENDENT_HEADING_FAMILY_GUARD_VERIFIED / RUNTIME_EXACT_AUTHORIZATION_GUARD_VERIFIED / R4_LINEAGE_GUARD_VERIFIED / POST_SOURCE_MATRIX_0_TO_5_VERIFIED / UTF8_LF_ONLY / CLEAN_NOT_PUSHED_AND_PUSHED_DISPATCH_SIMULATED / INVOCATION_3_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 ## Current State
 
@@ -8,14 +8,14 @@ Status: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Correcti
 current released version: v3.0.0 RELEASED / ACCEPTED
 current released metadata: Backend 3.0.0 / Flutter 3.0.0+4 RELEASED
 current v4 candidate metadata: Backend 4.0.0 / Flutter 4.0.0+5 NOT_RELEASED
-current small commit: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
-current implementation: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
+current small commit: DRC v4.0.0 Control D Stage 4 Invocation 3 Authorization Sync Corrective R3
+current implementation: DRC v4.0.0 Control D Stage 4 Invocation 3 Authorization Sync Corrective R3
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 1 implementation commit: a204f6b11d25baeea67b7b7be8860c9a4f9ea945
 Control D Stage 1 surface: 13 files / M10 A3 D0
-current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+current implementation state: CONTROL_D_STAGE4_INVOCATION_3_AUTHORIZATION_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / VERSION_INDEPENDENT_HEADING_FAMILY_GUARD_VERIFIED / RUNTIME_EXACT_AUTHORIZATION_GUARD_VERIFIED / R4_LINEAGE_GUARD_VERIFIED / POST_SOURCE_MATRIX_0_TO_5_VERIFIED / UTF8_LF_ONLY / CLEAN_NOT_PUSHED_AND_PUSHED_DISPATCH_SIMULATED / INVOCATION_3_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 current implementation commit: none
 current implementation commit / push: NOT_AUTHORIZED
 DRC-V4-1 aggregate decision: PARTIAL_READY
@@ -104,7 +104,7 @@ ZIP structural/version checks reached before failure: PASS
 extracted compileall: PASS
 extracted Backend pytest invocation 1: PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED; invocation 2: 272 passed / 207 setup errors / NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE
 fixed ZIP preservation: PRESERVED
-Stage 4 retry: CONSUMED / FAILED
+Historical Stage 4 retry: CONSUMED / FAILED
 Control E: NOT_AUTHORIZED
 fixed ZIP builder invocation count: 1
 fixed ZIP: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
@@ -613,10 +613,10 @@ Dedicated DRC-V4-6 Control A gate:
 
 
 Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Stage 4 invocation 2 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED with NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE after Backend pytest reported 272 passed / 207 setup errors from PermissionError / WinError 5 on pytest default shared user TEMP root. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is CONSUMED / FAILED, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED.
-## Stage 4 Verifier Pytest Basetemp Isolation Corrective R4 Current Section
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Verifier Pytest Basetemp Isolation Corrective R4
-Current implementation state: CONTROL_D_STAGE4_VERIFIER_PYTEST_BASETEMP_ISOLATION_CORRECTIVE_R4 / IMPLEMENTED / STATIC_VERIFIED / DIAGNOSTIC_STATE_CORRECTED / POST_SOURCE_MATRIX_0_TO_4_VERIFIED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / INVOCATION_3_NOT_AUTHORIZED / RETRY_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
-Retry authorization-sync corrective commit: 3eb5c950759ade484b094bd15c9db726a73068aa
+## Stage 4 Invocation 3 Authorization Sync Corrective R3 Current Section
+Current checkpoint: DRC v4.0.0 Control D Stage 4 Invocation 3 Authorization Sync Corrective R3
+Current implementation state: CONTROL_D_STAGE4_INVOCATION_3_AUTHORIZATION_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / VERSION_INDEPENDENT_HEADING_FAMILY_GUARD_VERIFIED / RUNTIME_EXACT_AUTHORIZATION_GUARD_VERIFIED / R4_LINEAGE_GUARD_VERIFIED / POST_SOURCE_MATRIX_0_TO_5_VERIFIED / UTF8_LF_ONLY / CLEAN_NOT_PUSHED_AND_PUSHED_DISPATCH_SIMULATED / INVOCATION_3_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Basetemp isolation corrective commit: 8b745b75dfefc359c32f2c86e9b58c356ece55ac
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
 Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -625,12 +625,16 @@ Stage 4 invocation 2 Backend result: 272 passed / 207 setup errors
 Stage 4 invocation 2 first conclusive failure: PermissionError / WinError 5 on pytest default shared user TEMP root
 Stage 4 verification verdict: NOT_REACHED
 release-package scanner known fixtures: EXACT_EXPECTED_FINDINGS / ACCEPTED
-Stage 4 retry: CONSUMED / FAILED
+Historical Stage 4 retry: CONSUMED / FAILED
 Cumulative completed Stage 4 verifier invocations: 2
-Retry invocation count: 1
-Retry invocation budget remaining: 0
-Next authorized invocation number: NOT_AUTHORIZED
-Invocation 3 authorized: FALSE
+Historical retry invocation count: 1
+Historical retry budget remaining: 0
+Next authorized invocation number: 3
+Invocation 3 authorized: TRUE
+Invocation 3 completed invocation count: 0
+Invocation 3 explicit authorization budget: 1
+Invocation 3 explicit authorization budget remaining: 1
+Invocation 3 execution eligibility: REQUIRES_CLEAN_COMMITTED_PUSHED_AUTHORIZATION_SYNC
 Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230
