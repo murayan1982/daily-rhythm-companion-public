@@ -61,10 +61,10 @@ v3.0.0 status: RELEASED / ACCEPTED
 completed maintenance line: v2.0.x COMPLETED / ACCEPTED
 completed development line: v2.1.0 COMPLETED / ACCEPTED
 current parent phase: RT-9 COMPLETED / ACCEPTED
-current small commit: DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
-current implementation step: DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
-current implementation: DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
-current implementation state: CONTROL_D_STAGE4_INVOCATION_3_PASS_RESULT_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / ACTUAL_CONSUMED_GUARD_PROBE_VERIFIED / NEGATIVE_CONTROL_FALSE_POSITIVE_CLOSED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / POST_SOURCE_MATRIX_0_TO_6_VERIFIED / INVOCATION_4_NOT_AUTHORIZED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+current small commit: DRC v4.0.0 Control E Release Authorization Sync Corrective R6
+current implementation step: DRC v4.0.0 Control E Release Authorization Sync Corrective R6
+current implementation: DRC v4.0.0 Control E Release Authorization Sync Corrective R6
+current implementation state: CONTROL_E_RELEASE_AUTHORIZATION_SYNC_CORRECTIVE_R6 / IMPLEMENTED / STATIC_VERIFIED / SCHEMA_SELFCHECK_FILESYSTEM_INDEPENDENT / RAW_TOKEN_EXACT_MATCH_PRESERVED / ACTUAL_CONTRACT_PRECHECK_BEFORE_SCHEMA_VERIFIED / INVALID_CONTRACT_DOWNSTREAM_BLOCK_VERIFIED / MIDDLE_VERSION_SHADOW_HEADING_GUARD_PRESERVED / DEFAULT_RUNTIME_GUARD_CONNECTED / PUBLICATION_REACHABILITY_RUNTIME_VERIFIED / POST_SOURCE_MATRIX_0_TO_7_VERIFIED / HANDOFF_SELF_HASH_VERIFIED / CONTROL_E_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: 4cae15573f3332cbc476557461babdfe2eb3c0bf
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -162,7 +162,7 @@ extracted compileall: PASS
 extracted Backend pytest invocation 1: PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED; invocation 2: 272 passed / 207 setup errors / NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE
 fixed ZIP preservation: PRESERVED
 Historical Stage 4 retry: CONSUMED / FAILED
-Control E: NOT_AUTHORIZED / NOT_RUN
+Control E: AUTHORIZED / NOT_RUN
 fixed ZIP builder invocation count: 1
 fixed ZIP: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 annotated tag: NOT_CREATED
@@ -4390,11 +4390,12 @@ verifier, rebuild or replace the fixed ZIP, modify the annotated tag or GitHub
 Release, upload another asset, repeat provider/network/microphone/STT/TTS/VTS
 execution, commit, or push.
 <!-- RT-9E-FINAL-DOCS-SYNC:END -->
-## Stage 4 Invocation 3 Pass Result Sync Corrective R3 Current Section
+## Control E Release Authorization Sync Corrective R6 Current Section
 
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
-Current implementation state: CONTROL_D_STAGE4_INVOCATION_3_PASS_RESULT_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / ACTUAL_CONSUMED_GUARD_PROBE_VERIFIED / NEGATIVE_CONTROL_FALSE_POSITIVE_CLOSED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / POST_SOURCE_MATRIX_0_TO_6_VERIFIED / INVOCATION_4_NOT_AUTHORIZED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
-Authorization-sync commit: f1de9f527c8a01d7c75f7a8cfef274cf32ac74ef
+Current checkpoint: DRC v4.0.0 Control E Release Authorization Sync Corrective R6
+Current implementation state: CONTROL_E_RELEASE_AUTHORIZATION_SYNC_CORRECTIVE_R6 / IMPLEMENTED / STATIC_VERIFIED / SCHEMA_SELFCHECK_FILESYSTEM_INDEPENDENT / RAW_TOKEN_EXACT_MATCH_PRESERVED / ACTUAL_CONTRACT_PRECHECK_BEFORE_SCHEMA_VERIFIED / INVALID_CONTRACT_DOWNSTREAM_BLOCK_VERIFIED / MIDDLE_VERSION_SHADOW_HEADING_GUARD_PRESERVED / DEFAULT_RUNTIME_GUARD_CONNECTED / PUBLICATION_REACHABILITY_RUNTIME_VERIFIED / POST_SOURCE_MATRIX_0_TO_7_VERIFIED / HANDOFF_SELF_HASH_VERIFIED / CONTROL_E_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Control D Stage 4: COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Control D Stage 4 result-sync commit: 6aaf35e73df50cf5f570373a0b97da4290cc4e4e
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
 Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -4418,14 +4419,21 @@ Historical Stage 4 retry: CONSUMED / FAILED
 Cumulative completed Stage 4 verifier invocations: 3
 Historical retry invocation count: 1
 Historical retry budget remaining: 0
+Next authorized invocation number: NOT_AUTHORIZED
 Invocation 3 completed invocation count: 1
 Invocation 3 explicit authorization budget: 1
 Invocation 3 explicit authorization budget remaining: 0
 Invocation 3 authorization state: CONSUMED
-Next authorized invocation number: NOT_AUTHORIZED
 Additional Stage 4 invocation authorized: FALSE
 Stage 4 release-ZIP reachability: FALSE
-Control D Stage 4: COMPLETED / PASS / ACCEPTED
+Control E: AUTHORIZED / NOT_RUN
+Control E authorized: TRUE
+Control E execution count: 0
+Control E explicit authorization budget: 1
+Control E explicit authorization budget remaining: 1
+Next authorized action: CREATE_DRC_V4_0_0_ANNOTATED_TAG_AND_GITHUB_RELEASE_FOR_FIXED_ZIP
+Control E execution eligibility: REQUIRES_CLEAN_COMMITTED_PUSHED_CONTROL_E_RELEASE_AUTHORIZATION_SYNC
+Fixed ZIP authorized publication artifact: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230
@@ -4433,12 +4441,11 @@ fixed ZIP SHA-256: F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49
 fixed ZIP source HEAD: 46f5af49106c6ecc0d478a425cf709cf511da1be
 fixed ZIP UTC timestamp: 2026-09-08 08:35:05
 fixed ZIP: PRESERVED / BYTE_IDENTICAL
-Control E: NOT_AUTHORIZED
-DRC v4.0.0: NOT_RELEASED
 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
+DRC v4.0.0: NOT_RELEASED
 ## Stage 4 Retry Authorization Notes
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Invocation 2 consumed the complete retry budget. Automatic retry is forbidden. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E is authorized for exactly one not-run publication only after this authorization-sync is clean, committed, and pushed. Tag, publication, and GitHub Release remain not created. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.

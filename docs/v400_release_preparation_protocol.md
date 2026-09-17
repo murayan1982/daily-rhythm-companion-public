@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
+DRC v4.0.0 Control E Release Authorization Sync Corrective R6
 
 Current small commit:
-DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
+DRC v4.0.0 Control E Release Authorization Sync Corrective R6
 
 Current implementation:
-DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
+DRC v4.0.0 Control E Release Authorization Sync Corrective R6
 
 Current implementation state:
-CONTROL_D_STAGE4_INVOCATION_3_PASS_RESULT_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / ACTUAL_CONSUMED_GUARD_PROBE_VERIFIED / NEGATIVE_CONTROL_FALSE_POSITIVE_CLOSED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / POST_SOURCE_MATRIX_0_TO_6_VERIFIED / INVOCATION_4_NOT_AUTHORIZED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+CONTROL_E_RELEASE_AUTHORIZATION_SYNC_CORRECTIVE_R6 / IMPLEMENTED / STATIC_VERIFIED / SCHEMA_SELFCHECK_FILESYSTEM_INDEPENDENT / RAW_TOKEN_EXACT_MATCH_PRESERVED / ACTUAL_CONTRACT_PRECHECK_BEFORE_SCHEMA_VERIFIED / INVALID_CONTRACT_DOWNSTREAM_BLOCK_VERIFIED / MIDDLE_VERSION_SHADOW_HEADING_GUARD_PRESERVED / DEFAULT_RUNTIME_GUARD_CONNECTED / PUBLICATION_REACHABILITY_RUNTIME_VERIFIED / POST_SOURCE_MATRIX_0_TO_7_VERIFIED / HANDOFF_SELF_HASH_VERIFIED / CONTROL_E_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -206,7 +206,7 @@ Historical retry budget remaining:
 0
 
 Control E:
-NOT_AUTHORIZED
+AUTHORIZED / NOT_RUN
 
 fixed ZIP builder invocation count:
 1
@@ -259,13 +259,13 @@ The release-package scanner findings were the exact accepted source-matched
 fixtures. ZIP structure/version checks passed, and extracted compileall passed.
 The extracted Backend pytest process completed, but its result/count was not
 evaluated because output emission raised `UnicodeEncodeError`. The Stage 4
-conclusive verdict was not reached. The fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED, Control E is `NOT_AUTHORIZED`, and DRC
+conclusive verdict was not reached. The fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED, Control E is authorized for exactly one not-run publication, and DRC
 v4.0.0 remains `NOT_RELEASED`.
 
 The accepted Stage 2 source preflight preserved the bounded release scope:
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
 production unified real STT -> streaming LLM -> TTS -> motion runtime.
-Current guard statements: Control D Stage 4 authorization-sync completed and was committed, pushed, reviewed, and accepted. Stage 4 invocation 1 was executed exactly once and failed. failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. scanner findings were the exact accepted source-matched fixtures. extracted Backend pytest process completed, but its result/count was not evaluated. Stage 4 invocation 2 was executed exactly once and failed. pytest default shared user TEMP root. 272 passed / 207 setup errors. Stage 4 conclusive verdict was not reached. fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED. Invocation 3 is not authorized. Control E is NOT_AUTHORIZED. DRC v4.0.0 remains NOT_RELEASED. bounded release scope: bounded coexistence adoption. does not claim that Framework v6.0.0 provides a production unified real STT -> streaming LLM -> TTS -> motion runtime.
+Current guard statements: Control D Stage 4 authorization-sync completed and was committed, pushed, reviewed, and accepted. Stage 4 invocation 1 was executed exactly once and failed. failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. scanner findings were the exact accepted source-matched fixtures. extracted Backend pytest process completed, but its result/count was not evaluated. Stage 4 invocation 2 was executed exactly once and failed. pytest default shared user TEMP root. 272 passed / 207 setup errors. Stage 4 conclusive verdict was not reached. fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED. Invocation 3 authorization is consumed. Control E is authorized for exactly one not-run publication. DRC v4.0.0 remains NOT_RELEASED. bounded release scope: bounded coexistence adoption. does not claim that Framework v6.0.0 provides a production unified real STT -> streaming LLM -> TTS -> motion runtime.
 
 ## Accepted Starting State
 
@@ -714,7 +714,7 @@ and source HEAD `46f5af49106c6ecc0d478a425cf709cf511da1be`. The Stage 3
 one-time build authorization token is consumed; current documentation count is
 0 and builder rerun is forbidden. The release ZIP verifier remains unreachable
 until Stage 4 authorization-sync is clean, committed, and pushed. Stage 4
-same-artifact verification itself has not run. Control E is not authorized.
+same-artifact verification has completed and passed. Control E is authorized for exactly one not-run publication.
 
 Mode-specific ordering is part of the fixed ZIP tooling contract. Default mode
 is limited to Stage 2 accepted static/current-state checks, consumed Stage 2
@@ -750,7 +750,7 @@ and ZIP/source mismatch is rejected. The checker's mode dispatcher and
 deterministic self-checks use the same mode-policy contract.
 
 
-Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Stage 4 invocation 2 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED with NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE after Backend pytest reported 272 passed / 207 setup errors from PermissionError / WinError 5 on pytest default shared user TEMP root. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is CONSUMED / FAILED, Control E is NOT_AUTHORIZED, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. The exact artifact was created and its tuple is recorded; fixed ZIP exact-one artifact remains preserved. Stage 3 one-time build authorization token is consumed; current documentation count is 0. The release-ZIP verifier remains unreachable from the current corrective modes; Stage 4 invocation 1 executed and failed before verdict, and historical retry budget is consumed and Invocation 3 authorization is the R1 static candidate only. Control E is not authorized, tag/publication are not run, and DRC v4.0.0 is not released.
+Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Stage 4 invocation 2 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED with NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE after Backend pytest reported 272 passed / 207 setup errors from PermissionError / WinError 5 on pytest default shared user TEMP root. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is CONSUMED / FAILED, Control E is authorized for exactly one not-run publication, tag/publication are NOT_RUN, and DRC v4.0.0 is NOT_RELEASED. The exact artifact was created and its tuple is recorded; fixed ZIP exact-one artifact remains preserved. Stage 3 one-time build authorization token is consumed; current documentation count is 0. The release-ZIP verifier remains unreachable from the current corrective modes; Stage 4 invocation 1 executed and failed before verdict, and historical retry budget is consumed and Invocation 3 authorization is consumed. Control E is authorized for exactly one not-run publication, tag/publication are not run, and DRC v4.0.0 is not released.
 
 ## Future Control E
 
@@ -762,7 +762,7 @@ sync. Control E owns tag, GitHub Release, and publication.
 
 ```text
 Control E:
-NOT_AUTHORIZED
+AUTHORIZED / NOT_RUN
 
 annotated tag:
 NOT_CREATED
@@ -893,7 +893,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-CONTROL_D_STAGE4_INVOCATION_3_PASS_RESULT_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / ACTUAL_CONSUMED_GUARD_PROBE_VERIFIED / NEGATIVE_CONTROL_FALSE_POSITIVE_CLOSED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / POST_SOURCE_MATRIX_0_TO_6_VERIFIED / INVOCATION_4_NOT_AUTHORIZED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+CONTROL_E_RELEASE_AUTHORIZATION_SYNC_CORRECTIVE_R6 / IMPLEMENTED / STATIC_VERIFIED / SCHEMA_SELFCHECK_FILESYSTEM_INDEPENDENT / RAW_TOKEN_EXACT_MATCH_PRESERVED / ACTUAL_CONTRACT_PRECHECK_BEFORE_SCHEMA_VERIFIED / INVALID_CONTRACT_DOWNSTREAM_BLOCK_VERIFIED / MIDDLE_VERSION_SHADOW_HEADING_GUARD_PRESERVED / DEFAULT_RUNTIME_GUARD_CONNECTED / PUBLICATION_REACHABILITY_RUNTIME_VERIFIED / POST_SOURCE_MATRIX_0_TO_7_VERIFIED / HANDOFF_SELF_HASH_VERIFIED / CONTROL_E_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control B:
 CLOSED
@@ -1033,11 +1033,12 @@ NOT_AUTHORIZED / NOT_RUN
 publication:
 NOT_AUTHORIZED / NOT_RUN
 ```
-## Stage 4 Invocation 3 Pass Result Sync Corrective R3 Current Section
+## Control E Release Authorization Sync Corrective R6 Current Section
 
-Current checkpoint: DRC v4.0.0 Control D Stage 4 Invocation 3 Pass Result Sync Corrective R3
-Current implementation state: CONTROL_D_STAGE4_INVOCATION_3_PASS_RESULT_SYNC_CORRECTIVE_R3 / IMPLEMENTED / STATIC_VERIFIED / ACTUAL_CONSUMED_GUARD_PROBE_VERIFIED / NEGATIVE_CONTROL_FALSE_POSITIVE_CLOSED / SINGLE_SOURCE_RUNTIME_HELPERS_VERIFIED / POST_SOURCE_MATRIX_0_TO_6_VERIFIED / INVOCATION_4_NOT_AUTHORIZED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
-Authorization-sync commit: f1de9f527c8a01d7c75f7a8cfef274cf32ac74ef
+Current checkpoint: DRC v4.0.0 Control E Release Authorization Sync Corrective R6
+Current implementation state: CONTROL_E_RELEASE_AUTHORIZATION_SYNC_CORRECTIVE_R6 / IMPLEMENTED / STATIC_VERIFIED / SCHEMA_SELFCHECK_FILESYSTEM_INDEPENDENT / RAW_TOKEN_EXACT_MATCH_PRESERVED / ACTUAL_CONTRACT_PRECHECK_BEFORE_SCHEMA_VERIFIED / INVALID_CONTRACT_DOWNSTREAM_BLOCK_VERIFIED / MIDDLE_VERSION_SHADOW_HEADING_GUARD_PRESERVED / DEFAULT_RUNTIME_GUARD_CONNECTED / PUBLICATION_REACHABILITY_RUNTIME_VERIFIED / POST_SOURCE_MATRIX_0_TO_7_VERIFIED / HANDOFF_SELF_HASH_VERIFIED / CONTROL_E_NOT_RUN / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Control D Stage 4: COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Control D Stage 4 result-sync commit: 6aaf35e73df50cf5f570373a0b97da4290cc4e4e
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
 Stage 4 invocation 1 failure class: NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE
 Stage 4 invocation 2 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -1061,14 +1062,21 @@ Historical Stage 4 retry: CONSUMED / FAILED
 Cumulative completed Stage 4 verifier invocations: 3
 Historical retry invocation count: 1
 Historical retry budget remaining: 0
+Next authorized invocation number: NOT_AUTHORIZED
 Invocation 3 completed invocation count: 1
 Invocation 3 explicit authorization budget: 1
 Invocation 3 explicit authorization budget remaining: 0
 Invocation 3 authorization state: CONSUMED
-Next authorized invocation number: NOT_AUTHORIZED
 Additional Stage 4 invocation authorized: FALSE
 Stage 4 release-ZIP reachability: FALSE
-Control D Stage 4: COMPLETED / PASS / ACCEPTED
+Control E: AUTHORIZED / NOT_RUN
+Control E authorized: TRUE
+Control E execution count: 0
+Control E explicit authorization budget: 1
+Control E explicit authorization budget remaining: 1
+Next authorized action: CREATE_DRC_V4_0_0_ANNOTATED_TAG_AND_GITHUB_RELEASE_FOR_FIXED_ZIP
+Control E execution eligibility: REQUIRES_CLEAN_COMMITTED_PUSHED_CONTROL_E_RELEASE_AUTHORIZATION_SYNC
+Fixed ZIP authorized publication artifact: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 Builder invoked by verifier: FALSE
 fixed ZIP basename: DailyRhythmCompanion_v4.0.0_20260908_173440.zip
 fixed ZIP size: 3018230
@@ -1076,16 +1084,14 @@ fixed ZIP SHA-256: F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49
 fixed ZIP source HEAD: 46f5af49106c6ecc0d478a425cf709cf511da1be
 fixed ZIP UTC timestamp: 2026-09-08 08:35:05
 fixed ZIP: PRESERVED / BYTE_IDENTICAL
-Control E: NOT_AUTHORIZED
-DRC v4.0.0: NOT_RELEASED
 annotated tag: NOT_CREATED
 GitHub Release: NOT_CREATED
+DRC v4.0.0: NOT_RELEASED
 ## Stage 4 Retry Authorization Notes
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is inert while dirty, uncommitted, or not pushed. The release-ZIP verifier remains unreachable while dirty or not pushed. Invocation 2 consumed the complete retry budget. Automatic retry is forbidden. No third invocation is authorized. The builder remains forbidden. Tag, publication, GitHub Release, and Control E remain blocked. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
-
+The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E is authorized for exactly one not-run publication only after this authorization-sync is clean, committed, and pushed. Tag, publication, and GitHub Release remain not created. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
 ## R1 Review Handoff
 
 Implementation handoff: exact M12 authorization-sync candidate updates current docs/checker diagnostics only; product source, builder, fixed ZIP, tag, publication, and Control E remain unchanged and not authorized.
@@ -1093,3 +1099,6 @@ Implementation handoff: exact M12 authorization-sync candidate updates current d
 Static verification handoff: Python syntax compile, fixed-ZIP default static checker, and no-build preflight static checker are the review inputs; Invocation 3, `--release-zip`, fixed-ZIP Backend pytest, builder, stage, commit, push, amend, tag, GitHub Release, and publication are not run.
 
 Dispatch handoff: dirty and clean-not-pushed Invocation 3 authorization-sync states keep release_zip_reachability FALSE; clean+pushed Invocation 3 authorization-sync makes release_zip_reachability TRUE for later separately reviewed execution eligibility only.
+
+## Control E Release Authorization Token
+Control E release publication authorization: AUTHORIZED_FOR_EXACTLY_ONE_CONTROL_E_RELEASE_PUBLICATION
