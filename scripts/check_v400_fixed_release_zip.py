@@ -48,6 +48,7 @@ EXPECTED_FLUTTER_TESTS = 570
 EXPECTED_TAG = "DRC_v4.0.0"
 EXPECTED_TAG_OBJECT = "67600ee31c951efe34ab1c851f71c375b83c760b"
 EXPECTED_TAG_TARGET = "4b2920a5225fd5a6141ecf8ff4125615e2ec0ef2"
+CONTROL_E_R2_COMMIT = "c2b7ab96685025bcceebe069fb523645d3f12901"
 OFFICIAL_ORIGIN = re.compile(
     r"^(?:https://github\.com/|git@github\.com:)"
     r"murayan1982/daily-rhythm-companion-public(?:\.git)?$"
@@ -269,7 +270,7 @@ V3_CONTAMINATION_PHRASES = (
     "fixed ZIP builder invocation count: 1",
 )
 TASKLIST_CURRENT_IMPLEMENTATION_STEP = (
-    "DRC v4.0.0 Control E Release Publication Result Sync Corrective R2"
+    "DRC v4.0.0 Control E Release Publication Result Sync Corrective R5"
 )
 STAGE2_HISTORY_EVIDENCE_DOCS = (
     "README.md",
@@ -295,7 +296,7 @@ CURRENT_DOCS = (
     "docs/v400_release_record.md",
     "docs/v400_fixed_release_zip.md",
 )
-STAGE4_BASETEMP_CURRENT_HEADING = "## Control E Release Publication Result Sync Corrective R2 Current Section"
+STAGE4_BASETEMP_CURRENT_HEADING = "## Control E Release Publication Result Sync Corrective R5 Current Section"
 STAGE4_BASETEMP_HEADING_FAMILY_PREFIX = "controlereleasepublicationresultsync"
 LEGACY_CONTROL_E_HEADING_FAMILY_PREFIX = "controlereleaseauthorizationsync"
 STALE_STAGE4_BASETEMP_HEADING_FAMILY_PREFIX = "stage4verifierpytestbasetempisolationcorrective"
@@ -307,8 +308,8 @@ STAGE4_RETRY_TOKEN_DOCS = {
 STAGE4_RETRY_RETAINED_HEADING_FAMILY_CASE_COUNT = 28
 STAGE4_RETRY_R5_SUFFIX_FAMILY_CASE_COUNT = 10
 STAGE4_RETRY_CANONICAL_LINES = (
-    'Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R2',
-    'Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW',
+    'Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R5',
+    'Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW',
     'Control D Stage 4: COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED',
     'Control D Stage 4 result-sync commit: 6aaf35e73df50cf5f570373a0b97da4290cc4e4e',
     'Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED',
@@ -1615,6 +1616,90 @@ def historical_v3_contamination_self_check() -> dict[str, bool]:
     }
 
 
+R3_V3_HISTORY_DOCS = ("README.md", "roadmap.md", "tasklist.md", "scripts/README.md")
+R3_CURRENT_TERMINAL_NOTE = "The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed. The annotated tag was created, pushed, and verified. The GitHub Release was published and verified. Additional publication is not authorized. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved."
+R3_STALE_TERMINAL_NOTE = "Tag, publication, and GitHub Release remain not created."
+R3_RT9B_LINES = (
+    "v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED",
+    "v3.0.0 release record: PREPARED / NOT_RELEASED",
+    "DRC_v3.0.0 annotated tag: NOT_CREATED",
+    "GitHub Release: NOT_CREATED",
+)
+R3_RT9C_LINES = ("DRC_v3.0.0 annotated tag: NOT_CREATED", "GitHub Release: NOT_CREATED")
+
+
+def exact_line_count(text: str, line: str) -> int:
+    return sum(1 for candidate in norm(text).splitlines() if candidate == line)
+
+
+def text_has_exact_line(text: str, line: str) -> bool:
+    return exact_line_count(text, line) == 1
+
+
+def protected_line_family_is_exact(text: str, canonical_line: str) -> bool:
+    family = [line for line in norm(text).splitlines() if canonical_line in line]
+    return family == [canonical_line]
+
+
+def protected_line_family_has_no_shadow(text: str, canonical_line: str) -> bool:
+    return all(line == canonical_line for line in norm(text).splitlines() if canonical_line in line)
+
+
+def control_e_r3_historical_and_terminal_contract(doc_texts: dict[str, str]) -> bool:
+    if set(doc_texts) != set(CURRENT_DOCS):
+        return False
+    for relative in R3_V3_HISTORY_DOCS:
+        text = norm(doc_texts[relative])
+        if not all(protected_line_family_has_no_shadow(text, line) for line in set((*R3_RT9B_LINES, *R3_RT9C_LINES))):
+            return False
+        b = extract_bounded_section(text, "<!-- RT-9B-RELEASE-READINESS:BEGIN -->", "<!-- RT-9B-RELEASE-READINESS:END -->")
+        c = extract_bounded_section(text, "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->", "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->")
+        if b is None or c is None or not all(protected_line_family_is_exact(b, line) for line in R3_RT9B_LINES) or not all(protected_line_family_is_exact(c, line) for line in R3_RT9C_LINES):
+            return False
+        bounded = b + "\n" + c
+        if any(value in bounded for value in ("DRC_v4.0.0", "DailyRhythmCompanion_v4.0.0", "RELEASED / PUBLISHED / VERIFIED", "PUBLISHED / NON_DRAFT / NON_PRERELEASE")):
+            return False
+    return all(protected_line_family_is_exact(text, R3_CURRENT_TERMINAL_NOTE) and not text_has_exact_line(text, R3_STALE_TERMINAL_NOTE) for text in doc_texts.values())
+
+
+def control_e_r3_historical_and_terminal_self_check() -> dict[str, bool]:
+    docs = control_e_canonical_doc_fixture()
+    history = "\n".join(("<!-- RT-9B-RELEASE-READINESS:BEGIN -->", *R3_RT9B_LINES, "<!-- RT-9B-RELEASE-READINESS:END -->", "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->", *R3_RT9C_LINES, "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->"))
+    docs = dict(docs)
+    first = R3_V3_HISTORY_DOCS[0]
+    mutations = {
+        "tag_suffix_extra": docs[first].replace("DRC_v3.0.0 annotated tag: NOT_CREATED", "DRC_v3.0.0 annotated tag: NOT_CREATED_EXTRA", 1),
+        "tag_trailing_extra": docs[first].replace("DRC_v3.0.0 annotated tag: NOT_CREATED", "DRC_v3.0.0 annotated tag: NOT_CREATED extra", 1),
+        "release_suffix_extra": docs[first].replace("GitHub Release: NOT_CREATED", "GitHub Release: NOT_CREATED_EXTRA", 1),
+        "release_trailing_extra": docs[first].replace("GitHub Release: NOT_CREATED", "GitHub Release: NOT_CREATED extra", 1),
+        "notes_suffix_extra": docs[first].replace("v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED", "v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED_EXTRA", 1),
+        "record_suffix_extra": docs[first].replace("v3.0.0 release record: PREPARED / NOT_RELEASED", "v3.0.0 release record: PREPARED / NOT_RELEASED_EXTRA", 1),
+        "terminal_suffix_extra": docs[first].replace(R3_CURRENT_TERMINAL_NOTE, R3_CURRENT_TERMINAL_NOTE + " EXTRA", 1),
+        "terminal_prefix": docs[first].replace(R3_CURRENT_TERMINAL_NOTE, "PREFIX " + R3_CURRENT_TERMINAL_NOTE, 1),
+        "terminal_bak": docs[first].replace(R3_CURRENT_TERMINAL_NOTE, R3_CURRENT_TERMINAL_NOTE + ".bak", 1),
+        "terminal_trailing": docs[first].replace(R3_CURRENT_TERMINAL_NOTE, R3_CURRENT_TERMINAL_NOTE + " trailing text", 1),
+        "duplicate": docs[first].replace(R3_RT9B_LINES[0], R3_RT9B_LINES[0] + "\n" + R3_RT9B_LINES[0], 1),
+        "duplicate_terminal": docs[first].replace(R3_CURRENT_TERMINAL_NOTE, R3_CURRENT_TERMINAL_NOTE + "\n" + R3_CURRENT_TERMINAL_NOTE, 1),
+        "case": docs[first].replace("NOT_CREATED", "not_created", 1),
+        "nfkc": docs[first].replace("NOT_CREATED", "NOT＿CREATED", 1),
+        "whitespace": docs[first].replace("NOT_CREATED", "NOT\tCREATED", 1),
+        "wrong_version": docs[first].replace("v3.0.0 release notes", "v4.0.0 release notes", 1),
+        "wrong_tag": docs[first].replace("DRC_v3.0.0 annotated tag: NOT_CREATED", "DRC_v4.0.0 annotated tag: NOT_CREATED", 1),
+        "v4_tuple": docs[first].replace("DRC_v3.0.0 annotated tag: NOT_CREATED", "DRC_v3.0.0 annotated tag: DRC_v4.0.0 / ANNOTATED / PUSHED", 1),
+        "stale_terminal": docs[first].replace(R3_CURRENT_TERMINAL_NOTE, R3_STALE_TERMINAL_NOTE, 1),
+
+        "additive_terminal_suffix_shadow": docs[first] + "\n" + R3_CURRENT_TERMINAL_NOTE + "_EXTRA\n",
+        "additive_terminal_prefix_shadow": docs[first] + "\nPREFIX " + R3_CURRENT_TERMINAL_NOTE + "\n",
+        "additive_terminal_trailing_shadow": docs[first] + "\n" + R3_CURRENT_TERMINAL_NOTE + " trailing text\n",
+    }
+    historical_lines = tuple(dict.fromkeys((*R3_RT9B_LINES, *R3_RT9C_LINES)))
+    for index, canonical_line in enumerate(historical_lines):
+        mutations[f"additive_historical_{index}_suffix_shadow"] = docs[first] + "\n" + canonical_line + "_EXTRA\n"
+        mutations[f"additive_historical_{index}_prefix_shadow"] = docs[first] + "\nPREFIX " + canonical_line + "\n"
+        mutations[f"additive_historical_{index}_trailing_shadow"] = docs[first] + "\n" + canonical_line + " trailing text\n"
+    rejected = {name: not control_e_r3_historical_and_terminal_contract({**docs, first: value}) for name, value in mutations.items()}
+    return {"canonical_accepted": control_e_r3_historical_and_terminal_contract(docs), "fixtures_distinct": len(mutations) == len(set(mutations.values())), **{name + "_rejected": value for name, value in rejected.items()}}
+
 def tasklist_current_implementation_step_is_current(text: str) -> bool:
     return re.search(
         rf"(?m)^current implementation step:\s*{re.escape(TASKLIST_CURRENT_IMPLEMENTATION_STEP)}$",
@@ -1798,7 +1883,7 @@ def protocol_current_status_is_correct(text: str) -> bool:
         return False
     expected_zip = f"release/{EXPECTED_FIXED_ZIP_BASENAME}"
     required = (
-        ("Current checkpoint", "DRC v4.0.0 Control E Release Publication Result Sync Corrective R2"),
+        ("Current checkpoint", "DRC v4.0.0 Control E Release Publication Result Sync Corrective R5"),
         ("Control D Stage 3", "BUILD_EXACTLY_ONCE / COMPLETED / PASS / ACCEPTED"),
         ("Control D Stage 4 authorization-sync", "COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED"),
         ("Stage 4 invocation 1", "EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED"),
@@ -1887,7 +1972,7 @@ def check_stage4_content_review_guards() -> None:
 def check_r5_document_correction_guards() -> None:
     protocol = read("docs/v400_release_preparation_protocol.md")
     fixed_zip_contract = read("docs/v400_fixed_release_zip.md")
-    if "Current checkpoint:\nDRC v4.0.0 Control E Release Publication Result Sync Corrective R2" not in protocol:
+    if "Current checkpoint:\nDRC v4.0.0 Control E Release Publication Result Sync Corrective R5" not in protocol:
         die("protocol current checkpoint is not Stage 4 verifier pytest basetemp isolation corrective R4")
     if "Control D Stage 2 authorization-sync" in protocol:
         die("stale Stage 2 authorization-sync checkpoint remains")
@@ -3188,7 +3273,7 @@ def determine_mode() -> str:
                 check_dirty_surface(entries, STAGE4_INVOCATION_3_PASS_RESULT_SYNC_MODIFIED)
                 check_expected_fixed_zip_tuple(expected_tag_published=head_includes_published_control_e_commit())
                 return "DIRTY_STAGE4_INVOCATION_3_PASS_RESULT_SYNC_CANDIDATE"
-            if head == '4b2920a5225fd5a6141ecf8ff4125615e2ec0ef2' and origin == head:
+            if head in {EXPECTED_TAG_TARGET, CONTROL_E_R2_COMMIT} and origin == head:
                 check_dirty_surface(entries, CONTROL_E_RELEASE_AUTHORIZATION_SYNC_MODIFIED)
                 check_expected_fixed_zip_tuple(expected_tag_published=True)
                 return 'DIRTY_CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_CANDIDATE'
@@ -3364,11 +3449,11 @@ def validate_control_e_release_publication_result_sync_committed_surface(
 
 
 def check_committed_control_e_release_publication_result_sync_surface(head: str = "HEAD") -> None:
-    commit_count = int(git_out("rev-list", "--count", f"{EXPECTED_TAG_TARGET}..{head}"))
-    lines = git_out("diff", "--name-status", f"{EXPECTED_TAG_TARGET}..{head}").splitlines()
+    commit_count = int(git_out("rev-list", "--count", f"{CONTROL_E_R2_COMMIT}..{head}"))
+    lines = git_out("diff", "--name-status", f"{CONTROL_E_R2_COMMIT}..{head}").splitlines()
     if not validate_control_e_release_publication_result_sync_committed_surface(commit_count, lines):
         raise AssertionError("Control E release publication result-sync committed surface must be exact one-commit M12 A0 D0")
-    diff_names = git_out("diff", "--name-only", f"{EXPECTED_TAG_TARGET}..{head}").splitlines()
+    diff_names = git_out("diff", "--name-only", f"{CONTROL_E_R2_COMMIT}..{head}").splitlines()
     protected_delta = [
         path for path in diff_names
         if path.split("/", 1)[0] in {"backend", "app", "release"} or path.startswith("build_")
@@ -3377,16 +3462,23 @@ def check_committed_control_e_release_publication_result_sync_surface(head: str 
         raise AssertionError("Control E release publication result-sync protected/product delta must be empty")
 
 
+def check_control_e_r2_accepted_baseline_surface() -> None:
+    subprocess.run(["git", "merge-base", "--is-ancestor", EXPECTED_TAG_TARGET, CONTROL_E_R2_COMMIT], cwd=ROOT, check=True)
+    count = int(git_out("rev-list", "--count", f"{EXPECTED_TAG_TARGET}..{CONTROL_E_R2_COMMIT}"))
+    lines = git_out("diff", "--name-status", f"{EXPECTED_TAG_TARGET}..{CONTROL_E_R2_COMMIT}").splitlines()
+    if not validate_exact_committed_surface(count, lines, CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_MODIFIED):
+        raise AssertionError("accepted Control E R2 baseline must be exact one-commit M12 A0 D0")
+
 def check_control_e_release_publication_result_sync_lineage(head: str = "HEAD") -> None:
-    subprocess.run(["git", "merge-base", "--is-ancestor", EXPECTED_TAG_TARGET, head], cwd=ROOT, check=True)
-    check_control_e_release_authorization_sync_lineage(EXPECTED_TAG_TARGET)
+    subprocess.run(["git", "merge-base", "--is-ancestor", CONTROL_E_R2_COMMIT, head], cwd=ROOT, check=True)
+    check_control_e_r2_accepted_baseline_surface()
     check_committed_control_e_release_publication_result_sync_surface(head)
 
 
 def control_e_release_publication_result_sync_origin_state(head: str, origin: str) -> str | None:
-    if origin == EXPECTED_TAG_TARGET and head != origin:
+    if origin == CONTROL_E_R2_COMMIT and head != origin:
         return "NOT_PUSHED"
-    if origin == head and head != EXPECTED_TAG_TARGET:
+    if origin == head and head != CONTROL_E_R2_COMMIT:
         return "PUSHED"
     return None
 
@@ -3431,6 +3523,7 @@ def control_e_doc_contract_is_exact(relative: str, text: str) -> bool:
     normalized = norm(text)
     if not control_e_current_section_is_exact(normalized):
         return False
+    normalized = stage4_retry_current_sections(normalized)[0]
     required = {
         "Control E: COMPLETED / PASS / ACCEPTED",
         "Control E authorization state: CONSUMED",
@@ -3461,15 +3554,85 @@ def control_e_doc_contract_is_exact(relative: str, text: str) -> bool:
         "Control E publication reachability: TRUE",
         "Stage 4 release-ZIP reachability: TRUE",
         "annotated tag: NOT_CREATED", "GitHub Release: NOT_CREATED", "DRC v4.0.0: NOT_RELEASED",
+        "DRC v4.0.0 remains not released", "v4.0.0 remains NOT_RELEASED",
+        "v4.0.0 remains `NOT_RELEASED`", "NOT_RELEASED_EXTRA",
     }
     return all(item in normalized for item in required) and not any(item in normalized for item in forbidden)
+
+
+def current_released_state_contract(doc_texts: dict[str, str]) -> bool:
+    if set(doc_texts) != set(CURRENT_DOCS):
+        return False
+    for relative, text in doc_texts.items():
+        normalized = norm(text)
+        bounded_history = ""
+        if relative in R3_V3_HISTORY_DOCS:
+            sections = [
+                extract_bounded_section(normalized, "<!-- RT-9B-RELEASE-READINESS:BEGIN -->", "<!-- RT-9B-RELEASE-READINESS:END -->"),
+                extract_bounded_section(normalized, "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->", "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->"),
+            ]
+            bounded_history = "\n".join(section or "" for section in sections)
+        current_text = normalized.replace(bounded_history, "")
+        forbidden_lines = (
+            "DRC v4.0.0 remains not released.",
+            "DRC v4.0.0 remains NOT_RELEASED.",
+            "v4.0.0 remains NOT_RELEASED.",
+            "v4.0.0 remains `NOT_RELEASED`.",
+            "DRC v4.0.0: NOT_RELEASED",
+            "v4.0.0 RELEASE CANDIDATE / NOT_RELEASED",
+            "v4.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED",
+            "DRC v4.0.0: NOT_RELEASED_EXTRA",
+            "v4.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED_EXTRA",
+        )
+        if any(text_has_exact_line(current_text, line) for line in forbidden_lines):
+            return False
+        if "DRC v4.0.0 remains not released" in current_text:
+            return False
+        if "v4.0.0 remains NOT_RELEASED" in current_text or "v4.0.0 remains `NOT_RELEASED`" in current_text:
+            return False
+        if "NOT_RELEASED_EXTRA" in current_text:
+            return False
+        sections = stage4_retry_current_sections(current_text)
+        if len(sections) != 1:
+            return False
+        if not protected_line_family_has_no_shadow(current_text, "DRC v4.0.0: RELEASED"):
+            return False
+        if exact_line_count(sections[0], "DRC v4.0.0: RELEASED") != 1:
+            return False
+    return True
+
+
+def current_released_state_contract_self_check() -> dict[str, bool]:
+    docs = control_e_canonical_doc_fixture()
+    first = CURRENT_DOCS[0]
+    history_doc = R3_V3_HISTORY_DOCS[0]
+    variants = {
+        "remains_not_released": {**docs, first: docs[first] + "\nDRC v4.0.0 remains not released.\n"},
+        "remains_not_released_token": {**docs, first: docs[first] + "\nv4.0.0 remains NOT_RELEASED.\n"},
+        "release_candidate": {**docs, first: docs[first] + "\nv4.0.0 RELEASE CANDIDATE / NOT_RELEASED\n"},
+        "not_released_extra": {**docs, first: docs[first] + "\nDRC v4.0.0: NOT_RELEASED_EXTRA\n"},
+        "additive_released_suffix_shadow": {**docs, first: docs[first] + "\nDRC v4.0.0: RELEASED_EXTRA\n"},
+        "additive_released_prefix_shadow": {**docs, first: docs[first] + "\nPREFIX DRC v4.0.0: RELEASED\n"},
+        "additive_released_trailing_shadow": {**docs, first: docs[first] + "\nDRC v4.0.0: RELEASED trailing text\n"},
+        "trailing_text": control_e_mutate_one_doc(docs, first, "DRC v4.0.0: RELEASED", "DRC v4.0.0: RELEASED trailing text"),
+        "duplicate_current_released_state": control_e_mutate_one_doc(docs, first, "DRC v4.0.0: RELEASED", "DRC v4.0.0: RELEASED\nDRC v4.0.0: RELEASED"),
+        "historical_control_b_not_released_accepted": {**docs, history_doc: docs[history_doc]},
+    }
+    rejected = {name: not current_released_state_contract(value) for name, value in variants.items() if name != "historical_control_b_not_released_accepted"}
+    return {
+        "canonical_accepted": current_released_state_contract(docs),
+        "historical_control_b_not_released_accepted": current_released_state_contract(variants["historical_control_b_not_released_accepted"]),
+        **{name + "_rejected": value for name, value in rejected.items()},
+    }
 
 
 def control_e_assert_actual_runtime_contract(doc_texts: dict[str, str]) -> None:
     checks = {
         "current_doc_keyset_exact": set(doc_texts) == set(CURRENT_DOCS),
+        "r3_historical_terminal_contract": control_e_r3_historical_and_terminal_contract(doc_texts),
+        "current_released_state_contract": current_released_state_contract(doc_texts),
         "normalized_active_authorization_signature_count_0": not control_e_authorization_reinjection_present(doc_texts),
-        "canonical_r2_heading_exact": all(STAGE4_RETRY_CURRENT_HEADING in norm(doc_texts.get(relative, "")) for relative in CURRENT_DOCS),
+        "canonical_r3_heading_exact": all(STAGE4_RETRY_CURRENT_HEADING in norm(doc_texts.get(relative, "")) for relative in CURRENT_DOCS),
         "per_file_current_section_contract": all(control_e_doc_contract_is_exact(relative, doc_texts.get(relative, "")) for relative in CURRENT_DOCS),
         "protected_shadow_heading_absent": all(len(stage4_retry_current_sections(norm(doc_texts.get(relative, "")))) == 1 for relative in CURRENT_DOCS),
         "control_e_authorization_consumed": all("Control E authorization state: CONSUMED" in norm(text) for text in doc_texts.values()),
@@ -3505,7 +3668,12 @@ def control_e_mutate_one_doc(docs: dict[str, str], relative: str, old: str, new:
 
 def control_e_canonical_doc_fixture(line_ending: str = "\n") -> dict[str, str]:
     section = STAGE4_RETRY_CURRENT_HEADING + "\n" + "\n".join(STAGE4_RETRY_CANONICAL_LINES) + "\n"
-    return {relative: section.replace("\n", line_ending) for relative in CURRENT_DOCS}
+    history = "\n".join(("<!-- RT-9B-RELEASE-READINESS:BEGIN -->", *R3_RT9B_LINES, "<!-- RT-9B-RELEASE-READINESS:END -->", "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:BEGIN -->", *R3_RT9C_LINES, "<!-- RT-9C-STAGE1-FIXED-ZIP-TOOLING:END -->"))
+    docs = {}
+    for relative in CURRENT_DOCS:
+        prefix = ((history + "\n") if relative in R3_V3_HISTORY_DOCS else "") + R3_CURRENT_TERMINAL_NOTE + "\n"
+        docs[relative] = (prefix + section).replace("\n", line_ending)
+    return docs
 
 
 def control_e_raw_heading_is_canonical(line: str) -> bool:
@@ -3514,8 +3682,8 @@ def control_e_raw_heading_is_canonical(line: str) -> bool:
 
 CONTROL_E_ADVERSARIAL_HEADINGS = (
     "## Control E Release Publication Result Sync R1 Current Section",
-    "## Control E Release Publication Result Sync Corrective R2 Current Section Extra",
-    "## Extra Control E Release Publication Result Sync Corrective R2 Current Section",
+    "## Control E Release Publication Result Sync Corrective R5 Current Section Extra",
+    "## Extra Control E Release Publication Result Sync Corrective R5 Current Section",
     "## Control E Release Publication Result Sync Corrective R02 Current Section",
     "## Control E Release Publication Result Sync Corrective R-2 Current Section",
     "## Control E Release Publication Result Sync Corrective R_2 Current Section",
@@ -3551,7 +3719,7 @@ def control_e_heading_family_runtime_probe() -> dict[str, bool]:
     per_heading = {heading: stage4_retry_current_heading_family(heading) and not control_e_raw_heading_is_canonical(heading) and not control_e_actual_runtime_contract_accepts(control_e_append_shadow_heading(docs, first_doc, heading)) for heading in CONTROL_E_ADVERSARIAL_HEADINGS}
     per_file = {relative: not control_e_actual_runtime_contract_accepts(control_e_append_shadow_heading(docs, relative, CONTROL_E_ADVERSARIAL_HEADINGS[0])) for relative in CURRENT_DOCS}
     return {
-        "canonical_r2_heading_accepted": control_e_actual_runtime_contract_accepts(docs),
+        "canonical_r3_heading_accepted": control_e_actual_runtime_contract_accepts(docs),
         "all_adversarial_headings_classified_as_protected_family": all(stage4_retry_current_heading_family(heading) for heading in CONTROL_E_ADVERSARIAL_HEADINGS),
         "all_adversarial_headings_not_raw_canonical": all(not control_e_raw_heading_is_canonical(heading) for heading in CONTROL_E_ADVERSARIAL_HEADINGS),
         "all_adversarial_heading_shadow_contracts_rejected": all(per_heading.values()),
@@ -3640,7 +3808,7 @@ def control_e_release_authorization_schema_self_check() -> dict[str, bool]:
         "active_authorization_true_rejected": not control_e_actual_runtime_contract_accepts(control_e_mutate_one_doc(docs, first, "Control E current active authorization: FALSE", "Control E current active authorization: TRUE")),
         "additional_publication_true_rejected": not control_e_actual_runtime_contract_accepts(control_e_mutate_one_doc(docs, first, "Additional publication authorized: FALSE", "Additional publication authorized: TRUE")),
         "invocation_4_authorized_rejected": not control_e_actual_runtime_contract_accepts({**docs, first: docs[first] + "\nStage 4 Invocation 4 authorized: TRUE\n"}),
-        "canonical_r2_heading_accepted": heading["canonical_r2_heading_accepted"],
+        "canonical_r3_heading_accepted": heading["canonical_r3_heading_accepted"],
         "all_adversarial_headings_classified_as_protected_family": heading["all_adversarial_headings_classified_as_protected_family"],
         "all_adversarial_heading_shadow_contracts_rejected": heading["all_adversarial_heading_shadow_contracts_rejected"],
         "all_current_docs_shadow_append_rejected": heading["all_current_docs_shadow_append_rejected"],
@@ -3959,6 +4127,11 @@ def control_e_release_authorization_runtime_guard(
     checks = {
         "actual_contract_present": control_e_actual_runtime_contract_accepts(docs),
         "schema_self_check": all(schema_checks.values()),
+        "r3_historical_terminal_actual_docs": control_e_r3_historical_and_terminal_contract(docs),
+        "current_released_state_actual_docs": current_released_state_contract(docs),
+        "r3_historical_terminal_self_check": all(control_e_r3_historical_and_terminal_self_check().values()),
+        "current_released_state_actual_docs": current_released_state_contract(docs),
+        "current_released_state_self_check": all(current_released_state_contract_self_check().values()),
         "heading_family_guard": control_e_heading_family_runtime_probe()["all_adversarial_heading_shadow_contracts_rejected"],
         "authorization_reinjection_runtime_rejection": control_e_authorization_reinjection_runtime_rejection_probe()["all_reinjection_variants_rejected"],
         "publication_reachability_matrix_self_check": all(reachability_checks.values()),
@@ -3984,6 +4157,10 @@ def control_e_release_authorization_runtime_guard_self_check() -> dict[str, bool
     guard_names = code_names_recursive(control_e_release_authorization_runtime_guard)
     dependency_names = {
         "control_e_assert_actual_runtime_contract",
+        "control_e_r3_historical_and_terminal_contract",
+        "control_e_r3_historical_and_terminal_self_check",
+        "current_released_state_contract",
+        "current_released_state_contract_self_check",
         "control_e_release_authorization_schema_self_check",
         "control_e_heading_family_runtime_probe",
         "control_e_authorization_reinjection_runtime_rejection_probe",
@@ -4001,6 +4178,7 @@ def control_e_release_authorization_runtime_guard_self_check() -> dict[str, bool
     return {
         "main_calls_runtime_guard_exact_once": code_reference_count(main, "control_e_release_authorization_runtime_guard") == 1,
         "runtime_guard_reaches_actual_precheck_schema_reachability": dependency_names <= guard_names,
+        "runtime_guard_reaches_current_released_state_contract": "current_released_state_contract" in guard_names,
         "runtime_guard_reaches_actual_loader": "read" in guard_names,
         "schema_forbidden_dependencies_absent": all(control_e_schema_forbidden_dependency_self_check().values()),
         "schema_filesystem_independence_probe": all(control_e_schema_filesystem_independence_probe().values()),
@@ -4026,11 +4204,11 @@ def check_current_docs() -> None:
     for relative in COORDINATION_DOCS:
         text = read(relative)
         for label, value in (
-            ("current small commit", "DRC v4.0.0 Control E Release Publication Result Sync Corrective R2"),
-            ("current implementation", "DRC v4.0.0 Control E Release Publication Result Sync Corrective R2"),
+            ("current small commit", "DRC v4.0.0 Control E Release Publication Result Sync Corrective R5"),
+            ("current implementation", "DRC v4.0.0 Control E Release Publication Result Sync Corrective R5"),
             (
                 "current implementation state",
-                "CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW",
+                "CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW",
             ),
             ("Control C", "COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED"),
             ("Control C implementation commit", BASELINE),
@@ -4276,7 +4454,7 @@ def validate_post_source_head_surface(
         return False
     if commit_count == 0:
         return not changed_paths and not deleted_paths and not rename_or_copy_paths
-    if commit_count > 8:
+    if commit_count > 9:
         return False
     if deleted_paths or rename_or_copy_paths:
         return False
@@ -4319,7 +4497,8 @@ def post_source_head_surface_matrix_self_check() -> dict[str, bool]:
         "count_6_accepted": validate_post_source_head_surface(changed, [], [], 6),
         "count_7_accepted": validate_post_source_head_surface(changed, [], [], 7),
         "count_8_accepted": validate_post_source_head_surface(changed, [], [], 8),
-        "count_9_rejected": not validate_post_source_head_surface(changed, [], [], 9),
+        "count_9_accepted": validate_post_source_head_surface(changed, [], [], 9),
+        "count_10_rejected": not validate_post_source_head_surface(changed, [], [], 10),
         "count_5_product_path_rejected": not validate_post_source_head_surface(["backend/app/version.py"], [], [], 5),
         "deletion_rejected": not validate_post_source_head_surface(changed, ["README.md"], [], 1),
         "rename_or_copy_rejected": not validate_post_source_head_surface(changed, [], ["README.md"], 1),
@@ -4392,8 +4571,7 @@ def check_no_contradictions() -> None:
         "v4.0.0 RELEASE CANDIDATE / NOT_RELEASED",
         "DRC v4.0.0: NOT_RELEASED",
         "fixed ZIP: BUILT",
-        "annotated tag: NOT_CREATED",
-        "GitHub Release: NOT_CREATED",
+
         "Control E: RELEASED",
         "Control D Stage 3:\nBUILD_EXACTLY_ONCE / AUTHORIZED / NOT_RUN",
     ):
@@ -6866,7 +7044,7 @@ def main() -> None:
             "temporary_with_package_config": flutter_dependency_plan(True, True) == "use-existing-package-config",
             "temporary_without_package_config": flutter_dependency_plan(True, False) == "pub-get-offline",
         }
-        print("v400_fixed_release_zip_tooling_status: control-e-release-publication-result-sync-corrective-r2-implemented-static-verified-consumed-authorization-schema-verified-normalized-reinjection-guard-verified-distinct-negative-fixtures-verified-actual-runtime-precheck-verified-invalid-reinjection-downstream-block-verified-publication-result-tuple-verified-post-source-matrix-0-to-8-verified-control-e-exactly-once-executed-additional-publication-blocked-fixed-zip-preserved-new-thread-handoff-created-ready-for-re-review")
+        print("v400_fixed_release_zip_tooling_status: control-e-release-publication-result-sync-corrective-r5-implemented-static-verified-exact-line-contract-verified-additive-shadow-bypass-rejected-suffix-prefix-trailing-bypass-rejected-current-released-state-corrected-historical-v3-boundary-preserved-post-source-matrix-0-to-9-verified-additional-publication-blocked-fixed-zip-preserved-new-thread-handoff-created-ready-for-re-review")
         print(f"v400_control_e_runtime_guard_self_check: {all(control_e_runtime_guard_checks.values())}")
         print(f"v400_control_e_main_runtime_guard_call_count_exact_1: {control_e_runtime_guard_checks['main_calls_runtime_guard_exact_once']}")
         print(f"v400_control_e_runtime_guard_dependency_calls: {control_e_runtime_guard_checks['runtime_guard_reaches_actual_precheck_schema_reachability']}")
@@ -6882,7 +7060,7 @@ def main() -> None:
         print(f"v400_control_e_whitespace_newline_unicode_zero_width_rejected: {control_e_schema_checks['whitespace_rejected'] and control_e_schema_checks['newline_rejected'] and control_e_schema_checks['unicode_rejected'] and control_e_schema_checks['zero_width_rejected']}")
         print(f"v400_control_e_markdown_historical_non_designated_rejected: {control_e_schema_checks['markdown_rejected'] and control_e_schema_checks['historical_rejected'] and control_e_schema_checks['non_designated_rejected']}")
         print(f"v400_control_e_bounded_consumed_prose_accepted: {control_e_schema_checks['bounded_consumed_prose_accepted']}")
-        print(f"v400_control_e_canonical_r2_heading_accepted: {control_e_schema_checks['canonical_r2_heading_accepted']}")
+        print(f"v400_control_e_canonical_r3_heading_accepted: {control_e_schema_checks['canonical_r3_heading_accepted']}")
         print(f"v400_control_e_adversarial_heading_matrix_rejected: {control_e_schema_checks['all_adversarial_heading_shadow_contracts_rejected']}")
         print(f"v400_control_e_all_current_docs_shadow_append_rejected: {control_e_schema_checks['all_current_docs_shadow_append_rejected']}")
         print(f"v400_control_e_publication_reachability_dirty: {control_e_publication_reachability('DIRTY_CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_CANDIDATE')}")
@@ -7231,8 +7409,8 @@ def main() -> None:
         print(f"v400_stage4_pytest_basetemp_isolation_self_check: {all(basetemp_checks.values())}")
         print(f"v400_post_source_head_surface_count_matrix_self_check: {all(post_source_matrix_checks.values())}")
         print(
-            "v400_post_source_head_surface_count_matrix_0_1_2_3_4_5_6_7_8_accepted_9_rejected: "
-            f"{post_source_matrix_checks['count_0_accepted'] and post_source_matrix_checks['count_1_accepted'] and post_source_matrix_checks['count_2_accepted'] and post_source_matrix_checks['count_3_accepted'] and post_source_matrix_checks['count_4_accepted'] and post_source_matrix_checks['count_5_accepted'] and post_source_matrix_checks['count_6_accepted'] and post_source_matrix_checks['count_7_accepted'] and post_source_matrix_checks['count_8_accepted'] and post_source_matrix_checks['count_9_rejected']}"
+            "v400_post_source_head_surface_count_matrix_0_1_2_3_4_5_6_7_8_9_accepted_10_rejected: "
+            f"{post_source_matrix_checks['count_0_accepted'] and post_source_matrix_checks['count_1_accepted'] and post_source_matrix_checks['count_2_accepted'] and post_source_matrix_checks['count_3_accepted'] and post_source_matrix_checks['count_4_accepted'] and post_source_matrix_checks['count_5_accepted'] and post_source_matrix_checks['count_6_accepted'] and post_source_matrix_checks['count_7_accepted'] and post_source_matrix_checks['count_8_accepted'] and post_source_matrix_checks['count_9_accepted'] and post_source_matrix_checks['count_10_rejected']}"
         )
         print("v400_current_docs_stage2_accepted: True")
         print("v400_stage2_accepted_marker_occurrence: 2")

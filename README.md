@@ -11,9 +11,9 @@ Previous released version: v2.1.0 (**RELEASED / ACCEPTED**)
 Immutable capability baseline: v2.0.0
 Completed maintenance line: v2.0.x (**COMPLETED / ACCEPTED**)
 Completed development line: v2.1.0 (**COMPLETED / ACCEPTED**)
-Current small commit: DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
-Current implementation: DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
-Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Current small commit: DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
+Current implementation: DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
+Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 Control C: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control C implementation commit: `4cae15573f3332cbc476557461babdfe2eb3c0bf`
 Control D Stage 1: COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -6925,8 +6925,8 @@ RT-9b surface: exact 13 files
 Backend candidate metadata: 3.0.0
 Flutter candidate metadata: 3.0.0+4
 current released version: v2.1.0 RELEASED / ACCEPTED
-v3.0.0 release notes: RELEASED / PUBLISHED / VERIFIED
-v3.0.0 release record: RELEASED / PUBLISHED / VERIFIED
+v3.0.0 release notes: RELEASE CANDIDATE / NOT_RELEASED
+v3.0.0 release record: PREPARED / NOT_RELEASED
 RT-9c Stage 1: COMPLETED / ACCEPTED / PUSHED
 RT-9c Stage 1 implementation commit: 7110035eff205d77157b8058b274b4c281a51f7e
 RT-9c Stage 2: COMPLETED / PASS / ACCEPTED
@@ -6935,8 +6935,8 @@ RT-9c Stage 3 acceptance-sync commit: 859eeae53b7b84d2c90fb301eb9e2b981cc731c0
 RT-9d: COMPLETED / ACCEPTED
 RT-9e: COMPLETED / ACCEPTED
 v3.0.0 fixed ZIP: NOT_BUILT
-DRC_v3.0.0 annotated tag: DRC_v4.0.0 / ANNOTATED / PUSHED
-GitHub Release: PUBLISHED / NON_DRAFT / NON_PRERELEASE
+DRC_v3.0.0 annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
 ```
 
 RT-9b synchronized Backend `3.0.0` and Flutter `3.0.0+4` candidate metadata,
@@ -6980,8 +6980,8 @@ RT-9e: COMPLETED / ACCEPTED
 fixed ZIP builder invocation count: 0
 v3.0.0 fixed ZIP: NOT_BUILT
 same-artifact verification: NOT_COMPLETED
-DRC_v3.0.0 annotated tag: DRC_v4.0.0 / ANNOTATED / PUSHED
-GitHub Release: PUBLISHED / NON_DRAFT / NON_PRERELEASE
+DRC_v3.0.0 annotated tag: NOT_CREATED
+GitHub Release: NOT_CREATED
 v3.0.0: RELEASED / ACCEPTED
 implementation commit / push: NOT_AUTHORIZED
 ```
@@ -7097,10 +7097,10 @@ execution, commit, or push.
 
 
 Control D Stage 4 authorization-sync is COMMITTED / PUSHED / REVIEWED / ACCEPTED / CLOSED at `0a6e6e65f8c775022471018bc3ca6c03b2ed588b`. Stage 4 invocation 1 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED before a verification verdict; verdict is NOT_REACHED and failure class is NON_PRODUCT_VERIFIER_OUTPUT_ENCODING_FAILURE. Stage 4 invocation 2 was EXACTLY_ONCE_EXECUTED and ended EXECUTION_FAILED with NON_PRODUCT_VERIFIER_PYTEST_BASETEMP_PERMISSION_FAILURE after Backend pytest reported 272 passed / 207 setup errors from PermissionError / WinError 5 on pytest default shared user TEMP root. Release-package scanner known fixtures were EXACT_EXPECTED_FINDINGS / ACCEPTED, ZIP structural/version checks reached before failure were PASS, extracted compileall was PASS, and extracted Backend pytest was PROCESS_COMPLETED / EXIT_CODE_NOT_RECORDED / PASS_COUNT_NOT_RECORDED. Stage 4 authorization marker was consumed. The fixed ZIP is PRESERVED and must not be deleted, renamed, overwritten, regenerated, or retried. Stage 4 retry is CONSUMED / FAILED, Control E publication completed exactly once and its authorization is consumed, tag/publication are COMPLETED / VERIFIED, and DRC v4.0.0 is RELEASED.
-## Control E Release Publication Result Sync Corrective R2 Current Section
+## Control E Release Publication Result Sync Corrective R5 Current Section
 
-Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
-Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
+Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 Control D Stage 4: COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 4 result-sync commit: 6aaf35e73df50cf5f570373a0b97da4290cc4e4e
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -7196,4 +7196,4 @@ DRC v4.0.0: RELEASED
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed only after this authorization-sync is clean, committed, and pushed. Tag, publication, and GitHub Release remain not created. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed. The annotated tag was created, pushed, and verified. The GitHub Release was published and verified. Additional publication is not authorized. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.

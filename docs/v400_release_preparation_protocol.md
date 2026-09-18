@@ -4,16 +4,16 @@
 
 ```text
 Current checkpoint:
-DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
+DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
 
 Current small commit:
-DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
+DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
 
 Current implementation:
-DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
+DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
 
 Current implementation state:
-CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control C baseline:
 5908cb5b0d88c2e8aa6370105c3d618064cb4665
@@ -260,7 +260,7 @@ fixtures. ZIP structure/version checks passed, and extracted compileall passed.
 The extracted Backend pytest process completed, but its result/count was not
 evaluated because output emission raised `UnicodeEncodeError`. The Stage 4
 conclusive verdict was not reached. The fixed ZIP remains preserved. Stage 4 retry is CONSUMED / FAILED, Control E publication completed exactly once and its authorization is consumed, and DRC
-v4.0.0 remains `NOT_RELEASED`.
+v4.0.0 is RELEASED.
 
 The accepted Stage 2 source preflight preserved the bounded release scope:
 bounded coexistence adoption. It does not claim that Framework v6.0.0 provides a
@@ -893,7 +893,7 @@ scripts, release artifacts, tags, and GitHub Releases.
 
 ```text
 DRC v4.0.0 Release Preparation Protocol:
-CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control B:
 CLOSED
@@ -1033,10 +1033,10 @@ NOT_AUTHORIZED / NOT_RUN
 publication:
 NOT_AUTHORIZED / NOT_RUN
 ```
-## Control E Release Publication Result Sync Corrective R2 Current Section
+## Control E Release Publication Result Sync Corrective R5 Current Section
 
-Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
-Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
+Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 Control D Stage 4: COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 4 result-sync commit: 6aaf35e73df50cf5f570373a0b97da4290cc4e4e
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -1132,7 +1132,7 @@ DRC v4.0.0: RELEASED
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed only after this authorization-sync is clean, committed, and pushed. Tag, publication, and GitHub Release remain not created. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed. The annotated tag was created, pushed, and verified. The GitHub Release was published and verified. Additional publication is not authorized. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
 ## R1 Review Handoff
 
 Implementation handoff: exact M12 authorization-sync candidate updates current docs/checker diagnostics only; product source, builder, fixed ZIP, tag, publication, and Control E remain unchanged and not authorized.

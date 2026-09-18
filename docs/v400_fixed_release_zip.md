@@ -4,7 +4,7 @@
 
 ```text
 Status:
-CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 
 Control C:
 COMPLETED / VERIFIED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
@@ -247,7 +247,7 @@ The verifier must not invoke the builder.
 Release ZIP verification must not mutate the ZIP and must keep release source
 HEAD, verification HEAD, and artifact SHA-256 separate.
 
-Mode dispatch is strict. Default dirty mode validates the exact Control D Stage 4 verifier output-encoding corrective M12 candidate surface, requires exactly one fixed ZIP artifact, and matches its basename, size, SHA-256, and source HEAD against the recorded tuple. Current docs must contain zero Stage 4 same-artifact authorization markers and zero Stage 3 one-time build authorization tokens. Stage 4 invocation 1 executed and failed before verdict; retry budget is consumed and Invocation 3 authorization is consumed and the release-ZIP verifier remains unreachable in default corrective mode. Control E publication completed exactly once and its authorization is consumed. DRC v4.0.0 remains not released. Source-tree mode is mutually exclusive with release-ZIP mode and requires Control D Stage 2 accepted state before clean committed source/runtime preflight. Release-ZIP mode is mutually exclusive with source-tree mode and verifies the exact supplied artifact instead of applying the source-tree artifact gate.
+Mode dispatch is strict. Default dirty mode validates the exact Control D Stage 4 verifier output-encoding corrective M12 candidate surface, requires exactly one fixed ZIP artifact, and matches its basename, size, SHA-256, and source HEAD against the recorded tuple. Current docs must contain zero Stage 4 same-artifact authorization markers and zero Stage 3 one-time build authorization tokens. Stage 4 invocation 1 executed and failed before verdict; retry budget is consumed and Invocation 3 authorization is consumed and the release-ZIP verifier remains unreachable in default corrective mode. Control E publication completed exactly once and its authorization is consumed. DRC v4.0.0 is RELEASED. Source-tree mode is mutually exclusive with release-ZIP mode and requires Control D Stage 2 accepted state before clean committed source/runtime preflight. Release-ZIP mode is mutually exclusive with source-tree mode and verifies the exact supplied artifact instead of applying the source-tree artifact gate.
 
 The release-ZIP verifier applies `scripts/check_release_package.py` without
 weakening the generic scanner. The only tolerated scanner findings are known
@@ -331,10 +331,10 @@ review. The current dirty R5 candidate does not stage, commit, push, invoke
 `--release-zip`, rerun the builder, run another Control D Stage 2 source-tree
 preflight, build or replace a fixed ZIP, package, tag, create a GitHub Release,
 publish, authorize Control E, or clean release artifacts.
-## Control E Release Publication Result Sync Corrective R2 Current Section
+## Control E Release Publication Result Sync Corrective R5 Current Section
 
-Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R2
-Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R2 / IMPLEMENTED / STATIC_VERIFIED / CONSUMED_AUTHORIZATION_SCHEMA_VERIFIED / NORMALIZED_REINJECTION_GUARD_VERIFIED / DISTINCT_NEGATIVE_FIXTURES_VERIFIED / ACTUAL_RUNTIME_PRECHECK_VERIFIED / INVALID_REINJECTION_DOWNSTREAM_BLOCK_VERIFIED / PUBLICATION_RESULT_TUPLE_VERIFIED / POST_SOURCE_MATRIX_0_TO_8_VERIFIED / CONTROL_E_EXACTLY_ONCE_EXECUTED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
+Current checkpoint: DRC v4.0.0 Control E Release Publication Result Sync Corrective R5
+Current implementation state: CONTROL_E_RELEASE_PUBLICATION_RESULT_SYNC_CORRECTIVE_R5 / IMPLEMENTED / STATIC_VERIFIED / EXACT_LINE_CONTRACT_VERIFIED / ADDITIVE_SHADOW_BYPASS_REJECTED / SUFFIX_PREFIX_TRAILING_BYPASS_REJECTED / CURRENT_RELEASED_STATE_CORRECTED / HISTORICAL_V3_BOUNDARY_PRESERVED / POST_SOURCE_MATRIX_0_TO_9_VERIFIED / ADDITIONAL_PUBLICATION_BLOCKED / FIXED_ZIP_PRESERVED / NEW_THREAD_HANDOFF_CREATED / READY_FOR_RE_REVIEW
 Control D Stage 4: COMPLETED / PASS / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Control D Stage 4 result-sync commit: 6aaf35e73df50cf5f570373a0b97da4290cc4e4e
 Stage 4 invocation 1 result: EXACTLY_ONCE_EXECUTED / EXECUTION_FAILED
@@ -430,4 +430,4 @@ DRC v4.0.0: RELEASED
 
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
-The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed only after this authorization-sync is clean, committed, and pushed. Tag, publication, and GitHub Release remain not created. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed. The annotated tag was created, pushed, and verified. The GitHub Release was published and verified. Additional publication is not authorized. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
