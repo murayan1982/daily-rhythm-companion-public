@@ -10,13 +10,13 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP0_LAUNCH_FOUNDATION_INVENTORY_R1
-Current phase: GP-0 計画確定
+Current task: DRC_V410_GP1_CURRENT_UI_INVENTORY_CORRECTIVE_R1
+Current phase: GP-1 現行UI棚卸し
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current implementation surface: exact M2 A2 D0
-Current state: IMPLEMENTED / STATIC_VERIFIED / DECISIONS_NOT_TAKEN / READY_FOR_REVIEW
+Baseline HEAD / origin/main / remote main: 60d3fc76c45e153a0c31ce9c9ce8e2fd78c48ca2
+Current implementation surface: exact M3 A2 D0
+Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
 This roadmap starts the DRC v4.1.0 development line. Its goal is an actual
@@ -143,6 +143,11 @@ authorization boundaries for every later phase.
 
 ## GP-1 現行UI棚卸し
 
+Implementation evidence is recorded in
+docs/v410_gp1_current_ui_inventory.md and
+docs/v410_gp1_production_separation_map.md. This is source-backed inventory,
+not GP-1 review/acceptance and not approval of GP0-D04.
+
 ### 目的
 
 Create a source-backed inventory of every user-visible screen, action, state,
@@ -151,8 +156,12 @@ what remains in the production product.
 
 ### 依存関係
 
-- GP-0 is accepted.
-- The exact inventory surface and read-only inspection commands are approved.
+- Planning R1 and the GP-0 inventory control are accepted as planning and
+  evidence baselines; GP-0 as a whole is not complete or accepted.
+- GP0-D01 is DEFERRED; GP0-D02 is APPROVED; GP0-D03 through GP0-D09,
+  excluding D02, remain NOT_DECIDED; GP0-D10 remains PROPOSED.
+- This read-only GP-1 inventory was performed under separate explicit
+  authorization and does not approve any unresolved GP-0 decision.
 
 ### 作業範囲
 

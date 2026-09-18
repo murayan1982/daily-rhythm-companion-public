@@ -10,13 +10,13 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP0_LAUNCH_FOUNDATION_INVENTORY_R1
-Current phase: GP-0 計画確定
+Current task: DRC_V410_GP1_CURRENT_UI_INVENTORY_CORRECTIVE_R1
+Current phase: GP-1 現行UI棚卸し
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current implementation surface: exact M2 A2 D0
-Current state: IMPLEMENTED / STATIC_VERIFIED / DECISIONS_NOT_TAKEN / READY_FOR_REVIEW
+Baseline HEAD / origin/main / remote main: 60d3fc76c45e153a0c31ce9c9ce8e2fd78c48ca2
+Current implementation surface: exact M3 A2 D0
+Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
 This tasklist is the prioritized execution index for
@@ -38,7 +38,7 @@ Priority meaning:
 - [ ] **[GP-0] 正式application ID:** approve a permanent, unique Android
   application ID to replace `com.example.app`; record ownership and the
   no-change-after-first-Play-upload rule.
-- [ ] **[GP-0] 正式アプリ表示名:** approve the formal display name to replace
+- [x] **[GP-0] 正式アプリ表示名:** approve the formal display name to replace
   `app`; define consistent spelling for Android, in-app UI, policy, support, and
   Google Play.
 - [ ] **[GP-0] Backend公開方式:** approve hosting, HTTPS endpoint, environment
@@ -52,10 +52,10 @@ Priority meaning:
 - [ ] **[GP-0] Data inventory:** map microphone, sleep/health, chat, account,
   diagnostic, log, retention, sharing, protection, and deletion behavior across
   app and Backend.
-- [ ] **[GP-1] 現行UI棚卸し:** inventory every screen, route, action, state,
+- [x] **[GP-1] 現行UI棚卸し:** inventory every screen, route, action, state,
   permission, API call, and entry point; classify each as general-user,
   developer, operator, demo, diagnostic, or mixed-purpose.
-- [ ] **[GP-1] HomeScreen混在の分解設計:** map every mixed `HomeScreen` section
+- [x] **[GP-1] HomeScreen混在の分解設計:** map every mixed `HomeScreen` section
   to either the production journey, a separate non-production surface, or
   removal.
 - [ ] **[GP-2] developer/operator UIのproduction分離:** approve a structural
@@ -242,7 +242,7 @@ Priority meaning:
 - [ ] **[GP-9] v4.0.0 preservation check:** confirm the v4.0.0 tag, GitHub Release,
   published asset, fixed ZIP, digest, and public history remain unchanged.
 
-## Planning R1 review checklist
+## Planning R1 historical closure checklist
 
 - [x] New development line is explicitly DRC v4.1.0.
 - [x] Primary target is explicitly Google Play.
@@ -252,12 +252,17 @@ Priority meaning:
 - [x] Planning R1 changes only the two new v4.1.0 planning documents.
 - [x] Stage, commit, push, build, signing, upload, tag, and publication remain
   unauthorized.
-- [ ] User review and acceptance.
-- [ ] Separate commit authorization.
-- [ ] Separate push authorization.
+- [x] User review and acceptance.
+- [x] Separate commit authorization.
+- [x] Separate push authorization.
 
-## Planning R1 stop point
+These historical approvals closed Planning R1. They do not authorize staging,
+committing, or pushing the current GP-1 corrective.
 
-Stop after static verification and review-handoff creation. Do not stage,
-commit, push, build, test, sign, upload, tag, modify a GitHub Release, or begin
-GP-1 implementation without a new explicit authorization.
+## Current corrective stop point
+
+The Planning R1 stop point is historically complete; Planning R1 was committed,
+pushed, and closed. GP-1 began under separate explicit implementation
+authorization. Stop the current control after corrective implementation, static
+verification, and regenerated review handoff. Current staging, commit, and push
+remain NOT_AUTHORIZED.

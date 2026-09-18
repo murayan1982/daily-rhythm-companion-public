@@ -3,14 +3,19 @@
 ## Control boundary
 
 ```text
-Task: DRC_V410_GP0_LAUNCH_FOUNDATION_INVENTORY_R1
+Original inventory control: DRC_V410_GP0_LAUNCH_FOUNDATION_INVENTORY_R1
 Development line: DRC v4.1.0
 Phase: GP-0
 Baseline commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
 Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
-Final decisions taken by Control A: NONE
+Original Control A decisions: NONE
+Current update task: DRC_V410_GP1_CURRENT_UI_INVENTORY_CORRECTIVE_R1
+Current decision state: D01 DEFERRED; D02 APPROVED as Daily Rhythm Companion;
+  D03-D09 except D01/D02 NOT_DECIDED; D10 PROPOSED
+GP0-D04: NOT_DECIDED
+Product-source implementation: NOT_AUTHORIZED
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -34,8 +39,8 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | Namespace and application ID are `com.example.app`. |
+| Status | DEFERRED |
+| Current observed state | Namespace and application ID are com.example.app. |
 | Decision to make | Select the permanent unique Google Play application ID. |
 | Required inputs/evidence | Organization/domain ownership, naming policy, Console availability, migration constraints. |
 | Decision owner | User |
@@ -43,26 +48,26 @@ SUPERSEDED
 | Dependent phases | GP-4, GP-5, GP-7, GP-8, GP-9 |
 | Must be decided before | Android identity implementation and Play application creation. |
 | Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
+| Approval evidence | User selection recorded 2026-09-18. |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | A later ID change can create a different Play application. |
+| Notes | Must be re-decided before GP-4. A later ID change can create a different Play application. |
 
 ## GP0-D02 Formal application display name
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | Android label is `app`. |
+| Status | APPROVED |
+| Current observed state | Android label is app. |
 | Decision to make | Approve the public display name and consistency rules. |
 | Required inputs/evidence | Product naming, localization, trademark review, listing constraints. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-3, GP-4, GP-7, GP-9 |
 | Must be decided before | Release-facing UI and listing assets are frozen. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
+| Approved value | Daily Rhythm Companion |
+| Approval evidence | User selection recorded 2026-09-18. |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | No final name is preferred by Control A. |
+| Notes | Android source implementation is not authorized. Japanese store representation and localization remain a separate decision. |
 
 ## GP0-D03 Production Backend hosting and HTTPS endpoint model
 
