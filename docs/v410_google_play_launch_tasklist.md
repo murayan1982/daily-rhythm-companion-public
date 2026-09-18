@@ -8,12 +8,15 @@ Updated: 2026-09-18
 Development line: DRC v4.1.0
 Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
+Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
+Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
+Current task: DRC_V410_GP0_LAUNCH_FOUNDATION_INVENTORY_R1
+Current phase: GP-0 計画確定
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline branch: main
-Baseline HEAD / origin/main: 7095cd45842f1cc72deff646181b43b09ca6cc99
-Planning surface: exact A2 M0 D0
-Current state: IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
+Baseline HEAD / origin/main / remote main: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
+Current implementation surface: exact M2 A2 D0
+Current state: IMPLEMENTED / STATIC_VERIFIED / DECISIONS_NOT_TAKEN / READY_FOR_REVIEW
 ```
 
 This tasklist is the prioritized execution index for
