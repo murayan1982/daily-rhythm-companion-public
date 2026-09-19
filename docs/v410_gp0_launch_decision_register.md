@@ -11,11 +11,11 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_TEXT_CORE_CAPABILITY_BOUNDARY_CORRECTIVE_R1
+Current update task: DRC_V410_GP0_BACKEND_PRIVACY_DECISION_CONTROL_CORRECTIVE_R1
 Current decision state: D01 DEFERRED; D02 APPROVED as Daily Rhythm Companion;
   D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_CONTROL_B_SCOPE_BOUNDARY_CORRECTIVE_R1
+Product-source implementation: NOT_AUTHORIZED_FOR_THIS_DECISION_CONTROL
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -76,7 +76,7 @@ SUPERSEDED
 | Status | NOT_DECIDED |
 | Current observed state | Default is `http://127.0.0.1:8000`; environment override exists. |
 | Decision to make | Select provider, topology, HTTPS endpoint, environments, monitoring, maintenance, and incident ownership. |
-| Required inputs/evidence | Provider/account/contract evidence, domain ownership, security, operations, cost. |
+| Required inputs/evidence | Provider/account/contract evidence, domain ownership, security, operations, cost, and the unresolved field inventory in `docs/v410_gp0_backend_privacy_decision_control.md`. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-2, GP-3, GP-4, GP-5, GP-6, GP-8, GP-9 |
@@ -84,7 +84,7 @@ SUPERSEDED
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | No cloud deployment is claimed. |
+| Notes | No cloud deployment is claimed. The decision-control document supplies evidence and a questionnaire only; it does not approve a provider, domain, region, owner, price, or implementation. |
 
 ## GP0-D04 Production versus non-product separation architecture
 
@@ -174,7 +174,7 @@ SUPERSEDED
 | Status | NOT_DECIDED |
 | Current observed state | Microphone, health, sleep, chat/advice, diagnostics, configuration, and logs require reconciliation. |
 | Decision to make | Assign accountable owners and approve the evidence/reconciliation process. |
-| Required inputs/evidence | Runtime/network inventory, retention/deletion behavior, policy and Console evidence. |
+| Required inputs/evidence | Runtime/network inventory, retention/deletion behavior, policy and Console evidence, and the unresolved field inventory in `docs/v410_gp0_backend_privacy_decision_control.md`. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-3, GP-5, GP-6, GP-7, GP-8, GP-9 |
@@ -182,7 +182,7 @@ SUPERSEDED
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | No legal or policy completion is claimed. |
+| Notes | No legal or policy completion is claimed. The decision-control document supplies evidence and a questionnaire only; it does not approve an operator, contact, retention/deletion period, processor, provider, territory, or legal conclusion. |
 
 ## GP0-D09 v4.1.0 version/build-number sequence
 

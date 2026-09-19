@@ -10,12 +10,12 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP2_TEXT_CORE_CAPABILITY_BOUNDARY_CORRECTIVE_R1
-Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
+Current task: DRC_V410_GP0_BACKEND_PRIVACY_DECISION_CONTROL_CORRECTIVE_R1
+Current phase: GP-0 計画確定 / GP-5 prerequisite decision control
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: e0e7e8434e49f812735b9d4a510997ad0108d174
-Current implementation surface: exact M4 A4 D0
+Baseline HEAD / origin/main / remote main: 45d6a543165321e30757808095a545b0d9bc9ec1
+Current implementation surface: exact M3 A1 D0
 Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
@@ -44,6 +44,9 @@ Priority meaning:
 - [ ] **[GP-0] Backend公開方式:** approve hosting, HTTPS endpoint, environment
   separation, secrets management, availability, observability, maintenance,
   incident response, and operating ownership.
+- [x] **[GP-0/GP-5] Backend/privacy decision evidence control:** inventory the
+  source-confirmed current state, official policy evidence, unresolved D03/D08
+  fields, questionnaire, and approval exit criteria without selecting values.
 - [ ] **[GP-0] Google Play account requirement:** confirm account type, current
   target API requirement, production-access prerequisites, health-app review
   requirements, and the evidence that must be retained.
@@ -52,6 +55,9 @@ Priority meaning:
 - [ ] **[GP-0] Data inventory:** map microphone, sleep/health, chat, account,
   diagnostic, log, retention, sharing, protection, and deletion behavior across
   app and Backend.
+- [ ] **[GP-0] Privacy/data ownership decision:** approve the accountable
+  operator, contacts, data handling, processors, retention, deletion, and
+  declaration ownership represented by GP0-D08.
 - [x] **[GP-1] 現行UI棚卸し:** inventory every screen, route, action, state,
   permission, API call, and entry point; classify each as general-user,
   developer, operator, demo, diagnostic, or mixed-purpose.
@@ -266,17 +272,19 @@ Priority meaning:
 - [x] Separate commit authorization.
 - [x] Separate push authorization.
 
-These historical approvals closed Planning R1. GP-1 is accepted, committed, and
-pushed. They do not authorize staging, committing, or pushing the current GP-2
-Control B corrective task.
+These historical approvals closed Planning R1. GP-1, GP-2 Control A, and GP-2
+Control B are accepted, committed, and pushed. Control B closed at
+`45d6a543165321e30757808095a545b0d9bc9ec1`; GP-2 as a whole remains
+incomplete.
 
-## Current corrective stop point
+## Current decision-control stop point
 
 The Planning R1 stop point is historically complete; Planning R1 was committed,
-pushed, and closed. GP-1 is accepted, committed, and pushed. GP-2 Control A was
-reviewed, accepted, committed, pushed, and closed at
-e0e7e8434e49f812735b9d4a510997ad0108d174. Control B defines capability and
-symbolic operation boundaries only; UI migration, Backend wiring, release
-wiring, artifact exclusion proof, and GP-2 completion remain pending. Stop after
-implementation, static verification, and review handoff. Current staging,
-commit, and push remain NOT_AUTHORIZED.
+pushed, and closed. GP-1 is accepted, committed, and pushed. GP-2 Control A
+closed at `e0e7e8434e49f812735b9d4a510997ad0108d174`, and Control B closed at
+`45d6a543165321e30757808095a545b0d9bc9ec1`. The current control documents
+decision evidence only: GP0-D03 and GP0-D08 remain `NOT_DECIDED`; Backend
+wiring, Privacy Policy publication, Data safety submission, and Health Apps
+declaration remain incomplete and unauthorized. Stop after implementation,
+static verification, and review handoff. Staging, commit, and push remain
+`NOT_AUTHORIZED`.
