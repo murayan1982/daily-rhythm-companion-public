@@ -10,13 +10,13 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP0_BACKEND_PRIVACY_DECISION_CONTROL_CORRECTIVE_R1
-Current phase: GP-0 計画確定 / GP-5 prerequisite decision control
+Current task: DRC_V410_GP2_PRODUCTION_JOURNEY_SHELL_CORRECTIVE_R1
+Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: 45d6a543165321e30757808095a545b0d9bc9ec1
-Current implementation surface: exact M3 A1 D0
-Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
+Baseline HEAD / origin/main / remote main: 438b8e82c2fb66181289a0a5a60897993effe62f
+Current implementation surface: exact M6 A4 D0
+Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / ACCESSIBLE_STATUS_SEMANTICS / MARKDOWN_CHECKBOX_RESTORED / READY_FOR_REVIEW
 ```
 
 This roadmap starts the DRC v4.1.0 development line. Its goal is an actual
@@ -207,10 +207,13 @@ reachability boundaries. Control A was reviewed, accepted, committed, pushed,
 and closed at `e0e7e8434e49f812735b9d4a510997ad0108d174`. Control B was reviewed,
 accepted, committed, pushed, and closed at
 `45d6a543165321e30757808095a545b0d9bc9ec1`; it defines only the approved
-text-core capability and symbolic Backend-operation boundaries. GP0-D03 and
-GP0-D08 remain `NOT_DECIDED`, and Backend wiring remains unauthorized. These
-controls do not complete UI migration, release wiring, artifact exclusion
-proof, or GP-2 as a whole.
+text-core capability and symbolic Backend-operation boundaries. The Backend and
+privacy decision control was reviewed, accepted, committed, pushed, and closed
+at `438b8e82c2fb66181289a0a5a60897993effe62f`; GP0-D03 and GP0-D08 remain
+`NOT_DECIDED`. Control C adds only a local, non-interactive journey shell for the
+approved six-step scope. Backend wiring remains unauthorized. These controls do
+not complete core-flow migration, release wiring, artifact exclusion proof, or
+GP-2 as a whole.
 
 ### 目的
 

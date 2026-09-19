@@ -115,3 +115,26 @@ unresolved.
 
 This control does not migrate UI, select a provider, approve a URL, wire the
 Backend, wire a release target, prove artifact exclusion, or complete GP-2.
+
+## Control C: local-only production journey shell
+
+Control A closed at `e0e7e8434e49f812735b9d4a510997ad0108d174` and Control B closed at
+`45d6a543165321e30757808095a545b0d9bc9ec1`. The Backend/privacy decision
+control closed at `438b8e82c2fb66181289a0a5a60897993effe62f` without deciding GP0-D03
+or GP0-D08.
+
+Control C adds a typed local journey model and a presentation component entirely
+under `lib/production/`. The model maps exactly six approved capabilities in
+order: sleep/health preparation, mood check-in, character selection, daily
+advice, optional text chat, and history. Imports remain inside the production
+directory except for Flutter itself.
+
+The shell adds no route, interactive control, network client, permission or
+platform access. It does not select or contact a health provider. The health
+step remains decision-pending, the production Backend remains unwired, and the
+release target remains unwired. The static cards provide ordered semantics,
+scrolling, flexible height, narrow-width support, and enlarged-text support.
+
+Control C does not complete core-flow migration, broader production separation,
+Backend allowlisting, artifact exclusion proof, release wiring, GP-2, or GP-3.
+Any expansion beyond this local shell requires a later bounded authorization.

@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:app/production/components/production_journey_overview.dart';
 import 'package:app/production/production_app.dart';
 import 'package:app/production/production_home_screen.dart';
 
 void main() {
-  testWidgets('ProductionApp exposes only the minimal production shell', (
+  testWidgets('ProductionApp exposes the production journey shell', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const ProductionApp());
@@ -16,7 +17,9 @@ void main() {
     expect(app.title, 'Daily Rhythm Companion');
     expect(app.debugShowCheckedModeBanner, isFalse);
     expect(find.byType(ProductionHomeScreen), findsOneWidget);
-    expect(find.text('Daily Rhythm Companion'), findsNWidgets(2));
+    expect(find.text('Daily Rhythm Companion'), findsOneWidget);
+    expect(find.text('今日のリズム'), findsOneWidget);
+    expect(find.byType(ProductionJourneyOverview), findsOneWidget);
   });
 
   testWidgets('Production shell exposes no non-product or endpoint copy', (
@@ -108,6 +111,15 @@ void main() {
         sourcePath: source,
         productionRootPath: 'LIB/PRODUCTION',
         caseInsensitive: true,
+      ),
+      isTrue,
+    );
+    expect(
+      _isAllowedProductionUri(
+        '../core/example.dart',
+        sourcePath: 'lib/production/components/example.dart',
+        productionRootPath: root,
+        caseInsensitive: false,
       ),
       isTrue,
     );
@@ -528,7 +540,6 @@ List<String>? _safeUriSegments(Uri uri) {
     }
     if (segment.isEmpty ||
         segment == '.' ||
-        segment == '..' ||
         segment.contains('/') ||
         segment.contains(r'\')) {
       return null;

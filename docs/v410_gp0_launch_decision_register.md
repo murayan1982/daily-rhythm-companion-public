@@ -11,11 +11,11 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP0_BACKEND_PRIVACY_DECISION_CONTROL_CORRECTIVE_R1
+Current update task: DRC_V410_GP2_PRODUCTION_JOURNEY_SHELL_CORRECTIVE_R1
 Current decision state: D01 DEFERRED; D02 APPROVED as Daily Rhythm Companion;
   D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED
 GP0-D04: APPROVED
-Product-source implementation: NOT_AUTHORIZED_FOR_THIS_DECISION_CONTROL
+Product-source implementation: AUTHORIZED_FOR_GP2_CONTROL_C_JOURNEY_SHELL_CORRECTIVE_R1
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,

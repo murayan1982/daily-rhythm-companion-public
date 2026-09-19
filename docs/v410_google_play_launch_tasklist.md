@@ -10,13 +10,13 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP0_BACKEND_PRIVACY_DECISION_CONTROL_CORRECTIVE_R1
-Current phase: GP-0 計画確定 / GP-5 prerequisite decision control
+Current task: DRC_V410_GP2_PRODUCTION_JOURNEY_SHELL_CORRECTIVE_R1
+Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: 45d6a543165321e30757808095a545b0d9bc9ec1
-Current implementation surface: exact M3 A1 D0
-Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
+Baseline HEAD / origin/main / remote main: 438b8e82c2fb66181289a0a5a60897993effe62f
+Current implementation surface: exact M6 A4 D0
+Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / ACCESSIBLE_STATUS_SEMANTICS / MARKDOWN_CHECKBOX_RESTORED / READY_FOR_REVIEW
 ```
 
 This tasklist is the prioritized execution index for
@@ -70,6 +70,9 @@ Priority meaning:
 - [x] **[GP-2] Production text-core capability boundary:** record the approved
   text-core-plus-chat scope and add typed capability and symbolic operation
   boundaries without UI migration or Backend wiring.
+- [x] **[GP-2] Production journey shell foundation:** display the approved
+  six-step scope in production-only UI as a local, non-interactive overview
+  without communication, input, or navigation.
 - [ ] **[GP-2] developer/operator UIのproduction分離:** approve a structural
   boundary using dedicated entry points/routes/build variants so production
   cannot reach developer, operator, demo, or raw diagnostic UI.
@@ -274,17 +277,17 @@ Priority meaning:
 
 These historical approvals closed Planning R1. GP-1, GP-2 Control A, and GP-2
 Control B are accepted, committed, and pushed. Control B closed at
-`45d6a543165321e30757808095a545b0d9bc9ec1`; GP-2 as a whole remains
-incomplete.
+`45d6a543165321e30757808095a545b0d9bc9ec1`. The Backend/privacy decision
+control closed at `438b8e82c2fb66181289a0a5a60897993effe62f`; GP0-D03 and GP0-D08
+remain `NOT_DECIDED`, and GP-2 as a whole remains incomplete.
 
-## Current decision-control stop point
+## Current production-journey-shell stop point
 
-The Planning R1 stop point is historically complete; Planning R1 was committed,
-pushed, and closed. GP-1 is accepted, committed, and pushed. GP-2 Control A
-closed at `e0e7e8434e49f812735b9d4a510997ad0108d174`, and Control B closed at
-`45d6a543165321e30757808095a545b0d9bc9ec1`. The current control documents
-decision evidence only: GP0-D03 and GP0-D08 remain `NOT_DECIDED`; Backend
-wiring, Privacy Policy publication, Data safety submission, and Health Apps
-declaration remain incomplete and unauthorized. Stop after implementation,
-static verification, and review handoff. Staging, commit, and push remain
-`NOT_AUTHORIZED`.
+Control A closed at `e0e7e8434e49f812735b9d4a510997ad0108d174`, Control B closed at
+`45d6a543165321e30757808095a545b0d9bc9ec1`, and the Backend/privacy decision
+control closed at `438b8e82c2fb66181289a0a5a60897993effe62f`. Control C displays the
+approved six-step scope only as a local, non-interactive production overview.
+The broader production separation, non-product Backend boundary, core-flow
+migration, artifact exclusion proof, Backend wiring, release wiring, and GP-2
+completion remain pending. Stop after implementation, required verification,
+and review handoff. Staging, commit, and push remain `NOT_AUTHORIZED`.
