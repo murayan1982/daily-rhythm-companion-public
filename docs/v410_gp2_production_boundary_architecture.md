@@ -94,3 +94,24 @@ This foundation is not a completed production UI, migrated core flow, Backend
 publication, Android release configuration, signed AAB, Google Play build,
 testing-track result, policy completion, or production-readiness claim. GP-2 as
 a whole remains incomplete.
+
+## Control B: text-core capability boundary
+
+Control A was reviewed, accepted, committed, pushed, and closed at
+`e0e7e8434e49f812735b9d4a510997ad0108d174`. GP2-S01 approves
+`TEXT_CORE_PLUS_CHAT` for the bounded production scope.
+
+Control B adds typed capability and symbolic Backend-operation definitions only
+under `lib/production/`. The new sources preserve the Control A import boundary:
+they do not import UI, network, platform, legacy model/service/widget, or
+Backend client code. They contain no network client, URL, endpoint path, or
+credential and perform no communication.
+
+Core-candidate operations and health-pending operations have exactly one typed
+disposition. Health-pending operations are excluded from the active core set.
+Unknown and non-product operations have no representation and are denied by
+default. The production Backend remains unwired because GP0-D03 and GP0-D08 are
+unresolved.
+
+This control does not migrate UI, select a provider, approve a URL, wire the
+Backend, wire a release target, prove artifact exclusion, or complete GP-2.

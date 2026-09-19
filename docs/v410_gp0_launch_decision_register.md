@@ -11,11 +11,11 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_PRODUCTION_ENTRYPOINT_FOUNDATION_CORRECTIVE_R2
+Current update task: DRC_V410_GP2_TEXT_CORE_CAPABILITY_BOUNDARY_CORRECTIVE_R1
 Current decision state: D01 DEFERRED; D02 APPROVED as Daily Rhythm Companion;
   D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_CONTROL_A_CORRECTIVE_R2
+Product-source implementation: AUTHORIZED_FOR_GP2_CONTROL_B_SCOPE_BOUNDARY_CORRECTIVE_R1
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -102,6 +102,19 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-09-18. |
 | Implementation authorization | AUTHORIZED_FOR_GP2_CONTROL_A |
 | Notes | Visual hiding alone is insufficient; production Backend allowlist, core-flow migration, artifact proof, and release wiring remain incomplete. |
+
+## GP2-S01 Production text-core capability scope
+
+| Field | Value |
+| --- | --- |
+| Status | APPROVED |
+| Approved value | TEXT_CORE_PLUS_CHAT |
+| Included capabilities | Sleep/health connection; mood check-in; character selection; daily advice; optional text chat; history. |
+| Excluded capabilities | Voice input/output; realtime; motion; demo; developer/operator controls; raw diagnostics; framework lifecycle controls. |
+| Approval evidence | User selection recorded 2026-09-19. |
+| Backend/health implementation | NOT_AUTHORIZED |
+| Dependencies | GP0-D03 Backend publication model and GP0-D08 privacy/data ownership remain NOT_DECIDED. |
+| Notes | This approval authorizes a typed scope boundary only. Health connectivity is HEALTH_PENDING_DECISION; no provider, URL, endpoint, network client, or Backend wiring is approved. |
 
 ## GP0-D05 Google Play account type and closed-testing applicability
 
