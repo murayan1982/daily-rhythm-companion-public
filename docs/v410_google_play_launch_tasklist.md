@@ -10,12 +10,12 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP1_CURRENT_UI_INVENTORY_CORRECTIVE_R1
-Current phase: GP-1 現行UI棚卸し
+Current task: DRC_V410_GP2_PRODUCTION_ENTRYPOINT_FOUNDATION_CORRECTIVE_R2
+Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: 60d3fc76c45e153a0c31ce9c9ce8e2fd78c48ca2
-Current implementation surface: exact M3 A2 D0
+Baseline HEAD / origin/main / remote main: 14ef092cd643fbf02c3bdfde3fa702ed062c3ef3
+Current implementation surface: exact M3 A5 D0
 Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
@@ -58,11 +58,18 @@ Priority meaning:
 - [x] **[GP-1] HomeScreen混在の分解設計:** map every mixed `HomeScreen` section
   to either the production journey, a separate non-production surface, or
   removal.
+- [x] **[GP-2] Production entrypoint foundation:** add the separate production
+  entrypoint, production-only composition, minimal shell, structural import
+  boundary, and focused source/widget verification.
 - [ ] **[GP-2] developer/operator UIのproduction分離:** approve a structural
   boundary using dedicated entry points/routes/build variants so production
   cannot reach developer, operator, demo, or raw diagnostic UI.
 - [ ] **[GP-2] Non-product Backend boundary:** ensure production startup and core
   journeys cannot call operator-only, demo, or diagnostic endpoints.
+- [ ] **[GP-2] Core-flow migration:** move only approved general-user journeys
+  into the production-only composition under a later bounded control.
+- [ ] **[GP-2] Artifact exclusion proof:** prove developer, operator, demo, and
+  diagnostic code and routes are absent or unreachable in the release artifact.
 - [ ] **[GP-4] localhost依存除去:** replace the production default
   `http://127.0.0.1:8000` with approved release-safe HTTPS configuration and
   prove that no production path depends on localhost or a private LAN address.
@@ -256,13 +263,15 @@ Priority meaning:
 - [x] Separate commit authorization.
 - [x] Separate push authorization.
 
-These historical approvals closed Planning R1. They do not authorize staging,
-committing, or pushing the current GP-1 corrective.
+These historical approvals closed Planning R1. GP-1 is accepted, committed, and
+pushed. They do not authorize staging, committing, or pushing the current GP-2
+Control A Corrective R2.
 
 ## Current corrective stop point
 
 The Planning R1 stop point is historically complete; Planning R1 was committed,
-pushed, and closed. GP-1 began under separate explicit implementation
-authorization. Stop the current control after corrective implementation, static
-verification, and regenerated review handoff. Current staging, commit, and push
-remain NOT_AUTHORIZED.
+pushed, and closed. GP-1 is accepted, committed, and pushed. GP-2 Control A
+began under separate explicit implementation authorization, but GP-2 as a whole
+remains incomplete. Stop the current control after Corrective R2 implementation,
+static verification, and regenerated review handoff. Current staging, commit,
+and push remain NOT_AUTHORIZED.

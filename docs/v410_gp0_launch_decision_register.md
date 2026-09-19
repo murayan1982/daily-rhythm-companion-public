@@ -11,11 +11,11 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP1_CURRENT_UI_INVENTORY_CORRECTIVE_R1
+Current update task: DRC_V410_GP2_PRODUCTION_ENTRYPOINT_FOUNDATION_CORRECTIVE_R2
 Current decision state: D01 DEFERRED; D02 APPROVED as Daily Rhythm Companion;
-  D03-D09 except D01/D02 NOT_DECIDED; D10 PROPOSED
-GP0-D04: NOT_DECIDED
-Product-source implementation: NOT_AUTHORIZED
+  D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED
+GP0-D04: APPROVED
+Product-source implementation: AUTHORIZED_FOR_GP2_CONTROL_A_CORRECTIVE_R2
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -90,7 +90,7 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
+| Status | APPROVED |
 | Current observed state | HomeScreen mixes general-user, demo, realtime, diagnostic, and developer/operator UI. |
 | Decision to make | Approve route, entry-point, build-configuration, and Backend-reachability boundaries. |
 | Required inputs/evidence | GP-1 screen/route/data-flow inventory and production journey requirements. |
@@ -98,10 +98,10 @@ SUPERSEDED
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-1, GP-2, GP-3, GP-4, GP-5, GP-6, GP-7 |
 | Must be decided before | GP-2 production separation. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | Visual hiding alone is insufficient. |
+| Approved value | Separate production entrypoint and production-only composition with structural import, route, and Backend reachability boundaries. |
+| Approval evidence | User selection recorded 2026-09-18. |
+| Implementation authorization | AUTHORIZED_FOR_GP2_CONTROL_A |
+| Notes | Visual hiding alone is insufficient; production Backend allowlist, core-flow migration, artifact proof, and release wiring remain incomplete. |
 
 ## GP0-D05 Google Play account type and closed-testing applicability
 

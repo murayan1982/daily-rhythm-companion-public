@@ -10,12 +10,12 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP1_CURRENT_UI_INVENTORY_CORRECTIVE_R1
-Current phase: GP-1 現行UI棚卸し
+Current task: DRC_V410_GP2_PRODUCTION_ENTRYPOINT_FOUNDATION_CORRECTIVE_R2
+Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: 60d3fc76c45e153a0c31ce9c9ce8e2fd78c48ca2
-Current implementation surface: exact M3 A2 D0
+Baseline HEAD / origin/main / remote main: 14ef092cd643fbf02c3bdfde3fa702ed062c3ef3
+Current implementation surface: exact M3 A5 D0
 Current state: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
@@ -145,8 +145,11 @@ authorization boundaries for every later phase.
 
 Implementation evidence is recorded in
 docs/v410_gp1_current_ui_inventory.md and
-docs/v410_gp1_production_separation_map.md. This is source-backed inventory,
-not GP-1 review/acceptance and not approval of GP0-D04.
+docs/v410_gp1_production_separation_map.md. At creation, this read-only evidence
+did not itself mean GP-1 acceptance or GP0-D04 approval. The inventory was later
+reviewed, accepted, committed, and pushed as
+14ef092cd643fbf02c3bdfde3fa702ed062c3ef3. GP0-D04 was separately APPROVED by
+user decision on 2026-09-18. This history does not complete GP-2.
 
 ### 目的
 
@@ -197,6 +200,12 @@ what remains in the production product.
   raw diagnostic payloads into tracked evidence.
 
 ## GP-2 一般ユーザーUIとdeveloper/operator UIの分離
+
+GP0-D04 is APPROVED: use a separate production entrypoint and a
+production-only composition with structural import, route, and Backend
+reachability boundaries. Control A adds the entrypoint foundation only.
+Backend allowlisting, core-flow migration, artifact exclusion proof, release
+wiring, and GP-2 completion remain pending.
 
 ### 目的
 
