@@ -16,6 +16,9 @@ void main() {
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.title, 'Daily Rhythm Companion');
     expect(app.debugShowCheckedModeBanner, isFalse);
+    expect(app.routes, isEmpty);
+    expect(app.onGenerateRoute, isNull);
+    expect(app.onUnknownRoute, isNull);
     expect(find.byType(ProductionHomeScreen), findsOneWidget);
     expect(find.text('Daily Rhythm Companion'), findsOneWidget);
     expect(find.text('今日のリズム'), findsOneWidget);
@@ -245,6 +248,9 @@ void main() {
     final forbidden = <RegExp>[
       RegExp(r'\bBackendApiClient\b'),
       RegExp(r'\bHomeScreen\b'),
+      RegExp(r'\bmain_non_product\.dart\b'),
+      RegExp(r'\bmain_rt2ec_operator\.dart\b'),
+      RegExp(r'\bDailyRhythmCompanionApp\b'),
       RegExp(r'\bHistoryScreen\b'),
       RegExp(r'screens/'),
       RegExp(r'services/'),
@@ -268,9 +274,26 @@ void main() {
       );
     }
 
-    final mixedMain = File('lib/main.dart').readAsStringSync();
+    final defaultMain = File('lib/main.dart').readAsStringSync();
+    expect(
+      defaultMain,
+      contains("import 'main_non_product.dart' as non_product;"),
+    );
+    expect(
+      defaultMain,
+      contains("export 'main_non_product.dart' show DailyRhythmCompanionApp;"),
+    );
+    expect(defaultMain, isNot(contains('HomeScreen')));
+
+    final mixedMain = File('lib/main_non_product.dart').readAsStringSync();
     expect(mixedMain, contains("import 'screens/home_screen.dart';"));
     expect(mixedMain, contains('HomeScreen('));
+
+    final operatorMain = File(
+      'lib/main_rt2ec_operator.dart',
+    ).readAsStringSync();
+    expect(operatorMain, contains('Rt2ecOperatorCaptureApp'));
+    expect(operatorMain, isNot(contains('ProductionApp')));
   });
 }
 

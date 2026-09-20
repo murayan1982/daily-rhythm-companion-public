@@ -20,8 +20,9 @@ reachability boundaries. Approval evidence: User selection recorded
 | Entrypoint | Ownership | Current role |
 | --- | --- | --- |
 | `lib/main_production.dart` | Production candidate | Starts only `ProductionApp`. |
-| `lib/main.dart` | Existing mixed development/demo | Unchanged; still the Flutter default target. |
-| `lib/main_rt2ec_operator.dart` | Operator | Unchanged and outside production composition. |
+| `lib/main.dart` | Non-product compatibility shim | Default Flutter target; delegates to `main_non_product.dart` and is not release-safe. |
+| `lib/main_non_product.dart` | Mixed development/demo/diagnostic | Owns the prior `HomeScreen` composition, runtime factories, and default development behavior. |
+| `lib/main_rt2ec_operator.dart` | Operator | Preserved outside production composition. |
 
 Because `main.dart` remains Flutter's default target, this control alone does
 not make a default or Google Play build release-safe. GP-4 owns release wiring
@@ -138,3 +139,13 @@ scrolling, flexible height, narrow-width support, and enlarged-text support.
 Control C does not complete core-flow migration, broader production separation,
 Backend allowlisting, artifact exclusion proof, release wiring, GP-2, or GP-3.
 Any expansion beyond this local shell requires a later bounded authorization.
+
+## Control D: non-product entrypoint separation
+
+Control D moves the existing mixed default composition into `lib/main_non_product.dart` byte-for-byte from the baseline `main.dart` blob and replaces `lib/main.dart` with a minimal compatibility shim. The shim exists for default development startup and existing test imports only; it is not a Google Play release target.
+
+Production ownership remains with `lib/main_production.dart` and `lib/production/`. The production route allowlist remains `ProductionHomeScreen` only, with empty named routes and null route generators. The production graph must not reference `main.dart`, `main_non_product.dart`, `main_rt2ec_operator.dart`, `DailyRhythmCompanionApp`, `HomeScreen`, developer/operator/demo/diagnostic source, or mixed Backend/service/operator/widget code.
+
+The RT2EC operator entrypoint remains an independent non-product operator target. This control does not wire Android release targets, prove artifact exclusion, complete the non-product Backend boundary, select a production Backend, or complete GP-2.
+
+Protected product boundaries remain unchanged for `main_production.dart`, `lib/production/`, production journey tests, Backend source, Android configuration, `pubspec.yaml`, services, operators, widgets, HistoryScreen, HomeScreen, production journey behavior, and v4.0.0 release objects.
