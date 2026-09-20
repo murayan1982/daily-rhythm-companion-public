@@ -20,6 +20,12 @@ enum ProductionBackendOperationDisposition {
   healthPendingDecision,
 }
 
+enum ProductionBackendAccessDecision {
+  allowCoreCandidate,
+  denyHealthPendingDecision,
+  denyUnknown,
+}
+
 const Map<ProductionBackendOperation, ProductionBackendOperationDisposition>
 productionBackendOperationDispositions = {
   ProductionBackendOperation.loadCharacters:
@@ -75,6 +81,21 @@ ProductionBackendOperationDisposition? productionBackendDispositionFor(
   return productionBackendOperationDispositions[operation];
 }
 
+ProductionBackendAccessDecision productionBackendAccessDecisionFor(
+  Object operation,
+) {
+  return switch (productionBackendDispositionFor(operation)) {
+    ProductionBackendOperationDisposition.coreCandidate =>
+      ProductionBackendAccessDecision.allowCoreCandidate,
+    ProductionBackendOperationDisposition.healthPendingDecision =>
+      ProductionBackendAccessDecision.denyHealthPendingDecision,
+    null => ProductionBackendAccessDecision.denyUnknown,
+  };
+}
+
+bool isProductionBackendOperationAllowed(Object operation) =>
+    productionBackendAccessDecisionFor(operation) ==
+    ProductionBackendAccessDecision.allowCoreCandidate;
+
 bool isActiveProductionBackendOperation(Object operation) =>
-    productionBackendDispositionFor(operation) ==
-    ProductionBackendOperationDisposition.coreCandidate;
+    isProductionBackendOperationAllowed(operation);

@@ -10,12 +10,12 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP2_NON_PRODUCT_ENTRYPOINT_SEPARATION_R1
+Current task: DRC_V410_GP2_NON_PRODUCT_BACKEND_BOUNDARY_R1
 Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: 719508fe1f7299744b5a717e9e1837f499032ab6
-Current implementation surface: exact M6 A3 D0
+Baseline HEAD / origin/main / remote main: eb9e27e6d470252e2543de17d4a168d68fdecfbc
+Current implementation surface: exact M6 A2 D0
 Current state: IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
@@ -76,7 +76,7 @@ Priority meaning:
 - [x] **[GP-2] developer/operator UIのproduction分離:** approve a structural
   boundary using dedicated entry points/routes/build variants so production
   cannot reach developer, operator, demo, or raw diagnostic UI.
-- [ ] **[GP-2] Non-product Backend boundary:** ensure production startup and core
+- [x] **[GP-2] Non-product Backend boundary:** ensure production startup and core
   journeys cannot call operator-only, demo, or diagnostic endpoints.
 - [ ] **[GP-2] Core-flow migration:** move only approved general-user journeys
   into the production-only composition under a later bounded control.
@@ -281,14 +281,17 @@ Control B are accepted, committed, and pushed. Control B closed at
 control closed at `438b8e82c2fb66181289a0a5a60897993effe62f`; GP0-D03 and GP0-D08
 remain `NOT_DECIDED`, and GP-2 as a whole remains incomplete.
 
-## Current non-product entrypoint separation stop point
+## Current non-product Backend boundary stop point
 
 Control A closed at `e0e7e8434e49f812735b9d4a510997ad0108d174`, Control B closed at
 `45d6a543165321e30757808095a545b0d9bc9ec1`, the Backend/privacy decision
 control closed at `438b8e82c2fb66181289a0a5a60897993effe62f`, and Control C closed
-at `719508fe1f7299744b5a717e9e1837f499032ab6`. Control D separates the default
+at `719508fe1f7299744b5a717e9e1837f499032ab6`. Control D closed at
+`eb9e27e6d470252e2543de17d4a168d68fdecfbc` and separates the default
 non-product compatibility shim and dedicated non-product entrypoint while
-preserving the operator entrypoint. The non-product Backend boundary, core-flow
-migration, artifact exclusion proof, Backend wiring, release wiring, and GP-2
+preserving the operator entrypoint. Control E adds deny-by-default symbolic
+Backend access decisions without transport or wiring. Core-flow migration,
+artifact exclusion proof, localhost dependency removal, production environment
+configuration, Backend and release wiring, GP-3 and later work, and GP-2
 completion remain pending. Stop after implementation, required verification,
 and review handoff. Staging, commit, and push remain `NOT_AUTHORIZED`.

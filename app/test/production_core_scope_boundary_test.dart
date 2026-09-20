@@ -25,6 +25,19 @@ void main() {
       ProductionBackendOperation.values.toSet(),
     );
     expect(ProductionBackendOperation.values, hasLength(14));
+    expect(activeProductionBackendOperations, <ProductionBackendOperation>{
+      ProductionBackendOperation.loadCharacters,
+      ProductionBackendOperation.loadSleepSummary,
+      ProductionBackendOperation.loadSleepProviderSelection,
+      ProductionBackendOperation.createAdvice,
+      ProductionBackendOperation.createTextChatSession,
+      ProductionBackendOperation.sendTextChatMessage,
+      ProductionBackendOperation.loadHistory,
+      ProductionBackendOperation.loadRecentSleepTrend,
+      ProductionBackendOperation.loadWeeklySleepSummary,
+      ProductionBackendOperation.loadWeeklyRhythmReport,
+      ProductionBackendOperation.loadMonthlyRhythmReport,
+    });
   });
 
   test('every operation has exactly one disposition', () {
@@ -53,6 +66,11 @@ void main() {
         ProductionBackendOperationDisposition.healthPendingDecision,
       );
       expect(activeProductionBackendOperations, isNot(contains(operation)));
+      expect(
+        productionBackendAccessDecisionFor(operation),
+        ProductionBackendAccessDecision.denyHealthPendingDecision,
+      );
+      expect(isProductionBackendOperationAllowed(operation), isFalse);
       expect(isActiveProductionBackendOperation(operation), isFalse);
     }
     expect(activeProductionBackendOperations, hasLength(11));
@@ -60,8 +78,33 @@ void main() {
 
   test('unknown operations are denied by default', () {
     expect(productionBackendDispositionFor('unknown'), isNull);
+    expect(
+      productionBackendAccessDecisionFor('unknown'),
+      ProductionBackendAccessDecision.denyUnknown,
+    );
+    expect(
+      productionBackendAccessDecisionFor(Object()),
+      ProductionBackendAccessDecision.denyUnknown,
+    );
+    expect(isProductionBackendOperationAllowed('unknown'), isFalse);
+    expect(isProductionBackendOperationAllowed(Object()), isFalse);
     expect(isActiveProductionBackendOperation('unknown'), isFalse);
     expect(isActiveProductionBackendOperation(Object()), isFalse);
+  });
+
+  test('only core candidates receive an allow decision', () {
+    for (final operation in activeProductionBackendOperations) {
+      expect(
+        productionBackendDispositionFor(operation),
+        ProductionBackendOperationDisposition.coreCandidate,
+      );
+      expect(
+        productionBackendAccessDecisionFor(operation),
+        ProductionBackendAccessDecision.allowCoreCandidate,
+      );
+      expect(isProductionBackendOperationAllowed(operation), isTrue);
+      expect(isActiveProductionBackendOperation(operation), isTrue);
+    }
   });
 
   test('production boundary sources contain no transport configuration', () {
@@ -84,6 +127,11 @@ void main() {
       ),
       RegExp(r"package:http/"),
       RegExp(r"dart:io"),
+      RegExp(r"services/"),
+      RegExp(r"operators/"),
+      RegExp(r"screens/"),
+      RegExp(r"models/"),
+      RegExp(r"widgets/"),
     ];
 
     for (final pattern in forbidden) {

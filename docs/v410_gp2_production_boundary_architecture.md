@@ -149,3 +149,22 @@ Production ownership remains with `lib/main_production.dart` and `lib/production
 The RT2EC operator entrypoint remains an independent non-product operator target. This control does not wire Android release targets, prove artifact exclusion, complete the non-product Backend boundary, select a production Backend, or complete GP-2.
 
 Protected product boundaries remain unchanged for `main_production.dart`, `lib/production/`, production journey tests, Backend source, Android configuration, `pubspec.yaml`, services, operators, widgets, HistoryScreen, HomeScreen, production journey behavior, and v4.0.0 release objects.
+## Control E: non-product Backend boundary
+
+Control E adds a typed, deny-by-default access decision around the existing
+symbolic `ProductionBackendOperation` set. Only the exact 11 core candidates
+resolve to `allowCoreCandidate`. The three health-pending operations resolve to
+`denyHealthPendingDecision`; unknown objects and non-product method or route
+names resolve to `denyUnknown`.
+
+Non-product operations are not represented in the production enum. The
+production graph does not reach `BackendApiClient`, legacy services, transport
+clients, endpoints, routes, URLs, platform APIs, or permissions. This control
+does not add Backend wiring or make an allow decision equivalent to network or
+release authorization. Any future production adapter must pass its symbolic
+operation through this access decision before communication.
+
+Artifact exclusion proof, core-flow migration, production environment and
+release wiring remain later controls. GP0-D03 and GP0-D08 remain
+`NOT_DECIDED`; health operations remain inactive and the production Backend
+remains unwired.

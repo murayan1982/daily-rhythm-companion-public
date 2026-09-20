@@ -10,12 +10,12 @@ Primary target: Google Play
 Planning task: DRC_V410_GOOGLE_PLAY_LAUNCH_PLANNING_R1
 Planning R1: COMPLETED / REVIEWED / ACCEPTED / COMMITTED / PUSHED / CLOSED
 Planning R1 commit: d7e39ad37667c6f3f104c2097f5ca54f9089df5c
-Current task: DRC_V410_GP2_NON_PRODUCT_ENTRYPOINT_SEPARATION_R1
+Current task: DRC_V410_GP2_NON_PRODUCT_BACKEND_BOUNDARY_R1
 Current phase: GP-2 一般ユーザーUIとdeveloper/operator UIの分離
 Implementation authorization: APPROVED
 Commit / push authorization: NOT_AUTHORIZED
-Baseline HEAD / origin/main / remote main: 719508fe1f7299744b5a717e9e1837f499032ab6
-Current implementation surface: exact M6 A3 D0
+Baseline HEAD / origin/main / remote main: eb9e27e6d470252e2543de17d4a168d68fdecfbc
+Current implementation surface: exact M6 A2 D0
 Current state: IMPLEMENTED / STATIC_VERIFIED / READY_FOR_REVIEW
 ```
 
@@ -210,11 +210,15 @@ accepted, committed, pushed, and closed at
 text-core capability and symbolic Backend-operation boundaries. The Backend and
 privacy decision control was reviewed, accepted, committed, pushed, and closed
 at `438b8e82c2fb66181289a0a5a60897993effe62f`; GP0-D03 and GP0-D08 remain
-`NOT_DECIDED`. Control C closed at `719508fe1f7299744b5a717e9e1837f499032ab6`. Control D moves
-the existing mixed default composition to `main_non_product.dart`, leaves
-`main.dart` as the default non-product compatibility shim, and preserves the
-operator entrypoint. Backend wiring, release wiring, artifact exclusion proof,
-non-product Backend boundaries, and GP-2 completion remain unauthorized.
+`NOT_DECIDED`. Control C closed at `719508fe1f7299744b5a717e9e1837f499032ab6`. Control D closed at
+`eb9e27e6d470252e2543de17d4a168d68fdecfbc`; it moves the existing mixed
+default composition to `main_non_product.dart`, leaves `main.dart` as the
+default non-product compatibility shim, and preserves the operator entrypoint.
+Control E adds a typed deny-by-default symbolic Backend access decision: only
+the 11 core candidates receive an allow decision, the three health-pending
+operations are explicitly denied, and unknown or non-product names are denied.
+It adds no transport, endpoint, URL, or Backend wiring. Release wiring, artifact
+exclusion proof, core-flow migration, and GP-2 completion remain unauthorized.
 
 ### 目的
 
