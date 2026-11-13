@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/production_journey_step.dart';
+import 'production_mood_check_in.dart';
 
 class ProductionJourneyOverview extends StatelessWidget {
   const ProductionJourneyOverview({super.key});
@@ -11,7 +12,10 @@ class ProductionJourneyOverview extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final item in productionJourneyItems) ...[
-          _JourneyCard(item: item),
+          if (item.step == ProductionJourneyStep.moodCheckIn)
+            ProductionMoodCheckIn(item: item)
+          else
+            _JourneyCard(item: item),
           if (item != productionJourneyItems.last) const SizedBox(height: 12),
         ],
       ],

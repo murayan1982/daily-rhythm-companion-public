@@ -5,16 +5,17 @@ Updated: 2026-11-13
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GITHUB_ANDROID_PUBLIC_BETA_REPLAN_CORRECTIVE_R2
-Baseline HEAD / origin/main / remote main: 0514d9780f9853e15cd8a109af5d1e09f36b4d89
-Surface: exact M4 A1 D0
-State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_RE_REVIEW
+Current task: DRC_V410_GP2_MOOD_CHECK_IN_MIGRATION_R1
+Baseline HEAD / origin/main / remote main: 3962a4757f918461382a935625a8b990f960df0e
+Surface: exact M6 A4 D0
+State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
 separate `DEFERRED / NOT_CANCELLED` track outside the GP-0 through GP-9 phase
-numbering. This corrective authorizes documentation only.
+numbering. This bounded Control authorizes only the exact GP-2 mood check-in
+product-source, test, and documentation surface recorded below.
 
 ## Immutable v4.0.0 boundary
 
@@ -84,7 +85,11 @@ controls preserve the accepted architecture.
 ### 作業範囲
 Maintain separate production/non-product entrypoints, text-core capability
 scope, journey shell, and deny-by-default symbolic Backend decisions.
-Core-flow migration and release-artifact exclusion proof remain incomplete.
+The first Core-flow slice migrates a local-only, three-choice mood check-in
+with an initially unselected, accessible, mutually exclusive selection.
+Persistence, advice wiring, character-aware copy, the remaining Core-flow
+migration, and release-artifact exclusion proof remain incomplete. D03 and D08
+remain `NOT_DECIDED`; this slice does not claim GP-3 completion.
 
 ### 完了条件
 Completed portions stay byte/evidence compatible, while remaining migration
@@ -266,9 +271,11 @@ Reactivation requires a new baseline, then-current official evidence, explicit
 decisions, and separate build/upload/testing/publication authority. GitHub beta
 completion cannot mark Play work complete.
 
-## Corrective R2 stop point
+## Mood Check-in Migration R1 stop point
 
-README remains frozen at accepted SHA-256. Product, Backend, Android, and
-`pubspec.yaml` source remain unchanged. Stop after static verification and a
-new review handoff. Stage, commit, push, build, test, signing, tag, Release,
-asset, Console, and hosting operations remain `NOT_AUTHORIZED`.
+README remains frozen at its accepted SHA-256. Backend source, Android
+configuration, and `pubspec.yaml` remain unchanged. Product-source and test
+changes are limited to the exact GP-2 mood check-in surface recorded by this
+Control. Stop after required verification and a new review handoff. Stage,
+commit, push, build, signing, tag, Release, asset, Console, and hosting
+operations remain `NOT_AUTHORIZED`.

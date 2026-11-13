@@ -5,10 +5,10 @@ Updated: 2026-11-13
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GITHUB_ANDROID_PUBLIC_BETA_REPLAN_CORRECTIVE_R2
-Baseline: 0514d9780f9853e15cd8a109af5d1e09f36b4d89
-Surface: exact M4 A1 D0
-State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / READY_FOR_RE_REVIEW
+Current task: DRC_V410_GP2_MOOD_CHECK_IN_MIGRATION_R1
+Baseline: 3962a4757f918461382a935625a8b990f960df0e
+Surface: exact M6 A4 D0
+State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -27,6 +27,19 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] README says Google Play `DEFERRED / NOT_CANCELLED`.
 - [x] README preserves AI Character Framework attribution.
 - [x] README legacy body, 28 markers, user marker pair, and details pair remain preserved.
+
+## GP-2 Core-flow migration
+
+- [x] GP-2 local three-choice mood check-in migration
+- [x] Production-only typed mood model
+- [x] Accessible mutually-exclusive mood selection
+- [x] No Backend/persistence/advice wiring
+- [ ] Mood persistence
+- [ ] Mood-to-advice wiring
+- [ ] Character-aware mood copy decision
+- [ ] Remaining Core-flow migration
+- [ ] GP-2 artifact exclusion proof
+- [ ] GP-3 user-journey refinement
 
 ## P0 — release foundation and blocking decisions
 
@@ -136,17 +149,20 @@ GP-8 does not create or publish a tag, GitHub Release, or asset.
 All Play items remain `DEFERRED / NOT_CANCELLED`. GitHub beta completion does
 not check any Play item.
 
-## Corrective R2 verification
+## Mood Check-in Migration R1 verification
 
-- [x] GP-0 through GP-9 identifier contract restored.
-- [x] GP-8 is pre-publication Public Beta testing.
-- [x] GP-9 is GitHub Release publication and post-release verification.
-- [x] Google Play is outside GP numbering in a separate deferred section.
+- [x] GP-0 through GP-9 identifier contract remains intact.
+- [x] GP-8 remains pre-publication Public Beta testing.
+- [x] GP-9 remains GitHub Release publication and post-release verification.
+- [x] Google Play remains outside GP numbering in a separate deferred section.
 - [x] README accepted candidate remains unchanged.
-- [x] Product, Backend, Android, and pubspec source remain unchanged.
-- [x] Stage, commit, push, build, test, signing, tag, Release, asset, and Console operations remain unauthorized.
+- [x] Backend source, Android configuration, and pubspec remain unchanged.
+- [x] Product-source and test changes are limited to the exact GP-2 mood check-in surface.
+- [x] Required Flutter analyze and tests passed for the accepted candidate.
+- [x] Stage, commit, push, build, signing, tag, Release, asset, and Console operations remain unauthorized.
 
-## Corrective R2 stop point
+## Mood Check-in Migration R1 stop point
 
-Stop after static verification and a new handoff. No unchecked item is
-authorized by this documentation corrective.
+Stop after required verification and a new handoff. No additional product
+behavior, unchecked item, or distribution operation is authorized by this
+Control.

@@ -9,7 +9,11 @@ enum ProductionJourneyStep {
   history,
 }
 
-enum ProductionJourneyStepState { planned, decisionPending }
+enum ProductionJourneyStepState {
+  planned,
+  decisionPending,
+  localSelectionAvailable,
+}
 
 class ProductionJourneyItem {
   const ProductionJourneyItem({
@@ -46,9 +50,9 @@ const List<ProductionJourneyItem> productionJourneyItems = [
     capability: ProductionCapability.moodCheckIn,
     order: 2,
     title: '気分を記録',
-    description: '今日の気分を記録する機能は、今後の画面で利用できるようになります。',
+    description: '今日の気分を3つから選べます。保存とアドバイスへの反映は準備中です。',
     isOptional: false,
-    state: ProductionJourneyStepState.planned,
+    state: ProductionJourneyStepState.localSelectionAvailable,
   ),
   ProductionJourneyItem(
     step: ProductionJourneyStep.characterSelection,

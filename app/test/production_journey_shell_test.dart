@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app/production/components/production_journey_overview.dart';
+import 'package:app/production/components/production_mood_check_in.dart';
 import 'package:app/production/core/production_capability.dart';
 import 'package:app/production/core/production_journey_step.dart';
 import 'package:app/production/production_app.dart';
@@ -40,6 +41,18 @@ void main() {
     );
     expect(pendingItems, hasLength(1));
     expect(pendingItems.single.step, ProductionJourneyStep.sleepStatus);
+
+    final localItems = productionJourneyItems.where(
+      (item) =>
+          item.state == ProductionJourneyStepState.localSelectionAvailable,
+    );
+    expect(localItems, hasLength(1));
+    expect(localItems.single.step, ProductionJourneyStep.moodCheckIn);
+
+    final plannedItems = productionJourneyItems.where(
+      (item) => item.state == ProductionJourneyStepState.planned,
+    );
+    expect(plannedItems, hasLength(4));
   });
 
   testWidgets('overview shows every title once and marks text chat optional', (
@@ -71,15 +84,15 @@ void main() {
     );
   });
 
-  testWidgets('overview has no action controls or raw non-product copy', (
+  testWidgets('overview exposes only the three approved mood actions', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const _OverviewHost());
 
+    expect(find.byType(ChoiceChip), findsNWidgets(3));
+    expect(find.byType(ProductionMoodCheckIn), findsOneWidget);
     expect(find.byType(ButtonStyleButton), findsNothing);
     expect(find.byType(IconButton), findsNothing);
-    expect(find.byType(InkWell), findsNothing);
-    expect(find.byType(GestureDetector), findsNothing);
 
     for (final value in <String>[
       'developer',
@@ -143,6 +156,9 @@ void main() {
       await tester.pumpWidget(const _OverviewHost());
 
       for (final item in productionJourneyItems) {
+        if (item.step == ProductionJourneyStep.moodCheckIn) {
+          continue;
+        }
         final semanticsLabel = _semanticsLabelFor(item);
         expect(find.bySemanticsLabel(semanticsLabel), findsOneWidget);
 
@@ -158,6 +174,14 @@ void main() {
           isFalse,
         );
       }
+
+      final moodItem = productionJourneyItems.singleWhere(
+        (item) => item.step == ProductionJourneyStep.moodCheckIn,
+      );
+      expect(
+        find.bySemanticsLabel('${moodItem.order}. ${moodItem.title}'),
+        findsOneWidget,
+      );
 
       final sleepItem = productionJourneyItems.singleWhere(
         (item) => item.step == ProductionJourneyStep.sleepStatus,
@@ -193,6 +217,10 @@ class _OverviewHost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: Scaffold(body: ProductionJourneyOverview()));
+    return const MaterialApp(
+      home: Scaffold(
+        body: SingleChildScrollView(child: ProductionJourneyOverview()),
+      ),
+    );
   }
 }
