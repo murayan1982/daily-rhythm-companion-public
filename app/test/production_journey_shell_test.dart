@@ -3,6 +3,7 @@ import 'dart:ui' show SemanticsAction;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:app/production/components/production_character_selection.dart';
 import 'package:app/production/components/production_journey_overview.dart';
 import 'package:app/production/components/production_mood_check_in.dart';
 import 'package:app/production/core/production_capability.dart';
@@ -46,13 +47,16 @@ void main() {
       (item) =>
           item.state == ProductionJourneyStepState.localSelectionAvailable,
     );
-    expect(localItems, hasLength(1));
-    expect(localItems.single.step, ProductionJourneyStep.moodCheckIn);
+    expect(localItems, hasLength(2));
+    expect(localItems.map((item) => item.step).toSet(), <ProductionJourneyStep>{
+      ProductionJourneyStep.moodCheckIn,
+      ProductionJourneyStep.characterSelection,
+    });
 
     final plannedItems = productionJourneyItems.where(
       (item) => item.state == ProductionJourneyStepState.planned,
     );
-    expect(plannedItems, hasLength(4));
+    expect(plannedItems, hasLength(3));
   });
 
   testWidgets('overview shows every title once and marks text chat optional', (
@@ -84,35 +88,49 @@ void main() {
     );
   });
 
-  testWidgets('overview exposes only the three approved mood actions', (
+  testWidgets(
+    'overview exposes only the six approved local selection actions',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const _OverviewHost());
+
+      expect(find.byType(ChoiceChip), findsNWidgets(6));
+      expect(find.byType(ProductionMoodCheckIn), findsOneWidget);
+      expect(find.byType(ProductionCharacterSelection), findsOneWidget);
+      expect(find.byType(ButtonStyleButton), findsNothing);
+      expect(find.byType(IconButton), findsNothing);
+
+      for (final value in <String>[
+        'developer',
+        'operator',
+        'demo',
+        'diagnostic',
+        'localhost',
+        'Backend',
+        'endpoint',
+        'engine',
+        'mode',
+        'session ID',
+        'technical code',
+        'realtime',
+        'framework',
+        'http://',
+        'https://',
+      ]) {
+        expect(find.textContaining(value, findRichText: true), findsNothing);
+      }
+    },
+  );
+
+  testWidgets('character selection is available inside the journey', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const _OverviewHost());
 
-    expect(find.byType(ChoiceChip), findsNWidgets(3));
-    expect(find.byType(ProductionMoodCheckIn), findsOneWidget);
-    expect(find.byType(ButtonStyleButton), findsNothing);
-    expect(find.byType(IconButton), findsNothing);
-
-    for (final value in <String>[
-      'developer',
-      'operator',
-      'demo',
-      'diagnostic',
-      'localhost',
-      'Backend',
-      'endpoint',
-      'engine',
-      'mode',
-      'session ID',
-      'technical code',
-      'realtime',
-      'framework',
-      'http://',
-      'https://',
-    ]) {
-      expect(find.textContaining(value, findRichText: true), findsNothing);
-    }
+    expect(find.text('選択中: 未選択'), findsNWidgets(2));
+    await tester.tap(find.text('ミナ'));
+    await tester.pump();
+    expect(find.text('選択中: ミナ'), findsOneWidget);
+    expect(find.text('選択中: 未選択'), findsOneWidget);
   });
 
   testWidgets('journey shell fits a narrow viewport without exceptions', (
@@ -156,7 +174,8 @@ void main() {
       await tester.pumpWidget(const _OverviewHost());
 
       for (final item in productionJourneyItems) {
-        if (item.step == ProductionJourneyStep.moodCheckIn) {
+        if (item.step == ProductionJourneyStep.moodCheckIn ||
+            item.step == ProductionJourneyStep.characterSelection) {
           continue;
         }
         final semanticsLabel = _semanticsLabelFor(item);
@@ -180,6 +199,14 @@ void main() {
       );
       expect(
         find.bySemanticsLabel('${moodItem.order}. ${moodItem.title}'),
+        findsOneWidget,
+      );
+
+      final characterItem = productionJourneyItems.singleWhere(
+        (item) => item.step == ProductionJourneyStep.characterSelection,
+      );
+      expect(
+        find.bySemanticsLabel('${characterItem.order}. ${characterItem.title}'),
         findsOneWidget,
       );
 

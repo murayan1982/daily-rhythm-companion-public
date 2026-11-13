@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/production_journey_step.dart';
+import 'production_character_selection.dart';
 import 'production_mood_check_in.dart';
 
 class ProductionJourneyOverview extends StatelessWidget {
@@ -14,6 +15,8 @@ class ProductionJourneyOverview extends StatelessWidget {
         for (final item in productionJourneyItems) ...[
           if (item.step == ProductionJourneyStep.moodCheckIn)
             ProductionMoodCheckIn(item: item)
+          else if (item.step == ProductionJourneyStep.characterSelection)
+            ProductionCharacterSelection(item: item)
           else
             _JourneyCard(item: item),
           if (item != productionJourneyItems.last) const SizedBox(height: 12),

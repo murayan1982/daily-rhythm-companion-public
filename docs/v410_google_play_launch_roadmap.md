@@ -5,8 +5,8 @@ Updated: 2026-11-13
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_MOOD_CHECK_IN_MIGRATION_R1
-Baseline HEAD / origin/main / remote main: 3962a4757f918461382a935625a8b990f960df0e
+Current task: DRC_V410_GP2_CHARACTER_SELECTION_MIGRATION_R1
+Baseline HEAD / origin/main / remote main: 7bb18d1fc8438d702afd440655bcf84fd6907774
 Surface: exact M6 A4 D0
 State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
@@ -14,7 +14,7 @@ Stage / commit / push: NOT_AUTHORIZED
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
 separate `DEFERRED / NOT_CANCELLED` track outside the GP-0 through GP-9 phase
-numbering. This bounded Control authorizes only the exact GP-2 mood check-in
+numbering. This bounded Control authorizes only the exact GP-2 character-selection
 product-source, test, and documentation surface recorded below.
 
 ## Immutable v4.0.0 boundary
@@ -87,9 +87,12 @@ Maintain separate production/non-product entrypoints, text-core capability
 scope, journey shell, and deny-by-default symbolic Backend decisions.
 The first Core-flow slice migrates a local-only, three-choice mood check-in
 with an initially unselected, accessible, mutually exclusive selection.
-Persistence, advice wiring, character-aware copy, the remaining Core-flow
-migration, and release-artifact exclusion proof remain incomplete. D03 and D08
-remain `NOT_DECIDED`; this slice does not claim GP-3 completion.
+The second slice migrates a local-only, initially unselected choice among the
+three stable characters and preserves their accepted selection copy. Backend
+fetch, persistence, advice wiring, character-aware mood copy, Framework
+routing, the remaining Core-flow migration, and release-artifact exclusion
+proof remain incomplete. D03 and D08 remain `NOT_DECIDED`; these slices do
+not claim GP-2 or GP-3 completion.
 
 ### 完了条件
 Completed portions stay byte/evidence compatible, while remaining migration
@@ -271,11 +274,18 @@ Reactivation requires a new baseline, then-current official evidence, explicit
 decisions, and separate build/upload/testing/publication authority. GitHub beta
 completion cannot mark Play work complete.
 
-## Mood Check-in Migration R1 stop point
+## Character Selection Migration R1 verification
+
+The accepted Mood Check-in slice remains unchanged. The local character model,
+three mutually exclusive options, stable IDs/copy, semantics, narrow layout,
+and production import boundary are verified by the required analyze and tests.
+No Backend, persistence, advice, or Framework routing is introduced.
+
+## Character Selection Migration R1 stop point
 
 README remains frozen at its accepted SHA-256. Backend source, Android
 configuration, and `pubspec.yaml` remain unchanged. Product-source and test
-changes are limited to the exact GP-2 mood check-in surface recorded by this
-Control. Stop after required verification and a new review handoff. Stage,
-commit, push, build, signing, tag, Release, asset, Console, and hosting
+changes are limited to the exact GP-2 character-selection surface recorded by
+this Control. Stop after required verification and a new review handoff.
+Stage, commit, push, build, signing, tag, Release, asset, Console, and hosting
 operations remain `NOT_AUTHORIZED`.

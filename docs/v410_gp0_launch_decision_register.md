@@ -11,11 +11,11 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_MOOD_CHECK_IN_MIGRATION_R1
+Current update task: DRC_V410_GP2_CHARACTER_SELECTION_MIGRATION_R1
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
   D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_MOOD_CHECK_IN_MIGRATION_R1_EXACT_M6_A4_D0
+Product-source implementation: AUTHORIZED_FOR_GP2_CHARACTER_SELECTION_MIGRATION_R1_EXACT_M6_A4_D0
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -114,7 +114,7 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
 | Dependencies | GP0-D03 Backend publication model and GP0-D08 privacy/data ownership remain NOT_DECIDED. |
-| Notes | Mood check-in remains included. This control authorizes only a local three-choice production mood UI and typed model. Persistence, advice wiring, character-aware copy, Backend, and health connectivity are not authorized. D03/D08 remain NOT_DECIDED; GP-2 and GP-3 remain incomplete. |
+| Notes | Mood check-in remains included and accepted. This control authorizes only a local three-character production selection UI and typed model using stable IDs/copy. Backend fetch, persistence, advice wiring, character-aware mood copy, Framework routing, provider/model selection, and health connectivity are not authorized. D03/D08 remain NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
 
 ## GP0-D05 Google Play account type and testing applicability
 

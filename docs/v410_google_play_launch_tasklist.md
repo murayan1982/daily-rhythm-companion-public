@@ -5,8 +5,8 @@ Updated: 2026-11-13
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_MOOD_CHECK_IN_MIGRATION_R1
-Baseline: 3962a4757f918461382a935625a8b990f960df0e
+Current task: DRC_V410_GP2_CHARACTER_SELECTION_MIGRATION_R1
+Baseline: 7bb18d1fc8438d702afd440655bcf84fd6907774
 Surface: exact M6 A4 D0
 State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
@@ -34,6 +34,11 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Production-only typed mood model
 - [x] Accessible mutually-exclusive mood selection
 - [x] No Backend/persistence/advice wiring
+- [x] GP-2 local three-character selection migration
+- [x] Production-only typed character model
+- [x] Accessible mutually-exclusive character selection
+- [x] Existing stable character IDs and selection copy preserved
+- [x] No Backend/persistence/advice/FW routing
 - [ ] Mood persistence
 - [ ] Mood-to-advice wiring
 - [ ] Character-aware mood copy decision
@@ -149,7 +154,7 @@ GP-8 does not create or publish a tag, GitHub Release, or asset.
 All Play items remain `DEFERRED / NOT_CANCELLED`. GitHub beta completion does
 not check any Play item.
 
-## Mood Check-in Migration R1 verification
+## Character Selection Migration R1 verification
 
 - [x] GP-0 through GP-9 identifier contract remains intact.
 - [x] GP-8 remains pre-publication Public Beta testing.
@@ -157,11 +162,14 @@ not check any Play item.
 - [x] Google Play remains outside GP numbering in a separate deferred section.
 - [x] README accepted candidate remains unchanged.
 - [x] Backend source, Android configuration, and pubspec remain unchanged.
-- [x] Product-source and test changes are limited to the exact GP-2 mood check-in surface.
+- [x] Product-source and test changes are limited to the exact GP-2 character-selection surface.
 - [x] Required Flutter analyze and tests passed for the accepted candidate.
+- [x] Accepted Mood Check-in source and tests remain unchanged.
+- [x] Character selection uses exactly three stable IDs and accepted copy.
+- [x] No Backend/persistence/advice/FW routing was added.
 - [x] Stage, commit, push, build, signing, tag, Release, asset, and Console operations remain unauthorized.
 
-## Mood Check-in Migration R1 stop point
+## Character Selection Migration R1 stop point
 
 Stop after required verification and a new handoff. No additional product
 behavior, unchecked item, or distribution operation is authorized by this

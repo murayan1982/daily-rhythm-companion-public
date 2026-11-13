@@ -59,9 +59,9 @@ const List<ProductionJourneyItem> productionJourneyItems = [
     capability: ProductionCapability.characterSelection,
     order: 3,
     title: 'キャラクターを選択',
-    description: '一緒に過ごすキャラクターを選ぶ機能を準備しています。',
+    description: '3人のキャラクターから、今の自分に合う相棒を選べます。保存とアドバイスへの反映は準備中です。',
     isOptional: false,
-    state: ProductionJourneyStepState.planned,
+    state: ProductionJourneyStepState.localSelectionAvailable,
   ),
   ProductionJourneyItem(
     step: ProductionJourneyStep.dailyAdvice,
