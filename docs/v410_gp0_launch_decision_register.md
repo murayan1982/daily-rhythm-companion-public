@@ -11,11 +11,11 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_NON_PRODUCT_BACKEND_BOUNDARY_R1
-Current decision state: D01 DEFERRED; D02 APPROVED as Daily Rhythm Companion;
-  D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED
+Current update task: DRC_V410_GITHUB_ANDROID_PUBLIC_BETA_REPLAN_CORRECTIVE_R2
+Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
+  D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_CONTROL_E_NON_PRODUCT_BACKEND_BOUNDARY_R1
+Product-source implementation: AUTHORIZED_FOR_REPLAN_ONLY
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -39,18 +39,18 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | DEFERRED |
+| Status | NOT_DECIDED |
 | Current observed state | Namespace and application ID are com.example.app. |
-| Decision to make | Select the permanent unique Google Play application ID. |
-| Required inputs/evidence | Organization/domain ownership, naming policy, Console availability, migration constraints. |
+| Decision to make | Select the permanent unique Android application ID for direct-distribution continuity and later Google Play use. |
+| Required inputs/evidence | Organization/domain ownership, naming policy, signing/update continuity, future Play availability, and migration constraints. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
-| Dependent phases | GP-4, GP-5, GP-7, GP-8, GP-9 |
-| Must be decided before | Android identity implementation and Play application creation. |
+| Dependent phases | GP-4, GP-5, GP-6, GP-7, GP-8, GP-9 |
+| Must be decided before | Public-beta Android identity implementation, release signing, or artifact creation. |
 | Approved value | NOT_DECIDED |
-| Approval evidence | User selection recorded 2026-09-18. |
+| Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | Must be re-decided before GP-4. A later ID change can create a different Play application. |
+| Notes | Required for direct APK update continuity and later Play continuity. A later ID change creates a different installed application. |
 
 ## GP0-D02 Formal application display name
 
@@ -116,7 +116,7 @@ SUPERSEDED
 | Dependencies | GP0-D03 Backend publication model and GP0-D08 privacy/data ownership remain NOT_DECIDED. |
 | Notes | This approval authorizes a typed scope boundary only. Health connectivity is HEALTH_PENDING_DECISION; no provider, URL, endpoint, network client, or Backend wiring is approved. |
 
-## GP0-D05 Google Play account type and closed-testing applicability
+## GP0-D05 Google Play account type and testing applicability
 
 | Field | Value |
 | --- | --- |
@@ -126,46 +126,46 @@ SUPERSEDED
 | Required inputs/evidence | Play Console account evidence and current official requirements. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
-| Dependent phases | GP-7, GP-8, GP-9 |
-| Must be decided before | Testing-track plan acceptance. |
+| Dependent phases | Deferred Google Play Track only |
+| Must be decided before | Reactivating a Play testing-track plan. |
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | The 12-testers/14-days rule is neither assumed nor dismissed. |
+| Notes | Deferred for the GitHub beta and not cancelled. No tester-count or duration rule is assumed or dismissed. |
 
-## GP0-D06 Release signing ownership and Play App Signing model
+## GP0-D06 Release signing ownership and future Play App Signing model
 
 | Field | Value |
 | --- | --- |
 | Status | NOT_DECIDED |
 | Current observed state | Release uses debug signing; production ownership is absent. |
-| Decision to make | Approve upload-key ownership, custody, recovery, rotation, and Play App Signing. |
+| Decision to make | Approve direct-distribution APK signing ownership, custody, recovery, rotation, update continuity, and the future Play App Signing relationship. |
 | Required inputs/evidence | Account ownership, custodians, secure storage and recovery requirements. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
-| Dependent phases | GP-4, GP-8, GP-9 |
-| Must be decided before | Signing configuration or AAB creation. |
+| Dependent phases | GP-4, GP-6, GP-8, GP-9; Play App Signing is Deferred Google Play Track |
+| Must be decided before | Any public-beta signing configuration, APK build, or later AAB creation. |
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | No key or credential is recorded. |
+| Notes | No key or credential is recorded. Direct-distribution signing must preserve update continuity; future Play App Signing remains a deferred decision. |
 
-## GP0-D07 Android target API confirmation and upgrade policy
+## GP0-D07 Android compatibility and deferred Play target-API policy
 
 | Field | Value |
 | --- | --- |
 | Status | NOT_DECIDED |
 | Current observed state | targetSdk is delegated; API 36 compliance is `NOT_VERIFIED`. |
-| Decision to make | Confirm current Play requirement, target, upgrade path, and maintenance policy. |
-| Required inputs/evidence | Current official Play policy and resolved build-tool values. |
+| Decision to make | Approve the public-beta supported Android range and maintenance policy; reconfirm the current Play target-API requirement when Play is reactivated. |
+| Required inputs/evidence | Resolved build-tool values, representative-device evidence, and current official Play policy at reactivation. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
-| Dependent phases | GP-4, GP-6, GP-8, GP-9 |
+| Dependent phases | GP-4, GP-6; Play target API is Deferred Google Play Track |
 | Must be decided before | Android release-foundation acceptance. |
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | Control A does not assert API 36 compliance. |
+| Notes | This replan asserts neither supported-version acceptance nor API 36 compliance. Play confirmation is deferred, not cancelled. |
 
 ## GP0-D08 Data, policy, deletion, Data safety, and Health Apps ownership
 
@@ -178,11 +178,11 @@ SUPERSEDED
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-3, GP-5, GP-6, GP-7, GP-8, GP-9 |
-| Must be decided before | Policy text, declarations, and submission. |
+| Must be decided before | Public Privacy Policy/support publication, Android beta publication, Play declarations, or submission. |
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | No legal or policy completion is claimed. The decision-control document supplies evidence and a questionnaire only; it does not approve an operator, contact, retention/deletion period, processor, provider, territory, or legal conclusion. |
+| Notes | No legal or policy completion is claimed. The evidence control approves no operator, contact, retention/deletion period, processor, provider, territory, or legal conclusion. GitHub distribution does not bypass this gate. |
 
 ## GP0-D09 v4.1.0 version/build-number sequence
 
@@ -190,12 +190,12 @@ SUPERSEDED
 | --- | --- |
 | Status | NOT_DECIDED |
 | Current observed state | `app/pubspec.yaml` remains `4.0.0+5`. |
-| Decision to make | Approve v4.1.0 version and monotonic Play build-number sequence. |
-| Required inputs/evidence | Existing Play version-code history and release-candidate policy. |
+| Decision to make | Approve v4.1.0 public-beta version and monotonic Android version-code sequence that remains compatible with later Play work. |
+| Required inputs/evidence | Existing version-code history, direct-update policy, and later Play continuity. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-4, GP-8, GP-9 |
-| Must be decided before | Version change or AAB creation. |
+| Must be decided before | Version change, public APK creation, or later AAB creation. |
 | Approved value | NOT_DECIDED |
 | Approval evidence | NONE |
 | Implementation authorization | NOT_AUTHORIZED |
@@ -206,9 +206,9 @@ SUPERSEDED
 | Field | Value |
 | --- | --- |
 | Status | PROPOSED |
-| Current observed state | Planning R1 defines gated phases and separate authorization boundaries. |
+| Current observed state | Planning R1 and this replan define gated phases and separate authorization boundaries. |
 | Decision to make | Approve or revise phase evidence, stop, rollback, and publication controls. |
-| Required inputs/evidence | Planning R1 and each phase evidence contract. |
+| Required inputs/evidence | Planning R1, this GitHub beta replan, and each phase evidence contract. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-1 through GP-9 |
@@ -218,18 +218,36 @@ SUPERSEDED
 | Implementation authorization | NOT_AUTHORIZED |
 | Notes | `PROPOSED_BASELINE_FROM_PLANNING_R1`; GP-0 is not complete. |
 
+## GP0-D11 Distribution sequence and primary repository landing
+
+| Field | Value |
+| --- | --- |
+| Status | APPROVED |
+| Current observed state | No installable public Android APK is published; the existing v4.0.0 ZIP is not an APK. |
+| Decision to make | Select the first public Android distribution channel and the repository landing-page role without cancelling later Google Play work. |
+| Required inputs/evidence | User-facing release status, safe download guidance, Framework attribution, policy/support prerequisites, and preserved v4.0.0 history. |
+| Decision owner | User |
+| Implementation owner | NOT_DECIDED |
+| Dependent phases | GP-4 through GP-9 |
+| Must be decided before | Publishing an installable Android Public Beta. |
+| Approved value | `GITHUB_ANDROID_PUBLIC_BETA_FIRST / GOOGLE_PLAY_LATER`; repository README is the primary general-Android-user landing page. |
+| Approval evidence | User scope amendment recorded 2026-11-13. |
+| Implementation authorization | `AUTHORIZED_FOR_REPLAN_ONLY` |
+| Notes | Google Play is deferred, not cancelled. Build, signing, key, tag, GitHub Release, asset, Console, provider, domain, privacy, support, and publication operations remain unauthorized. |
 ## Dependency and decision order
 
-1. GP0-D01 application ID.
-2. GP0-D02 display name.
-3. GP0-D05 Play account type.
-4. GP0-D03 Backend publication model.
-5. GP0-D04 production separation architecture.
-6. GP0-D06 signing ownership.
-7. GP0-D07 target API.
-8. GP0-D08 privacy/data ownership.
-9. GP0-D09 version/build sequence.
-10. GP0-D10 evidence and authorization closure.
+1. GP0-D11 GitHub Android Public Beta first and README landing (approved).
+2. GP0-D01 permanent application ID.
+3. GP0-D06 direct-distribution signing ownership and update continuity.
+4. GP0-D09 public-beta version/build sequence.
+5. GP0-D03 Backend publication model.
+6. GP0-D08 privacy/data/support ownership.
+7. GP0-D07 Android compatibility range.
+8. GP0-D10 evidence, stop, rollback, and publication controls.
+9. GP-8 Public Beta testing and candidate freeze.
+10. GP-9 GitHub Release publication and post-release verification.
+11. GP0-D05 and the Play-specific part of D06/D07 only when the separate
+    Deferred Google Play Track is reactivated.
 
 This is a planning order, not approval of a decision.
 

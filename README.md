@@ -1,5 +1,111 @@
 # Daily Rhythm Companion
 
+<!-- DRC-V410-ANDROID-PUBLIC-BETA-README:BEGIN -->
+
+## Daily Rhythm Companionとは
+
+Daily Rhythm Companionは、睡眠や気分などを振り返り、毎日の過ごし方を
+整えることを目指して開発中のAndroidアプリです。キャラクターとの
+やり取りを通じて、日々の振り返りを支える体験を計画しています。
+
+本アプリは医療機器ではなく、診断、治療、緊急支援を提供するサービス
+ではありません。以下には現在利用できる機能ではなく、開発中・計画中の
+内容も含まれます。
+
+## 現在の公開状況
+
+| 項目 | 状態 |
+| --- | --- |
+| Current development line | DRC v4.1.0 |
+| Distribution plan | GitHub Releases Android Public Beta |
+| Status | `DEVELOPMENT / NOT_YET_RELEASED` |
+| Installable public APK | `NOT_AVAILABLE` |
+| Google Play | `DEFERRED / NOT_CANCELLED` |
+| Current production Backend | `UNWIRED` |
+| Health data provider decision | `PENDING` |
+
+v4.0.0の既存GitHub Releaseは、過去の検証・公開記録です。
+[DRC v4.0.0 Release](https://github.com/murayan1982/daily-rhythm-companion-public/releases/tag/DRC_v4.0.0)
+で公開されているZIPはソース・記録用アーカイブであり、Androidへ
+インストールできるAPKではありません。
+
+## Android版を試すには
+
+一般Androidユーザー向けAPKは、まだ公開していません。Public Beta公開時は、
+このリポジトリの公式GitHub Releasesから配布します。公開前にrelease signing、
+Privacy Policy、install guide、device testingを完了する予定です。
+
+現在は、他サイト、fork、ミラーからAPKを入手しないでください。公開済みの
+APK URL、release tag、download buttonはまだありません。
+
+## 予定している基本体験
+
+次の体験を計画・開発しています。現時点ですべて利用できるという意味では
+ありません。
+
+1. 睡眠状態を確認する
+2. 気分を記録する
+3. キャラクターを選ぶ
+4. 今日のアドバイスを確認する
+5. 必要に応じてテキスト会話を続ける
+6. 過去の記録を振り返る
+
+## AI Character Frameworkについて
+
+DRCは[AI Character Framework](https://github.com/murayan1982/ai-character-framework)
+を活用して開発しています。Frameworkは、AIキャラクター、会話、音声、
+リアルタイム処理、キャラクター表現などを構築するための開発基盤です。
+
+DRCはFrameworkの活用事例であると同時に、一般ユーザー向けの独立した
+アプリ体験を目指しています。Android一般配布では、利用者にFrameworkの
+開発環境構築を要求しない方針です。Frameworkの全機能が現在のproduction
+Androidアプリへ接続済みであるとは主張しません。
+
+## 安全なダウンロード
+
+- 公式配布元は、このリポジトリのGitHub Releasesのみです。
+- 公開時にはAPK filename、size、SHA-256、signing certificate情報を掲載する予定です。
+- fork、ミラー、第三者サイトのAPKは公式配布と見なしません。
+- Androidの外部配布では、端末側でインストール許可が必要になる場合があります。
+- インストール後は、不要になった許可を無効に戻すことを推奨します。
+
+APK未公開の現在、具体的な端末操作手順は確定していません。
+
+## Privacy and permissions
+
+Privacy PolicyはPublic Beta公開前に掲載します。microphoneやhealth data等を
+使用する場合は、権限要求前に目的を説明します。data collection、retention、
+deletion方法も公開前に明示します。
+
+現在、GP0-D03とGP0-D08は`NOT_DECIDED`です。health data連携が現在利用可能
+であるとは主張しません。Privacy Policyやsupportの公開URLもまだありません。
+
+## 開発者向け情報
+
+- [GitHub Android Public Beta replan](docs/v410_github_android_public_beta_replan.md)
+- [v4.1.0 launch roadmap](docs/v410_google_play_launch_roadmap.md)
+- [v4.1.0 launch tasklist](docs/v410_google_play_launch_tasklist.md)
+- [GP-0 decision register](docs/v410_gp0_launch_decision_register.md)
+- [Flutter app README](app/README.md)
+- [License](LICENSE)
+
+Entrypoint境界は、`main_production.dart`がproduction graph、
+`main_non_product.dart`がdevelopment/demo graph、`main.dart`がnon-product
+compatibility shim、`main_rt2ec_operator.dart`がoperator-only entrypointです。
+このREADME再構成は、product source実装やPublic Beta完成の証拠ではありません。
+
+## License
+
+このリポジトリは[MIT License](LICENSE)です。
+
+<!-- DRC-V410-ANDROID-PUBLIC-BETA-README:END -->
+
+<details>
+<summary>開発・検証・公開履歴（Legacy project record）</summary>
+
+以下の「Current」等の表記は、それぞれの記録を作成した当時のhistorical
+recordです。現在の一般Androidユーザー向け配布状態を表すものではありません。
+
 Daily Rhythm Companion is a lightweight daily rhythm companion and a public demo application for **AI Character Framework**.
 
 AI Character Framework repository: [https://github.com/murayan1982/ai-character-framework.git](https://github.com/murayan1982/ai-character-framework.git)
@@ -7197,3 +7303,4 @@ DRC v4.0.0: RELEASED
 Invocation 1 remains historical failure evidence and must not be rewritten as PASS or completed; its verdict remains NOT_REACHED. The corrective fixed verifier output handling and retry authorization guarding only. Product/source ZIP contents were not repaired or regenerated. Authorization applies only to the preserved fixed ZIP tuple: release/DailyRhythmCompanion_v4.0.0_20260908_173440.zip / 3018230 bytes / F02B43A219D7E89FD9E40DD6C1F7CD588076DE7B260D6085FFA99966B3C49142 / source HEAD 46f5af49106c6ecc0d478a425cf709cf511da1be / UTC 2026-09-08 08:35:05.
 
 The retry authorization is consumed and inert. The release-ZIP verifier remains unreachable in every mode. Invocation 3 completed with PASS and consumed its authorization budget. Automatic retry is forbidden. No additional Stage 4 invocation is authorized. The builder remains forbidden. Control E publication completed exactly once and its authorization is consumed. The annotated tag was created, pushed, and verified. The GitHub Release was published and verified. Additional publication is not authorized. Bounded historical Control B, Control C, and Stage 3 evidence remains preserved.
+</details>
