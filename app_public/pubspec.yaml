@@ -1,0 +1,25 @@
+name: drc_public_app
+description: "Android-only public application shell for Daily Rhythm Companion."
+publish_to: 'none'
+
+# Placeholder only; GP-4 owns the release version and build number.
+version: 0.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  drc_production:
+    path: ../packages/drc_production
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
