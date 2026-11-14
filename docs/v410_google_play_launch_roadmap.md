@@ -5,17 +5,17 @@ Updated: 2026-11-14
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_LOCAL_ADVICE_MIGRATION_CORRECTIVE_R1
-Baseline HEAD / origin/main / remote main: 2beb34d57ded8a9d7c67e5a39b7729944fd77e58
-Surface: exact M10 A4 D0
+Current task: DRC_V410_GP2_EPHEMERAL_MOOD_POLICY_CORRECTIVE_R2
+Baseline HEAD / origin/main / remote main: c10db09a0ce1e8acd8960df65032fd97c3f73de8
+Surface: exact M4 A1 D0
 State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
 separate `DEFERRED / NOT_CANCELLED` track outside the GP-0 through GP-9 phase
-numbering. This bounded Control authorizes only the exact 14-path GP-2
-local-advice Corrective product/test/documentation surface (`M10 A4 D0`).
+numbering. This bounded Control authorizes only the exact five-path GP-2
+ephemeral Mood policy test/documentation surface (`M4 A1 D0`).
 
 ## Immutable v4.0.0 boundary
 
@@ -99,6 +99,12 @@ character-aware mood copy, the remaining Core-flow migration, and release-
 artifact exclusion proof remain incomplete. D03 is approved only for this
 active local-only beta mode, and D08 remains `NOT_DECIDED`. These slices do not
 claim GP-2 or GP-3 completion.
+
+For the active v4.1.0 GitHub beta, Mood selection is intentionally not
+persisted. It exists only in the current `ProductionJourneyOverview` instance
+and returns to unselected when a fresh instance is created. This is an approved
+product policy, not an omitted implementation. D08 as a whole remains
+`NOT_DECIDED`; no new Character persistence decision is made.
 
 ### 完了条件
 Completed portions stay byte/evidence compatible, while remaining migration
@@ -280,22 +286,20 @@ Reactivation requires a new baseline, then-current official evidence, explicit
 decisions, and separate build/upload/testing/publication authority. GitHub beta
 completion cannot mark Play work complete.
 
-## Local Advice Migration Corrective R1 verification
+## Ephemeral Mood Policy R1 verification
 
-The accepted Mood Check-in and Character Selection slices remain unchanged.
-The pure Dart 3-by-3 deterministic matrix, ephemeral state wiring, four UI
-readiness states, semantics, narrow layout, and production import boundary are
-verified by the required analyze and tests. No remote Backend, persistence,
-AI generation, or Framework routing is introduced. The exact nine-message
-matrix and ephemeral wiring are preserved while stale preparation copy is
-removed from the production journey.
+The focused journey regression verifies initial unselected state, materializes
+the local advice by selecting Mood and Character within one widget instance,
+disposes that State, and verifies reset to unselected with no restored advice
+in a fresh instance. Character selection is test setup, not a new Character
+persistence decision. Product source and dependencies remain unchanged. Existing Mood,
+Character, local-advice, boundary, and widget suites remain accepted.
 
-## Local Advice Migration Corrective R1 stop point
+## Ephemeral Mood Policy R1 stop point
 
 README remains frozen at its accepted SHA-256. Backend source, Android
-configuration, and `pubspec.yaml` remain unchanged. Product-source and test
-changes are limited to the exact 14-path GP-2 local-advice Corrective surface,
-`M10 A4 D0`, recorded by this Control. Stop after required verification and a
-new review handoff.
+configuration, and `pubspec.yaml` remain unchanged. Changes are limited to the
+exact five-path GP-2 ephemeral Mood policy surface, `M4 A1 D0`, recorded by
+this Control. Stop after required verification and a new review handoff.
 Stage, commit, push, build, signing, tag, Release, asset, Console, and hosting
 operations remain `NOT_AUTHORIZED`.

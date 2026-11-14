@@ -11,12 +11,13 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_LOCAL_ADVICE_MIGRATION_CORRECTIVE_R1
+Current update task: DRC_V410_GP2_EPHEMERAL_MOOD_POLICY_CORRECTIVE_R2
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
   D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_LOCAL_ADVICE_MIGRATION_CORRECTIVE_R1_EXACT_M10_A4_D0
+Product-source implementation: NOT_REQUIRED_PRODUCT_SOURCE_UNCHANGED
+Test/documentation authorization: AUTHORIZED_FOR_GP2_EPHEMERAL_MOOD_POLICY_R1_EXACT_M4_A1_D0
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -116,6 +117,20 @@ SUPERSEDED
 | Backend/health implementation | NOT_AUTHORIZED |
 | Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
 | Notes | Mood check-in and character selection remain included and accepted. Their selection copy now matches immediate local-advice reflection; persistence remains unimplemented. This control adds only deterministic local advice from those ephemeral selections. Backend fetch, persistence, character-aware mood copy, Framework routing, provider/model selection, and health connectivity are not authorized. D08 remains NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
+
+## GP2-S02 Active beta Mood persistence policy
+
+| Field | Value |
+| --- | --- |
+| Status | APPROVED |
+| Approved value | EPHEMERAL_NO_PERSISTENCE_FOR_V410_GITHUB_BETA |
+| Approval evidence | User selection recorded 2026-11-14 |
+| Scope | v4.1.0 GitHub Android Public Beta |
+| Behavior | Mood selection exists only in the current ProductionJourneyOverview instance and returns to unselected when a fresh instance is created. |
+| Persistence | NOT_IMPLEMENTED / NOT_INCLUDED_IN_ACTIVE_BETA |
+| External transmission | NONE |
+| D08 | NOT_DECIDED |
+| Notes | This decision does not approve health-data storage, history, analytics, Cloud Backend, account synchronization, device backup behavior, retention, deletion policy, or any future persistence implementation. |
 
 ## GP0-D05 Google Play account type and testing applicability
 

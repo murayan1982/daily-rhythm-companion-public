@@ -5,9 +5,9 @@ Updated: 2026-11-14
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_LOCAL_ADVICE_MIGRATION_CORRECTIVE_R1
-Baseline: 2beb34d57ded8a9d7c67e5a39b7729944fd77e58
-Surface: exact M10 A4 D0
+Current task: DRC_V410_GP2_EPHEMERAL_MOOD_POLICY_CORRECTIVE_R2
+Baseline: c10db09a0ce1e8acd8960df65032fd97c3f73de8
+Surface: exact M4 A1 D0
 State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
@@ -45,7 +45,10 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] No remote Backend / persistence / AI / Framework routing
 - [x] Mood / Character copy matches immediate local-advice reflection
 - [x] Selection persistence remains unavailable and is stated separately
-- [ ] Mood persistence
+- [x] Mood persistence decision: not included in the v4.1.0 GitHub beta; Mood selection remains ephemeral
+- [x] Fresh `ProductionJourneyOverview` instance resets Mood to unselected
+- [x] Product source unchanged and no persistence dependency added
+- [x] D08 remains `NOT_DECIDED`
 - [ ] Character-aware mood copy decision
 - [ ] Remaining Core-flow migration
 - [ ] GP-2 artifact exclusion proof
@@ -159,7 +162,7 @@ GP-8 does not create or publish a tag, GitHub Release, or asset.
 All Play items remain `DEFERRED / NOT_CANCELLED`. GitHub beta completion does
 not check any Play item.
 
-## Local Advice Migration Corrective R1 verification
+## Ephemeral Mood Policy R1 verification
 
 - [x] GP-0 through GP-9 identifier contract remains intact.
 - [x] GP-8 remains pre-publication Public Beta testing.
@@ -167,14 +170,17 @@ not check any Play item.
 - [x] Google Play remains outside GP numbering in a separate deferred section.
 - [x] README accepted candidate remains unchanged.
 - [x] Backend source, Android configuration, and pubspec remain unchanged.
-- [x] Product-source and test changes are limited to the exact 14-path GP-2 local-advice Corrective surface (`M10 A4 D0`).
+- [x] Test/documentation changes are limited to the exact five-path policy surface (`M4 A1 D0`).
+- [x] Fresh-instance reset is covered without storage, timer, network, filesystem, or platform access.
+- [x] Local advice is materialized before disposal and absent from a fresh instance.
+- [x] Product source and dependencies remain unchanged.
 - [x] Required Flutter analyze and tests passed for the accepted candidate.
 - [x] Accepted Mood Check-in and Character Selection source and tests remain unchanged.
 - [x] Advice uses exactly nine deterministic local mood-character mappings.
 - [x] No remote Backend/persistence/AI/FW routing was added.
 - [x] Stage, commit, push, build, signing, tag, Release, asset, and Console operations remain unauthorized.
 
-## Local Advice Migration Corrective R1 stop point
+## Ephemeral Mood Policy R1 stop point
 
 Stop after required verification and a new handoff. No additional product
 behavior, unchecked item, or distribution operation is authorized by this

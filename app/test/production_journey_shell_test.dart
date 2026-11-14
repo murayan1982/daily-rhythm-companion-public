@@ -201,6 +201,46 @@ void main() {
     expect(find.text('気分を選ぶと、今日のメッセージを表示します。'), findsOneWidget);
   });
 
+  testWidgets('mood selection resets with a fresh journey instance', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const _OverviewHost());
+
+    final moodSelection = find.descendant(
+      of: find.byType(ProductionMoodCheckIn),
+      matching: find.text('選択中: 未選択'),
+    );
+    expect(moodSelection, findsOneWidget);
+
+    await tester.ensureVisible(find.text('☀️ 元気'));
+    await tester.tap(find.text('☀️ 元気'));
+    await tester.pump();
+    expect(
+      find.descendant(
+        of: find.byType(ProductionMoodCheckIn),
+        matching: find.text('選択中: 元気'),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.ensureVisible(find.text('ミナ'));
+    await tester.tap(find.text('ミナ'));
+    await tester.pump();
+    expect(find.text('キャラクター: ミナ'), findsOneWidget);
+    expect(find.text('気分: 元気'), findsOneWidget);
+    expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    await tester.pumpWidget(const _OverviewHost());
+    await tester.pump();
+
+    expect(moodSelection, findsOneWidget);
+    expect(find.text('選択中: 元気'), findsNothing);
+    expect(find.text('気分とキャラクターを選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+    expect(find.textContaining('今日は調子がよさそうですね'), findsNothing);
+  });
+
   testWidgets('journey shell fits a narrow viewport without exceptions', (
     WidgetTester tester,
   ) async {
