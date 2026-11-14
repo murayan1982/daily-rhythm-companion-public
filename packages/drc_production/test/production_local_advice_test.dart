@@ -3,11 +3,11 @@ import 'dart:ui' show SemanticsAction;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/production/components/production_daily_advice.dart';
-import 'package:app/production/core/production_character.dart';
-import 'package:app/production/core/production_journey_step.dart';
-import 'package:app/production/core/production_local_advice.dart';
-import 'package:app/production/core/production_mood.dart';
+import 'package:drc_production/components/production_daily_advice.dart';
+import 'package:drc_production/core/production_character.dart';
+import 'package:drc_production/core/production_journey_step.dart';
+import 'package:drc_production/core/production_local_advice.dart';
+import 'package:drc_production/core/production_mood.dart';
 
 void main() {
   final adviceItem = productionJourneyItems.singleWhere(
@@ -105,9 +105,7 @@ void main() {
           character: ProductionCharacter.cheerfulSora,
         ),
       );
-      final finder = find.bySemanticsLabel(
-        RegExp('表示準備完了.*ソラ.*ふつう.*今日は小さく'),
-      );
+      final finder = find.bySemanticsLabel(RegExp('表示準備完了.*ソラ.*ふつう.*今日は小さく'));
       expect(finder, findsOneWidget);
       final data = tester.getSemantics(finder).getSemanticsData();
       expect(data.hasAction(SemanticsAction.tap), isFalse);

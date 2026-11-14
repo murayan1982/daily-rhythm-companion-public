@@ -3,12 +3,12 @@ import 'dart:ui' show SemanticsAction;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/production/components/production_character_selection.dart';
-import 'package:app/production/components/production_journey_overview.dart';
-import 'package:app/production/components/production_mood_check_in.dart';
-import 'package:app/production/core/production_capability.dart';
-import 'package:app/production/core/production_journey_step.dart';
-import 'package:app/production/production_app.dart';
+import 'package:drc_production/components/production_character_selection.dart';
+import 'package:drc_production/components/production_journey_overview.dart';
+import 'package:drc_production/components/production_mood_check_in.dart';
+import 'package:drc_production/core/production_capability.dart';
+import 'package:drc_production/core/production_journey_step.dart';
+import 'package:drc_production/production_app.dart';
 
 void main() {
   test('journey model is the exact approved six-step mapping', () {

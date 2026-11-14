@@ -3,9 +3,9 @@ import 'dart:ui' show Tristate;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/production/components/production_mood_check_in.dart';
-import 'package:app/production/core/production_journey_step.dart';
-import 'package:app/production/core/production_mood.dart';
+import 'package:drc_production/components/production_mood_check_in.dart';
+import 'package:drc_production/core/production_journey_step.dart';
+import 'package:drc_production/core/production_mood.dart';
 
 void main() {
   final moodItem = productionJourneyItems.singleWhere(

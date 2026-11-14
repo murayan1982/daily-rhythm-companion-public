@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'production/production_app.dart';
+import 'package:drc_production/production_app.dart';
 
 void main() {
   runApp(const ProductionApp());

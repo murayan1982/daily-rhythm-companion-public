@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/production/backend/production_backend_operation.dart';
-import 'package:app/production/core/production_capability.dart';
+import 'package:drc_production/backend/production_backend_operation.dart';
+import 'package:drc_production/core/production_capability.dart';
 
 void main() {
   test('approved production capability set is exact', () {
@@ -157,7 +157,7 @@ void main() {
       expect(source.toLowerCase(), isNot(contains(term)));
     }
 
-    final productionSources = Directory('lib/production')
+    final productionSources = Directory('../packages/drc_production/lib')
         .listSync(recursive: true)
         .whereType<File>()
         .where((file) => file.path.endsWith('.dart'));
@@ -176,8 +176,10 @@ void main() {
 }
 
 String _boundarySource() => <String>[
-  File('lib/production/core/production_capability.dart').readAsStringSync(),
   File(
-    'lib/production/backend/production_backend_operation.dart',
+    '../packages/drc_production/lib/core/production_capability.dart',
+  ).readAsStringSync(),
+  File(
+    '../packages/drc_production/lib/backend/production_backend_operation.dart',
   ).readAsStringSync(),
 ].join('\n');

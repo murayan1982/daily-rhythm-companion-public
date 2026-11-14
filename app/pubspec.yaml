@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  drc_production:
+    path: ../packages/drc_production
+
   cupertino_icons: ^1.0.8
   audioplayers: ^6.7.1
   http: ^1.6.0

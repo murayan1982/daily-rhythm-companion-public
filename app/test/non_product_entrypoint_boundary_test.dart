@@ -54,6 +54,10 @@ void main() {
       directives.any((uri) => uri.startsWith('package:app/production/')),
       isFalse,
     );
+    expect(
+      directives.any((uri) => uri.startsWith('package:drc_production/')),
+      isFalse,
+    );
   });
 
   test('operator entrypoint keeps operator composition outside production', () {
@@ -71,12 +75,16 @@ void main() {
       directives.any((uri) => uri.startsWith('package:app/production/')),
       isFalse,
     );
+    expect(
+      directives.any((uri) => uri.startsWith('package:drc_production/')),
+      isFalse,
+    );
   });
 
   test('production graph does not reference non-product entrypoints or UI', () {
     final productionSources = <File>[
       File('lib/main_production.dart'),
-      ...Directory('lib/production')
+      ...Directory('../packages/drc_production/lib')
           .listSync(recursive: true)
           .whereType<File>()
           .where((file) => file.path.endsWith('.dart')),
@@ -107,7 +115,7 @@ void main() {
   test('source hiding and feature flags are not production boundary proof', () {
     final productionSources = <File>[
       File('lib/main_production.dart'),
-      ...Directory('lib/production')
+      ...Directory('../packages/drc_production/lib')
           .listSync(recursive: true)
           .whereType<File>()
           .where((file) => file.path.endsWith('.dart')),

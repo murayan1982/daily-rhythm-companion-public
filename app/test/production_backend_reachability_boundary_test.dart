@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/production/backend/production_backend_operation.dart';
+import 'package:drc_production/backend/production_backend_operation.dart';
 
 void main() {
   test('production graph excludes transport and platform reachability', () {
@@ -136,7 +136,7 @@ void main() {
 String _productionSource() {
   final files = <File>[
     File('lib/main_production.dart'),
-    ...Directory('lib/production')
+    ...Directory('../packages/drc_production/lib')
         .listSync(recursive: true)
         .whereType<File>()
         .where((file) => file.path.endsWith('.dart')),

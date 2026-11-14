@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/production/components/production_journey_overview.dart';
-import 'package:app/production/production_app.dart';
-import 'package:app/production/production_home_screen.dart';
+import 'package:drc_production/components/production_journey_overview.dart';
+import 'package:drc_production/production_app.dart';
+import 'package:drc_production/production_home_screen.dart';
 
 void main() {
   testWidgets('ProductionApp exposes the production journey shell', (
@@ -52,14 +52,19 @@ void main() {
 
     expect(directives, <_SourceDirective>[
       const _SourceDirective('import', 'package:flutter/material.dart'),
-      const _SourceDirective('import', 'production/production_app.dart'),
+      const _SourceDirective(
+        'import',
+        'package:drc_production/production_app.dart',
+      ),
     ]);
   });
 
   test(
     'production directory recursively stays inside its directive boundary',
     () {
-      final productionRoot = Directory('lib/production').absolute;
+      final productionRoot = Directory(
+        '../packages/drc_production/lib',
+      ).absolute;
       final files =
           productionRoot
               .listSync(recursive: true)
@@ -87,8 +92,8 @@ void main() {
   );
 
   test('directive guard accepts only Flutter and contained relative URIs', () {
-    const source = 'lib/production/production_app.dart';
-    const root = 'lib/production';
+    const source = 'packages/drc_production/lib/production_app.dart';
+    const root = 'packages/drc_production/lib';
     final accepted = <String>[
       'package:flutter/material.dart',
       'production_home_screen.dart',
@@ -112,7 +117,7 @@ void main() {
       _isAllowedProductionUri(
         'COMPONENTS/example.dart',
         sourcePath: source,
-        productionRootPath: 'LIB/PRODUCTION',
+        productionRootPath: 'PACKAGES/DRC_PRODUCTION/LIB',
         caseInsensitive: true,
       ),
       isTrue,
@@ -120,7 +125,7 @@ void main() {
     expect(
       _isAllowedProductionUri(
         '../core/example.dart',
-        sourcePath: 'lib/production/components/example.dart',
+        sourcePath: 'packages/drc_production/lib/components/example.dart',
         productionRootPath: root,
         caseInsensitive: false,
       ),
@@ -129,8 +134,8 @@ void main() {
   });
 
   test('directive guard rejects adversarial boundary escapes', () {
-    const source = 'lib/production/production_app.dart';
-    const root = 'lib/production';
+    const source = 'packages/drc_production/lib/production_app.dart';
+    const root = 'packages/drc_production/lib';
     final rejected = <String>[
       'dart:io',
       'package:app/screens/home_screen.dart',
@@ -237,7 +242,7 @@ void main() {
   test('structural source exclusion is the boundary, not visual hiding', () {
     final productionSources = <File>[
       File('lib/main_production.dart'),
-      ...Directory('lib/production')
+      ...Directory('../packages/drc_production/lib')
           .listSync(recursive: true)
           .whereType<File>()
           .where((file) => file.path.endsWith('.dart')),
