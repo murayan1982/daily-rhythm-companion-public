@@ -56,7 +56,13 @@ void main() {
     final plannedItems = productionJourneyItems.where(
       (item) => item.state == ProductionJourneyStepState.planned,
     );
-    expect(plannedItems, hasLength(3));
+    expect(plannedItems, hasLength(2));
+
+    final resultItems = productionJourneyItems.where(
+      (item) => item.state == ProductionJourneyStepState.localResultAvailable,
+    );
+    expect(resultItems, hasLength(1));
+    expect(resultItems.single.step, ProductionJourneyStep.dailyAdvice);
   });
 
   testWidgets('overview shows every title once and marks text chat optional', (
@@ -65,8 +71,32 @@ void main() {
     await tester.pumpWidget(const _OverviewHost());
 
     for (final item in productionJourneyItems) {
-      expect(find.text(item.title), findsOneWidget);
+      if (item.step == ProductionJourneyStep.dailyAdvice) {
+        expect(find.text('${item.order}. ${item.title}'), findsOneWidget);
+      } else {
+        expect(find.text(item.title), findsOneWidget);
+      }
     }
+
+    const currentNotice = '選択内容はこの画面のメッセージに反映されます。保存は準備中です。';
+    const staleNotice = '選択内容の保存とアドバイスへの反映は準備中です。';
+    expect(find.text(currentNotice), findsNWidgets(2));
+    expect(find.text(staleNotice), findsNothing);
+
+    final moodItem = productionJourneyItems.singleWhere(
+      (item) => item.step == ProductionJourneyStep.moodCheckIn,
+    );
+    expect(
+      moodItem.description,
+      '今日の気分を3つから選べます。選択内容はこの画面のメッセージに反映されますが、保存されません。',
+    );
+    final characterItem = productionJourneyItems.singleWhere(
+      (item) => item.step == ProductionJourneyStep.characterSelection,
+    );
+    expect(
+      characterItem.description,
+      '3人のキャラクターから、今の自分に合う相棒を選べます。選択内容はこの画面のメッセージに反映されますが、保存されません。',
+    );
 
     final chatItem = productionJourneyItems.singleWhere(
       (item) => item.step == ProductionJourneyStep.optionalTextChat,
@@ -133,6 +163,44 @@ void main() {
     expect(find.text('選択中: 未選択'), findsOneWidget);
   });
 
+  testWidgets('advice follows lifted mood and character selections', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const _OverviewHost());
+    expect(find.text('気分とキャラクターを選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('☀️ 元気'));
+    await tester.tap(find.text('☀️ 元気'));
+    await tester.pump();
+    expect(find.text('キャラクターを選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('ミナ'));
+    await tester.tap(find.text('ミナ'));
+    await tester.pump();
+    expect(find.text('キャラクター: ミナ'), findsOneWidget);
+    expect(find.text('気分: 元気'), findsOneWidget);
+    expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('😪 だるい'));
+    await tester.tap(find.text('😪 だるい'));
+    await tester.ensureVisible(find.text('レイ'));
+    await tester.tap(find.text('レイ'));
+    await tester.pump();
+    expect(find.text('キャラクター: レイ'), findsOneWidget);
+    expect(find.text('気分: だるい'), findsOneWidget);
+    expect(find.textContaining('今日はタスクを増やさない'), findsOneWidget);
+  });
+
+  testWidgets('character-only journey state requests a mood', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const _OverviewHost());
+    await tester.ensureVisible(find.text('ソラ'));
+    await tester.tap(find.text('ソラ'));
+    await tester.pump();
+    expect(find.text('気分を選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+  });
+
   testWidgets('journey shell fits a narrow viewport without exceptions', (
     WidgetTester tester,
   ) async {
@@ -175,7 +243,8 @@ void main() {
 
       for (final item in productionJourneyItems) {
         if (item.step == ProductionJourneyStep.moodCheckIn ||
-            item.step == ProductionJourneyStep.characterSelection) {
+            item.step == ProductionJourneyStep.characterSelection ||
+            item.step == ProductionJourneyStep.dailyAdvice) {
           continue;
         }
         final semanticsLabel = _semanticsLabelFor(item);
@@ -209,6 +278,8 @@ void main() {
         find.bySemanticsLabel('${characterItem.order}. ${characterItem.title}'),
         findsOneWidget,
       );
+
+      expect(find.bySemanticsLabel(RegExp('今日のアドバイス、準備中')), findsOneWidget);
 
       final sleepItem = productionJourneyItems.singleWhere(
         (item) => item.step == ProductionJourneyStep.sleepStatus,

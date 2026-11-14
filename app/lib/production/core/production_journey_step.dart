@@ -13,6 +13,7 @@ enum ProductionJourneyStepState {
   planned,
   decisionPending,
   localSelectionAvailable,
+  localResultAvailable,
 }
 
 class ProductionJourneyItem {
@@ -50,7 +51,7 @@ const List<ProductionJourneyItem> productionJourneyItems = [
     capability: ProductionCapability.moodCheckIn,
     order: 2,
     title: '気分を記録',
-    description: '今日の気分を3つから選べます。保存とアドバイスへの反映は準備中です。',
+    description: '今日の気分を3つから選べます。選択内容はこの画面のメッセージに反映されますが、保存されません。',
     isOptional: false,
     state: ProductionJourneyStepState.localSelectionAvailable,
   ),
@@ -59,7 +60,7 @@ const List<ProductionJourneyItem> productionJourneyItems = [
     capability: ProductionCapability.characterSelection,
     order: 3,
     title: 'キャラクターを選択',
-    description: '3人のキャラクターから、今の自分に合う相棒を選べます。保存とアドバイスへの反映は準備中です。',
+    description: '3人のキャラクターから、今の自分に合う相棒を選べます。選択内容はこの画面のメッセージに反映されますが、保存されません。',
     isOptional: false,
     state: ProductionJourneyStepState.localSelectionAvailable,
   ),
@@ -68,9 +69,9 @@ const List<ProductionJourneyItem> productionJourneyItems = [
     capability: ProductionCapability.dailyAdvice,
     order: 4,
     title: '今日のアドバイス',
-    description: '睡眠と気分に合わせたアドバイスを確認する機能を準備しています。',
+    description: '気分とキャラクターを選ぶと、端末内で今日のメッセージを表示します。選択内容は保存されません。',
     isOptional: false,
-    state: ProductionJourneyStepState.planned,
+    state: ProductionJourneyStepState.localResultAvailable,
   ),
   ProductionJourneyItem(
     step: ProductionJourneyStep.optionalTextChat,

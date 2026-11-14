@@ -97,7 +97,7 @@ class _ProductionMoodCheckInState extends State<ProductionMoodCheckIn> {
               ],
               const SizedBox(height: 8),
               Text(
-                '選択内容の保存とアドバイスへの反映は準備中です。',
+                '選択内容はこの画面のメッセージに反映されます。保存は準備中です。',
                 style: theme.textTheme.bodySmall,
               ),
             ],

@@ -11,11 +11,12 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_CHARACTER_SELECTION_MIGRATION_R1
+Current update task: DRC_V410_GP2_LOCAL_ADVICE_MIGRATION_CORRECTIVE_R1
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
-  D03 NOT_DECIDED; D04 APPROVED; D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
+  D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
+  D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_CHARACTER_SELECTION_MIGRATION_R1_EXACT_M6_A4_D0
+Product-source implementation: AUTHORIZED_FOR_GP2_LOCAL_ADVICE_MIGRATION_CORRECTIVE_R1_EXACT_M10_A4_D0
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -73,18 +74,18 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | Default is `http://127.0.0.1:8000`; environment override exists. |
-| Decision to make | Select provider, topology, HTTPS endpoint, environments, monitoring, maintenance, and incident ownership. |
+| Status | APPROVED |
+| Current observed state | The v4.1.0 GitHub Android Public Beta active track uses local deterministic advice and no remote production Backend. |
+| Decision to make | Select the active beta Backend mode while deferring any future Cloud Backend provider, topology, HTTPS endpoint, environment, monitoring, maintenance, and incident ownership decision. |
 | Required inputs/evidence | Provider/account/contract evidence, domain ownership, security, operations, cost, and the unresolved field inventory in `docs/v410_gp0_backend_privacy_decision_control.md`. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-2, GP-3, GP-4, GP-5, GP-6, GP-8, GP-9 |
-| Must be decided before | Production connectivity implementation. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | No cloud deployment is claimed. The decision-control document supplies evidence and a questionnaire only; it does not approve a provider, domain, region, owner, price, or implementation. |
+| Must be decided before | Any future Cloud Backend or production connectivity implementation. |
+| Approved value | V410_GITHUB_BETA_LOCAL_ONLY_NO_REMOTE_BACKEND |
+| Approval evidence | User selection recorded 2026-11-13 |
+| Implementation authorization | AUTHORIZED_FOR_GP2_LOCAL_ADVICE_MIGRATION_R1 |
+| Notes | The v4.1.0 GitHub Android Public Beta uses no remote production Backend and only local deterministic advice. Endpoint, hosting, domain, credential, and monitoring are not required for this active mode. A future Cloud Backend is `DEFERRED / NOT_CANCELLED`; resuming it requires a new decision and authorization. D08 remains `NOT_DECIDED`; health, persistence, and privacy publication remain unapproved. |
 
 ## GP0-D04 Production versus non-product separation architecture
 
@@ -113,8 +114,8 @@ SUPERSEDED
 | Excluded capabilities | Voice input/output; realtime; motion; demo; developer/operator controls; raw diagnostics; framework lifecycle controls. |
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
-| Dependencies | GP0-D03 Backend publication model and GP0-D08 privacy/data ownership remain NOT_DECIDED. |
-| Notes | Mood check-in remains included and accepted. This control authorizes only a local three-character production selection UI and typed model using stable IDs/copy. Backend fetch, persistence, advice wiring, character-aware mood copy, Framework routing, provider/model selection, and health connectivity are not authorized. D03/D08 remain NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
+| Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
+| Notes | Mood check-in and character selection remain included and accepted. Their selection copy now matches immediate local-advice reflection; persistence remains unimplemented. This control adds only deterministic local advice from those ephemeral selections. Backend fetch, persistence, character-aware mood copy, Framework routing, provider/model selection, and health connectivity are not authorized. D08 remains NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
 
 ## GP0-D05 Google Play account type and testing applicability
 
