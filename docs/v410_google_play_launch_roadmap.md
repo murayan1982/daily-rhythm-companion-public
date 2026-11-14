@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_PUBLIC_ANDROID_ARTIFACT_PROOF_R1
-Baseline HEAD / origin/main / remote main: ed2454da9277b425e62a72c8b29357ad0780b49b
-Surface: exact M2 A0 D0
-State: PROOF_APK_BUILT / EXCLUSION_EVIDENCE_CAPTURED / GP2_INCOMPLETE / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_R1
+Baseline HEAD / origin/main / remote main: 7d24b4bfc344ac5854ede1f1e72b5faf3d337b11
+Surface: exact M9 A0 D0
+State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -136,14 +136,36 @@ contains the standalone string `localhost`, which is not treated as product
 configuration evidence.
 
 This closes the private proof-artifact build and GP-2 exclusion-evidence
-slice, but does not close GP-2. Character-aware Mood copy and the remaining
-Core-flow migration are still open. GP-4 must apply the formal application ID,
+slice, but does not close GP-2. GP-4 must apply the formal application ID,
 display name, version, and distribution signing, then repeat every exclusion
-check against the exact final signed APK.
+check against the exact final signed APK. Longer-term capabilities beyond the
+approved active Beta flow remain separate work.
+
+GP2-S05 approves the active Public Beta main screen as exactly three ordered
+steps: Mood selection, Character selection, and deterministic local daily
+advice. The three Mood choices retain their accepted mood-specific immediate
+responses. With Mood fixed, that response is unchanged when Character changes;
+Character-aware variation remains in the accepted nine-message local advice
+matrix. Mood and Character can be selected in either order, and advice appears
+or updates after both are present. Sleep/health connection, optional text chat,
+and history cards are outside the active Beta and remain future scope.
+The long-term GP2-S01 boundary remains `TEXT_CORE_PLUS_CHAT`; this focused Beta
+presentation does not remove those future capabilities or authorize storage,
+network, health, or Backend wiring.
+
+Verification with Flutter 3.41.7 / Dart 3.11.5 passed shared-package analysis
+and all 29 shared tests, `app_public/` analysis and its startup test, and all 31
+tests in the app product-boundary suite.
+
+The active Beta GP-2 three-step implementation is pending review and
+acceptance of this working-tree diff. The recorded unsigned ARM64 proof APK
+remains the artifact built from `ed2454da9277b425e62a72c8b29357ad0780b49b`;
+GP-4 must repeat the proof on the final signed APK containing this source.
 
 ### 完了条件
-Completed portions and the private proof evidence stay traceable, while the
-remaining migration and final signed-candidate proof remain explicitly open.
+Completed portions and the private proof evidence stay traceable, while GP-4
+release work, final signed-candidate proof, and longer-term capability work
+remain explicitly open.
 
 ### 禁止事項
 Do not claim GP-2 complete, wire a Backend, expose non-product UI, or treat

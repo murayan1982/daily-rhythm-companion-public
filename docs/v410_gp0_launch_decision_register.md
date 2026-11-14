@@ -11,14 +11,14 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1
-Current update baseline: 5ae9a8370330f1970238feb3b4c93aad59a29b4e
+Current update task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_R1
+Current update baseline: 7d24b4bfc344ac5854ede1f1e72b5faf3d337b11
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
   D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: NOT_AUTHORIZED
-Documentation authorization: APPROVED_FOR_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1_EXACT_M5_A0_D0
+Product-source implementation: AUTHORIZED_FOR_GP2_PUBLIC_BETA_CORE_FLOW_R1
+Documentation authorization: APPROVED_FOR_GP2_PUBLIC_BETA_CORE_FLOW_R1
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -117,7 +117,7 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
 | Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
-| Notes | Mood check-in and character selection remain included and accepted. Their selection copy now matches immediate local-advice reflection; persistence remains unimplemented. This control adds only deterministic local advice from those ephemeral selections. Backend fetch, persistence, character-aware mood copy, Framework routing, provider/model selection, and health connectivity are not authorized. D08 remains NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
+| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The active Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
 
 ## GP2-S02 Active beta Mood persistence policy
 
@@ -143,7 +143,7 @@ SUPERSEDED
 | Scope | GitHub Android Public Beta and later final public candidates |
 | Required exclusion | Non-product Dart graph, permissions, native plugins, assets, endpoints, and operator/developer surfaces not approved for the product. |
 | Architecture | GP2-S04 APPROVED — SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY |
-| Artifact proof | NOT_EXECUTED / BLOCKED |
+| Artifact proof | PRIVATE_ARM64_UNSIGNED_PROOF_CAPTURED_FROM_ED2454D / FINAL_SIGNED_APK_REPROOF_PENDING_GP4 |
 | Dependencies | GP-2 source boundary, GP2-S04 implementation, GP-4 release wiring and final artifact verification |
 | Notes | D03 remains APPROVED for the active local-only beta. D08 remains NOT_DECIDED. D11 remains APPROVED. This decision does not authorize build, signing, publication, or architecture implementation. |
 
@@ -161,7 +161,24 @@ SUPERSEDED
 | Documentation authorization | APPROVED — exact M5 A0 D0 |
 | Architecture implementation | NOT_AUTHORIZED |
 | Build / signing / stage / commit / push / publication | NOT_AUTHORIZED |
-| Impact | BLOCKER-G resolved at the decision level. BLOCKER-A through BLOCKER-F remain open; artifact proof is NOT_EXECUTED / BLOCKED. |
+| Impact | BLOCKER-G and the separate public-app implementation boundary are complete. An unsigned ARM64 proof APK from `ed2454da9277b425e62a72c8b29357ad0780b49b` has exclusion evidence; formal identity, version, signing, and final-candidate reproof remain GP-4 gates. |
+
+## GP2-S05 Active Public Beta core-flow presentation
+
+| Field | Value |
+| --- | --- |
+| Status | APPROVED |
+| Approved value | THREE_STEP_LOCAL_MOOD_CHARACTER_ADVICE_WITH_MOOD_SPECIFIC_CHARACTER_INVARIANT_ACKNOWLEDGEMENT |
+| Approval evidence | User approval recorded 2026-11-14. |
+| Active Beta steps | 1. Mood selection; 2. Character selection; 3. deterministic local daily advice. |
+| Mood acknowledgement | Each Mood keeps its accepted mood-specific immediate response. For a fixed Mood, that response is identical across all Character choices; Character-aware variation is reserved for the nine deterministic advice messages. |
+| Input order | Mood and Character may be selected in either order; advice appears and updates only after both are selected. |
+| Excluded from active screen | Sleep/health connection, optional text chat, and history cards. |
+| Long-term boundary | GP2-S01 `TEXT_CORE_PLUS_CHAT` remains approved and unchanged. |
+| State and data | Current-screen selection only; no persistence, network, or Backend wiring. GP2-S02 remains in force. |
+| Verification | Flutter 3.41.7 / Dart 3.11.5: shared package analyze PASS and 29 tests PASS; `app_public/` analyze PASS and startup test PASS; app product-boundary suite 31 tests PASS. |
+| Acceptance state | The active Beta GP-2 three-step implementation is implemented and statically verified, pending review and acceptance of the current diff. |
+| Remaining work | Sleep/health connection, optional text chat, and history remain future scope. GP-4 formal identity/version/signing and final signed-APK reproof, plus GP-3 refinement, remain separate. |
 
 ## GP0-D05 Google Play account type and testing applicability
 

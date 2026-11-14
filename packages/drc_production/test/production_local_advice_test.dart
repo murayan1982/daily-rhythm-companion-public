@@ -86,7 +86,7 @@ void main() {
         character: expected.character,
       ),
     );
-    expect(find.text('4. 今日のアドバイス'), findsOneWidget);
+    expect(find.text('3. 今日のアドバイス'), findsOneWidget);
     expect(find.text('キャラクター: レイ'), findsOneWidget);
     expect(find.text('気分: だるい'), findsOneWidget);
     expect(find.text(expected.message), findsOneWidget);

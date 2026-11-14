@@ -1,5 +1,3 @@
-import 'dart:ui' show SemanticsAction;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,37 +9,42 @@ import 'package:drc_production/core/production_journey_step.dart';
 import 'package:drc_production/production_app.dart';
 
 void main() {
-  test('journey model is the exact approved six-step mapping', () {
-    expect(productionJourneyItems, hasLength(6));
+  test('journey model is the approved three-step Public Beta mapping', () {
+    expect(productionJourneyItems, hasLength(3));
     expect(ProductionJourneyStep.values, hasLength(6));
     expect(
-      productionJourneyItems.map((item) => item.step).toSet(),
-      ProductionJourneyStep.values.toSet(),
+      productionJourneyItems.map((item) => item.step).toList(),
+      <ProductionJourneyStep>[
+        ProductionJourneyStep.moodCheckIn,
+        ProductionJourneyStep.characterSelection,
+        ProductionJourneyStep.dailyAdvice,
+      ],
     );
     expect(
-      productionJourneyItems.map((item) => item.capability).toSet(),
-      ProductionCapability.values.toSet(),
+      productionJourneyItems.map((item) => item.capability).toList(),
+      <ProductionCapability>[
+        ProductionCapability.moodCheckIn,
+        ProductionCapability.characterSelection,
+        ProductionCapability.dailyAdvice,
+      ],
     );
     expect(productionJourneyItems.map((item) => item.order).toList(), <int>[
       1,
       2,
       3,
-      4,
-      5,
-      6,
     ]);
-
-    final optionalItems = productionJourneyItems.where(
-      (item) => item.isOptional,
+    expect(productionJourneyItems.every((item) => !item.isOptional), isTrue);
+    expect(ProductionCapability.values, hasLength(6));
+    expect(
+      ProductionJourneyStep.values.toSet().difference(
+        productionJourneyItems.map((item) => item.step).toSet(),
+      ),
+      <ProductionJourneyStep>{
+        ProductionJourneyStep.sleepStatus,
+        ProductionJourneyStep.optionalTextChat,
+        ProductionJourneyStep.history,
+      },
     );
-    expect(optionalItems, hasLength(1));
-    expect(optionalItems.single.step, ProductionJourneyStep.optionalTextChat);
-
-    final pendingItems = productionJourneyItems.where(
-      (item) => item.state == ProductionJourneyStepState.decisionPending,
-    );
-    expect(pendingItems, hasLength(1));
-    expect(pendingItems.single.step, ProductionJourneyStep.sleepStatus);
 
     final localItems = productionJourneyItems.where(
       (item) =>
@@ -53,11 +56,6 @@ void main() {
       ProductionJourneyStep.characterSelection,
     });
 
-    final plannedItems = productionJourneyItems.where(
-      (item) => item.state == ProductionJourneyStepState.planned,
-    );
-    expect(plannedItems, hasLength(2));
-
     final resultItems = productionJourneyItems.where(
       (item) => item.state == ProductionJourneyStepState.localResultAvailable,
     );
@@ -65,17 +63,20 @@ void main() {
     expect(resultItems.single.step, ProductionJourneyStep.dailyAdvice);
   });
 
-  testWidgets('overview shows every title once and marks text chat optional', (
+  testWidgets('overview shows only the ordered three-step Public Beta flow', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const _OverviewHost());
 
     for (final item in productionJourneyItems) {
-      if (item.step == ProductionJourneyStep.dailyAdvice) {
-        expect(find.text('${item.order}. ${item.title}'), findsOneWidget);
-      } else {
-        expect(find.text(item.title), findsOneWidget);
-      }
+      expect(
+        find.text(
+          item.step == ProductionJourneyStep.dailyAdvice
+              ? '${item.order}. ${item.title}'
+              : item.title,
+        ),
+        findsOneWidget,
+      );
     }
 
     const currentNotice = '選択内容はこの画面のメッセージに反映されます。保存は準備中です。';
@@ -98,28 +99,13 @@ void main() {
       '3人のキャラクターから、今の自分に合う相棒を選べます。選択内容はこの画面のメッセージに反映されますが、保存されません。',
     );
 
-    final chatItem = productionJourneyItems.singleWhere(
-      (item) => item.step == ProductionJourneyStep.optionalTextChat,
-    );
-    expect(find.text('\u4efb\u610f'), findsOneWidget);
-    expect(
-      find.ancestor(of: find.text('\u4efb\u610f'), matching: find.byType(Card)),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: find.ancestor(
-          of: find.text('\u4efb\u610f'),
-          matching: find.byType(Card),
-        ),
-        matching: find.text(chatItem.title),
-      ),
-      findsOneWidget,
-    );
+    expect(find.text('睡眠を確認'), findsNothing);
+    expect(find.text('会話を続ける'), findsNothing);
+    expect(find.text('履歴を振り返る'), findsNothing);
   });
 
   testWidgets(
-    'overview exposes only the six approved local selection actions',
+    'overview exposes only the six choice chips and no other actions',
     (WidgetTester tester) async {
       await tester.pumpWidget(const _OverviewHost());
 
@@ -179,7 +165,17 @@ void main() {
     await tester.pump();
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
+    expect(find.text('今日は前向きに動けそうです。'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('ソラ'));
+    await tester.tap(find.text('ソラ'));
+    await tester.pump();
+    expect(find.text('キャラクター: ソラ'), findsOneWidget);
+    expect(find.text('気分: 元気'), findsOneWidget);
+    expect(find.text('今日は前向きに動けそうです。'), findsOneWidget);
+    expect(find.textContaining('いい調子ですね！'), findsOneWidget);
+    expect(find.textContaining('今日は調子がよさそうですね'), findsNothing);
 
     await tester.ensureVisible(find.text('😪 だるい'));
     await tester.tap(find.text('😪 だるい'));
@@ -274,34 +270,12 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('semantics exposes complete six-step labels without actions', (
+  testWidgets('semantics exposes the ordered three-step labels', (
     WidgetTester tester,
   ) async {
     final handle = tester.ensureSemantics();
     try {
       await tester.pumpWidget(const _OverviewHost());
-
-      for (final item in productionJourneyItems) {
-        if (item.step == ProductionJourneyStep.moodCheckIn ||
-            item.step == ProductionJourneyStep.characterSelection ||
-            item.step == ProductionJourneyStep.dailyAdvice) {
-          continue;
-        }
-        final semanticsLabel = _semanticsLabelFor(item);
-        expect(find.bySemanticsLabel(semanticsLabel), findsOneWidget);
-
-        final semantics = tester.getSemantics(
-          find.bySemanticsLabel(semanticsLabel),
-        );
-        expect(
-          semantics.getSemanticsData().hasAction(SemanticsAction.tap),
-          isFalse,
-        );
-        expect(
-          semantics.getSemanticsData().hasAction(SemanticsAction.longPress),
-          isFalse,
-        );
-      }
 
       final moodItem = productionJourneyItems.singleWhere(
         (item) => item.step == ProductionJourneyStep.moodCheckIn,
@@ -320,34 +294,13 @@ void main() {
       );
 
       expect(find.bySemanticsLabel(RegExp('今日のアドバイス、準備中')), findsOneWidget);
-
-      final sleepItem = productionJourneyItems.singleWhere(
-        (item) => item.step == ProductionJourneyStep.sleepStatus,
-      );
-      expect(sleepItem.state, ProductionJourneyStepState.decisionPending);
-      expect(_semanticsLabelFor(sleepItem), contains(sleepItem.description));
-      expect(
-        find.bySemanticsLabel(_semanticsLabelFor(sleepItem)),
-        findsOneWidget,
-      );
-
-      final chatItem = productionJourneyItems.singleWhere(
-        (item) => item.step == ProductionJourneyStep.optionalTextChat,
-      );
-      expect(_semanticsLabelFor(chatItem), contains('\u4efb\u610f'));
-      expect(
-        find.bySemanticsLabel(_semanticsLabelFor(chatItem)),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel(RegExp('睡眠を確認')), findsNothing);
+      expect(find.bySemanticsLabel(RegExp('会話を続ける')), findsNothing);
+      expect(find.bySemanticsLabel(RegExp('履歴を振り返る')), findsNothing);
     } finally {
       handle.dispose();
     }
   });
-}
-
-String _semanticsLabelFor(ProductionJourneyItem item) {
-  final optionalLabel = item.isOptional ? '\u3001\u4efb\u610f' : '';
-  return '${item.order}. ${item.title}$optionalLabel\u3002${item.description}';
 }
 
 class _OverviewHost extends StatelessWidget {

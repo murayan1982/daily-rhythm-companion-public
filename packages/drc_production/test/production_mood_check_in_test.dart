@@ -73,6 +73,7 @@ void main() {
     await tester.tap(find.text('🌿 ふつう'));
     await tester.pump();
     expect(find.text('選択中: ふつう'), findsOneWidget);
+    expect(find.text('今日はいつも通り過ごせそうです。'), findsOneWidget);
     expect(_selectedChips(tester), <String>['🌿 ふつう']);
     expect(changes.last, ProductionMood.normal);
 

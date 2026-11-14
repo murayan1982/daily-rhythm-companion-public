@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_PUBLIC_ANDROID_ARTIFACT_PROOF_R1
-Baseline: ed2454da9277b425e62a72c8b29357ad0780b49b
-Surface: exact M2 A0 D0
-State: PROOF_APK_BUILT / EXCLUSION_EVIDENCE_CAPTURED / GP2_INCOMPLETE / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_R1
+Baseline: 7d24b4bfc344ac5854ede1f1e72b5faf3d337b11
+Surface: exact M9 A0 D0
+State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -49,8 +49,15 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Fresh `ProductionJourneyOverview` instance resets Mood to unselected
 - [x] Product source unchanged and no persistence dependency added
 - [x] D08 remains `NOT_DECIDED`
-- [ ] Character-aware mood copy decision
-- [ ] Remaining Core-flow migration
+- [x] Active Public Beta Mood acknowledgement decision: mood-specific copy, invariant across Character choices
+- [x] Active Public Beta three-step Core-flow: Mood → Character → local advice
+- [x] Mood and Character accepted in either order; advice appears and updates after both selections
+- [x] Sleep, optional text chat, and history cards excluded from the active Public Beta main screen
+- [x] Shared package analyze PASS and all 29 shared tests PASS
+- [x] `app_public/` analyze PASS and startup test PASS
+- [x] App product-boundary suite: 31 tests PASS
+- [ ] Review and accept the current active Beta GP-2 three-step implementation diff
+- [ ] Long-term `TEXT_CORE_PLUS_CHAT` capability completion beyond the active Beta screen
 - [x] Strict product-only artifact exclusion policy selected
 - [x] Source-level production graph boundary preserved
 - [x] Current Android/pubspec/asset blockers inventoried
@@ -187,5 +194,8 @@ release-mode proof APK was built from that exact source as `app-release.apk`:
 Manifest, plugin/DEX/native-library, Flutter asset, and AOT exclusion evidence
 was captured for this proof APK. Formal identity, display name, version,
 distribution signing, and repetition against the exact final signed APK remain
-GP-4 gates. Character-aware Mood copy and the remaining Core-flow migration
+GP-4 gates. The active Beta three-step Core-flow and mood-specific,
+Character-invariant Mood responses are approved and await review/acceptance of
+the current implementation diff. Sleep/health connection, optional text chat,
+and history remain future scope. Longer-term capabilities and GP-3 refinement
 remain open, so GP-2 and GP-3 are incomplete.

@@ -25,82 +25,30 @@ class _ProductionJourneyOverviewState extends State<ProductionJourneyOverview> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final item in productionJourneyItems) ...[
-          if (item.step == ProductionJourneyStep.moodCheckIn)
-            ProductionMoodCheckIn(
-              item: item,
-              onChanged: (mood) => setState(() => _selectedMood = mood),
-            )
-          else if (item.step == ProductionJourneyStep.characterSelection)
-            ProductionCharacterSelection(
-              item: item,
-              onChanged: (character) =>
-                  setState(() => _selectedCharacter = character),
-            )
-          else if (item.step == ProductionJourneyStep.dailyAdvice)
-            ProductionDailyAdvice(
-              item: item,
-              selectedMood: _selectedMood,
-              selectedCharacter: _selectedCharacter,
-            )
-          else
-            _JourneyCard(item: item),
+          _buildActiveStep(item),
           if (item != productionJourneyItems.last) const SizedBox(height: 12),
         ],
       ],
     );
   }
-}
 
-class _JourneyCard extends StatelessWidget {
-  const _JourneyCard({required this.item});
-
-  final ProductionJourneyItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final optionalLabel = item.isOptional ? '\u3001\u4efb\u610f' : '';
-    final semanticsLabel =
-        '${item.order}. ${item.title}$optionalLabel\u3002${item.description}';
-
-    return Semantics(
-      container: true,
-      label: semanticsLabel,
-      child: ExcludeSemantics(
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 32,
-                  child: Text(
-                    '${item.order}.',
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.title, style: theme.textTheme.titleMedium),
-                      if (item.isOptional) ...[
-                        const SizedBox(height: 4),
-                        Text('\u4efb\u610f', style: theme.textTheme.labelLarge),
-                      ],
-                      const SizedBox(height: 6),
-                      Text(item.description, style: theme.textTheme.bodyMedium),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+  Widget _buildActiveStep(ProductionJourneyItem item) {
+    return switch (item.step) {
+      ProductionJourneyStep.moodCheckIn => ProductionMoodCheckIn(
+        item: item,
+        onChanged: (mood) => setState(() => _selectedMood = mood),
       ),
-    );
+      ProductionJourneyStep.characterSelection => ProductionCharacterSelection(
+        item: item,
+        onChanged: (character) =>
+            setState(() => _selectedCharacter = character),
+      ),
+      ProductionJourneyStep.dailyAdvice => ProductionDailyAdvice(
+        item: item,
+        selectedMood: _selectedMood,
+        selectedCharacter: _selectedCharacter,
+      ),
+      _ => throw StateError('Inactive step in the Public Beta journey.'),
+    };
   }
 }

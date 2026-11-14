@@ -26,7 +26,7 @@ class ProductionHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '睡眠と気分を確認して、今日の過ごし方を整える流れです。',
+                    '気分とキャラクターを選ぶと、端末内で今日のメッセージを表示します。',
                     style: theme.textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
