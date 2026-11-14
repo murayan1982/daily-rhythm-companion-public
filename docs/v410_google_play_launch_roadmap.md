@@ -5,17 +5,17 @@ Updated: 2026-11-14
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_EPHEMERAL_MOOD_POLICY_CORRECTIVE_R2
-Baseline HEAD / origin/main / remote main: c10db09a0ce1e8acd8960df65032fd97c3f73de8
+Current task: DRC_V410_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1
+Baseline HEAD / origin/main / remote main: 2134362f9b7fa4cfbbdac6a36f932062fc45b237
 Surface: exact M4 A1 D0
-State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
+State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
 separate `DEFERRED / NOT_CANCELLED` track outside the GP-0 through GP-9 phase
-numbering. This bounded Control authorizes only the exact five-path GP-2
-ephemeral Mood policy test/documentation surface (`M4 A1 D0`).
+numbering. This bounded Control authorizes only the exact five-document GP-2
+strict product artifact exclusion contract surface (`M4 A1 D0`).
 
 ## Immutable v4.0.0 boundary
 
@@ -105,6 +105,17 @@ persisted. It exists only in the current `ProductionJourneyOverview` instance
 and returns to unselected when a fresh instance is created. This is an approved
 product policy, not an omitted implementation. D08 as a whole remains
 `NOT_DECIDED`; no new Character persistence decision is made.
+
+The GitHub Android Public Beta now has an approved strict product-only artifact
+policy: `STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT`. The accepted production source
+graph boundary remains source-level evidence only. Compiled artifact proof is
+not complete. BLOCKER-A through BLOCKER-G record the non-product default target,
+shared microphone permission, shared native-plugin declarations, shared
+demo/legacy assets, unfinished Android identity/signing, absent compiled
+artifact evidence, and undecided dependency-boundary architecture. A separate
+public Flutter application boundary is proposed but not approved; the
+architecture decision remains pending. GP-4 release wiring and final-candidate
+artifact re-verification remain required, and GP-2 remains incomplete.
 
 ### 完了条件
 Completed portions stay byte/evidence compatible, while remaining migration
@@ -286,20 +297,22 @@ Reactivation requires a new baseline, then-current official evidence, explicit
 decisions, and separate build/upload/testing/publication authority. GitHub beta
 completion cannot mark Play work complete.
 
-## Ephemeral Mood Policy R1 verification
+## Strict Product Artifact Exclusion Contract R1 verification
 
-The focused journey regression verifies initial unselected state, materializes
-the local advice by selecting Mood and Character within one widget instance,
-disposes that State, and verifies reset to unselected with no restored advice
-in a fresh instance. Character selection is test setup, not a new Character
-persistence decision. Product source and dependencies remain unchanged. Existing Mood,
-Character, local-advice, boundary, and widget suites remain accepted.
+The strict policy is `STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT`, and the accepted
+source graph boundary is preserved. Current artifact proof is
+`NOT_EXECUTED / BLOCKED`; BLOCKER-A through BLOCKER-G are recorded. Architecture
+remains `NOT_DECIDED`. The recommended architecture is a separate public
+Flutter application boundary, but the recommendation is not approval.
 
-## Ephemeral Mood Policy R1 stop point
+No Product, Backend, Android, pubspec, README, or test change was made, and no
+Flutter or Gradle build was run. The surface remains exact `M4 A1 D0`. D03 is
+`APPROVED`, D08 is `NOT_DECIDED`, D11 is `APPROVED`, and GP-2 remains
+incomplete.
 
-README remains frozen at its accepted SHA-256. Backend source, Android
-configuration, and `pubspec.yaml` remain unchanged. Changes are limited to the
-exact five-path GP-2 ephemeral Mood policy surface, `M4 A1 D0`, recorded by
-this Control. Stop after required verification and a new review handoff.
-Stage, commit, push, build, signing, tag, Release, asset, Console, and hosting
-operations remain `NOT_AUTHORIZED`.
+## Strict Product Artifact Exclusion Contract R1 stop point
+
+Stop after the exact five-document implementation and review handoff. Do not
+build an APK/AAB, implement an architecture, change Android, pubspec, or product
+source, or stage, commit, or push. Artifact proof remains unchecked. The next
+control requires a user architecture decision.

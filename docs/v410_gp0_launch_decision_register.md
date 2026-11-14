@@ -11,13 +11,13 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_EPHEMERAL_MOOD_POLICY_CORRECTIVE_R2
+Current update task: DRC_V410_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
   D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: NOT_REQUIRED_PRODUCT_SOURCE_UNCHANGED
-Test/documentation authorization: AUTHORIZED_FOR_GP2_EPHEMERAL_MOOD_POLICY_R1_EXACT_M4_A1_D0
+Product-source implementation: NOT_AUTHORIZED
+Documentation authorization: AUTHORIZED_FOR_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1_EXACT_M4_A1_D0
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -131,6 +131,20 @@ SUPERSEDED
 | External transmission | NONE |
 | D08 | NOT_DECIDED |
 | Notes | This decision does not approve health-data storage, history, analytics, Cloud Backend, account synchronization, device backup behavior, retention, deletion policy, or any future persistence implementation. |
+
+## GP2-S03 Strict product artifact exclusion policy
+
+| Field | Value |
+| --- | --- |
+| Status | APPROVED |
+| Approved value | STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT |
+| Approval evidence | User selection recorded 2026-11-14 |
+| Scope | GitHub Android Public Beta and later final public candidates |
+| Required exclusion | Non-product Dart graph, permissions, native plugins, assets, endpoints, and operator/developer surfaces not approved for the product. |
+| Architecture | NOT_DECIDED |
+| Artifact proof | NOT_EXECUTED |
+| Dependencies | GP-2 source boundary, future architecture decision, GP-4 release wiring |
+| Notes | D03 remains APPROVED for the active local-only beta. D08 remains NOT_DECIDED. D11 remains APPROVED. This decision does not authorize build, signing, publication, or architecture implementation. |
 
 ## GP0-D05 Google Play account type and testing applicability
 

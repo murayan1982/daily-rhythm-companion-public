@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_EPHEMERAL_MOOD_POLICY_CORRECTIVE_R2
-Baseline: c10db09a0ce1e8acd8960df65032fd97c3f73de8
+Current task: DRC_V410_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1
+Baseline: 2134362f9b7fa4cfbbdac6a36f932062fc45b237
 Surface: exact M4 A1 D0
-State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
+State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -51,6 +51,16 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] D08 remains `NOT_DECIDED`
 - [ ] Character-aware mood copy decision
 - [ ] Remaining Core-flow migration
+- [x] Strict product-only artifact exclusion policy selected
+- [x] Source-level production graph boundary preserved
+- [x] Current Android/pubspec/asset blockers inventoried
+- [x] Artifact exclusion acceptance contract defined
+- [ ] Product dependency-boundary architecture decision
+- [ ] Product-only Android artifact build
+- [ ] Merged manifest exclusion proof
+- [ ] Plugin registrant/artifact inventory proof
+- [ ] Asset manifest exclusion proof
+- [ ] AOT analyze-size exclusion proof
 - [ ] GP-2 artifact exclusion proof
 - [ ] GP-3 user-journey refinement
 
@@ -162,26 +172,23 @@ GP-8 does not create or publish a tag, GitHub Release, or asset.
 All Play items remain `DEFERRED / NOT_CANCELLED`. GitHub beta completion does
 not check any Play item.
 
-## Ephemeral Mood Policy R1 verification
+## Strict Product Artifact Exclusion Contract R1 verification
 
-- [x] GP-0 through GP-9 identifier contract remains intact.
-- [x] GP-8 remains pre-publication Public Beta testing.
-- [x] GP-9 remains GitHub Release publication and post-release verification.
-- [x] Google Play remains outside GP numbering in a separate deferred section.
-- [x] README accepted candidate remains unchanged.
-- [x] Backend source, Android configuration, and pubspec remain unchanged.
-- [x] Test/documentation changes are limited to the exact five-path policy surface (`M4 A1 D0`).
-- [x] Fresh-instance reset is covered without storage, timer, network, filesystem, or platform access.
-- [x] Local advice is materialized before disposal and absent from a fresh instance.
-- [x] Product source and dependencies remain unchanged.
-- [x] Required Flutter analyze and tests passed for the accepted candidate.
-- [x] Accepted Mood Check-in and Character Selection source and tests remain unchanged.
-- [x] Advice uses exactly nine deterministic local mood-character mappings.
-- [x] No remote Backend/persistence/AI/FW routing was added.
-- [x] Stage, commit, push, build, signing, tag, Release, asset, and Console operations remain unauthorized.
+- [x] GP-0 through GP-9 contract preserved.
+- [x] Strict product-only policy recorded.
+- [x] Source-level boundary distinguished from compiled artifact proof.
+- [x] BLOCKER-A through BLOCKER-G recorded.
+- [x] Architecture remains `NOT_DECIDED`.
+- [x] Artifact proof remains `NOT_EXECUTED`.
+- [x] GP-2 artifact exclusion proof remains unchecked.
+- [x] Product / Backend / Android / pubspec / README / tests unchanged.
+- [x] No Flutter/Gradle build.
+- [x] Exact `M4 A1 D0`.
+- [x] Stage / commit / push not executed.
 
-## Ephemeral Mood Policy R1 stop point
+## Strict Product Artifact Exclusion Contract R1 stop point
 
-Stop after required verification and a new handoff. No additional product
-behavior, unchecked item, or distribution operation is authorized by this
-Control.
+Stop after the exact five-document implementation and review handoff. Do not
+build an APK/AAB, implement an architecture, change Android, pubspec, or product
+source, or stage, commit, or push. Artifact proof remains unchecked. The next
+control requires a user architecture decision.

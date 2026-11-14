@@ -168,3 +168,34 @@ Artifact exclusion proof, core-flow migration, production environment and
 release wiring remain later controls. GP0-D03 and GP0-D08 remain
 `NOT_DECIDED`; health operations remain inactive and the production Backend
 remains unwired.
+
+## Control F: strict product artifact exclusion contract
+
+The accepted production import and route boundary is source-level proof. It
+shows that `main_production.dart` and `lib/production/` do not reach the mixed,
+developer, operator, demo, diagnostic, or legacy Backend graph. It does not
+prove what a compiled Android APK or AAB contains.
+
+GP2-S03 approves `STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT`. A qualifying public
+candidate must exclude unapproved non-product Dart code, permissions, native
+plugins, assets, localhost/private-LAN configuration, and developer/operator
+identifiers. The current app cannot yet demonstrate that result: the default
+target is the non-product compatibility shim; the shared manifest declares
+`RECORD_AUDIO`; the shared pubspec declares native-plugin candidates and
+demo/background/placeholder assets; Android identity and signing are unfinished;
+no compiled artifact evidence exists; and the dependency-boundary architecture
+is not decided.
+
+A separate public Flutter application boundary is the proposed and recommended
+architecture because it can own a product-only pubspec, Android manifest and
+configuration while sharing the production UI as a package. Moving non-product
+tooling out of the current app is an alternative with a larger migration
+surface. An Android flavor alone is insufficient: it can separate entrypoints
+and manifests but does not by itself prove strict exclusion from shared pubspec
+plugin registration and Flutter assets.
+
+This control performs no build and changes no product source, Android files, or
+pubspec. The next control must obtain a user architecture decision. GP-4 must
+later wire the release identity, target, and signing, and compiled evidence must
+be produced and repeated for the final public candidate. GP-2 remains
+incomplete.
