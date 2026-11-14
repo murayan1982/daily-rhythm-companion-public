@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1
-Baseline HEAD / origin/main / remote main: 5ae9a8370330f1970238feb3b4c93aad59a29b4e
-Surface: exact M5 A0 D0
-State: ARCHITECTURE_APPROVED / DOCUMENTED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PUBLIC_ANDROID_ARTIFACT_PROOF_R1
+Baseline HEAD / origin/main / remote main: ed2454da9277b425e62a72c8b29357ad0780b49b
+Surface: exact M2 A0 D0
+State: PROOF_APK_BUILT / EXCLUSION_EVIDENCE_CAPTURED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -114,15 +114,36 @@ keeps developer, demo, and operator tooling in `app/`. The
 [production boundary architecture](v410_gp2_production_boundary_architecture.md#control-g-public-flutter-application-boundary)
 defines ownership, migration, and rollback.
 
-GP-2 implements the boundary and produces exclusion evidence for a private
-proof APK. The existing source graph evidence is accepted. BLOCKER-A through
-BLOCKER-F are open; artifact proof is `NOT_EXECUTED / BLOCKED` and GP-2 is
-incomplete. GP-4 applies the release identity, version, and signing, then
-repeats proof on the final signed candidate.
+The shared production package extraction is complete at
+`2e0c038e9737ec711aeb6173f524f4390c122432`, and the Android-only
+`app_public/` boundary is complete at
+`ed2454da9277b425e62a72c8b29357ad0780b49b`.
+
+An undistributed, unsigned ARM64 release-mode proof APK was built from
+`ed2454da9277b425e62a72c8b29357ad0780b49b` with explicit target
+`lib/main.dart`. The APK is `app-release.apk`, 15,073,506 bytes, SHA-256
+`672DCCD462ACAD49ECD891482353B1EF0212E33512D9868A1E9C383AF60F4BAC`.
+The merged and packaged manifests use the provisional application ID
+`com.dailyrhythmcompanion.preview.drc_public_app`, are non-debuggable, and
+contain neither `RECORD_AUDIO` nor `INTERNET`. The generated plugin registrant
+registers no plugin; the APK contains only ARM64 `libapp.so` and
+`libflutter.so`; its Flutter asset inventory contains only Flutter framework
+manifests, notices, the Material icon font, and framework shaders. AOT evidence
+contains the public entrypoint, `drc_production`, Flutter/Dart, and their
+runtime libraries, with no non-product app library or route. No product
+localhost/private-LAN setting was found; the generic Dart runtime image still
+contains the standalone string `localhost`, which is not treated as product
+configuration evidence.
+
+This closes the private proof-artifact build and GP-2 exclusion-evidence
+slice, but does not close GP-2. Character-aware Mood copy and the remaining
+Core-flow migration are still open. GP-4 must apply the formal application ID,
+display name, version, and distribution signing, then repeat every exclusion
+check against the exact final signed APK.
 
 ### 完了条件
-Completed portions stay byte/evidence compatible, while remaining migration
-and artifact proof are explicitly open and separately authorized.
+Completed portions and the private proof evidence stay traceable, while the
+remaining migration and final signed-candidate proof remain explicitly open.
 
 ### 禁止事項
 Do not claim GP-2 complete, wire a Backend, expose non-product UI, or treat

@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1
-Baseline: 5ae9a8370330f1970238feb3b4c93aad59a29b4e
-Surface: exact M5 A0 D0
-State: ARCHITECTURE_APPROVED / DOCUMENTED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PUBLIC_ANDROID_ARTIFACT_PROOF_R1
+Baseline: ed2454da9277b425e62a72c8b29357ad0780b49b
+Surface: exact M2 A0 D0
+State: PROOF_APK_BUILT / EXCLUSION_EVIDENCE_CAPTURED / GP2_INCOMPLETE / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -56,14 +56,14 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Current Android/pubspec/asset blockers inventoried
 - [x] Artifact exclusion acceptance contract defined
 - [x] Product dependency-boundary architecture decision (GP2-S04, Option A; BLOCKER-G resolved at the decision level)
-- [ ] Extract `packages/drc_production/` and verify behavior and source boundaries with the existing preview and regression suites
-- [ ] Add `app_public/` and verify the product-only dependency, entrypoint, Android manifest, and asset inputs
-- [ ] Product-only Android artifact build
-- [ ] Merged manifest exclusion proof
-- [ ] Plugin registrant/artifact inventory proof
-- [ ] Asset manifest exclusion proof
-- [ ] AOT analyze-size exclusion proof
-- [ ] GP-2 artifact exclusion proof
+- [x] Extract `packages/drc_production/` and verify behavior and source boundaries with the existing preview and regression suites (`2e0c038e9737ec711aeb6173f524f4390c122432`)
+- [x] Add `app_public/` and verify the product-only dependency, entrypoint, Android manifest, and asset inputs (`ed2454da9277b425e62a72c8b29357ad0780b49b`)
+- [x] Product-only Android ARM64 release-mode proof artifact build (unsigned and undistributed)
+- [x] Merged and packaged manifest exclusion proof for the proof APK
+- [x] Plugin registrant, DEX, and native-library inventory proof for the proof APK
+- [x] Flutter asset manifest and APK entry exclusion proof for the proof APK
+- [x] AOT analyze-size exclusion proof for the proof APK
+- [x] GP-2 private proof-artifact exclusion evidence captured
 - [ ] GP-3 user-journey refinement
 
 ## P0 — release foundation and blocking decisions
@@ -177,8 +177,15 @@ not check any Play item.
 
 ## Product dependency-boundary decision R1
 
-GP2-S04 records `SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY`. BLOCKER-A
-through BLOCKER-F remain open. Artifact proof is `NOT_EXECUTED / BLOCKED`;
-GP-2 and GP-3 are incomplete. See the
-[migration and verification sequence](v410_gp2_production_boundary_architecture.md#control-g-public-flutter-application-boundary)
-for the next separately authorized implementation slice.
+GP2-S04 records `SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY`. The shared
+package extraction is complete at `2e0c038e9737ec711aeb6173f524f4390c122432`,
+and `app_public/` is complete at
+`ed2454da9277b425e62a72c8b29357ad0780b49b`. An unsigned, undistributed ARM64
+release-mode proof APK was built from that exact source as `app-release.apk`:
+15,073,506 bytes, SHA-256
+`672DCCD462ACAD49ECD891482353B1EF0212E33512D9868A1E9C383AF60F4BAC`.
+Manifest, plugin/DEX/native-library, Flutter asset, and AOT exclusion evidence
+was captured for this proof APK. Formal identity, display name, version,
+distribution signing, and repetition against the exact final signed APK remain
+GP-4 gates. Character-aware Mood copy and the remaining Core-flow migration
+remain open, so GP-2 and GP-3 are incomplete.
