@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_R1
-Baseline HEAD / origin/main / remote main: 7d24b4bfc344ac5854ede1f1e72b5faf3d337b11
-Surface: exact M9 A0 D0
-State: IMPLEMENTED / STATIC_VERIFIED / GP2_INCOMPLETE / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
+Baseline HEAD / origin/main / remote main: 3ac56a19197179e7370da173a56382c0fb7b9747
+Surface: exact M3 A0 D0
+State: ACTIVE_BETA_GP2_ACCEPTED / GP3_PENDING / GP4_PENDING / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -94,11 +94,10 @@ slice maps the ephemeral mood and character selections to exactly nine fixed,
 local messages without network, persistence, AI generation, or Framework
 routing. Mood and Character user-facing copy now states that each selection is
 reflected immediately in this screen's local message while persistence remains
-unavailable. Cloud Backend work is `DEFERRED / NOT_CANCELLED`; persistence, health,
-character-aware mood copy, the remaining Core-flow migration, and release-
-artifact exclusion proof remain incomplete. D03 is approved only for this
-active local-only beta mode, and D08 remains `NOT_DECIDED`. These slices do not
-claim GP-2 or GP-3 completion.
+unavailable. Cloud Backend work is `DEFERRED / NOT_CANCELLED`; persistence and
+health remain outside the active Beta. D03 is approved only for this active
+local-only beta mode, and D08 remains `NOT_DECIDED`. The current GitHub Android
+Public Beta GP-2 scope is accepted; GP-3 and GP-4 remain incomplete.
 
 For the active v4.1.0 GitHub beta, Mood selection is intentionally not
 persisted. It exists only in the current `ProductionJourneyOverview` instance
@@ -135,11 +134,11 @@ localhost/private-LAN setting was found; the generic Dart runtime image still
 contains the standalone string `localhost`, which is not treated as product
 configuration evidence.
 
-This closes the private proof-artifact build and GP-2 exclusion-evidence
-slice, but does not close GP-2. GP-4 must apply the formal application ID,
-display name, version, and distribution signing, then repeat every exclusion
-check against the exact final signed APK. Longer-term capabilities beyond the
-approved active Beta flow remain separate work.
+This closes the private proof-artifact build and GP-2 exclusion-evidence slice
+for the active Beta. GP-4 must apply the formal application ID, display name,
+version, and distribution signing, then repeat every exclusion check against
+the exact final signed APK. Longer-term capabilities beyond the accepted active
+Beta flow remain separate future work under `TEXT_CORE_PLUS_CHAT`.
 
 GP2-S05 approves the active Public Beta main screen as exactly three ordered
 steps: Mood selection, Character selection, and deterministic local daily
@@ -157,19 +156,21 @@ Verification with Flutter 3.41.7 / Dart 3.11.5 passed shared-package analysis
 and all 29 shared tests, `app_public/` analysis and its startup test, and all 31
 tests in the app product-boundary suite.
 
-The active Beta GP-2 three-step implementation is pending review and
-acceptance of this working-tree diff. The recorded unsigned ARM64 proof APK
-remains the artifact built from `ed2454da9277b425e62a72c8b29357ad0780b49b`;
-GP-4 must repeat the proof on the final signed APK containing this source.
+The active Beta GP-2 three-step implementation was accepted at
+`3ac56a19197179e7370da173a56382c0fb7b9747`. Final review: no blocking
+findings. The recorded unsigned ARM64 proof APK remains the artifact
+built from `ed2454da9277b425e62a72c8b29357ad0780b49b`; GP-4 must repeat the
+proof on the final signed APK containing the accepted source.
 
 ### 完了条件
-Completed portions and the private proof evidence stay traceable, while GP-4
-release work, final signed-candidate proof, and longer-term capability work
-remain explicitly open.
+The current GitHub Android Public Beta GP-2 scope is accepted and traceable.
+GP-3 UI refinement, GP-4 release work and final signed-candidate proof, and
+longer-term capability work remain explicitly open.
 
 ### 禁止事項
-Do not claim GP-2 complete, wire a Backend, expose non-product UI, or treat
-visual hiding as structural exclusion.
+Do not treat acceptance of the active Beta GP-2 scope as completion of the
+long-term `TEXT_CORE_PLUS_CHAT`, GP-3, or GP-4 scope; do not wire a Backend,
+expose non-product UI, or treat visual hiding as structural exclusion.
 
 ## GP-3 — コアユーザー導線・UI精査
 

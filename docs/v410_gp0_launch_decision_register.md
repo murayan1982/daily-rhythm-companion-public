@@ -11,14 +11,14 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_R1
-Current update baseline: 7d24b4bfc344ac5854ede1f1e72b5faf3d337b11
+Current update task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
+Current update baseline: 3ac56a19197179e7370da173a56382c0fb7b9747
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
   D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: AUTHORIZED_FOR_GP2_PUBLIC_BETA_CORE_FLOW_R1
-Documentation authorization: APPROVED_FOR_GP2_PUBLIC_BETA_CORE_FLOW_R1
+Product-source implementation: ACCEPTED_AT_3AC56A19197179E7370DA173A56382C0FB7B9747
+Documentation authorization: APPROVED_FOR_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -117,7 +117,7 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
 | Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
-| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The active Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED; GP-2 and GP-3 remain incomplete. |
+| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 scope is accepted; GP-3 and GP-4 remain incomplete. |
 
 ## GP2-S02 Active beta Mood persistence policy
 
@@ -177,7 +177,10 @@ SUPERSEDED
 | Long-term boundary | GP2-S01 `TEXT_CORE_PLUS_CHAT` remains approved and unchanged. |
 | State and data | Current-screen selection only; no persistence, network, or Backend wiring. GP2-S02 remains in force. |
 | Verification | Flutter 3.41.7 / Dart 3.11.5: shared package analyze PASS and 29 tests PASS; `app_public/` analyze PASS and startup test PASS; app product-boundary suite 31 tests PASS. |
-| Acceptance state | The active Beta GP-2 three-step implementation is implemented and statically verified, pending review and acceptance of the current diff. |
+| Implementation commit | `3ac56a19197179e7370da173a56382c0fb7b9747` |
+| Final review | ACCEPTED / NO_BLOCKING_FINDINGS |
+| Acceptance evidence | Shared package: analyze PASS and 29 tests PASS; `app_public/`: analyze PASS and startup test PASS; app product-boundary suite: 31 tests PASS. |
+| Acceptance state | ACTIVE_GITHUB_ANDROID_PUBLIC_BETA_GP2_ACCEPTED |
 | Remaining work | Sleep/health connection, optional text chat, and history remain future scope. GP-4 formal identity/version/signing and final signed-APK reproof, plus GP-3 refinement, remain separate. |
 
 ## GP0-D05 Google Play account type and testing applicability
