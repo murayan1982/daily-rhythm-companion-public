@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1
-Baseline: 2134362f9b7fa4cfbbdac6a36f932062fc45b237
-Surface: exact M4 A1 D0
-State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1
+Baseline: 5ae9a8370330f1970238feb3b4c93aad59a29b4e
+Surface: exact M5 A0 D0
+State: ARCHITECTURE_APPROVED / DOCUMENTED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -55,7 +55,9 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Source-level production graph boundary preserved
 - [x] Current Android/pubspec/asset blockers inventoried
 - [x] Artifact exclusion acceptance contract defined
-- [ ] Product dependency-boundary architecture decision
+- [x] Product dependency-boundary architecture decision (GP2-S04, Option A; BLOCKER-G resolved at the decision level)
+- [ ] Extract `packages/drc_production/` and verify behavior and source boundaries with the existing preview and regression suites
+- [ ] Add `app_public/` and verify the product-only dependency, entrypoint, Android manifest, and asset inputs
 - [ ] Product-only Android artifact build
 - [ ] Merged manifest exclusion proof
 - [ ] Plugin registrant/artifact inventory proof
@@ -70,7 +72,7 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [ ] Formal application display name applied to Android
 - [ ] Release signing
 - [ ] Signing key owner/custody/backup/recovery
-- [ ] `main_production.dart` release wiring
+- [ ] Release build wiring from `app_public/` with explicit target `lib/main.dart`
 - [ ] versionName/versionCode
 - [x] v4.1.0 GitHub beta Backend mode: local-only / no remote Backend
 - [ ] localhost/private-LAN release dependency exclusion proof
@@ -81,6 +83,7 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [ ] Signed release APK
 - [ ] APK SHA-256
 - [ ] Signing certificate SHA-256
+- [ ] Repeat GP2-S03 exclusion proof on the final signed APK and record the exact APK SHA-256
 - [ ] Clean install
 - [ ] Manual update
 - [ ] Android developer verification
@@ -172,23 +175,10 @@ GP-8 does not create or publish a tag, GitHub Release, or asset.
 All Play items remain `DEFERRED / NOT_CANCELLED`. GitHub beta completion does
 not check any Play item.
 
-## Strict Product Artifact Exclusion Contract R1 verification
+## Product dependency-boundary decision R1
 
-- [x] GP-0 through GP-9 contract preserved.
-- [x] Strict product-only policy recorded.
-- [x] Source-level boundary distinguished from compiled artifact proof.
-- [x] BLOCKER-A through BLOCKER-G recorded.
-- [x] Architecture remains `NOT_DECIDED`.
-- [x] Artifact proof remains `NOT_EXECUTED`.
-- [x] GP-2 artifact exclusion proof remains unchecked.
-- [x] Product / Backend / Android / pubspec / README / tests unchanged.
-- [x] No Flutter/Gradle build.
-- [x] Exact `M4 A1 D0`.
-- [x] Stage / commit / push not executed.
-
-## Strict Product Artifact Exclusion Contract R1 stop point
-
-Stop after the exact five-document implementation and review handoff. Do not
-build an APK/AAB, implement an architecture, change Android, pubspec, or product
-source, or stage, commit, or push. Artifact proof remains unchecked. The next
-control requires a user architecture decision.
+GP2-S04 records `SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY`. BLOCKER-A
+through BLOCKER-F remain open. Artifact proof is `NOT_EXECUTED / BLOCKED`;
+GP-2 and GP-3 are incomplete. See the
+[migration and verification sequence](v410_gp2_production_boundary_architecture.md#control-g-public-flutter-application-boundary)
+for the next separately authorized implementation slice.

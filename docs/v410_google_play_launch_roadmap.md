@@ -5,17 +5,17 @@ Updated: 2026-11-14
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1
-Baseline HEAD / origin/main / remote main: 2134362f9b7fa4cfbbdac6a36f932062fc45b237
-Surface: exact M4 A1 D0
-State: CORRECTIVE_IMPLEMENTED / STATIC_VERIFIED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
+Current task: DRC_V410_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1
+Baseline HEAD / origin/main / remote main: 5ae9a8370330f1970238feb3b4c93aad59a29b4e
+Surface: exact M5 A0 D0
+State: ARCHITECTURE_APPROVED / DOCUMENTED / ARTIFACT_PROOF_BLOCKED / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
 separate `DEFERRED / NOT_CANCELLED` track outside the GP-0 through GP-9 phase
-numbering. This bounded Control authorizes only the exact five-document GP-2
-strict product artifact exclusion contract surface (`M4 A1 D0`).
+numbering. The GP-2 decision control records the approved architecture across
+five existing documents (`M5 A0 D0`).
 
 ## Immutable v4.0.0 boundary
 
@@ -106,16 +106,19 @@ and returns to unselected when a fresh instance is created. This is an approved
 product policy, not an omitted implementation. D08 as a whole remains
 `NOT_DECIDED`; no new Character persistence decision is made.
 
-The GitHub Android Public Beta now has an approved strict product-only artifact
-policy: `STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT`. The accepted production source
-graph boundary remains source-level evidence only. Compiled artifact proof is
-not complete. BLOCKER-A through BLOCKER-G record the non-product default target,
-shared microphone permission, shared native-plugin declarations, shared
-demo/legacy assets, unfinished Android identity/signing, absent compiled
-artifact evidence, and undecided dependency-boundary architecture. A separate
-public Flutter application boundary is proposed but not approved; the
-architecture decision remains pending. GP-4 release wiring and final-candidate
-artifact re-verification remain required, and GP-2 remains incomplete.
+GP2-S03 requires `STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT`. GP2-S04 approves
+`SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY` (Option A), resolving BLOCKER-G
+at the decision level. The approved design assigns public Android build inputs
+to `app_public/`, moves the product journey to `packages/drc_production/`, and
+keeps developer, demo, and operator tooling in `app/`. The
+[production boundary architecture](v410_gp2_production_boundary_architecture.md#control-g-public-flutter-application-boundary)
+defines ownership, migration, and rollback.
+
+GP-2 implements the boundary and produces exclusion evidence for a private
+proof APK. The existing source graph evidence is accepted. BLOCKER-A through
+BLOCKER-F are open; artifact proof is `NOT_EXECUTED / BLOCKED` and GP-2 is
+incomplete. GP-4 applies the release identity, version, and signing, then
+repeats proof on the final signed candidate.
 
 ### 完了条件
 Completed portions stay byte/evidence compatible, while remaining migration
@@ -155,13 +158,15 @@ Approved D01, D03 beta mode, D06, D07 active policy, D09, stable GP-2/GP-3,
 and an exact implementation/build authorization.
 
 ### 作業範囲
-Apply formal application ID and display name; wire Android release startup to
-`main_production.dart`; establish self-managed release signing with owner,
+Apply formal application ID and display name in `app_public/android/`; wire the
+distribution build to explicit target `lib/main.dart` from `app_public/`;
+establish self-managed release signing with owner,
 custody, backup, and recovery; set versionName/versionCode and supported
 Android/API policy; establish production Backend mode; remove localhost/private
 LAN dependencies; plan developer verification/package registration; produce a
 signed APK and record filename, size, SHA-256, signing-certificate SHA-256,
-clean install, and manual update evidence.
+clean install, and manual update evidence. Repeat the GP2-S03 exclusion checks
+on the final signed APK and bind the evidence to its exact SHA-256.
 
 ### 完了条件
 The exact APK tuple is reproducible and accepted; release entrypoint, package,
@@ -297,22 +302,10 @@ Reactivation requires a new baseline, then-current official evidence, explicit
 decisions, and separate build/upload/testing/publication authority. GitHub beta
 completion cannot mark Play work complete.
 
-## Strict Product Artifact Exclusion Contract R1 verification
+## Product dependency-boundary decision R1
 
-The strict policy is `STRICT_PRODUCT_ONLY_ANDROID_ARTIFACT`, and the accepted
-source graph boundary is preserved. Current artifact proof is
-`NOT_EXECUTED / BLOCKED`; BLOCKER-A through BLOCKER-G are recorded. Architecture
-remains `NOT_DECIDED`. The recommended architecture is a separate public
-Flutter application boundary, but the recommendation is not approval.
-
-No Product, Backend, Android, pubspec, README, or test change was made, and no
-Flutter or Gradle build was run. The surface remains exact `M4 A1 D0`. D03 is
-`APPROVED`, D08 is `NOT_DECIDED`, D11 is `APPROVED`, and GP-2 remains
-incomplete.
-
-## Strict Product Artifact Exclusion Contract R1 stop point
-
-Stop after the exact five-document implementation and review handoff. Do not
-build an APK/AAB, implement an architecture, change Android, pubspec, or product
-source, or stage, commit, or push. Artifact proof remains unchecked. The next
-control requires a user architecture decision.
+The user approved Option A on 2026-11-14. D03 remains `APPROVED` for the
+local-only GitHub beta, D08 is `NOT_DECIDED`, and D11 is `APPROVED`. This
+decision control ends at review of the five-document diff. The next GP-2
+implementation slice, once authorized, extracts the shared production package
+and adapts the existing preview and source guards.

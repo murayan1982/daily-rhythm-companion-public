@@ -11,13 +11,14 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1
+Current update task: DRC_V410_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1
+Current update baseline: 5ae9a8370330f1970238feb3b4c93aad59a29b4e
 Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
   D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
 Product-source implementation: NOT_AUTHORIZED
-Documentation authorization: AUTHORIZED_FOR_GP2_STRICT_PRODUCT_ARTIFACT_EXCLUSION_CONTRACT_CORRECTIVE_R1_EXACT_M4_A1_D0
+Documentation authorization: APPROVED_FOR_GP2_PRODUCT_DEPENDENCY_BOUNDARY_ARCHITECTURE_DECISION_R1_EXACT_M5_A0_D0
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -141,10 +142,26 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-11-14 |
 | Scope | GitHub Android Public Beta and later final public candidates |
 | Required exclusion | Non-product Dart graph, permissions, native plugins, assets, endpoints, and operator/developer surfaces not approved for the product. |
-| Architecture | NOT_DECIDED |
-| Artifact proof | NOT_EXECUTED |
-| Dependencies | GP-2 source boundary, future architecture decision, GP-4 release wiring |
+| Architecture | GP2-S04 APPROVED — SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY |
+| Artifact proof | NOT_EXECUTED / BLOCKED |
+| Dependencies | GP-2 source boundary, GP2-S04 implementation, GP-4 release wiring and final artifact verification |
 | Notes | D03 remains APPROVED for the active local-only beta. D08 remains NOT_DECIDED. D11 remains APPROVED. This decision does not authorize build, signing, publication, or architecture implementation. |
+
+## GP2-S04 Product dependency-boundary architecture
+
+| Field | Value |
+| --- | --- |
+| Status | APPROVED |
+| Approved value | SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY |
+| Decision owner | User |
+| Approval evidence | User approved Option A with `A案承認` on 2026-11-14. |
+| Scope | v4.1.0 GitHub Android Public Beta; implements the dependency ownership required by GP2-S03 when separately authorized. |
+| Directory ownership | `app_public/` owns the public Flutter app and Android build inputs; `packages/drc_production/` owns the production journey; `app/` owns developer/demo/operator tooling and the production preview. |
+| Design and migration | [GP-2 production boundary architecture](v410_gp2_production_boundary_architecture.md#control-g-public-flutter-application-boundary) |
+| Documentation authorization | APPROVED — exact M5 A0 D0 |
+| Architecture implementation | NOT_AUTHORIZED |
+| Build / signing / stage / commit / push / publication | NOT_AUTHORIZED |
+| Impact | BLOCKER-G resolved at the decision level. BLOCKER-A through BLOCKER-F remain open; artifact proof is NOT_EXECUTED / BLOCKED. |
 
 ## GP0-D05 Google Play account type and testing applicability
 

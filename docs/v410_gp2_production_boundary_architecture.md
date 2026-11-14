@@ -19,14 +19,14 @@ reachability boundaries. Approval evidence: User selection recorded
 
 | Entrypoint | Ownership | Current role |
 | --- | --- | --- |
-| `lib/main_production.dart` | Production candidate | Starts only `ProductionApp`. |
+| `app/lib/main_production.dart` | Production preview and current source-level candidate | Starts only `ProductionApp`. After extraction this remains the local preview. |
 | `lib/main.dart` | Non-product compatibility shim | Default Flutter target; delegates to `main_non_product.dart` and is not release-safe. |
 | `lib/main_non_product.dart` | Mixed development/demo/diagnostic | Owns the prior `HomeScreen` composition, runtime factories, and default development behavior. |
 | `lib/main_rt2ec_operator.dart` | Operator | Preserved outside production composition. |
 
-Because `main.dart` remains Flutter's default target, this control alone does
-not make a default or Google Play build release-safe. GP-4 owns release wiring
-and any later authorized `-t lib/main_production.dart` build.
+The default target of `app/` is the non-product shim. The approved future
+public release target is defined in
+[Control G](#control-g-public-flutter-application-boundary).
 
 ## Production import boundary
 
@@ -183,19 +183,91 @@ identifiers. The current app cannot yet demonstrate that result: the default
 target is the non-product compatibility shim; the shared manifest declares
 `RECORD_AUDIO`; the shared pubspec declares native-plugin candidates and
 demo/background/placeholder assets; Android identity and signing are unfinished;
-no compiled artifact evidence exists; and the dependency-boundary architecture
-is not decided.
+and no compiled artifact evidence exists. Control F recorded the recommendation
+for a separate public Flutter application. Its approval is recorded below.
 
-A separate public Flutter application boundary is the proposed and recommended
-architecture because it can own a product-only pubspec, Android manifest and
-configuration while sharing the production UI as a package. Moving non-product
-tooling out of the current app is an alternative with a larger migration
-surface. An Android flavor alone is insufficient: it can separate entrypoints
-and manifests but does not by itself prove strict exclusion from shared pubspec
-plugin registration and Flutter assets.
+## Control G: public Flutter application boundary
 
-This control performs no build and changes no product source, Android files, or
-pubspec. The next control must obtain a user architecture decision. GP-4 must
-later wire the release identity, target, and signing, and compiled evidence must
-be produced and repeated for the final public candidate. GP-2 remains
-incomplete.
+GP2-S04 is `APPROVED` with value
+`SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY`. The user approved Option A on
+2026-11-14. Baseline is `5ae9a8370330f1970238feb3b4c93aad59a29b4e`.
+Documentation scope is five existing files. Implementation and builds require
+separate authorization.
+
+### Directory and dependency ownership
+
+| Path | Ownership and dependency rules |
+| --- | --- |
+| `app_public/` | Public Flutter application. Owns its pubspec, lockfile, approved assets, Android resources, manifest overlays, Gradle configuration, version metadata, and public startup. Runtime dependencies start with Flutter and the local `drc_production` package. |
+| `packages/drc_production/` | Single source for `ProductionApp`, the journey UI and models, deterministic advice, and symbolic capability/Backend-operation policy. Runtime dependencies are limited to Flutter and package-internal code for this migration. Public startup imports `package:drc_production/production_app.dart`. |
+| `app/` | Owns developer/demo/operator composition, tooling dependencies, demo assets, and existing default/operator entrypoints. `app/lib/main_production.dart` is a local preview of the shared package after extraction. |
+
+Both apps depend on `drc_production` through explicit local path dependencies.
+The public app and shared package have no direct or transitive dependency on
+`app/`, its generated files, its assets, or its Backend/Framework runtime.
+Product startup is `app_public/lib/main.dart` and starts only `ProductionApp`.
+Run public builds from `app_public/` with explicit target `lib/main.dart`.
+Permissions and assets come from that application's build inputs and their
+resolved dependencies. Demo assets and microphone permission remain outside
+those inputs.
+
+The shared code preserves the three-choice Mood check-in, three Character
+choices, nine deterministic advice messages, and fresh-journey Mood reset.
+The active beta stays local-only under D03 and the approved ephemeral Mood
+policy GP2-S02.
+
+### Android ownership and phase handoff
+
+GP-2 owns the structural split, the product-only Android manifest and
+dependency inputs, the public target, and exclusion evidence on a private
+release-mode proof APK. The later proof build control specifies its temporary
+identity and signing inputs. Keep proof output out of distribution.
+
+GP-4 applies the permanent application ID and namespace, the approved
+`Daily Rhythm Companion` display name, version/build metadata, and release
+signing configuration in the public app. Signing material remains outside
+source control. GP-4 wires the exact public release build command and repeats
+the exclusion inspection on the final signed candidate, recording its filename,
+byte size, APK SHA-256, and signing certificate SHA-256.
+
+### Migration and rollback
+
+1. Extract `app/lib/production/` into `packages/drc_production/` and update
+   the preview to import the package. Move or adapt the production regression
+   suites and source guards as one reviewable change so each guard still
+   inspects the files it constrains. Preserve the existing non-product
+   entrypoint checks and development widget tests under `app/`.
+2. Add the Android public app with a minimal pubspec, explicit production
+   startup, product-owned Android inputs, and approved assets only. Check the
+   resolved dependency graph and any generated registrant for excluded packages.
+3. Under separate build authorization, produce and inspect the private proof
+   APK using the strict artifact contract. Review the proof before GP-4 uses
+   the new boundary for the final signed candidate.
+
+Before release wiring, roll back by removing the public app and its
+dependencies, then reverting the package extraction, preview changes, and
+test relocations together. If GP-4 has wired a candidate, withdraw that
+candidate from publication first. Preserve published package identity and
+signing continuity once a public APK exists. The v4.0.0 release remains outside
+this rollback.
+
+### Verification strategy
+
+- At each migration step, analyze the affected Flutter roots and run their
+  focused tests. Rerun the preview, developer/compatibility, and operator
+  boundary checks under `app/`.
+- Preserve production behavior assertions for journey, Mood, Character, local
+  advice, composition, and core scope, including the exact advice matrix,
+  fresh-instance reset, and deny-by-default Backend operations.
+- Assert that the public target boots the single product composition, the
+  shared package stays inside its import boundary, and the resolved public
+  dependency graph excludes the existing `app/` and its development plugins.
+- Inspect the proof artifact's merged and packaged manifest, plugin registrant
+  and shipped native inventory, Flutter asset manifest and APK entries, AOT
+  report, and packaged endpoint/configuration inventory. Record SDK/build
+  inputs, target, ABI, filename, byte size, and SHA-256. GP-4 records equivalent
+  evidence for the final signed APK. Follow the
+  [strict artifact exclusion contract](v410_gp2_strict_product_artifact_exclusion_contract.md).
+
+BLOCKER-G is resolved at the decision level. BLOCKER-A through BLOCKER-F remain
+open. Artifact proof is `NOT_EXECUTED / BLOCKED` and GP-2 remains incomplete.
