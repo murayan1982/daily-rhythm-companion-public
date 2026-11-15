@@ -26,7 +26,38 @@ The configuration-only command creates `gradlew`, `gradlew.bat`, and
 
 ## Release boundary
 
-The current namespace and application ID are provisional GP-2 values. GP-4
-will apply the approved formal application ID, display name, version, and
-distribution signing. Normal APK/AAB assembly and signing are outside this
-setup step.
+The current namespace and application ID remain provisional values. Formal ID
+registration and application are separate GP-4 work. Normal APK/AAB assembly
+and verification are also outside this setup step.
+
+## Distribution signing setup
+
+Keep the distribution keystore outside this repository. Maintain an encrypted
+backup and a tested recovery procedure; do not commit the keystore,
+`android/key.properties`, passwords, or machine-specific paths.
+
+Create `android/key.properties` locally with these four entries. Use
+placeholders only in shared documentation or examples:
+
+```properties
+storeFile=<absolute-path-to-keystore-outside-repository>
+storePassword=<store-password>
+keyAlias=<key-alias>
+keyPassword=<key-password>
+```
+
+When `android/key.properties` exists, the release build type uses that signing
+configuration. There is no fallback to the debug key. When the file is absent,
+dependency resolution, analysis, and widget tests remain available, while a
+distribution-signed release artifact cannot be produced.
+
+After restoring the keystore from its encrypted backup, inspect the public
+certificate of both the original and restored copies:
+
+```powershell
+keytool -list -v -keystore "<original-keystore-path>" -alias "<key-alias>"
+keytool -list -v -keystore "<restored-keystore-path>" -alias "<key-alias>"
+```
+
+Compare the reported `SHA256` certificate fingerprints exactly. A matching
+file checksum alone is not a substitute for this public-certificate check.
