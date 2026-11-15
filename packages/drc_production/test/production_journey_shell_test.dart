@@ -1,3 +1,5 @@
+import 'dart:ui' show SemanticsAction;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,7 +8,9 @@ import 'package:drc_production/components/production_journey_overview.dart';
 import 'package:drc_production/components/production_mood_check_in.dart';
 import 'package:drc_production/core/production_capability.dart';
 import 'package:drc_production/core/production_journey_step.dart';
+import 'package:drc_production/production_about_screen.dart';
 import 'package:drc_production/production_app.dart';
+import 'package:drc_production/production_home_screen.dart';
 
 void main() {
   test('journey model is the approved three-step Public Beta mapping', () {
@@ -226,6 +230,103 @@ void main() {
     expect(find.text('選択中: 元気'), findsNothing);
     expect(find.text('気分とキャラクターを選んでください。'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsNothing);
+  });
+
+  testWidgets('about route is accessible and preserves journey state', (
+    WidgetTester tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(const ProductionApp());
+      await tester.pumpAndSettle();
+
+      final aboutSemantics = find.semantics.byLabel('アプリについて');
+      expect(aboutSemantics, findsOne);
+      final aboutNode = aboutSemantics.evaluate().single;
+      expect(aboutNode.getSemanticsData().flagsCollection.isButton, isTrue);
+      expect(
+        aboutNode.getSemanticsData().hasAction(SemanticsAction.tap),
+        isTrue,
+      );
+
+      await tester.ensureVisible(find.text('☀️ 元気'));
+      await tester.tap(find.text('☀️ 元気'));
+      await tester.pump();
+      await tester.ensureVisible(find.text('ミナ'));
+      await tester.tap(find.text('ミナ'));
+      await tester.pump();
+      expect(find.text('気分: 元気'), findsOneWidget);
+      expect(find.text('キャラクター: ミナ'), findsOneWidget);
+      expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+
+      tester.semantics.tap(aboutSemantics);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ProductionAboutScreen), findsOneWidget);
+      expect(find.text('アプリについて'), findsOneWidget);
+      expect(
+        find.text(
+          'このベータ版では、気分とキャラクターを選ぶと、'
+          '端末内で今日のアドバイスを表示します。',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('選択内容は保存されません。'), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ProductionAboutScreen), findsNothing);
+      expect(find.text('気分: 元気'), findsOneWidget);
+      expect(find.text('キャラクター: ミナ'), findsOneWidget);
+      expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('アプリについて'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ProductionAboutScreen), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.text('気分: 元気'), findsOneWidget);
+      expect(find.text('キャラクター: ミナ'), findsOneWidget);
+      expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+    } finally {
+      handle.dispose();
+    }
+  });
+
+  testWidgets('about route fits a narrow viewport without exceptions', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const ProductionApp());
+    await tester.tap(find.byTooltip('アプリについて'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(ProductionAboutScreen), findsOneWidget);
+  });
+
+  testWidgets('about route supports 2.0 text scaling without exceptions', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(2)),
+          child: ProductionHomeScreen(),
+        ),
+      ),
+    );
+    await tester.tap(find.byTooltip('アプリについて'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(ProductionAboutScreen), findsOneWidget);
   });
 
   testWidgets('journey shell fits a narrow viewport without exceptions', (

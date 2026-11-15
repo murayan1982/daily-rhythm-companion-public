@@ -1,13 +1,13 @@
 # Daily Rhythm Companion v4.1.0 Distribution Tasklist
 
-Updated: 2026-11-14
+Updated: 2026-11-15
 
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP3_INITIAL_GUIDANCE_SEMANTICS_R1
-Baseline: 55ce9da1b0231ad0c316ee46a5efb111e354baf3
-Surface: exact M11 A0 D0
+Current task: DRC_V410_GP3_ABOUT_GUIDANCE_R1
+Baseline: 7750e444dc7c45c663bbbef59aea3495f341eb02
+Surface: exact M3 A1 D0
 State: IMPLEMENTED / STATIC_VERIFIED / GP3_IN_PROGRESS / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
@@ -75,6 +75,9 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Advice guidance identifies both missing selections or the single remaining selection without "準備中"
 - [x] Ready advice Semantics includes selected Mood, selected Character, and advice body
 - [x] Widget Semantics verification for the refined three-step states (shared package analyze PASS and 30 tests PASS; public app analyze PASS and startup test PASS; product-boundary 31 tests PASS)
+- [x] In-app About guidance states that advice is produced on-device from Mood and Character and that selections are not saved
+- [x] About entry exposes its name to Semantics and returns to the same journey instance without losing current selections or advice
+- [x] About route widget verification for navigation, state retention, narrow width, and 2.0 text scaling (shared package analyze PASS and 33 tests PASS; public app analyze PASS and startup test PASS; product-boundary 31 tests PASS)
 - [ ] Android device TalkBack verification
 - [ ] Settings, support, and remaining GP-3 user-journey refinement
 

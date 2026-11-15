@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'components/production_journey_overview.dart';
+import 'production_about_screen.dart';
 
 class ProductionHomeScreen extends StatelessWidget {
   const ProductionHomeScreen({super.key});
@@ -8,9 +9,32 @@ class ProductionHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    void openAbout() {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => const ProductionAboutScreen(),
+        ),
+      );
+    }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Daily Rhythm Companion')),
+      appBar: AppBar(
+        title: const Text('Daily Rhythm Companion'),
+        actions: [
+          Semantics(
+            label: 'アプリについて',
+            button: true,
+            onTap: openAbout,
+            child: ExcludeSemantics(
+              child: IconButton(
+                tooltip: 'アプリについて',
+                icon: const Icon(Icons.info_outline),
+                onPressed: openAbout,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
