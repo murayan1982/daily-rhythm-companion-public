@@ -20,7 +20,7 @@ fun requiredSigningProperty(name: String): String =
     }
 
 android {
-    namespace = "com.dailyrhythmcompanion.preview.drc_public_app"
+    namespace = "io.github.murayan1982.dailyrhythmcompanion"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -34,8 +34,8 @@ android {
     }
 
     defaultConfig {
-        // Provisional GP-2 ID; GP-4 will replace it with the approved formal ID.
-        applicationId = "com.dailyrhythmcompanion.preview.drc_public_app"
+        // Formal GP-4 Android identity confirmed for application on 2026-11-15.
+        applicationId = "io.github.murayan1982.dailyrhythmcompanion"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24

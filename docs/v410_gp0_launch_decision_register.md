@@ -45,17 +45,17 @@ SUPERSEDED
 | Field | Value |
 | --- | --- |
 | Status | APPROVED |
-| Current observed state | `app_public/` namespace and application ID are the provisional `com.dailyrhythmcompanion.preview.drc_public_app`. |
+| Current observed state | `app_public/` namespace, application ID, and `MainActivity` package use the formal `io.github.murayan1982.dailyrhythmcompanion` identity. |
 | Decision to make | Select the permanent unique Android application ID for direct-distribution continuity and later Google Play use. |
-| Required inputs/evidence | Confirm that the approved ID can be used before applying it to Android configuration; future Play availability is not yet verified. |
+| Required inputs/evidence | User confirmed an official Status API result of `NOT_REGISTERED` on 2026-11-15 before application. Android package registration and future Google Play availability remain unverified and unperformed. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-4, GP-5, GP-6, GP-7, GP-8, GP-9 |
 | Must be decided before | Public-beta Android identity implementation, release signing, or artifact creation. |
 | Approved value | `io.github.murayan1982.dailyrhythmcompanion` |
 | Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15. |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | Adopted as the formal application ID/namespace policy. Usability and availability are `NOT_VERIFIED` and must be confirmed before Android configuration is changed. A later ID change creates a different installed application. |
+| Implementation authorization | AUTHORIZED_AND_APPLIED_2026-11-15 |
+| Notes | Applied as the formal application ID/namespace on 2026-11-15 after the user-confirmed Status API result. The result is evidence for this application step only; no Android package registration was performed, and future Google Play use remains `NOT_VERIFIED`. A later ID change creates a different installed application. |
 
 ## GP0-D02 Formal application display name
 
@@ -306,7 +306,7 @@ SUPERSEDED
 ## Dependency and decision order
 
 1. GP0-D11 GitHub Android Public Beta first and README landing (approved).
-2. GP0-D01 permanent application ID (approved; availability check and implementation pending).
+2. GP0-D01 permanent application ID (approved and applied; Android registration and future Google Play availability remain pending).
 3. GP0-D06 direct-distribution signing ownership and update continuity (approved; execution pending).
 4. GP0-D09 public-beta version/build sequence (approved; implementation pending).
 5. GP0-D03 Backend publication model.

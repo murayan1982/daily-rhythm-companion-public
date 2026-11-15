@@ -26,9 +26,11 @@ The configuration-only command creates `gradlew`, `gradlew.bat`, and
 
 ## Release boundary
 
-The current namespace and application ID remain provisional values. Formal ID
-registration and application are separate GP-4 work. Normal APK/AAB assembly
-and verification are also outside this setup step.
+The namespace, application ID, and `MainActivity` package use the formal
+`io.github.murayan1982.dailyrhythmcompanion` identity. This local configuration
+does not register the Android package or verify its future Google Play
+availability. Normal APK/AAB assembly and verification are also outside this
+setup step.
 
 ## Distribution signing setup
 

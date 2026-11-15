@@ -1,4 +1,4 @@
-package com.dailyrhythmcompanion.preview.drc_public_app
+package io.github.murayan1982.dailyrhythmcompanion
 
 import io.flutter.embedding.android.FlutterActivity
 
