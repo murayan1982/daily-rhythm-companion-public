@@ -26,7 +26,7 @@ class ProductionHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '気分とキャラクターを選ぶと、端末内で今日のメッセージを表示します。',
+                    '気分とキャラクターを選ぶと、端末内で今日のアドバイスを表示します。選択内容は保存されません。',
                     style: theme.textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),

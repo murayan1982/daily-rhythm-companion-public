@@ -53,7 +53,7 @@ void main() {
     for (final chip in tester.widgetList<ChoiceChip>(find.byType(ChoiceChip))) {
       expect(chip.selected, isFalse);
     }
-    expect(find.text('選択内容はこの画面のメッセージに反映されます。保存は準備中です。'), findsOneWidget);
+    expect(find.textContaining('保存'), findsNothing);
     expect(find.text('選択内容の保存とアドバイスへの反映は準備中です。'), findsNothing);
   });
 

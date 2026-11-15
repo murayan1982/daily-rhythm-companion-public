@@ -59,17 +59,17 @@ void main() {
 
   testWidgets('shows guidance for every readiness state', (tester) async {
     await tester.pumpWidget(_Host(item: adviceItem));
-    expect(find.text('気分とキャラクターを選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+    expect(find.text('気分とキャラクターを選んでください。'), findsOneWidget);
 
     await tester.pumpWidget(
       _Host(item: adviceItem, character: ProductionCharacter.gentleMina),
     );
-    expect(find.text('気分を選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+    expect(find.text('気分を選んでください。'), findsOneWidget);
 
     await tester.pumpWidget(
       _Host(item: adviceItem, mood: ProductionMood.energetic),
     );
-    expect(find.text('キャラクターを選ぶと、今日のメッセージを表示します。'), findsOneWidget);
+    expect(find.text('キャラクターを選んでください。'), findsOneWidget);
   });
 
   testWidgets('ready state shows selection, message, and permanent notices', (
@@ -105,11 +105,41 @@ void main() {
           character: ProductionCharacter.cheerfulSora,
         ),
       );
-      final finder = find.bySemanticsLabel(RegExp('表示準備完了.*ソラ.*ふつう.*今日は小さく'));
+      final finder = find.bySemanticsLabel(
+        RegExp('選択した気分はふつう.*選択したキャラクターはソラ.*アドバイス.*今日は小さく'),
+      );
       expect(finder, findsOneWidget);
       final data = tester.getSemantics(finder).getSemanticsData();
       expect(data.hasAction(SemanticsAction.tap), isFalse);
       expect(data.hasAction(SemanticsAction.longPress), isFalse);
+    } finally {
+      handle.dispose();
+    }
+  });
+
+  testWidgets('semantics explains each incomplete selection state', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(_Host(item: adviceItem));
+      expect(
+        find.bySemanticsLabel('3. 今日のアドバイス。気分とキャラクターを選んでください。'),
+        findsOneWidget,
+      );
+
+      await tester.pumpWidget(
+        _Host(item: adviceItem, character: ProductionCharacter.gentleMina),
+      );
+      expect(find.bySemanticsLabel('3. 今日のアドバイス。気分を選んでください。'), findsOneWidget);
+
+      await tester.pumpWidget(
+        _Host(item: adviceItem, mood: ProductionMood.energetic),
+      );
+      expect(
+        find.bySemanticsLabel('3. 今日のアドバイス。キャラクターを選んでください。'),
+        findsOneWidget,
+      );
     } finally {
       handle.dispose();
     }

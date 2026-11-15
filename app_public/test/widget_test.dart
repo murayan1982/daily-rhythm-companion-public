@@ -11,5 +11,9 @@ void main() {
     expect(find.byType(ProductionApp), findsOneWidget);
     expect(find.text('Daily Rhythm Companion'), findsOneWidget);
     expect(find.text('今日のリズム'), findsOneWidget);
+    expect(
+      find.text('気分とキャラクターを選ぶと、端末内で今日のアドバイスを表示します。選択内容は保存されません。'),
+      findsOneWidget,
+    );
   });
 }

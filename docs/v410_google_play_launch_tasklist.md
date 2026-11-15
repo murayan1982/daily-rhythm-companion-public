@@ -5,10 +5,10 @@ Updated: 2026-11-14
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
-Baseline: 3ac56a19197179e7370da173a56382c0fb7b9747
-Surface: exact M3 A0 D0
-State: ACTIVE_BETA_GP2_ACCEPTED / GP3_PENDING / GP4_PENDING / READY_FOR_REVIEW
+Current task: DRC_V410_GP3_INITIAL_GUIDANCE_SEMANTICS_R1
+Baseline: 55ce9da1b0231ad0c316ee46a5efb111e354baf3
+Surface: exact M11 A0 D0
+State: IMPLEMENTED / STATIC_VERIFIED / GP3_IN_PROGRESS / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
 
@@ -71,7 +71,12 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Flutter asset manifest and APK entry exclusion proof for the proof APK
 - [x] AOT analyze-size exclusion proof for the proof APK
 - [x] GP-2 private proof-artifact exclusion evidence captured
-- [ ] GP-3 user-journey refinement
+- [x] GP-3 initial guidance consolidates local-processing and no-save notices above the three-step flow
+- [x] Advice guidance identifies both missing selections or the single remaining selection without "準備中"
+- [x] Ready advice Semantics includes selected Mood, selected Character, and advice body
+- [x] Widget Semantics verification for the refined three-step states (shared package analyze PASS and 30 tests PASS; public app analyze PASS and startup test PASS; product-boundary 31 tests PASS)
+- [ ] Android device TalkBack verification
+- [ ] Settings, support, and remaining GP-3 user-journey refinement
 
 ## P0 — release foundation and blocking decisions
 
