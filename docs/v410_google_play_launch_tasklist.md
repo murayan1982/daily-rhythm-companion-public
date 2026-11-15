@@ -5,11 +5,11 @@ Updated: 2026-11-15
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP3_LOCAL_JOURNEY_RESUME_RESET_R1
-Baseline: 77c9888d61599e01b5c4fa5e4b692f0fd342e735
+Current task: DRC_V410_GP3_PUBLIC_BETA_ACCEPTANCE_R1
+Baseline: cec88eb250d803f2283e9b4d9705582fc5508b10
 Surface: exact M2 A0 D0
-State: IMPLEMENTED / STATIC_VERIFIED / GP3_IN_PROGRESS / READY_FOR_REVIEW
-Stage / commit / push: NOT_AUTHORIZED
+State: ACTIVE_BETA_GP3_ACCEPTED / GP4_PENDING / GP5_PENDING / GP6_PENDING
+Stage / commit / push: AUTHORIZED_FOR_THIS_ACCEPTANCE_RECORD
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -80,9 +80,10 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] About route widget verification for navigation, state retention, narrow width, and 2.0 text scaling (shared package analyze PASS and 33 tests PASS; public app analyze PASS and startup test PASS; product-boundary 31 tests PASS)
 - [x] Flutter widget lifecycle verification for same-instance pause/resume retention and fresh-instance reset (shared package analyze PASS and 34 tests PASS; public app startup test PASS; product-boundary 31 tests PASS)
 - [x] Lifecycle widget-test scope is local UI state only; the active Beta has no permission request or Backend connection exercised by this check
+- [x] Active-Beta GP-3 implementation and Flutter-widget evidence set is complete; no local GP-3 implementation item remains
+- [x] Current GitHub Android Public Beta GP-3 scope accepted after final review found no blocking findings
+- [ ] GP-5 formal Privacy Policy and support/contact completion under an approved D08 decision
 - [ ] GP-6 Android-device verification for background resume, process restart, airplane mode, and TalkBack
-- [ ] Android device TalkBack verification
-- [ ] Settings, support, and remaining GP-3 user-journey refinement
 
 ## P0 — release foundation and blocking decisions
 
@@ -110,23 +111,23 @@ Each unchecked line is an individual gate and requires separate authorization.
 
 ## P1 — general-user journey, safety, and quality
 
-- [ ] First-run onboarding
-- [ ] Microphone permission pre-explanation
-- [ ] Health-data permission pre-explanation
-- [ ] Settings screen
-- [ ] Support/contact
-- [ ] TalkBack
-- [ ] Text enlargement
-- [ ] Color contrast
-- [ ] Device-size support
-- [ ] Loading state
-- [ ] Empty state
-- [ ] Error state
-- [ ] Offline state
-- [ ] Permission denial/revocation
-- [ ] Backend/network failure
-- [ ] Lifecycle recovery
-- [ ] Developer/operator UI exclusion
+- [x] Active-Beta first-run guidance is provided in-screen; no separate onboarding route is required
+- [x] Microphone permission pre-explanation is not applicable: the active Beta requests no microphone permission
+- [x] Health-data permission pre-explanation is not applicable: the active Beta requests no health-data permission
+- [x] Separate Settings screen is not part of the active Beta; About provides the approved on-device/no-save explanation
+- [ ] GP-5 formal Privacy Policy and support/contact path
+- [ ] GP-6 physical-device TalkBack verification
+- [x] Flutter widget verification at 2.0 text scaling
+- [ ] GP-6 physical-device color-contrast verification
+- [x] Flutter widget verification at narrow viewport; representative physical-device sizes remain GP-6
+- [x] Loading state is not applicable: the active Beta performs no asynchronous load
+- [x] Selection-waiting guidance covers the active local journey; no data-backed empty state exists
+- [x] Backend/error state is not applicable: deterministic local advice has no Backend or fallible remote operation
+- [x] Offline behavior has no product network dependency; airplane-mode verification remains GP-6 and is not claimed complete
+- [x] Permission denial/revocation is not applicable: the active Beta requests no runtime permission
+- [x] Backend/network failure is not applicable: the active Beta makes no Backend connection
+- [x] Flutter widget lifecycle pause/resume and fresh-instance reset verification; physical-device recovery and process restart remain GP-6
+- [x] Developer/operator UI exclusion remains covered by the accepted product-boundary suite
 
 ## P2 / GP-7 — publication materials and preparation
 
@@ -210,5 +211,8 @@ Character-invariant Mood responses were accepted at
 `3ac56a19197179e7370da173a56382c0fb7b9747` after final review found no
 blocking findings. The current GitHub Android Public Beta GP-2 scope is complete.
 Sleep/health connection, optional text chat, history, and the broader
-`TEXT_CORE_PLUS_CHAT` range remain future work. GP-3 refinement remains open,
-and GP-4 must repeat exclusion proof on the exact final signed APK.
+`TEXT_CORE_PLUS_CHAT` range remain future work. The active-Beta GP-3 evidence set
+is complete, final review found no blocking findings, and the current GitHub
+Android Public Beta GP-3 scope is accepted. GP-5 privacy/support and GP-6
+physical-device gates remain open. GP-4 must repeat exclusion proof on the exact
+final signed APK.

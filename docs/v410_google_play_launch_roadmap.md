@@ -1,15 +1,15 @@
 # Daily Rhythm Companion v4.1.0 Distribution Roadmap
 
-Updated: 2026-11-14
+Updated: 2026-11-15
 
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
-Baseline HEAD / origin/main / remote main: 3ac56a19197179e7370da173a56382c0fb7b9747
-Surface: exact M3 A0 D0
-State: ACTIVE_BETA_GP2_ACCEPTED / GP3_PENDING / GP4_PENDING / READY_FOR_REVIEW
-Stage / commit / push: NOT_AUTHORIZED
+Current task: DRC_V410_GP3_PUBLIC_BETA_ACCEPTANCE_R1
+Baseline HEAD / origin/main / remote main: cec88eb250d803f2283e9b4d9705582fc5508b10
+Surface: exact M2 A0 D0
+State: ACTIVE_BETA_GP3_ACCEPTED / GP4_PENDING / GP5_PENDING / GP6_PENDING
+Stage / commit / push: AUTHORIZED_FOR_THIS_ACCEPTANCE_RECORD
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
@@ -97,7 +97,7 @@ reflected immediately in this screen's local message while persistence remains
 unavailable. Cloud Backend work is `DEFERRED / NOT_CANCELLED`; persistence and
 health remain outside the active Beta. D03 is approved only for this active
 local-only beta mode, and D08 remains `NOT_DECIDED`. The current GitHub Android
-Public Beta GP-2 scope is accepted; GP-3 and GP-4 remain incomplete.
+Public Beta GP-2 and GP-3 scopes are accepted; GP-4 remains incomplete.
 
 For the active v4.1.0 GitHub beta, Mood selection is intentionally not
 persisted. It exists only in the current `ProductionJourneyOverview` instance
@@ -164,8 +164,8 @@ proof on the final signed APK containing the accepted source.
 
 ### 完了条件
 The current GitHub Android Public Beta GP-2 scope is accepted and traceable.
-GP-3 UI refinement, GP-4 release work and final signed-candidate proof, and
-longer-term capability work remain explicitly open.
+GP-4 release work and final signed-candidate proof, GP-5 privacy/support work,
+GP-6 physical-device verification, and longer-term capability work remain open.
 
 ### 禁止事項
 Do not treat acceptance of the active Beta GP-2 scope as completion of the
@@ -175,18 +175,41 @@ expose non-product UI, or treat visual hiding as structural exclusion.
 ## GP-3 — コアユーザー導線・UI精査
 
 ### 目的
-Complete a calm general-user daily journey with understandable recovery paths.
+Complete a calm, understandable general-user journey for the exact local-only
+GitHub Android Public Beta scope.
 
 ### 依存関係
-GP-1 inventory and stable GP-2 production boundaries.
+GP-1 inventory, the accepted GP-2 three-step journey at
+`3ac56a19197179e7370da173a56382c0fb7b9747`, and stable production boundaries.
 
 ### 作業範囲
-Complete onboarding, daily journey, settings, permission pre-explanations, and
-loading, empty, error, offline, denied/revoked, and lifecycle-recovery states.
+The active Beta uses in-screen initial guidance rather than a separate
+onboarding flow. The three-step Mood, Character, and local-advice journey,
+selection-waiting guidance, and accessible result Semantics were verified at
+`7750e444dc7c45c663bbbef59aea3495f341eb02`. The in-app About route added at
+`77c9888d61599e01b5c4fa5e4b692f0fd342e735` explains that advice is produced
+on-device and selections are not saved. A separate Settings screen is not part
+of the active Beta. Flutter widget evidence at
+`cec88eb250d803f2283e9b4d9705582fc5508b10` verifies same-instance pause/resume
+retention and fresh-instance reset. The latest shared-package suite has 34
+passing tests; the public-app startup test and 31 product-boundary tests pass.
+
+The active Beta requests no microphone or health-data permission and makes no
+Backend connection. Permission pre-explanations, denial/revocation behavior,
+Backend failure, and asynchronous loading/error states therefore do not apply
+to this active scope and are not claimed as tested. Formal Privacy Policy and
+support/contact remain GP-5 work under unresolved D08. Physical-device
+accessibility, background recovery, process restart, and airplane-mode checks
+remain GP-6 work.
 
 ### 完了条件
-A user can understand, use, defer optional setup, recover, and access privacy
-and support paths without developer knowledge.
+For the active Beta, a user can understand the local three-step journey, see
+what selection is still required, read the on-device/no-save explanation, and
+return from the About route without losing current in-memory progress. No
+remaining active-Beta GP-3 implementation item is identified. Final review found
+no blocking issue, and the current GitHub Android Public Beta GP-3 scope is
+accepted. GP-5 and GP-6 gates remain open and are not being silently marked
+complete here.
 
 ### 禁止事項
 Do not request sensitive access without context, block unrelated features when
