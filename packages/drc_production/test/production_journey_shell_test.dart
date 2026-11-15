@@ -192,7 +192,37 @@ void main() {
     expect(find.text('気分を選んでください。'), findsOneWidget);
   });
 
-  testWidgets('mood selection resets with a fresh journey instance', (
+  testWidgets('journey selections survive lifecycle pause and resume', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const _OverviewHost());
+
+    await tester.ensureVisible(find.text('☀️ 元気'));
+    await tester.tap(find.text('☀️ 元気'));
+    await tester.pump();
+    await tester.ensureVisible(find.text('ミナ'));
+    await tester.tap(find.text('ミナ'));
+    await tester.pump();
+
+    expect(find.text('気分: 元気'), findsOneWidget);
+    expect(find.text('キャラクター: ミナ'), findsOneWidget);
+    expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(tester.binding.lifecycleState, AppLifecycleState.paused);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(tester.binding.lifecycleState, AppLifecycleState.resumed);
+    expect(find.text('選択中: 元気'), findsOneWidget);
+    expect(find.text('選択中: ミナ'), findsOneWidget);
+    expect(find.text('気分: 元気'), findsOneWidget);
+    expect(find.text('キャラクター: ミナ'), findsOneWidget);
+    expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
+  });
+
+  testWidgets('both selections reset with a fresh journey instance', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const _OverviewHost());
@@ -201,7 +231,12 @@ void main() {
       of: find.byType(ProductionMoodCheckIn),
       matching: find.text('選択中: 未選択'),
     );
+    final characterSelection = find.descendant(
+      of: find.byType(ProductionCharacterSelection),
+      matching: find.text('選択中: 未選択'),
+    );
     expect(moodSelection, findsOneWidget);
+    expect(characterSelection, findsOneWidget);
 
     await tester.ensureVisible(find.text('☀️ 元気'));
     await tester.tap(find.text('☀️ 元気'));
@@ -217,6 +252,7 @@ void main() {
     await tester.ensureVisible(find.text('ミナ'));
     await tester.tap(find.text('ミナ'));
     await tester.pump();
+    expect(find.text('選択中: ミナ'), findsOneWidget);
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
@@ -227,7 +263,11 @@ void main() {
     await tester.pump();
 
     expect(moodSelection, findsOneWidget);
+    expect(characterSelection, findsOneWidget);
     expect(find.text('選択中: 元気'), findsNothing);
+    expect(find.text('選択中: ミナ'), findsNothing);
+    expect(find.text('気分: 元気'), findsNothing);
+    expect(find.text('キャラクター: ミナ'), findsNothing);
     expect(find.text('気分とキャラクターを選んでください。'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsNothing);
   });

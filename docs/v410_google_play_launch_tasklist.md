@@ -5,9 +5,9 @@ Updated: 2026-11-15
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP3_ABOUT_GUIDANCE_R1
-Baseline: 7750e444dc7c45c663bbbef59aea3495f341eb02
-Surface: exact M3 A1 D0
+Current task: DRC_V410_GP3_LOCAL_JOURNEY_RESUME_RESET_R1
+Baseline: 77c9888d61599e01b5c4fa5e4b692f0fd342e735
+Surface: exact M2 A0 D0
 State: IMPLEMENTED / STATIC_VERIFIED / GP3_IN_PROGRESS / READY_FOR_REVIEW
 Stage / commit / push: NOT_AUTHORIZED
 ```
@@ -78,6 +78,9 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] In-app About guidance states that advice is produced on-device from Mood and Character and that selections are not saved
 - [x] About entry exposes its name to Semantics and returns to the same journey instance without losing current selections or advice
 - [x] About route widget verification for navigation, state retention, narrow width, and 2.0 text scaling (shared package analyze PASS and 33 tests PASS; public app analyze PASS and startup test PASS; product-boundary 31 tests PASS)
+- [x] Flutter widget lifecycle verification for same-instance pause/resume retention and fresh-instance reset (shared package analyze PASS and 34 tests PASS; public app startup test PASS; product-boundary 31 tests PASS)
+- [x] Lifecycle widget-test scope is local UI state only; the active Beta has no permission request or Backend connection exercised by this check
+- [ ] GP-6 Android-device verification for background resume, process restart, airplane mode, and TalkBack
 - [ ] Android device TalkBack verification
 - [ ] Settings, support, and remaining GP-3 user-journey refinement
 
