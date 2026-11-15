@@ -11,14 +11,16 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
-Current update baseline: 3ac56a19197179e7370da173a56382c0fb7b9747
-Current decision state: D01 NOT_DECIDED; D02 APPROVED as Daily Rhythm Companion;
+Current update task: DRC_V410_GP4_POLICY_DECISIONS_R1
+Current update baseline: cd1af1dd88e5b213c07c1c6494b274d281d6fbda
+Current decision state: D01 APPROVED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
-  D05-D09 NOT_DECIDED; D10 PROPOSED; D11 APPROVED
+  D05 NOT_DECIDED; D06 APPROVED; D07 APPROVED; D08 NOT_DECIDED;
+  D09 APPROVED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
-Product-source implementation: ACCEPTED_AT_3AC56A19197179E7370DA173A56382C0FB7B9747
-Documentation authorization: APPROVED_FOR_GP2_PUBLIC_BETA_CORE_FLOW_ACCEPTANCE_R1
+GP-3 acceptance: ACCEPTED_AT_CD1AF1DD88E5B213C07C1C6494B274D281D6FBDA
+Product-source implementation: NOT_AUTHORIZED_FOR_THIS_GP4_DECISION_RECORD
+Documentation authorization: APPROVED_FOR_GP4_POLICY_DECISIONS_R1
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -42,25 +44,25 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | Namespace and application ID are com.example.app. |
+| Status | APPROVED |
+| Current observed state | `app_public/` namespace and application ID are the provisional `com.dailyrhythmcompanion.preview.drc_public_app`. |
 | Decision to make | Select the permanent unique Android application ID for direct-distribution continuity and later Google Play use. |
-| Required inputs/evidence | Organization/domain ownership, naming policy, signing/update continuity, future Play availability, and migration constraints. |
+| Required inputs/evidence | Confirm that the approved ID can be used before applying it to Android configuration; future Play availability is not yet verified. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-4, GP-5, GP-6, GP-7, GP-8, GP-9 |
 | Must be decided before | Public-beta Android identity implementation, release signing, or artifact creation. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
+| Approved value | `io.github.murayan1982.dailyrhythmcompanion` |
+| Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15. |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | Required for direct APK update continuity and later Play continuity. A later ID change creates a different installed application. |
+| Notes | Adopted as the formal application ID/namespace policy. Usability and availability are `NOT_VERIFIED` and must be confirmed before Android configuration is changed. A later ID change creates a different installed application. |
 
 ## GP0-D02 Formal application display name
 
 | Field | Value |
 | --- | --- |
 | Status | APPROVED |
-| Current observed state | Android label is app. |
+| Current observed state | `app_public/` Android label remains the provisional `drc_public_app`; the approved public display name has not yet been applied. |
 | Decision to make | Approve the public display name and consistency rules. |
 | Required inputs/evidence | Product naming, localization, trademark review, listing constraints. |
 | Decision owner | User |
@@ -117,7 +119,7 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
 | Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
-| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 scope is accepted; GP-3 and GP-4 remain incomplete. |
+| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 and GP-3 scopes are accepted; GP-4 implementation remains incomplete. |
 
 ## GP2-S02 Active beta Mood persistence policy
 
@@ -181,7 +183,7 @@ SUPERSEDED
 | Final review | ACCEPTED / NO_BLOCKING_FINDINGS |
 | Acceptance evidence | Shared package: analyze PASS and 29 tests PASS; `app_public/`: analyze PASS and startup test PASS; app product-boundary suite: 31 tests PASS. |
 | Acceptance state | ACTIVE_GITHUB_ANDROID_PUBLIC_BETA_GP2_ACCEPTED |
-| Remaining work | Sleep/health connection, optional text chat, and history remain future scope. GP-4 formal identity/version/signing and final signed-APK reproof, plus GP-3 refinement, remain separate. |
+| Remaining work | Sleep/health connection, optional text chat, and history remain future scope. GP-3 is accepted. GP-4 formal identity/version/signing and final signed-APK reproof remain separate and incomplete. |
 
 ## GP0-D05 Google Play account type and testing applicability
 
@@ -204,35 +206,35 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | Release uses debug signing; production ownership is absent. |
+| Status | APPROVED |
+| Current observed state | `app_public/` has no distribution-signing configuration. No GitHub-distribution signing key has been created or configured. |
 | Decision to make | Approve direct-distribution APK signing ownership, custody, recovery, rotation, update continuity, and the future Play App Signing relationship. |
 | Required inputs/evidence | Account ownership, custodians, secure storage and recovery requirements. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-4, GP-6, GP-8, GP-9; Play App Signing is Deferred Google Play Track |
 | Must be decided before | Any public-beta signing configuration, APK build, or later AAB creation. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
+| Approved value | The user manages the GitHub-distribution app-signing key outside the repository, with an encrypted backup and documented recovery procedure. If later Google Play builds must update the same installed app, register the same app-signing key with Play App Signing and use a separate upload key. |
+| Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15. |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | No key or credential is recorded. Direct-distribution signing must preserve update continuity; future Play App Signing remains a deferred decision. |
+| Notes | Key creation, custody setup, encrypted backup, recovery validation, upload-key creation, and Play App Signing registration are `NOT_EXECUTED`. No key or credential is recorded. Google Play remains deferred, not cancelled. |
 
 ## GP0-D07 Android compatibility and deferred Play target-API policy
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | targetSdk is delegated; API 36 compliance is `NOT_VERIFIED`. |
+| Status | APPROVED |
+| Current observed state | `app_public/` delegates SDK values to Flutter. Flutter 3.41.7 defines minSdk 24, targetSdk 36, and compileSdk 36; candidate-APK resolved values are not yet recorded. |
 | Decision to make | Approve the public-beta supported Android range and maintenance policy; reconfirm the current Play target-API requirement when Play is reactivated. |
 | Required inputs/evidence | Resolved build-tool values, representative-device evidence, and current official Play policy at reactivation. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-4, GP-6; Play target API is Deferred Google Play Track |
 | Must be decided before | Android release-foundation acceptance. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
+| Approved value | `minSdk=24` (Android 7.0), `targetSdk=36`, `compileSdk=36` |
+| Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15, using the Flutter 3.41.7 values as the decision basis. |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | This replan asserts neither supported-version acceptance nor API 36 compliance. Play confirmation is deferred, not cancelled. |
+| Notes | GP-4 must verify the resolved values in the candidate APK. GP-6 must verify representative-device behavior. Current Google Play requirements must be reconfirmed when the deferred Play track resumes. |
 
 ## GP0-D08 Data, policy, deletion, Data safety, and Health Apps ownership
 
@@ -255,18 +257,18 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
-| Current observed state | `app/pubspec.yaml` remains `4.0.0+5`. |
+| Status | APPROVED |
+| Current observed state | `app_public/pubspec.yaml` is the release baseline and remains provisional at `0.0.0+1`. The legacy `app/pubspec.yaml` value `4.0.0+5` is retained only as numbering history. |
 | Decision to make | Approve v4.1.0 public-beta version and monotonic Android version-code sequence that remains compatible with later Play work. |
 | Required inputs/evidence | Existing version-code history, direct-update policy, and later Play continuity. |
 | Decision owner | User |
 | Implementation owner | NOT_DECIDED |
 | Dependent phases | GP-4, GP-8, GP-9 |
 | Must be decided before | Version change, public APK creation, or later AAB creation. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
+| Approved value | First public APK: `versionName=4.1.0`, `versionCode=6`; every later public update increments `versionCode`. |
+| Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15. |
 | Implementation authorization | NOT_AUTHORIZED |
-| Notes | Control A does not modify version metadata. |
+| Notes | Version metadata has not been changed. `4.0.0+5` is a reference for monotonic numbering, not the current `app_public/` version. |
 
 ## GP0-D10 Phase evidence, stop, rollback, and publication authorization model
 
@@ -304,23 +306,24 @@ SUPERSEDED
 ## Dependency and decision order
 
 1. GP0-D11 GitHub Android Public Beta first and README landing (approved).
-2. GP0-D01 permanent application ID.
-3. GP0-D06 direct-distribution signing ownership and update continuity.
-4. GP0-D09 public-beta version/build sequence.
+2. GP0-D01 permanent application ID (approved; availability check and implementation pending).
+3. GP0-D06 direct-distribution signing ownership and update continuity (approved; execution pending).
+4. GP0-D09 public-beta version/build sequence (approved; implementation pending).
 5. GP0-D03 Backend publication model.
 6. GP0-D08 privacy/data/support ownership.
-7. GP0-D07 Android compatibility range.
+7. GP0-D07 Android compatibility range (approved; candidate and device verification pending).
 8. GP0-D10 evidence, stop, rollback, and publication controls.
 9. GP-8 Public Beta testing and candidate freeze.
 10. GP-9 GitHub Release publication and post-release verification.
 11. GP0-D05 and the Play-specific part of D06/D07 only when the separate
     Deferred Google Play Track is reactivated.
 
-This is a planning order, not approval of a decision.
+This is the implementation/dependency order. Approval status is defined by each
+decision entry above.
 
 ## Version and immutable release boundary
 
 - Development line: DRC v4.1.0.
-- `app/pubspec.yaml` remains unchanged.
+- `app_public/pubspec.yaml` remains `0.0.0+1`; `app/pubspec.yaml` remains `4.0.0+5`.
 - The v4.0.0 tag, GitHub Release, asset, fixed ZIP, and history are immutable.
 - No v4.1.0 build, tag, Release, or asset is created.
