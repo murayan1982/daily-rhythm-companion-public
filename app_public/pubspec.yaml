@@ -2,8 +2,8 @@ name: drc_public_app
 description: "Android-only public application shell for Daily Rhythm Companion."
 publish_to: 'none'
 
-# Placeholder only; GP-4 owns the release version and build number.
-version: 0.0.0+1
+# Approved GP-4 release version and first public Android build number.
+version: 4.1.0+6
 
 environment:
   sdk: ^3.11.5
