@@ -8,7 +8,9 @@ import 'production_daily_advice.dart';
 import 'production_mood_check_in.dart';
 
 class ProductionJourneyOverview extends StatefulWidget {
-  const ProductionJourneyOverview({super.key});
+  const ProductionJourneyOverview({super.key, this.characterPortrait});
+
+  final CharacterPortraitBuilder? characterPortrait;
 
   @override
   State<ProductionJourneyOverview> createState() =>
@@ -40,6 +42,7 @@ class _ProductionJourneyOverviewState extends State<ProductionJourneyOverview> {
       ),
       ProductionJourneyStep.characterSelection => ProductionCharacterSelection(
         item: item,
+        characterPortrait: widget.characterPortrait,
         onChanged: (character) =>
             setState(() => _selectedCharacter = character),
       ),

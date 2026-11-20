@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
+import 'components/production_character_selection.dart';
 import 'components/production_journey_overview.dart';
 import 'production_about_screen.dart';
 
 class ProductionHomeScreen extends StatelessWidget {
-  const ProductionHomeScreen({super.key, this.journeyHeader});
+  const ProductionHomeScreen({
+    super.key,
+    this.journeyHeader,
+    this.characterPortrait,
+  });
 
   final Widget? journeyHeader;
+  final CharacterPortraitBuilder? characterPortrait;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +66,9 @@ class ProductionHomeScreen extends StatelessWidget {
                     header,
                     const SizedBox(height: 24),
                   ],
-                  const ProductionJourneyOverview(),
+                  ProductionJourneyOverview(
+                    characterPortrait: characterPortrait,
+                  ),
                 ],
               ),
             ),

@@ -15,6 +15,7 @@ import android.widget.TextView
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.io.IOException
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -25,6 +26,14 @@ class SleepDebugActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "drc/debug_character_images")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "load") {
+                    result.success(loadCharacterPortraits())
+                } else {
+                    result.notImplemented()
+                }
+            }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "drc/sleep_debug")
             .setMethodCallHandler { call, result ->
                 when {
@@ -48,6 +57,15 @@ class SleepDebugActivity : FlutterActivity() {
                 }
             }
     }
+
+    private fun loadCharacterPortraits(): Map<String, ByteArray> =
+        listOf("gentle_mina", "cheerful_sora", "cool_rei").mapNotNull { id ->
+            try {
+                id to assets.open("character_portraits/${id}_demo.png").use { it.readBytes() }
+            } catch (_: IOException) {
+                null
+            }
+        }.toMap()
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

@@ -2,7 +2,45 @@ import 'package:drc_production/production_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() => runApp(const ProductionApp(journeyHeader: _SleepCard()));
+void main() => runApp(const _SleepDebugApp());
+
+class _SleepDebugApp extends StatefulWidget {
+  const _SleepDebugApp();
+
+  @override
+  State<_SleepDebugApp> createState() => _SleepDebugAppState();
+}
+
+class _SleepDebugAppState extends State<_SleepDebugApp> {
+  static const _portraitChannel = MethodChannel('drc/debug_character_images');
+  late final _portraits = _portraitChannel.invokeMapMethod<String, Uint8List>(
+    'load',
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, Uint8List>?>(
+      future: _portraits,
+      builder: (context, snapshot) => ProductionApp(
+        journeyHeader: const _SleepCard(),
+        characterPortrait: (option) {
+          final bytes = snapshot.data?[option.characterId];
+          if (bytes == null || bytes.isEmpty) return null;
+          const size = 56.0;
+          return Image.memory(
+            bytes,
+            width: size,
+            height: size,
+            cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) =>
+                const SizedBox.shrink(),
+          );
+        },
+      ),
+    );
+  }
+}
 
 class _SleepCard extends StatefulWidget {
   const _SleepCard();

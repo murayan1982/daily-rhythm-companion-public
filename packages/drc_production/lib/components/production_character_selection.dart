@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import '../core/production_character.dart';
 import '../core/production_journey_step.dart';
 
+typedef CharacterPortraitBuilder = Widget? Function(ProductionCharacterOption);
+
 class ProductionCharacterSelection extends StatefulWidget {
   const ProductionCharacterSelection({
     required this.item,
     this.onChanged,
+    this.characterPortrait,
     super.key,
   });
 
   final ProductionJourneyItem item;
   final ValueChanged<ProductionCharacter>? onChanged;
+  final CharacterPortraitBuilder? characterPortrait;
 
   @override
   State<ProductionCharacterSelection> createState() =>
@@ -76,6 +80,7 @@ class _ProductionCharacterSelectionState
               for (final option in productionCharacterOptions) ...[
                 _CharacterOptionCard(
                   option: option,
+                  portrait: widget.characterPortrait?.call(option),
                   selected: _selectedCharacter == option.character,
                   onSelected: () => _select(option.character),
                 ),
@@ -98,11 +103,13 @@ class _ProductionCharacterSelectionState
 class _CharacterOptionCard extends StatelessWidget {
   const _CharacterOptionCard({
     required this.option,
+    required this.portrait,
     required this.selected,
     required this.onSelected,
   });
 
   final ProductionCharacterOption option;
+  final Widget? portrait;
   final bool selected;
   final VoidCallback onSelected;
 
@@ -112,6 +119,12 @@ class _CharacterOptionCard extends StatelessWidget {
     final accessibleLabel =
         '${option.displayName}。${option.headline}。${option.tagline}。'
         '${option.toneLabel}。${option.summary}';
+    final choice = ChoiceChip(
+      label: Text(option.displayName),
+      selected: selected,
+      onSelected: (_) => onSelected(),
+    );
+    final image = portrait;
 
     return Semantics(
       label: accessibleLabel,
@@ -126,11 +139,16 @@ class _CharacterOptionCard extends StatelessWidget {
             children: [
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: ChoiceChip(
-                  label: Text(option.displayName),
-                  selected: selected,
-                  onSelected: (_) => onSelected(),
-                ),
+                child: image == null
+                    ? choice
+                    : Wrap(
+                        spacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          ExcludeSemantics(child: image),
+                          choice,
+                        ],
+                      ),
               ),
               const SizedBox(height: 6),
               Text(option.headline, style: theme.textTheme.titleSmall),
