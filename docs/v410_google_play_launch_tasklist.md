@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: GP-7 publication materials
-Baseline: 53e136a6ccfea266abb4d7cfc5d1100d24c6f259
-Surface: exact M2 A2 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_DOCUMENTS_REVIEWED
-Stage / commit / push: authorized for this four-file documentation update to origin/main
+Current task: GP-7 Release screenshots
+Baseline: 54651fc7cb76f8b9a9416efcc15ef9c1627ad4a8
+Surface: exact M2 A3 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_DOCUMENTS_REVIEWED / GP7_SCREENSHOTS_PREPARED
+Stage / commit / push: authorized for this five-file screenshot and documentation update to origin/main
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -143,14 +143,14 @@ not a prerequisite for publication preparation.
 
 ## P2 / GP-7 — publication materials and preparation
 
-Checked items below are prepared and reviewed. Screenshots, Android developer
-verification and package registration, and GP-8 testing and candidate freeze
-remain open. The APK download link will be finalized at publication.
+Checked items below are prepared. Android developer verification and package
+registration, and GP-8 testing and candidate freeze remain open. The APK
+download link will be finalized at publication.
 
 - [x] README links to the install guide and records pending public APK availability
 - [x] [APK install guide](v410_android_install_guide.md)
 - [x] Unknown-app installation permission explained for Android 7.x and 8.0+
-- [ ] Screenshots
+- [x] Three Release screenshots prepared in publication order, with alternative text and a visual check for personal information and notification text
 - [x] [GitHub Release body draft](../release_notes/v4.1.0.md)
 - [x] Known limitations and physical-device coverage documented
 - [x] APK filename, size, and SHA-256 cross-checked against the saved candidate and GP-4 evidence
@@ -170,6 +170,7 @@ remain open. The APK download link will be finalized at publication.
 - [ ] Permission-denial beta test
 - [ ] Offline/error beta test
 - [ ] TalkBack/accessibility beta test
+- [ ] Verify screenshot rendering, order, and alternative text on the Release page when available
 - [ ] Feedback collection
 - [ ] Crash/regression review
 - [ ] Release-blocker closure
