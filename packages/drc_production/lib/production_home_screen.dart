@@ -4,7 +4,9 @@ import 'components/production_journey_overview.dart';
 import 'production_about_screen.dart';
 
 class ProductionHomeScreen extends StatelessWidget {
-  const ProductionHomeScreen({super.key});
+  const ProductionHomeScreen({super.key, this.journeyHeader});
+
+  final Widget? journeyHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,10 @@ class ProductionHomeScreen extends StatelessWidget {
                     style: theme.textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
+                  if (journeyHeader case final header?) ...[
+                    header,
+                    const SizedBox(height: 24),
+                  ],
                   const ProductionJourneyOverview(),
                 ],
               ),

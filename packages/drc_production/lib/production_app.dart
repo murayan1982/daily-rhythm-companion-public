@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'production_home_screen.dart';
 
 class ProductionApp extends StatelessWidget {
-  const ProductionApp({super.key});
+  const ProductionApp({super.key, this.journeyHeader});
+
+  final Widget? journeyHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class ProductionApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const ProductionHomeScreen(),
+      home: ProductionHomeScreen(journeyHeader: journeyHeader),
     );
   }
 }
