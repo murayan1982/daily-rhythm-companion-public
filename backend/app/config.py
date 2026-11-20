@@ -35,6 +35,7 @@ class AppConfig:
     framework_text_chat_preflight_enabled: bool = False
     framework_text_chat_session_preflight_enabled: bool = False
     framework_text_chat_live_message_enabled: bool = False
+    debug_ai_advice_enabled: bool = False
     post_advice_chat_ttl_seconds: int = 1800
     post_advice_chat_max_sessions: int = 100
     post_advice_chat_max_turns: int = 8
@@ -267,6 +268,7 @@ def load_config() -> AppConfig:
         framework_text_chat_live_message_enabled=_env_flag(
             "DRC_FW40_ENABLE_LIVE_TEXT_CHAT_MESSAGE"
         ),
+        debug_ai_advice_enabled=_env_flag("DRC_DEBUG_AI_ADVICE_ENABLED"),
         post_advice_chat_ttl_seconds=_env_positive_int(
             "POST_ADVICE_CHAT_TTL_SECONDS",
             1800,

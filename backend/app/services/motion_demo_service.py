@@ -7,6 +7,7 @@ from app.models.motion_demo import (
     MotionDemoRequest,
     MotionDemoRequestResponse,
     MotionDemoStatusResponse,
+    MotionExpressionId,
 )
 from app.services.motion_boundary_probe import MotionBoundaryProbe
 
@@ -32,13 +33,7 @@ class MotionDemoService:
         "cheerful_sora",
         "cool_rei",
     )
-    _SUPPORTED_EXPRESSION_IDS: tuple[str, ...] = (
-        "idle",
-        "happy",
-        "thinking",
-        "supportive",
-        "speaking",
-    )
+    _SUPPORTED_EXPRESSION_IDS = tuple(expression.value for expression in MotionExpressionId)
     _SUPPORTED_REQUESTED_ADAPTER_MODES: tuple[str, ...] = (
         "disabled",
         "framework",

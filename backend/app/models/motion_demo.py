@@ -1,6 +1,16 @@
+from enum import Enum
+
 from pydantic import BaseModel, Field
 
 from app.models.demo_status import CapabilityStatus
+
+
+class MotionExpressionId(str, Enum):
+    IDLE = "idle"
+    HAPPY = "happy"
+    THINKING = "thinking"
+    SUPPORTIVE = "supportive"
+    SPEAKING = "speaking"
 
 
 class MotionBoundaryProbeSummary(BaseModel):

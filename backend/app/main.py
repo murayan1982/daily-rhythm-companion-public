@@ -10,6 +10,7 @@ from app.api import (
     character_motion_presentation,
     characters,
     daily_records,
+    debug_advice,
     demo_status,
     fitbit,
     framework_v600_realtime,
@@ -47,6 +48,7 @@ app.include_router(characters.router)
 app.include_router(sleep.router)
 app.include_router(sleep_provider_selection.router)
 app.include_router(advice.router)
+app.include_router(debug_advice.router)
 app.include_router(chat.router)
 app.include_router(daily_records.router)
 app.include_router(demo_status.router)
