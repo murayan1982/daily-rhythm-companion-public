@@ -1,15 +1,15 @@
 # Daily Rhythm Companion v4.1.0 Distribution Tasklist
 
-Updated: 2026-11-15
+Updated: 2026-11-20
 
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP3_PUBLIC_BETA_ACCEPTANCE_R1
-Baseline: cec88eb250d803f2283e9b4d9705582fc5508b10
-Surface: exact M2 A0 D0
-State: ACTIVE_BETA_GP3_ACCEPTED / GP4_PENDING / GP5_PENDING / GP6_PENDING
-Stage / commit / push: AUTHORIZED_FOR_THIS_ACCEPTANCE_RECORD
+Current task: DRC_V410_GP4_SIGNED_ARM64_CANDIDATE_EVIDENCE_R1
+Baseline: ffa7745a02cc289f44b8a3db960a1389e33cd1b6
+Surface: exact M3 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_INSTALL_UPDATE_PENDING / GP5_PENDING / GP6_PENDING
+Stage / commit / push: NOT_AUTHORIZED
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -87,22 +87,22 @@ Each unchecked line is an individual gate and requires separate authorization.
 
 ## P0 — release foundation and blocking decisions
 
-- [ ] Formal application ID
-- [ ] Formal application display name applied to Android
-- [ ] Release signing
-- [ ] Signing key owner/custody/backup/recovery
-- [ ] Release build wiring from `app_public/` with explicit target `lib/main.dart`
-- [ ] versionName/versionCode
+- [x] Formal application ID
+- [x] Formal application display name applied to Android
+- [x] Release signing configuration and signed-candidate verification
+- [x] Signing key owner/custody/backup/recovery evidence (user-reported 2026-11-15; no secret recorded)
+- [x] Release build wiring from `app_public/` with explicit target `lib/main.dart`
+- [x] versionName/versionCode
 - [x] v4.1.0 GitHub beta Backend mode: local-only / no remote Backend
-- [ ] localhost/private-LAN release dependency exclusion proof
+- [x] localhost/private-LAN release dependency exclusion proof for the inspected signed ARM64 candidate
 - [x] D03 active-track decision closure
 - [ ] D08 decision closure
 - [ ] Privacy Policy
 - [ ] Public data deletion method
-- [ ] Signed release APK
-- [ ] APK SHA-256
-- [ ] Signing certificate SHA-256
-- [ ] Repeat GP2-S03 exclusion proof on the final signed APK and record the exact APK SHA-256
+- [x] Signed ARM64 candidate APK created and kept private
+- [x] APK SHA-256 recorded for the inspected candidate
+- [x] Signing certificate SHA-256 verified
+- [x] Repeat GP2-S03 exclusion proof on the inspected signed APK and record the exact APK SHA-256
 - [ ] Clean install
 - [ ] Manual update
 - [ ] Android developer verification
@@ -205,8 +205,9 @@ release-mode proof APK was built from that exact source as `app-release.apk`:
 `672DCCD462ACAD49ECD891482353B1EF0212E33512D9868A1E9C383AF60F4BAC`.
 Manifest, plugin/DEX/native-library, Flutter asset, and AOT exclusion evidence
 was captured for this proof APK. Formal identity, display name, version,
-distribution signing, and repetition against the exact final signed APK remain
-GP-4 gates. The active Beta three-step Core-flow and mood-specific,
+distribution signing, and repetition against the signed ARM64 candidate were
+completed later under GP-4 and are recorded below. The active Beta three-step
+Core-flow and mood-specific,
 Character-invariant Mood responses were accepted at
 `3ac56a19197179e7370da173a56382c0fb7b9747` after final review found no
 blocking findings. The current GitHub Android Public Beta GP-2 scope is complete.
@@ -214,5 +215,23 @@ Sleep/health connection, optional text chat, history, and the broader
 `TEXT_CORE_PLUS_CHAT` range remain future work. The active-Beta GP-3 evidence set
 is complete, final review found no blocking findings, and the current GitHub
 Android Public Beta GP-3 scope is accepted. GP-5 privacy/support and GP-6
-physical-device gates remain open. GP-4 must repeat exclusion proof on the exact
-final signed APK.
+physical-device gates remain open. GP-4 must repeat exclusion proof on the APK
+selected for publication if it does not match the inspected candidate hash.
+
+GP-4 candidate execution occurred on 2026-11-15; this documentation update is
+dated 2026-11-20. The private candidate is
+`DRC_v4.1.0_arm64_signed_candidate.apk`, source
+`ffa7745a02cc289f44b8a3db960a1389e33cd1b6`, 15,081,786 bytes, APK SHA-256
+`A50D6987B8E059A49FFF1FB340A7081293617DE9EE784E3304547BA17FDCE373`,
+and certificate SHA-256
+`27:1F:75:FE:3B:19:8B:AC:A9:4F:31:AE:2B:65:8C:7B:FC:99:88:1A:2C:C3:5C:68:FE:89:38:0B:FE:CF:8C:E5`.
+It verifies as the signed ARM64 release candidate for
+`io.github.murayan1982.dailyrhythmcompanion`, label
+`Daily Rhythm Companion`, version `4.1.0` / `6`, and SDK `24` / `36` / `36`.
+Manifest, plugin, DEX/native, asset, AOT, and product connection-setting
+exclusion checks passed for this exact APK. The user reported signing-key
+generation, encrypted-backup restoration with the same certificate SHA-256,
+and matching release `signingReport` on 2026-11-15. Clean install, manual
+update, Android registration, D08/GP-5, and publication remain unchecked.
+Publication must use an APK matching the recorded APK SHA-256 or repeat the
+complete candidate inspection.

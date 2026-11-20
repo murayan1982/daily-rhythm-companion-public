@@ -11,16 +11,18 @@ Decision owner: User
 Implementation support: Codex
 Design/review support: ChatGPT
 Original Control A decisions: NONE
-Current update task: DRC_V410_GP4_POLICY_DECISIONS_R1
-Current update baseline: cd1af1dd88e5b213c07c1c6494b274d281d6fbda
+Current update task: DRC_V410_GP4_SIGNED_ARM64_CANDIDATE_EVIDENCE_R1
+Current update baseline: ffa7745a02cc289f44b8a3db960a1389e33cd1b6
+Candidate execution date: 2026-11-15
+Current documentation update date: 2026-11-20
 Current decision state: D01 APPROVED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
   D05 NOT_DECIDED; D06 APPROVED; D07 APPROVED; D08 NOT_DECIDED;
   D09 APPROVED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
 GP-3 acceptance: ACCEPTED_AT_CD1AF1DD88E5B213C07C1C6494B274D281D6FBDA
-Product-source implementation: NOT_AUTHORIZED_FOR_THIS_GP4_DECISION_RECORD
-Documentation authorization: APPROVED_FOR_GP4_POLICY_DECISIONS_R1
+Product-source implementation: COMPLETED_BEFORE_THIS_DOCUMENTATION_UPDATE
+Documentation authorization: APPROVED_FOR_GP4_SIGNED_CANDIDATE_EVIDENCE_R1
 ```
 
 Codex does not make irreversible business, account, identity, provider, legal,
@@ -119,7 +121,7 @@ SUPERSEDED
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
 | Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
-| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 and GP-3 scopes are accepted; GP-4 implementation remains incomplete. |
+| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 and GP-3 scopes are accepted; GP-4 identity, signing, and signed-candidate inspection are complete while physical-device install/update, registration, and publication remain incomplete. |
 
 ## GP2-S02 Active beta Mood persistence policy
 
@@ -145,9 +147,9 @@ SUPERSEDED
 | Scope | GitHub Android Public Beta and later final public candidates |
 | Required exclusion | Non-product Dart graph, permissions, native plugins, assets, endpoints, and operator/developer surfaces not approved for the product. |
 | Architecture | GP2-S04 APPROVED — SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY |
-| Artifact proof | PRIVATE_ARM64_UNSIGNED_PROOF_CAPTURED_FROM_ED2454D / FINAL_SIGNED_APK_REPROOF_PENDING_GP4 |
-| Dependencies | GP-2 source boundary, GP2-S04 implementation, GP-4 release wiring and final artifact verification |
-| Notes | D03 remains APPROVED for the active local-only beta. D08 remains NOT_DECIDED. D11 remains APPROVED. This decision does not authorize build, signing, publication, or architecture implementation. |
+| Artifact proof | PRIVATE_ARM64_UNSIGNED_PROOF_CAPTURED_FROM_ED2454D / SIGNED_ARM64_CANDIDATE_INSPECTED_FROM_FFA7745 |
+| Dependencies | GP-2 source boundary and GP2-S04 implementation are complete; GP-4 device install/update and publication verification remain open. |
+| Notes | D03 remains APPROVED for the active local-only beta. D08 remains NOT_DECIDED. D11 remains APPROVED. This decision did not itself authorize build, signing, publication, or architecture implementation; those completed candidate steps received separate authorization. |
 
 ## GP2-S04 Product dependency-boundary architecture
 
@@ -161,9 +163,9 @@ SUPERSEDED
 | Directory ownership | `app_public/` owns the public Flutter app and Android build inputs; `packages/drc_production/` owns the production journey; `app/` owns developer/demo/operator tooling and the production preview. |
 | Design and migration | [GP-2 production boundary architecture](v410_gp2_production_boundary_architecture.md#control-g-public-flutter-application-boundary) |
 | Documentation authorization | APPROVED — exact M5 A0 D0 |
-| Architecture implementation | NOT_AUTHORIZED |
-| Build / signing / stage / commit / push / publication | NOT_AUTHORIZED |
-| Impact | BLOCKER-G and the separate public-app implementation boundary are complete. An unsigned ARM64 proof APK from `ed2454da9277b425e62a72c8b29357ad0780b49b` has exclusion evidence; formal identity, version, signing, and final-candidate reproof remain GP-4 gates. |
+| Architecture implementation | COMPLETED_AT_2E0C038E9737EC711AEB6173F524F4390C122432 |
+| Build / signing / stage / commit / push / publication | Private signed-candidate build and inspection separately authorized and completed; publication remains `NOT_AUTHORIZED`. |
+| Impact | BLOCKER-G and the separate public-app implementation boundary are complete. The unsigned ARM64 proof from `ed2454da9277b425e62a72c8b29357ad0780b49b` remains historical evidence; formal identity, version, signing, and exclusion reproof are verified on the private signed candidate from `ffa7745a02cc289f44b8a3db960a1389e33cd1b6`. Device install/update and publication remain open. |
 
 ## GP2-S05 Active Public Beta core-flow presentation
 
@@ -183,7 +185,7 @@ SUPERSEDED
 | Final review | ACCEPTED / NO_BLOCKING_FINDINGS |
 | Acceptance evidence | Shared package: analyze PASS and 29 tests PASS; `app_public/`: analyze PASS and startup test PASS; app product-boundary suite: 31 tests PASS. |
 | Acceptance state | ACTIVE_GITHUB_ANDROID_PUBLIC_BETA_GP2_ACCEPTED |
-| Remaining work | Sleep/health connection, optional text chat, and history remain future scope. GP-3 is accepted. GP-4 formal identity/version/signing and final signed-APK reproof remain separate and incomplete. |
+| Remaining work | Sleep/health connection, optional text chat, and history remain future scope. GP-3 is accepted. GP-4 formal identity/version/signing and signed-candidate reproof are complete; physical-device install/update, Android registration, D08/GP-5, and publication remain incomplete. |
 
 ## GP0-D05 Google Play account type and testing applicability
 
@@ -207,7 +209,7 @@ SUPERSEDED
 | Field | Value |
 | --- | --- |
 | Status | APPROVED |
-| Current observed state | `app_public/` has no distribution-signing configuration. No GitHub-distribution signing key has been created or configured. |
+| Current observed state | `app_public/` has release-signing configuration without a debug-key fallback. The private signed ARM64 candidate from `ffa7745a02cc289f44b8a3db960a1389e33cd1b6` passed `apksigner` verification with the approved certificate SHA-256. |
 | Decision to make | Approve direct-distribution APK signing ownership, custody, recovery, rotation, update continuity, and the future Play App Signing relationship. |
 | Required inputs/evidence | Account ownership, custodians, secure storage and recovery requirements. |
 | Decision owner | User |
@@ -216,15 +218,15 @@ SUPERSEDED
 | Must be decided before | Any public-beta signing configuration, APK build, or later AAB creation. |
 | Approved value | The user manages the GitHub-distribution app-signing key outside the repository, with an encrypted backup and documented recovery procedure. If later Google Play builds must update the same installed app, register the same app-signing key with Play App Signing and use a separate upload key. |
 | Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15. |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | Key creation, custody setup, encrypted backup, recovery validation, upload-key creation, and Play App Signing registration are `NOT_EXECUTED`. No key or credential is recorded. Google Play remains deferred, not cancelled. |
+| Implementation authorization | AUTHORIZED_AND_EXECUTED_FOR_PRIVATE_GP4_CANDIDATE_2026-11-15 |
+| Notes | The user reported key generation and repository-external custody, encrypted-backup restoration with matching public-certificate SHA-256, and a matching release `signingReport` on 2026-11-15. The inspected candidate certificate SHA-256 is `27:1F:75:FE:3B:19:8B:AC:A9:4F:31:AE:2B:65:8C:7B:FC:99:88:1A:2C:C3:5C:68:FE:89:38:0B:FE:CF:8C:E5`. No key, credential, personal path, or raw log is recorded. Upload-key creation and Play App Signing registration remain `NOT_EXECUTED`; Google Play remains deferred, not cancelled. |
 
 ## GP0-D07 Android compatibility and deferred Play target-API policy
 
 | Field | Value |
 | --- | --- |
 | Status | APPROVED |
-| Current observed state | `app_public/` delegates SDK values to Flutter. Flutter 3.41.7 defines minSdk 24, targetSdk 36, and compileSdk 36; candidate-APK resolved values are not yet recorded. |
+| Current observed state | The signed ARM64 candidate records `minSdk=24`, `targetSdk=36`, and `compileSdk=36`; its only packaged ABI is `arm64-v8a`. Physical-device compatibility remains unverified. |
 | Decision to make | Approve the public-beta supported Android range and maintenance policy; reconfirm the current Play target-API requirement when Play is reactivated. |
 | Required inputs/evidence | Resolved build-tool values, representative-device evidence, and current official Play policy at reactivation. |
 | Decision owner | User |
@@ -233,8 +235,8 @@ SUPERSEDED
 | Must be decided before | Android release-foundation acceptance. |
 | Approved value | `minSdk=24` (Android 7.0), `targetSdk=36`, `compileSdk=36` |
 | Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15, using the Flutter 3.41.7 values as the decision basis. |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | GP-4 must verify the resolved values in the candidate APK. GP-6 must verify representative-device behavior. Current Google Play requirements must be reconfirmed when the deferred Play track resumes. |
+| Implementation authorization | AUTHORIZED_AND_VERIFIED_FOR_PRIVATE_GP4_CANDIDATE_2026-11-15 |
+| Notes | The candidate APK verified the approved SDK values on 2026-11-15. GP-6 must still verify representative-device behavior. Current Google Play requirements must be reconfirmed when the deferred Play track resumes. |
 
 ## GP0-D08 Data, policy, deletion, Data safety, and Health Apps ownership
 
@@ -258,7 +260,7 @@ SUPERSEDED
 | Field | Value |
 | --- | --- |
 | Status | APPROVED |
-| Current observed state | `app_public/pubspec.yaml` is the release baseline and remains provisional at `0.0.0+1`. The legacy `app/pubspec.yaml` value `4.0.0+5` is retained only as numbering history. |
+| Current observed state | `app_public/pubspec.yaml` and the inspected signed ARM64 candidate use `versionName=4.1.0` and `versionCode=6`. The legacy `app/pubspec.yaml` value `4.0.0+5` remains numbering history only. |
 | Decision to make | Approve v4.1.0 public-beta version and monotonic Android version-code sequence that remains compatible with later Play work. |
 | Required inputs/evidence | Existing version-code history, direct-update policy, and later Play continuity. |
 | Decision owner | User |
@@ -267,8 +269,8 @@ SUPERSEDED
 | Must be decided before | Version change, public APK creation, or later AAB creation. |
 | Approved value | First public APK: `versionName=4.1.0`, `versionCode=6`; every later public update increments `versionCode`. |
 | Approval evidence | User approved proceeding with the recommended GP-4 option on 2026-11-15. |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | Version metadata has not been changed. `4.0.0+5` is a reference for monotonic numbering, not the current `app_public/` version. |
+| Implementation authorization | AUTHORIZED_AND_VERIFIED_FOR_PRIVATE_GP4_CANDIDATE_2026-11-15 |
+| Notes | The first private signed candidate verified `4.1.0` / `6`. Every later public update must increment `versionCode`; `4.0.0+5` remains a historical numbering reference. |
 
 ## GP0-D10 Phase evidence, stop, rollback, and publication authorization model
 
@@ -307,11 +309,11 @@ SUPERSEDED
 
 1. GP0-D11 GitHub Android Public Beta first and README landing (approved).
 2. GP0-D01 permanent application ID (approved and applied; Android registration and future Google Play availability remain pending).
-3. GP0-D06 direct-distribution signing ownership and update continuity (approved; execution pending).
-4. GP0-D09 public-beta version/build sequence (approved; implementation pending).
+3. GP0-D06 direct-distribution signing ownership and update continuity (approved; private candidate signing and recovery evidence recorded; device update pending).
+4. GP0-D09 public-beta version/build sequence (approved and verified as `4.1.0` / `6` on the private candidate).
 5. GP0-D03 Backend publication model.
 6. GP0-D08 privacy/data/support ownership.
-7. GP0-D07 Android compatibility range (approved; candidate and device verification pending).
+7. GP0-D07 Android compatibility range (approved; candidate values verified, representative-device verification pending).
 8. GP0-D10 evidence, stop, rollback, and publication controls.
 9. GP-8 Public Beta testing and candidate freeze.
 10. GP-9 GitHub Release publication and post-release verification.
@@ -324,6 +326,6 @@ decision entry above.
 ## Version and immutable release boundary
 
 - Development line: DRC v4.1.0.
-- `app_public/pubspec.yaml` remains `0.0.0+1`; `app/pubspec.yaml` remains `4.0.0+5`.
+- `app_public/pubspec.yaml` is `4.1.0+6`; `app/pubspec.yaml` remains `4.0.0+5` as legacy numbering history.
 - The v4.0.0 tag, GitHub Release, asset, fixed ZIP, and history are immutable.
-- No v4.1.0 build, tag, Release, or asset is created.
+- A private v4.1.0 signed ARM64 candidate was created and inspected; no v4.1.0 tag, GitHub Release, or public asset is created.

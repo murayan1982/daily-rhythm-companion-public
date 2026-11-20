@@ -1,15 +1,15 @@
 # Daily Rhythm Companion v4.1.0 Distribution Roadmap
 
-Updated: 2026-11-15
+Updated: 2026-11-20
 
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP3_PUBLIC_BETA_ACCEPTANCE_R1
-Baseline HEAD / origin/main / remote main: cec88eb250d803f2283e9b4d9705582fc5508b10
-Surface: exact M2 A0 D0
-State: ACTIVE_BETA_GP3_ACCEPTED / GP4_PENDING / GP5_PENDING / GP6_PENDING
-Stage / commit / push: AUTHORIZED_FOR_THIS_ACCEPTANCE_RECORD
+Current task: DRC_V410_GP4_SIGNED_ARM64_CANDIDATE_EVIDENCE_R1
+Baseline HEAD / origin/main / remote main: ffa7745a02cc289f44b8a3db960a1389e33cd1b6
+Surface: exact M3 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_INSTALL_UPDATE_PENDING / GP5_PENDING / GP6_PENDING
+Stage / commit / push: NOT_AUTHORIZED
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
@@ -135,10 +135,11 @@ contains the standalone string `localhost`, which is not treated as product
 configuration evidence.
 
 This closes the private proof-artifact build and GP-2 exclusion-evidence slice
-for the active Beta. GP-4 must apply the formal application ID, display name,
-version, and distribution signing, then repeat every exclusion check against
-the exact final signed APK. Longer-term capabilities beyond the accepted active
-Beta flow remain separate future work under `TEXT_CORE_PLUS_CHAT`.
+for the active Beta. GP-4 subsequently applied the formal application ID,
+display name, version, and distribution signing and repeated the exclusion
+checks against the signed ARM64 candidate recorded below. Longer-term
+capabilities beyond the accepted active Beta flow remain separate future work
+under `TEXT_CORE_PLUS_CHAT`.
 
 GP2-S05 approves the active Public Beta main screen as exactly three ordered
 steps: Mood selection, Character selection, and deterministic local daily
@@ -158,14 +159,16 @@ tests in the app product-boundary suite.
 
 The active Beta GP-2 three-step implementation was accepted at
 `3ac56a19197179e7370da173a56382c0fb7b9747`. Final review: no blocking
-findings. The recorded unsigned ARM64 proof APK remains the artifact
-built from `ed2454da9277b425e62a72c8b29357ad0780b49b`; GP-4 must repeat the
-proof on the final signed APK containing the accepted source.
+findings. The recorded unsigned ARM64 proof APK remains the historical
+artifact built from `ed2454da9277b425e62a72c8b29357ad0780b49b`. GP-4 later
+repeated the proof on the signed ARM64 candidate recorded in the GP-4 section;
+physical-device and publication gates remain separate.
 
 ### 完了条件
 The current GitHub Android Public Beta GP-2 scope is accepted and traceable.
-GP-4 release work and final signed-candidate proof, GP-5 privacy/support work,
-GP-6 physical-device verification, and longer-term capability work remain open.
+GP-4 physical-device install/update and publication-adoption checks, GP-5
+privacy/support work, GP-6 physical-device verification, and longer-term
+capability work remain open.
 
 ### 禁止事項
 Do not treat acceptance of the active Beta GP-2 scope as completion of the
@@ -234,6 +237,36 @@ LAN dependencies; plan developer verification/package registration; produce a
 signed APK and record filename, size, SHA-256, signing-certificate SHA-256,
 clean install, and manual update evidence. Repeat the GP2-S03 exclusion checks
 on the final signed APK and bind the evidence to its exact SHA-256.
+
+The GP-4 candidate work was executed on 2026-11-15 and this public record was
+updated on 2026-11-20. The private, undistributed candidate is
+`DRC_v4.1.0_arm64_signed_candidate.apk`, built from
+`ffa7745a02cc289f44b8a3db960a1389e33cd1b6`; it is 15,081,786 bytes with APK
+SHA-256
+`A50D6987B8E059A49FFF1FB340A7081293617DE9EE784E3304547BA17FDCE373`.
+`apksigner` verification passed with one v2 signer and certificate SHA-256
+`27:1F:75:FE:3B:19:8B:AC:A9:4F:31:AE:2B:65:8C:7B:FC:99:88:1A:2C:C3:5C:68:FE:89:38:0B:FE:CF:8C:E5`.
+
+The candidate uses application ID
+`io.github.murayan1982.dailyrhythmcompanion`, label
+`Daily Rhythm Companion`, `versionName=4.1.0`, `versionCode=6`, and resolved
+`minSdk=24`, `targetSdk=36`, and `compileSdk=36`. Inspection of this exact APK
+passed the production entrypoint, release manifest, plugin registrant,
+DEX/native-library, Flutter asset, AOT, and product connection-setting
+exclusion checks. It is non-debuggable; contains neither `RECORD_AUDIO` nor
+`INTERNET`; registers no Android plugin; contains only ARM64 `libapp.so` and
+`libflutter.so`; and contains no product URL or private-LAN endpoint. Generic
+Dart/Flutter runtime `localhost`/`127.0.0.1` strings are not product connection
+configuration.
+
+The user reported on 2026-11-15 that the signing key had been generated and
+kept outside the repository, that an encrypted-backup restoration produced the
+same public-certificate SHA-256, and that the release `signingReport` matched.
+No key, credential, personal path, or raw private log is recorded here.
+Physical-device clean installation and manual update, Android package
+registration, D08/GP-5, and publication remain incomplete. Any APK selected
+for publication must be byte-checked against the inspected APK SHA-256 above;
+otherwise all artifact and exclusion checks must be repeated.
 
 ### 完了条件
 The exact APK tuple is reproducible and accepted; release entrypoint, package,
