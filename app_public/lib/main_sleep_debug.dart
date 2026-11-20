@@ -1,17 +1,26 @@
 import 'package:drc_production/production_app.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() => runApp(const _SleepDebugApp());
+import 'debug_ai_advice.dart';
 
-class _SleepDebugApp extends StatefulWidget {
-  const _SleepDebugApp();
+void main() => runApp(
+  SleepDebugApp(
+    adviceClient: kDebugMode ? DebugAiAdviceClient.fromEnvironment() : null,
+  ),
+);
+
+class SleepDebugApp extends StatefulWidget {
+  const SleepDebugApp({super.key, this.adviceClient});
+
+  final DebugAiAdviceClient? adviceClient;
 
   @override
-  State<_SleepDebugApp> createState() => _SleepDebugAppState();
+  State<SleepDebugApp> createState() => _SleepDebugAppState();
 }
 
-class _SleepDebugAppState extends State<_SleepDebugApp> {
+class _SleepDebugAppState extends State<SleepDebugApp> {
   static const _portraitChannel = MethodChannel('drc/debug_character_images');
   late final _portraits = _portraitChannel.invokeMapMethod<String, Uint8List>(
     'load',
@@ -23,6 +32,13 @@ class _SleepDebugAppState extends State<_SleepDebugApp> {
       future: _portraits,
       builder: (context, snapshot) => ProductionApp(
         journeyHeader: const _SleepCard(),
+        adviceExtension: kDebugMode
+            ? (mood, character) => DebugAiAdviceCard(
+                client: widget.adviceClient,
+                mood: mood,
+                character: character,
+              )
+            : null,
         characterPortrait: (option) {
           final bytes = snapshot.data?[option.characterId];
           if (bytes == null || bytes.isEmpty) return null;

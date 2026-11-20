@@ -7,10 +7,18 @@ import 'production_character_selection.dart';
 import 'production_daily_advice.dart';
 import 'production_mood_check_in.dart';
 
+typedef JourneyAdviceBuilder =
+    Widget Function(ProductionMood? mood, ProductionCharacter? character);
+
 class ProductionJourneyOverview extends StatefulWidget {
-  const ProductionJourneyOverview({super.key, this.characterPortrait});
+  const ProductionJourneyOverview({
+    super.key,
+    this.characterPortrait,
+    this.adviceExtension,
+  });
 
   final CharacterPortraitBuilder? characterPortrait;
+  final JourneyAdviceBuilder? adviceExtension;
 
   @override
   State<ProductionJourneyOverview> createState() =>
@@ -29,6 +37,10 @@ class _ProductionJourneyOverviewState extends State<ProductionJourneyOverview> {
         for (final item in productionJourneyItems) ...[
           _buildActiveStep(item),
           if (item != productionJourneyItems.last) const SizedBox(height: 12),
+        ],
+        if (widget.adviceExtension case final buildAdvice?) ...[
+          const SizedBox(height: 12),
+          buildAdvice(_selectedMood, _selectedCharacter),
         ],
       ],
     );

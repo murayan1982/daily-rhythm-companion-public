@@ -9,10 +9,12 @@ class ProductionHomeScreen extends StatelessWidget {
     super.key,
     this.journeyHeader,
     this.characterPortrait,
+    this.adviceExtension,
   });
 
   final Widget? journeyHeader;
   final CharacterPortraitBuilder? characterPortrait;
+  final JourneyAdviceBuilder? adviceExtension;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,7 @@ class ProductionHomeScreen extends StatelessWidget {
                   ],
                   ProductionJourneyOverview(
                     characterPortrait: characterPortrait,
+                    adviceExtension: adviceExtension,
                   ),
                 ],
               ),
