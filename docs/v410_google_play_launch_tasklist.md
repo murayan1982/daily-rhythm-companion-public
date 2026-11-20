@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: GP-4 clean-install and manual-update evidence
-Baseline: e873444f76948c0239e38f807933f8baa03ec524
-Surface: exact M2 A0 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_PENDING
-Stage / commit / push: authorized for this two-document update to origin/main
+Current task: GP-6 physical-device verification evidence
+Baseline: 1965c7ba6112a1575d7583bd601ce9bf1f5f6fa2
+Surface: exact M1 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED
+Stage / commit / push: authorized for this tasklist update to origin/main
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -83,7 +83,6 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Active-Beta GP-3 implementation and Flutter-widget evidence set is complete; no local GP-3 implementation item remains
 - [x] Current GitHub Android Public Beta GP-3 scope accepted after final review found no blocking findings
 - [ ] GP-5 formal Privacy Policy and support/contact completion under an approved D08 decision
-- [ ] GP-6 Android-device verification for background resume, process restart, airplane mode, and TalkBack
 
 ## P0 — release foundation and blocking decisions
 
@@ -117,18 +116,30 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Health-data permission pre-explanation is not applicable: the active Beta requests no health-data permission
 - [x] Separate Settings screen is not part of the active Beta; About provides the approved on-device/no-save explanation
 - [ ] GP-5 formal Privacy Policy and support/contact path
-- [ ] GP-6 physical-device TalkBack verification
-- [x] Flutter widget verification at 2.0 text scaling
-- [ ] GP-6 physical-device color-contrast verification
-- [x] Flutter widget verification at narrow viewport; representative physical-device sizes remain GP-6
 - [x] Loading state is not applicable: the active Beta performs no asynchronous load
 - [x] Selection-waiting guidance covers the active local journey; no data-backed empty state exists
 - [x] Backend/error state is not applicable: deterministic local advice has no Backend or fallible remote operation
-- [x] Offline behavior has no product network dependency; airplane-mode verification remains GP-6 and is not claimed complete
 - [x] Permission denial/revocation is not applicable: the active Beta requests no runtime permission
 - [x] Backend/network failure is not applicable: the active Beta makes no Backend connection
-- [x] Flutter widget lifecycle pause/resume and fresh-instance reset verification; physical-device recovery and process restart remain GP-6
 - [x] Developer/operator UI exclusion remains covered by the accepted product-boundary suite
+
+### GP-6 — Android physical-device and accessibility verification
+
+The user reported these results on A301OP (Android API 34, arm64-v8a) using
+the signed ARM64 candidate (`versionCode=6`) with the APK SHA-256 recorded
+in the GP-4 candidate evidence below.
+
+- [x] Advice displayed in airplane mode.
+- [x] After force-stop and relaunch, Mood and Character returned to unselected.
+- [x] After going to the Android Home screen and returning through Recents, Mood, Character, and advice were retained.
+- [x] With TalkBack, the user could review the choices and advice and open the About screen (`アプリについて`).
+- [x] Maximum font size and maximum display size were checked separately. At each setting, the user could make selections, read the full advice, and view About.
+- [x] Approximate text contrast sampled from JPEG images was 7.1–16.3:1 on the main screen and 16.2–16.3:1 on About. All sampled locations exceeded 4.5:1.
+- [x] Existing Flutter widget tests cover the main screen and About at a 320 × 568 logical viewport and include 2.0 text-scaling verification.
+
+Verification on a second physical device with a different screen size is
+deferred because only the A301OP is available. Obtaining another device is
+not a prerequisite for publication preparation.
 
 ## P2 / GP-7 — publication materials and preparation
 
@@ -146,7 +157,7 @@ Each unchecked line is an individual gate and requires separate authorization.
 
 ## GP-8 — GitHub Android Public Beta testing
 
-- [ ] Physical-device beta matrix
+- [ ] Physical-device beta matrix for available devices
 - [ ] Download-to-install journey
 - [ ] Clean-install beta test
 - [ ] Manual-update beta test
@@ -215,9 +226,9 @@ blocking findings. The current GitHub Android Public Beta GP-2 scope is complete
 Sleep/health connection, optional text chat, history, and the broader
 `TEXT_CORE_PLUS_CHAT` range remain future work. The active-Beta GP-3 evidence set
 is complete, final review found no blocking findings, and the current GitHub
-Android Public Beta GP-3 scope is accepted. GP-5 privacy/support and GP-6
-physical-device gates remain open. GP-4 must repeat exclusion proof on the APK
-selected for publication if it does not match the inspected candidate hash.
+Android Public Beta GP-3 scope is accepted. The GP-6 device results are
+recorded above. GP-4 must repeat exclusion proof on the APK selected for
+publication if it does not match the inspected candidate hash.
 
 GP-4 candidate execution occurred on 2026-11-15; this documentation update is
 dated 2026-11-20. The private candidate is
@@ -244,7 +255,7 @@ The installed `versionCode` was confirmed on the device before (5) and after
 (6) the update. Launch and advice display passed after the update. GP-4
 manual update and signing-continuity verification are complete.
 
-Android package registration, representative-device compatibility verification,
-D08/GP-5, and publication remain incomplete.
+Android package registration, remaining GP-5 work, and publication remain
+incomplete.
 Publication must use an APK matching the recorded APK SHA-256 or repeat the
 complete candidate inspection.
