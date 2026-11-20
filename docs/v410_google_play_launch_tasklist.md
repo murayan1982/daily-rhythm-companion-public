@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: GP-7 Release screenshots
-Baseline: 54651fc7cb76f8b9a9416efcc15ef9c1627ad4a8
-Surface: exact M2 A3 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_DOCUMENTS_REVIEWED / GP7_SCREENSHOTS_PREPARED
-Stage / commit / push: authorized for this five-file screenshot and documentation update to origin/main
+Current task: Android package registration and GP-8 candidate cross-check
+Baseline: 214ab6ffde030b4cb332ccc9485a87bc705c836b
+Surface: exact M3 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_SCREENSHOTS_PREPARED / ANDROID_PACKAGE_REGISTERED / GP8_CANDIDATE_CROSS_CHECK_PASSED
+Stage / commit / push: authorized for this three-document update to origin/main
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -106,7 +106,7 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] GP-4 manual update via `adb install -r` on A301OP (API 34, arm64-v8a), including device version checks, launch, and advice display
 - [x] GP-4 signing continuity verified for the `versionCode=5` to `versionCode=6` update
 - [ ] Android developer verification
-- [ ] Package registration
+- [x] Package registration and signing key confirmation. The user reported that on 2026-11-20 JST, Android Developer Console showed `io.github.murayan1982.dailyrhythmcompanion` as registered (`登録済み`) and its signing key as verified (`確認済み`).
 - [ ] GitHub publication authorization
 
 ## P1 — general-user journey, safety, and quality
@@ -143,9 +143,8 @@ not a prerequisite for publication preparation.
 
 ## P2 / GP-7 — publication materials and preparation
 
-Checked items below are prepared. Android developer verification and package
-registration, and GP-8 testing and candidate freeze remain open. The APK
-download link will be finalized at publication.
+Checked items below are prepared. Remaining GP-8 testing and candidate freeze
+are tracked below. The APK download link will be finalized at publication.
 
 - [x] README links to the install guide and records pending public APK availability
 - [x] [APK install guide](v410_android_install_guide.md)
@@ -162,6 +161,9 @@ download link will be finalized at publication.
 
 ## GP-8 — GitHub Android Public Beta testing
 
+- [x] Cross-check the saved signed ARM64 candidate against the [Release body draft](../release_notes/v4.1.0.md) and GP-4 evidence. APK filename, size (15,081,786 bytes), APK SHA-256, signing-certificate SHA-256, `versionName=4.1.0`, and `versionCode=6` matched. Local APK signature verification passed.
+- [x] Check the Release body draft's three images in order (unselected, selected, advice displayed) and confirm that each alternative text matches its screen. The absolute URLs returned the matching JPEGs, and the install guide and Privacy Policy links resolved.
+- [x] Record the Android package registration, signing key confirmation, and local candidate verification in the Release body draft and install guide.
 - [ ] Physical-device beta matrix for available devices
 - [ ] Download-to-install journey
 - [ ] Clean-install beta test
@@ -170,12 +172,14 @@ download link will be finalized at publication.
 - [ ] Permission-denial beta test
 - [ ] Offline/error beta test
 - [ ] TalkBack/accessibility beta test
-- [ ] Verify screenshot rendering, order, and alternative text on the Release page when available
+- [ ] Verify screenshot rendering, order, alternative text, and links on the public Release page when available
 - [ ] Feedback collection
 - [ ] Crash/regression review
 - [ ] Release-blocker closure
 - [ ] GP-9 candidate freeze
 
+Public Release page rendering and links, APK download, and SHA-256 of the
+downloaded APK will be checked when the page and asset are available.
 GP-8 does not create or publish a tag, GitHub Release, or asset.
 
 ## GP-9 — GitHub Release publication
@@ -184,7 +188,7 @@ GP-8 does not create or publish a tag, GitHub Release, or asset.
 - [ ] GitHub Release
 - [ ] Signed APK upload
 - [ ] Checksum publication
-- [ ] Public asset re-download verification
+- [ ] Download the public APK and verify its SHA-256 against the recorded candidate
 - [ ] Public download smoke check
 - [ ] Public clean-install smoke check
 - [ ] Public update smoke check
@@ -261,7 +265,6 @@ The installed `versionCode` was confirmed on the device before (5) and after
 (6) the update. Launch and advice display passed after the update. GP-4
 manual update and signing-continuity verification are complete.
 
-Android package registration, remaining GP-5 work, and publication remain
-incomplete.
+Remaining GP-5 work and publication are incomplete.
 Publication must use an APK matching the recorded APK SHA-256 or repeat the
 complete candidate inspection.

@@ -1,6 +1,8 @@
 # Daily Rhythm Companion v4.1.0 Android インストール案内
 
-> APK 公開前の案内です。Android 開発者確認・パッケージ登録と GitHub Release の公開は未完了です。APK のダウンロードリンクは Release 公開時に確定します。
+> APK 公開前の案内です。APK のダウンロードリンクは GitHub Release 公開時に確定します。公開ページでの画像表示、リンク、ダウンロードした APK の SHA-256 は公開後に確認します。
+
+2026-11-20 JST に、Android Developer Console で `io.github.murayan1982.dailyrhythmcompanion` が「登録済み」、署名鍵が「確認済み」と表示されました。
 
 ## 対応条件と実機確認
 
@@ -19,6 +21,8 @@
 | アプリ ID | `io.github.murayan1982.dailyrhythmcompanion` |
 | APK の SHA-256 | `A50D6987B8E059A49FFF1FB340A7081293617DE9EE784E3304547BA17FDCE373` |
 | 署名証明書の SHA-256 | `27:1F:75:FE:3B:19:8B:AC:A9:4F:31:AE:2B:65:8C:7B:FC:99:88:1A:2C:C3:5C:68:FE:89:38:0B:FE:CF:8C:E5` |
+
+保存済みの署名済み ARM64 候補をローカルで検査し、署名検証に合格したことと、上記の値が GP-4 の検査記録および Release 本文案と一致することを確認しました。
 
 APK を開く前に、ファイルの SHA-256 を計算して Release に掲載された **APK の SHA-256** と照合してください。パソコンで確認する場合は、APK を保存したフォルダーで次のコマンドを実行します。
 
