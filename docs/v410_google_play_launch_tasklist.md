@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: DRC_V410_GP4_SIGNED_ARM64_CANDIDATE_EVIDENCE_R1
-Baseline: ffa7745a02cc289f44b8a3db960a1389e33cd1b6
-Surface: exact M3 A0 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_INSTALL_UPDATE_PENDING / GP5_PENDING / GP6_PENDING
-Stage / commit / push: NOT_AUTHORIZED
+Current task: GP-4 clean-install and manual-update evidence
+Baseline: e873444f76948c0239e38f807933f8baa03ec524
+Surface: exact M2 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_PENDING
+Stage / commit / push: authorized for this two-document update to origin/main
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -103,8 +103,9 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] APK SHA-256 recorded for the inspected candidate
 - [x] Signing certificate SHA-256 verified
 - [x] Repeat GP2-S03 exclusion proof on the inspected signed APK and record the exact APK SHA-256
-- [ ] Clean install
-- [ ] Manual update
+- [x] Clean install, first launch, and advice display on A301OP (API 34, arm64-v8a) with the inspected versionCode=6 candidate
+- [x] GP-4 manual update via `adb install -r` on A301OP (API 34, arm64-v8a), including device version checks, launch, and advice display
+- [x] GP-4 signing continuity verified for the `versionCode=5` to `versionCode=6` update
 - [ ] Android developer verification
 - [ ] Package registration
 - [ ] GitHub publication authorization
@@ -231,7 +232,19 @@ It verifies as the signed ARM64 release candidate for
 Manifest, plugin, DEX/native, asset, AOT, and product connection-setting
 exclusion checks passed for this exact APK. The user reported signing-key
 generation, encrypted-backup restoration with the same certificate SHA-256,
-and matching release `signingReport` on 2026-11-15. Clean install, manual
-update, Android registration, D08/GP-5, and publication remain unchecked.
+and matching release `signingReport` on 2026-11-15. The user reported that
+clean installation, first launch, and advice display passed on an A301OP
+(API 34, arm64-v8a) with the exact versionCode=6 APK identified above.
+
+The user reported that `adb install -r` succeeded on the A301OP (API 34,
+arm64-v8a), updating from the verification-only APK (`versionCode=5`) to the
+saved candidate (`versionCode=6`) identified by the APK SHA-256 above. Both
+APKs had the application ID and signing-certificate SHA-256 recorded above.
+The installed `versionCode` was confirmed on the device before (5) and after
+(6) the update. Launch and advice display passed after the update. GP-4
+manual update and signing-continuity verification are complete.
+
+Android package registration, representative-device compatibility verification,
+D08/GP-5, and publication remain incomplete.
 Publication must use an APK matching the recorded APK SHA-256 or repeat the
 complete candidate inspection.

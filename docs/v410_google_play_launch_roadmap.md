@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Development line: DRC v4.1.0
 Primary target: GitHub Releases Android Public Beta first; Google Play later
-Current task: DRC_V410_GP4_SIGNED_ARM64_CANDIDATE_EVIDENCE_R1
-Baseline HEAD / origin/main / remote main: ffa7745a02cc289f44b8a3db960a1389e33cd1b6
-Surface: exact M3 A0 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_INSTALL_UPDATE_PENDING / GP5_PENDING / GP6_PENDING
-Stage / commit / push: NOT_AUTHORIZED
+Current task: GP-4 clean-install and manual-update evidence
+Baseline: e873444f76948c0239e38f807933f8baa03ec524
+Surface: exact M2 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_PENDING
+Stage / commit / push: authorized for this two-document update to origin/main
 ```
 
 GitHub Android Public Beta is the active distribution track. Google Play is a
@@ -166,9 +166,8 @@ physical-device and publication gates remain separate.
 
 ### 完了条件
 The current GitHub Android Public Beta GP-2 scope is accepted and traceable.
-GP-4 physical-device install/update and publication-adoption checks, GP-5
-privacy/support work, GP-6 physical-device verification, and longer-term
-capability work remain open.
+GP-4 publication-adoption checks, GP-5 privacy/support work, GP-6
+physical-device verification, and longer-term capability work remain open.
 
 ### 禁止事項
 Do not treat acceptance of the active Beta GP-2 scope as completion of the
@@ -263,10 +262,23 @@ The user reported on 2026-11-15 that the signing key had been generated and
 kept outside the repository, that an encrypted-backup restoration produced the
 same public-certificate SHA-256, and that the release `signingReport` matched.
 No key, credential, personal path, or raw private log is recorded here.
-Physical-device clean installation and manual update, Android package
-registration, D08/GP-5, and publication remain incomplete. Any APK selected
-for publication must be byte-checked against the inspected APK SHA-256 above;
-otherwise all artifact and exclusion checks must be repeated.
+
+The user reported that clean installation, first launch, and advice display
+passed on an A301OP (API 34, arm64-v8a) with the exact versionCode=6 candidate
+identified by the APK SHA-256 above.
+
+The user reported that `adb install -r` succeeded on the A301OP (API 34,
+arm64-v8a), updating from the verification-only APK (`versionCode=5`) to the
+saved candidate (`versionCode=6`) identified by the APK SHA-256 above.
+Both APKs had the application ID and signing-certificate SHA-256 recorded
+above. The installed `versionCode` was confirmed on the device before (5)
+and after (6) the update. Launch and advice display passed after the update.
+GP-4 manual update and signing-continuity verification are complete.
+
+Android package registration, representative-device compatibility verification,
+D08/GP-5, and publication remain incomplete. Any APK selected for publication
+must match the inspected APK SHA-256 above. If the hash differs, repeat all
+artifact and exclusion checks.
 
 ### 完了条件
 The exact APK tuple is reproducible and accepted; release entrypoint, package,
