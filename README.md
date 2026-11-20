@@ -32,8 +32,8 @@ v4.0.0の既存GitHub Releaseは、過去の検証・公開記録です。
 ## Android版を試すには
 
 一般Androidユーザー向けAPKは、まだ公開していません。Public Beta公開時は、
-このリポジトリの公式GitHub Releasesから配布します。公開前にrelease signing、
-Privacy Policy、install guide、device testingを完了する予定です。
+このリポジトリの公式GitHub Releasesから配布します。対応端末、APK の照合、
+インストールと更新の手順は[Android インストール案内](docs/v410_android_install_guide.md)をご覧ください。
 
 現在は、他サイト、fork、ミラーからAPKを入手しないでください。公開済みの
 APK URL、release tag、download buttonはまだありません。
@@ -69,7 +69,7 @@ Androidアプリへ接続済みであるとは主張しません。
 - Androidの外部配布では、端末側でインストール許可が必要になる場合があります。
 - インストール後は、不要になった許可を無効に戻すことを推奨します。
 
-APK未公開の現在、具体的な端末操作手順は確定していません。
+APK のダウンロードリンクは Public Beta の Release 公開時に確定します。
 
 ## Privacy and permissions
 

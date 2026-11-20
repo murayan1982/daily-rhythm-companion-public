@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: GP-6 physical-device verification evidence
-Baseline: 1965c7ba6112a1575d7583bd601ce9bf1f5f6fa2
-Surface: exact M1 A0 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED
-Stage / commit / push: authorized for this tasklist update to origin/main
+Current task: GP-7 publication materials
+Baseline: 53e136a6ccfea266abb4d7cfc5d1100d24c6f259
+Surface: exact M2 A2 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_DOCUMENTS_REVIEWED
+Stage / commit / push: authorized for this four-file documentation update to origin/main
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -143,17 +143,22 @@ not a prerequisite for publication preparation.
 
 ## P2 / GP-7 — publication materials and preparation
 
-- [ ] README download journey
-- [ ] APK install guide
-- [ ] Unknown-app explanation
+Checked items below are prepared and reviewed. Screenshots, Android developer
+verification and package registration, and GP-8 testing and candidate freeze
+remain open. The APK download link will be finalized at publication.
+
+- [x] README links to the install guide and records pending public APK availability
+- [x] [APK install guide](v410_android_install_guide.md)
+- [x] Unknown-app installation permission explained for Android 7.x and 8.0+
 - [ ] Screenshots
-- [ ] Release notes
-- [ ] Known limitations
-- [ ] APK filename/size/SHA-256
-- [ ] Signing certificate information
-- [ ] Update guide
-- [ ] Uninstall guide
-- [ ] Deletion guide
+- [x] [GitHub Release body draft](../release_notes/v4.1.0.md)
+- [x] Known limitations and physical-device coverage documented
+- [x] APK filename, size, and SHA-256 cross-checked against the saved candidate and GP-4 evidence
+- [x] Signing-certificate SHA-256 cross-checked with `apksigner` and GP-4 evidence
+- [x] Update guide
+- [x] Uninstall guide
+- [x] On-device data deletion guide
+- [x] Privacy Policy and support links in both documents
 
 ## GP-8 — GitHub Android Public Beta testing
 
