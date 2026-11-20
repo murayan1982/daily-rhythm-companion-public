@@ -17,7 +17,7 @@ Candidate execution date: 2026-11-15
 Current documentation update date: 2026-11-20
 Current decision state: D01 APPROVED; D02 APPROVED as Daily Rhythm Companion;
   D03 APPROVED for v4.1.0 GitHub beta local-only mode; D04 APPROVED;
-  D05 NOT_DECIDED; D06 APPROVED; D07 APPROVED; D08 NOT_DECIDED;
+  D05 NOT_DECIDED; D06 APPROVED; D07 APPROVED; D08 APPROVED for GitHub Android Public Beta;
   D09 APPROVED; D10 PROPOSED; D11 APPROVED
 GP0-D04: APPROVED
 GP-3 acceptance: ACCEPTED_AT_CD1AF1DD88E5B213C07C1C6494B274D281D6FBDA
@@ -91,7 +91,7 @@ SUPERSEDED
 | Approved value | V410_GITHUB_BETA_LOCAL_ONLY_NO_REMOTE_BACKEND |
 | Approval evidence | User selection recorded 2026-11-13 |
 | Implementation authorization | AUTHORIZED_FOR_GP2_LOCAL_ADVICE_MIGRATION_R1 |
-| Notes | The v4.1.0 GitHub Android Public Beta uses no remote production Backend and only local deterministic advice. Endpoint, hosting, domain, credential, and monitoring are not required for this active mode. A future Cloud Backend is `DEFERRED / NOT_CANCELLED`; resuming it requires a new decision and authorization. D08 remains `NOT_DECIDED`; health, persistence, and privacy publication remain unapproved. |
+| Notes | The v4.1.0 GitHub Android Public Beta uses no remote production Backend and only local deterministic advice. Endpoint, hosting, domain, credential, and monitoring are not required for this active mode. A future Cloud Backend is `DEFERRED / NOT_CANCELLED`; resuming it requires a new decision and authorization. D08 is approved for GitHub Android Public Beta. Health and persistence remain pending. |
 
 ## GP0-D04 Production versus non-product separation architecture
 
@@ -120,8 +120,8 @@ SUPERSEDED
 | Excluded capabilities | Voice input/output; realtime; motion; demo; developer/operator controls; raw diagnostics; framework lifecycle controls. |
 | Approval evidence | User selection recorded 2026-09-19. |
 | Backend/health implementation | NOT_AUTHORIZED |
-| Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 privacy/data ownership remains NOT_DECIDED. |
-| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 remains NOT_DECIDED; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 and GP-3 scopes are accepted; GP-4 identity, signing, and signed-candidate inspection are complete while physical-device install/update, registration, and publication remain incomplete. |
+| Dependencies | GP0-D03 is approved only for the active local-only GitHub beta mode; GP0-D08 is approved for the GitHub Android Public Beta. |
+| Notes | `TEXT_CORE_PLUS_CHAT` remains the approved long-term capability range. The accepted Public Beta main screen intentionally presents only Mood selection, Character selection, and deterministic local advice. Optional text chat, sleep/health connection, and history are not exposed in this Beta flow and remain future work. Persistence, Backend fetch, Framework routing, provider/model selection, and health connectivity remain unimplemented. D08 is approved for the GitHub Android Public Beta; D11 remains APPROVED. The current GitHub Android Public Beta GP-2 and GP-3 scopes are accepted; GP-4 identity, signing, and signed-candidate inspection are complete while physical-device install/update, registration, and publication remain incomplete. |
 
 ## GP2-S02 Active beta Mood persistence policy
 
@@ -134,7 +134,7 @@ SUPERSEDED
 | Behavior | Mood selection exists only in the current ProductionJourneyOverview instance and returns to unselected when a fresh instance is created. |
 | Persistence | NOT_IMPLEMENTED / NOT_INCLUDED_IN_ACTIVE_BETA |
 | External transmission | NONE |
-| D08 | NOT_DECIDED |
+| D08 | APPROVED for GitHub Android Public Beta |
 | Notes | This decision does not approve health-data storage, history, analytics, Cloud Backend, account synchronization, device backup behavior, retention, deletion policy, or any future persistence implementation. |
 
 ## GP2-S03 Strict product artifact exclusion policy
@@ -149,7 +149,7 @@ SUPERSEDED
 | Architecture | GP2-S04 APPROVED — SEPARATE_PUBLIC_FLUTTER_APPLICATION_BOUNDARY |
 | Artifact proof | PRIVATE_ARM64_UNSIGNED_PROOF_CAPTURED_FROM_ED2454D / SIGNED_ARM64_CANDIDATE_INSPECTED_FROM_FFA7745 |
 | Dependencies | GP-2 source boundary and GP2-S04 implementation are complete; GP-4 device install/update and publication verification remain open. |
-| Notes | D03 remains APPROVED for the active local-only beta. D08 remains NOT_DECIDED. D11 remains APPROVED. This decision did not itself authorize build, signing, publication, or architecture implementation; those completed candidate steps received separate authorization. |
+| Notes | D03 remains APPROVED for the active local-only beta. D08 is approved for the GitHub Android Public Beta. D11 remains APPROVED. This decision did not itself authorize build, signing, publication, or architecture implementation; those completed candidate steps received separate authorization. |
 
 ## GP2-S04 Product dependency-boundary architecture
 
@@ -242,18 +242,18 @@ SUPERSEDED
 
 | Field | Value |
 | --- | --- |
-| Status | NOT_DECIDED |
+| Status | APPROVED |
 | Current observed state | Microphone, health, sleep, chat/advice, diagnostics, configuration, and logs require reconciliation. |
 | Decision to make | Assign accountable owners and approve the evidence/reconciliation process. |
 | Required inputs/evidence | Runtime/network inventory, retention/deletion behavior, policy and Console evidence, and the unresolved field inventory in `docs/v410_gp0_backend_privacy_decision_control.md`. |
 | Decision owner | User |
-| Implementation owner | NOT_DECIDED |
+| Implementation owner | murayan1982 |
 | Dependent phases | GP-3, GP-5, GP-6, GP-7, GP-8, GP-9 |
 | Must be decided before | Public Privacy Policy/support publication, Android beta publication, Play declarations, or submission. |
-| Approved value | NOT_DECIDED |
-| Approval evidence | NONE |
-| Implementation authorization | NOT_AUTHORIZED |
-| Notes | No legal or policy completion is claimed. The evidence control approves no operator, contact, retention/deletion period, processor, provider, territory, or legal conclusion. GitHub distribution does not bypass this gate. |
+| Approved value | GitHub Android Public Beta only. Public operator label: Daily Rhythm Companion（運営：murayan1982）. Support, privacy questions, and deletion requests: murayan1982@gmail.com. Delete inquiry records around 90 days after resolution. Policy location: repository-root `PRIVACY.md`, with links from the README and eventual GitHub Release. |
+| Approval evidence | The user approved the operator label, contact address, publication location, and the 90-day retention guideline on 2026-11-20 JST. |
+| Implementation authorization | Policy publication in the repository and README link. |
+| Notes | The policy and support contact are available in [PRIVACY.md](../PRIVACY.md). GP-5 acceptance remains pending. Google Play declarations remain open for the deferred Play track. Android backup and restore behavior remains for device verification. |
 
 ## GP0-D09 v4.1.0 version/build-number sequence
 

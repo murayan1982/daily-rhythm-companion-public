@@ -73,12 +73,8 @@ APK未公開の現在、具体的な端末操作手順は確定していませ�
 
 ## Privacy and permissions
 
-Privacy PolicyはPublic Beta公開前に掲載します。microphoneやhealth data等を
-使用する場合は、権限要求前に目的を説明します。data collection、retention、
-deletion方法も公開前に明示します。
-
-現在、GP0-D03とGP0-D08は`NOT_DECIDED`です。health data連携が現在利用可能
-であるとは主張しません。Privacy Policyやsupportの公開URLもまだありません。
+Android ベータ版で扱うデータ、端末上のデータの削除方法、問い合わせ先は
+[プライバシーポリシー](PRIVACY.md)をご覧ください。
 
 ## 開発者向け情報
 

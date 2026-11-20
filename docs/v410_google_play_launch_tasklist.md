@@ -19,7 +19,7 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Planning R1 closed at `d7e39ad37667c6f3f104c2097f5ca54f9089df5c`.
 - [x] GP-1 accepted inventory remains recorded.
 - [x] GP-2 accepted production entrypoint and text-core boundaries remain recorded.
-- [x] D03 approves the active GitHub beta local-only/no-remote-Backend mode; D08 remains `NOT_DECIDED`.
+- [x] D03 approves the active GitHub beta local-only/no-remote-Backend mode; D08 is approved for the active GitHub Android Public Beta.
 - [x] GP0-D11 approves GitHub Android Public Beta first and Google Play later.
 - [x] README is the general-user landing page.
 - [x] README says `DEVELOPMENT / NOT_YET_RELEASED`.
@@ -48,7 +48,7 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] Mood persistence decision: not included in the v4.1.0 GitHub beta; Mood selection remains ephemeral
 - [x] Fresh `ProductionJourneyOverview` instance resets Mood to unselected
 - [x] Product source unchanged and no persistence dependency added
-- [x] D08 remains `NOT_DECIDED`
+- [x] D08 is approved for the active GitHub Android Public Beta
 - [x] Active Public Beta Mood acknowledgement decision: mood-specific copy, invariant across Character choices
 - [x] Active Public Beta three-step Core-flow: Mood → Character → local advice
 - [x] Mood and Character accepted in either order; advice appears and updates after both selections
@@ -96,8 +96,8 @@ Each unchecked line is an individual gate and requires separate authorization.
 - [x] v4.1.0 GitHub beta Backend mode: local-only / no remote Backend
 - [x] localhost/private-LAN release dependency exclusion proof for the inspected signed ARM64 candidate
 - [x] D03 active-track decision closure
-- [ ] D08 decision closure
-- [ ] Privacy Policy
+- [x] D08 decision approved for the active GitHub Android Public Beta
+- [x] Privacy Policy and support contact published in [PRIVACY.md](../PRIVACY.md)
 - [ ] Public data deletion method
 - [x] Signed ARM64 candidate APK created and kept private
 - [x] APK SHA-256 recorded for the inspected candidate
