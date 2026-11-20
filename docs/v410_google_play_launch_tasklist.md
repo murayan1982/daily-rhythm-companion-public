@@ -5,11 +5,11 @@ Updated: 2026-11-20
 ```text
 Active track: GitHub Android Public Beta
 Deferred track: Google Play / NOT_CANCELLED
-Current task: Android package registration and GP-8 candidate cross-check
-Baseline: 214ab6ffde030b4cb332ccc9485a87bc705c836b
-Surface: exact M3 A0 D0
-State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_SCREENSHOTS_PREPARED / ANDROID_PACKAGE_REGISTERED / GP8_CANDIDATE_CROSS_CHECK_PASSED
-Stage / commit / push: authorized for this three-document update to origin/main
+Current task: GP-8 acceptance record and candidate freeze
+Baseline: 31c369c6e86199a97b52b9a78c50cf4e93184cbf
+Surface: exact M1 A0 D0
+State: GP4_SIGNED_CANDIDATE_INSPECTED / DEVICE_CLEAN_INSTALL_PASSED / MANUAL_UPDATE_PASSED / SIGNING_CONTINUITY_VERIFIED / GP5_PENDING / GP6_A301OP_PASSED / GP7_SCREENSHOTS_PREPARED / ANDROID_PACKAGE_REGISTERED / GP8_CANDIDATE_CROSS_CHECK_PASSED / GP8_CANDIDATE_FROZEN
+Stage / commit / push: authorized for this tasklist update to origin/main
 ```
 
 Each unchecked line is an individual gate and requires separate authorization.
@@ -143,8 +143,8 @@ not a prerequisite for publication preparation.
 
 ## P2 / GP-7 — publication materials and preparation
 
-Checked items below are prepared. Remaining GP-8 testing and candidate freeze
-are tracked below. The APK download link will be finalized at publication.
+Checked items below are prepared. GP-8 acceptance evidence and the candidate
+freeze are recorded below. The APK download link will be finalized at publication.
 
 - [x] README links to the install guide and records pending public APK availability
 - [x] [APK install guide](v410_android_install_guide.md)
@@ -161,22 +161,41 @@ are tracked below. The APK download link will be finalized at publication.
 
 ## GP-8 — GitHub Android Public Beta testing
 
+The device results below use the existing GP-4 and GP-6 reports for
+A301OP (Android API 34, arm64-v8a) and the exact candidate identified below.
+
 - [x] Cross-check the saved signed ARM64 candidate against the [Release body draft](../release_notes/v4.1.0.md) and GP-4 evidence. APK filename, size (15,081,786 bytes), APK SHA-256, signing-certificate SHA-256, `versionName=4.1.0`, and `versionCode=6` matched. Local APK signature verification passed.
 - [x] Check the Release body draft's three images in order (unselected, selected, advice displayed) and confirm that each alternative text matches its screen. The absolute URLs returned the matching JPEGs, and the install guide and Privacy Policy links resolved.
 - [x] Record the Android package registration, signing key confirmation, and local candidate verification in the Release body draft and install guide.
-- [ ] Physical-device beta matrix for available devices
-- [ ] Download-to-install journey
-- [ ] Clean-install beta test
-- [ ] Manual-update beta test
-- [ ] Signing continuity
-- [ ] Permission-denial beta test
-- [ ] Offline/error beta test
-- [ ] TalkBack/accessibility beta test
+- [x] Physical-device beta matrix for the available A301OP, limited to the GP-4 and GP-6 results listed here.
+- [ ] Complete the download-to-install journey from the public Release asset when available. The GP-4 clean install used the saved candidate.
+- [x] Clean install, first launch, and advice display passed in GP-4.
+- [x] Manual update via `adb install -r` from the verification-only APK (`versionCode=5`) to the candidate (`versionCode=6`) passed in GP-4. Device version checks, launch, and advice display passed.
+- [x] Signing continuity verified in GP-4: the update source and candidate shared the application ID and signing-certificate SHA-256.
+- [x] In-app runtime permission denial is not applicable. The active Beta requests no runtime permissions.
+- [x] Offline advice display passed in airplane mode in GP-6.
+- [x] TalkBack access to choices, advice, and About passed in GP-6. Maximum font size and maximum display size were verified separately for selection, full advice text, and About.
 - [ ] Verify screenshot rendering, order, alternative text, and links on the public Release page when available
-- [ ] Feedback collection
-- [ ] Crash/regression review
-- [ ] Release-blocker closure
-- [ ] GP-9 candidate freeze
+- [x] Reviewed the existing GP-4 and GP-6 device reports for crashes and regressions. Neither report identified a crash or regression in the flows it covered.
+- [x] Reviewed release blockers for the candidate freeze. The device reports and local candidate cross-check identified no specific release-blocking defect within the verified scope.
+- [x] GP-8 candidate freeze approved on 2026-11-20 JST for use in GP-9.
+
+Verification limits retained at freeze:
+
+- A physical device with a different screen size remains untested. A301OP is the only available device.
+- Behavior when Android denies or disables permission to install from a particular source remains unobserved. This OS installation setting is separate from in-app runtime permissions.
+- Installer failures and unexpected app errors outside the reported flows remain unverified.
+- External beta feedback remains unconfirmed.
+
+### Frozen GP-9 candidate
+
+Frozen artifact: `DRC_v4.1.0_arm64_signed_candidate.apk` (signed `arm64-v8a`,
+`versionName=4.1.0`, `versionCode=6`, 15,081,786 bytes). APK SHA-256:
+`A50D6987B8E059A49FFF1FB340A7081293617DE9EE784E3304547BA17FDCE373`.
+The saved file's SHA-256, signature, and metadata were reverified against the
+GP-4 inspection, GP-8 local cross-check, and Release body draft. The same APK
+passed the recorded GP-4 install/update and GP-6 device checks. The tag,
+Release, and APK distribution remain pending for GP-9.
 
 Public Release page rendering and links, APK download, and SHA-256 of the
 downloaded APK will be checked when the page and asset are available.
