@@ -572,7 +572,7 @@ void main() {
     testWidgets(
       'only Generate sends the selected fields, synthetic sleep: $includeSyntheticSleep',
       (tester) async {
-        const sleepChannel = MethodChannel('drc/sleep_debug');
+        const sleepChannel = MethodChannel('drc/health_connect_sleep');
         final messenger =
             TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
         messenger.setMockMethodCallHandler(sleepChannel, (call) async {

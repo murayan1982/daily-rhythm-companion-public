@@ -1,8 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Flutter debug tooling uses INTERNET. Sleep reads use the local Android service. -->
+    <!-- Flutter debug tooling uses INTERNET. -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.health.READ_SLEEP"/>
     <application
         android:label="Daily Rhythm Companion 開発版"
         android:networkSecurityConfig="@xml/debug_network_security_config"
@@ -24,16 +23,5 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".SleepPermissionUsageActivity" android:exported="false"/>
-        <activity-alias
-            android:name=".ViewSleepPermissionUsage"
-            android:targetActivity=".SleepPermissionUsageActivity"
-            android:exported="true"
-            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
-                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>
-            </intent-filter>
-        </activity-alias>
     </application>
 </manifest>
