@@ -9,6 +9,17 @@ _TOKENS_PER_PRICE_UNIT = 1_000_000
 _FIXED_PROMPT = "Give one short Japanese daily-rhythm tip in the selected character's voice."
 
 
+def maximum_token_cost(
+    max_input_tokens: int, max_output_tokens: int,
+    input_price_per_million: int, output_price_per_million: int,
+) -> int:
+    numerator = (
+        max_input_tokens * input_price_per_million
+        + max_output_tokens * output_price_per_million
+    )
+    return (numerator + _TOKENS_PER_PRICE_UNIT - 1) // _TOKENS_PER_PRICE_UNIT
+
+
 @dataclass(frozen=True)
 class SyntheticAdviceModel:
     name: str
@@ -36,11 +47,10 @@ class SyntheticAdviceModel:
 
     @property
     def maximum_cost(self) -> int:
-        numerator = (
-            self.max_input_tokens * self.input_price_per_million
-            + self.max_output_tokens * self.output_price_per_million
+        return maximum_token_cost(
+            self.max_input_tokens, self.max_output_tokens,
+            self.input_price_per_million, self.output_price_per_million,
         )
-        return (numerator + _TOKENS_PER_PRICE_UNIT - 1) // _TOKENS_PER_PRICE_UNIT
 
 
 class SyntheticAdviceProvider(Protocol):

@@ -2,16 +2,29 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import timedelta
 from hashlib import sha256
+import json
 import os
+from pathlib import Path
 from threading import Barrier, Lock
+from typing import get_args
 from uuid import uuid4
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+import httpx
 import pytest
 
 from app.api.public_advice import router
+from app.models.advice import AdviceCharacterId, AdviceMood
 from app.services.advice_cost import LOCAL_TEST_MODEL
+from app.services.gemini_public_advice import (
+    GEMINI_MODEL,
+    GEMINI_SDK_VERSION,
+    MAXIMUM_COST_MICRODOLLARS,
+    SYSTEM_INSTRUCTION,
+    advice_prompt,
+    gemini_advice_runtime,
+)
 from app.services.postgres_public_advice import (
     PostgresAdviceGenerationControl,
     PostgresAdviceInvites,
@@ -304,3 +317,172 @@ def test_operator_stop_and_missing_budget_fail_closed(db, monkeypatch):
     assert main() == 0
     assert reply(app, token).status_code == 200
     assert len(calls) == 1
+
+
+@pytest.fixture
+def gemini_candidate(db):
+    sdk = pytest.importorskip("google.genai")
+    if sdk.__version__ != GEMINI_SDK_VERSION:
+        pytest.skip(f"This transport test requires google-genai {GEMINI_SDK_VERSION}.")
+    dsn, _ = db
+
+    def create(transport, counter=lambda system, prompt: len((system + prompt).encode("utf-8"))):
+        return gemini_advice_runtime(
+            dsn, per_user=9, total=9, api_key="mock-transport-only",
+            count_input_tokens=counter, transport=httpx.MockTransport(transport),
+        )
+
+    return create
+
+
+def gemini_mock_reply(*, prompt_tokens=79, thoughts_tokens=15, finish_reason="STOP"):
+    return httpx.Response(200, json={
+        "candidates": [{
+            "content": {"role": "model", "parts": [{"text": "無理せず進もう。"}]},
+            "finishReason": finish_reason,
+        }],
+        "usageMetadata": {
+            "promptTokenCount": prompt_tokens,
+            "candidatesTokenCount": 12,
+            "thoughtsTokenCount": thoughts_tokens,
+        },
+    })
+
+
+def test_gemini_candidate_sends_only_the_bounded_request(db, gemini_candidate):
+    dsn, connect = db
+    control = PostgresAdviceGenerationControl(dsn)
+    assert MAXIMUM_COST_MICRODOLLARS == 512
+    control.set_monthly_budget(9 * MAXIMUM_COST_MICRODOLLARS)
+    token = PostgresAdviceInvites(dsn).issue("gemini-test", timedelta(hours=1))
+    requests = []
+
+    def handle(request):
+        requests.append(request)
+        return gemini_mock_reply()
+
+    cases = [(mood, character) for mood in get_args(AdviceMood) for character in get_args(AdviceCharacterId)]
+    app = FastAPI()
+    app.include_router(router)
+    with gemini_candidate(handle) as runtime, TestClient(app) as client:
+        app.state.public_advice_runtime = runtime
+        for index, (mood, character) in enumerate(cases, start=1):
+            response = client.post(
+                PATH, json={"mood": mood, "character_id": character},
+                headers={"Authorization": f"Bearer {token.bearer_token}"},
+            )
+            assert response.json() == {"message": "無理せず進もう。"}
+            assert response.status_code == 200
+            assert len(requests) == index
+            sent = requests[-1]
+            assert sent.method == "POST"
+            assert sent.url == f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+            assert sent.extensions["timeout"]["read"] == 10.0
+            assert json.loads(sent.content) == {
+                "contents": [{"role": "user", "parts": [{"text": advice_prompt(mood, character)}]}],
+                "systemInstruction": {"parts": [{"text": SYSTEM_INSTRUCTION}]},
+                "generationConfig": {
+                    "candidateCount": 1,
+                    "maxOutputTokens": 256,
+                    "thinkingConfig": {"thinking_level": "MINIMAL", "include_thoughts": False},
+                },
+                "serviceTier": "standard",
+            }
+    with connect(dsn) as connection:
+        assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == [(9 * 512,)]
+
+
+@pytest.mark.parametrize("outcome", [429, 503, "timeout", "redirect", "too_many_thoughts", "too_much_input", "truncated"])
+def test_gemini_candidate_failure_makes_one_attempt_and_keeps_the_reservation(db, gemini_candidate, outcome):
+    dsn, connect = db
+    token = PostgresAdviceInvites(dsn).issue("gemini-test", timedelta(hours=1))
+    requests = []
+
+    def handle(request):
+        requests.append(request)
+        if outcome == "timeout":
+            raise httpx.ReadTimeout("Synthetic timeout", request=request)
+        if outcome == "redirect":
+            return httpx.Response(307, headers={"Location": "https://unconfigured.invalid"})
+        if outcome == "too_many_thoughts":
+            return gemini_mock_reply(thoughts_tokens=245)
+        if outcome == "too_much_input":
+            return gemini_mock_reply(prompt_tokens=513)
+        if outcome == "truncated":
+            return gemini_mock_reply(finish_reason="MAX_TOKENS")
+        return httpx.Response(outcome, json={"error": {"code": outcome, "message": "synthetic"}})
+
+    app = FastAPI()
+    app.include_router(router)
+    with gemini_candidate(handle) as runtime:
+        app.state.public_advice_runtime = runtime
+        response = reply(app, token)
+    assert response.status_code == 502
+    assert response.json() == {"detail": "upstream_failure"}
+    assert len(requests) == 1
+    with connect(dsn) as connection:
+        assert connection.execute("SELECT attempts FROM drc_advice_daily_total").fetchall() == [(1,)]
+        assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == [(512,)]
+
+
+def test_gemini_candidate_does_not_send_without_auth_budget_or_operator_enable(db, gemini_candidate):
+    dsn, connect = db
+    control = PostgresAdviceGenerationControl(dsn)
+    control.set_monthly_budget(MAXIMUM_COST_MICRODOLLARS - 1)
+    token = PostgresAdviceInvites(dsn).issue("gemini-test", timedelta(hours=1))
+
+    def must_not_send(request):
+        pytest.fail("A rejected request reached the Gemini transport.")
+
+    app = FastAPI()
+    app.include_router(router)
+    with gemini_candidate(must_not_send) as runtime, TestClient(app) as client:
+        app.state.public_advice_runtime = runtime
+        assert client.post(PATH, json=INPUT).status_code == 401
+        denied = reply(app, token)
+        assert (denied.status_code, denied.json()) == (429, {"detail": "global_quota_exceeded"})
+        control.set_monthly_budget(MAXIMUM_COST_MICRODOLLARS)
+        control.set_enabled(False)
+        stopped = reply(app, token)
+        assert (stopped.status_code, stopped.json()) == (503, {"detail": "advice_unavailable"})
+    with connect(dsn) as connection:
+        assert connection.execute("SELECT attempts FROM drc_advice_daily_total").fetchall() == []
+        assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == []
+
+
+def test_gemini_candidate_refuses_an_over_limit_input_before_opening_runtime(gemini_candidate):
+    def must_not_send(request):
+        pytest.fail("Input preflight attempted an HTTP request.")
+
+    with pytest.raises(ValueError, match="input token count"):
+        with gemini_candidate(must_not_send, counter=lambda system, prompt: 513):
+            pytest.fail("The runtime should be unavailable when an input exceeds the limit.")
+
+
+def test_gemini_candidate_input_fits_using_published_local_tokenizer():
+    directory = os.getenv("DRC_GEMINI_TOKENIZER_DIR")
+    if not directory:
+        pytest.skip("Local Gemma tokenizer artifacts are not configured.")
+    from jinja2 import Environment
+    from tokenizers import Tokenizer
+
+    folder = Path(directory)
+    tokenizer = Tokenizer.from_file(str(folder / "tokenizer.json"))
+    template = Environment().from_string((folder / "chat_template.jinja").read_text(encoding="utf-8"))
+    counts = {}
+    for mood in get_args(AdviceMood):
+        for character in get_args(AdviceCharacterId):
+            prompt = advice_prompt(mood, character)
+            text_count = sum(len(tokenizer.encode(text).ids) for text in (SYSTEM_INSTRUCTION, prompt))
+            formatted = template.render(
+                messages=[
+                    {"role": "system", "content": SYSTEM_INSTRUCTION},
+                    {"role": "user", "content": prompt},
+                ],
+                add_generation_prompt=True,
+                bos_token="<bos>",
+            )
+            framed_count = len(tokenizer.encode(formatted, add_special_tokens=False).ids)
+            counts[mood, character] = (text_count, framed_count)
+    assert len(counts) == 9
+    assert all(0 < text <= framed <= 512 for text, framed in counts.values()), counts

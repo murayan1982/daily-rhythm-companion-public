@@ -43,3 +43,23 @@ python -m pytest -q tests/test_postgres_public_advice.py tests/test_public_advic
 ```
 
 上記の回数・単価・予算はローカル例で、本番値は未決定。予約額で実請求の上限を検証するには、提供元・モデル、課金対象（固定指示、出力以外に課金されるトークン、タイムアウト・失敗時の扱い）、入力・出力上限の強制方法、SDK 内部の再試行を確認する。再試行やフォールバックを採用する場合は追加呼び出しごとに最大費用を先に確保する。本番前に費用の照合と停止・復帰手順、保持・削除、バックアップと復旧、DB の接続権限、HTTPS、トークン配布方法を決める。
+
+## Gemini 3.1 Flash-Lite の費用予約候補
+
+2026-11-21 JST 時点。Gemini Developer API の `gemini-3.1-flash-lite` の標準有料テキスト生成は、100万トークン当たり入力0.25 USD、出力1.50 USD。入力にはシステム指示が含まれ、出力単価は思考トークンにも適用される。検索、ツール、キャッシュ指定、履歴、追加候補は送らない。 [料金表](https://ai.google.dev/gemini-api/docs/pricing#gemini-3.1-flash-lite) · [入力トークン](https://ai.google.dev/gemini-api/docs/tokens#system-instructions)
+
+`generateContent` の思考ガイドでは、`maxOutputTokens` は回答と内部思考を合わせた上限。API の利用量では `candidatesTokenCount` と `thoughtsTokenCount` が別々に返る。`MINIMAL` は思考を抑える設定で、思考の課金をゼロと見なさない。入力上限512、出力上限256を使うと、予約額は `ceil((512 × 250000 + 256 × 1500000) / 1000000) = 512` マイクロドル。これを候補ランタイムの予約額とした。 [generateContent の思考と出力上限](https://ai.google.dev/gemini-api/docs/generate-content/thinking#token-limits) · [利用量フィールド](https://ai.google.dev/api/generate-content#UsageMetadata)
+
+気分×キャラクターの全9通りで、送信する本文とシステム指示を Google 公開の Gemma 4 E4B トークナイザーでローカル計測した。既存の `google-genai==1.70.0` はこのモデルをローカルトークナイザーに登録していないため、後続 SDK `v2.9.0` のモデル対応表に従い、公開ファイルを別途使用した。SDK の固定バージョンは変更していない。各欄は「両テキストの合算 / Gemma の会話テンプレートを適用したとき」のトークン数。 [SDK のモデル対応表](https://github.com/googleapis/python-genai/blob/v2.9.0/google/genai/_local_tokenizer_loader.py) · [Google 公開トークナイザーファイル](https://huggingface.co/google/gemma-4-E4B-it/tree/main)
+
+| 気分 | `gentle_mina` | `cheerful_sora` | `cool_rei` |
+| --- | ---: | ---: | ---: |
+| `energetic` | 69 / 83 | 68 / 82 | 66 / 80 |
+| `normal` | 69 / 83 | 68 / 82 | 66 / 80 |
+| `tired` | 69 / 83 | 68 / 82 | 66 / 80 |
+
+全9通りでローカル計測値は512以内。Gemini Developer API が計上する正確な入力トークン数は未確認。再現するには、公開ファイル `tokenizer.json` と `chat_template.jinja` を置いたディレクトリを `DRC_GEMINI_TOKENIZER_DIR` に設定し、検証用 Python に `tokenizers==0.22.2` と `jinja2==3.1.6` を入れて `tests/test_postgres_public_advice.py` を実行する。使用したファイルの SHA-256 は順に `91d9cf86906f78e197021fda88214d448e5c120665d0243a8e776e046986c6bc`、`0a2c8073c878ab1da004bee933a998606537bbb62016310352c7285c3f01c5b5`。
+
+候補は固定モデルのノンストリーミング `generateContent` を使う。SDK 1.70.0 の同期 HTTP 経路で `HttpRetryOptions(attempts=1)` を設定し、HTTP リダイレクトと自動関数呼び出しも無効にする。認証、日次回数枠、月次予算の確保後にだけ1回送る。応答の使用量が上限を超える、または打ち切りの場合は `502 upstream_failure` とし、予約額を保持する。既存の FW 経路は会話セッションを持ち、関係性を要約する追加呼び出しがあり得るため、この候補の経路には使用しない。 [固定 SDK のリトライ実装](https://github.com/googleapis/python-genai/blob/v1.70.0/google/genai/_api_client.py)
+
+通常の招待制起動は引き続き固定応答を使う。Gemini 候補ランタイムは既定の起動経路に接続していない。本番に進むには、同一内容9通りのサーバー計上、256で打ち切られた場合も含む実際の応答と課金、マイクロドル専用の予算台帳、公開時の単価と本番月額予算を確認する。合成モデル用の台帳は単位が異なるため共用しない。
