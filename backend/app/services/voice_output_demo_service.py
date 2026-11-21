@@ -15,6 +15,14 @@ from app.models.voice_output_demo import (
 from app.services.framework_voice_output_adapter import (
     FrameworkVoiceOutputAdapter,
     FrameworkVoiceOutputRequest,
+    FrameworkVoiceOutputResult,
+)
+from app.services.mina_voice_output import (
+    MINA_CHARACTER_ID,
+    MINA_FIXED_ADVICE,
+    MINA_VOICE_OUTPUT_MODE,
+    MinaVoiceSynthesisError,
+    synthesize_mina_mp3,
 )
 from app.services.voice_output_artifact_store import VoiceOutputArtifactStore
 
@@ -35,8 +43,8 @@ class VoiceOutputDemoService:
 
     The default path is safe-first and does not call providers, synthesize
     audio, generate audio files, or play sound. Default check path does not import FW audio code or synthesize text. A real TTS call is attempted only when
-    the operator enables the explicit real-TTS runtime gate and a framework
-    public voice-output boundary is detected.
+    the operator enables the explicit real-TTS runtime gate and selects a
+    configured Framework or local Mina adapter.
     """
 
     _FRAMEWORK_VOICE_OUTPUT_CANDIDATES: tuple[tuple[str, str], ...] = (
@@ -188,26 +196,43 @@ class VoiceOutputDemoService:
                 audio_playback_status="not_started",
                 evidence_status="not_evidence",
                 runtime_notes=[
-                    "Real TTS was enabled, but the framework voice output boundary is not available."
+                    "Real TTS was enabled, but the selected voice output adapter is unavailable."
+                    if status.adapter_mode == MINA_VOICE_OUTPUT_MODE
+                    else "Real TTS was enabled, but the framework voice output boundary is not available."
                 ],
                 message=self._build_request_not_started_message(status.capability),
             )
 
-        framework_root = Path(self._config.framework_project_root or "").expanduser().resolve()
-        adapter = FrameworkVoiceOutputAdapter(
-            framework_root,
-            real_tts_enabled=self._config.voice_output_real_tts_enabled,
-            artifact_dir=self._artifact_store.framework_artifact_dir,
-        )
-        adapter_result = adapter.synthesize(
-            FrameworkVoiceOutputRequest(
-                text=text_content,
-                voice_profile_id=voice_profile_id,
-                requested_audio_format=requested_audio_format,
-                character_id=character_id,
-                utterance_purpose=utterance_purpose,
+        direct_mina = status.adapter_mode == MINA_VOICE_OUTPUT_MODE
+        if direct_mina:
+            if (
+                output_mode != "tts"
+                or character_id != MINA_CHARACTER_ID
+                or text_content != MINA_FIXED_ADVICE
+                or requested_audio_format != "mp3"
+            ):
+                return VoiceOutputDemoRequestResponse(
+                    **base_response_kwargs,
+                    request_state="blocked_invalid_request",
+                    message="Direct Mina TTS accepts only the fixed Mina advice in MP3 format.",
+                )
+            adapter_result = self._synthesize_mina()
+        else:
+            framework_root = Path(self._config.framework_project_root or "").expanduser().resolve()
+            adapter = FrameworkVoiceOutputAdapter(
+                framework_root,
+                real_tts_enabled=self._config.voice_output_real_tts_enabled,
+                artifact_dir=self._artifact_store.framework_artifact_dir,
             )
-        )
+            adapter_result = adapter.synthesize(
+                FrameworkVoiceOutputRequest(
+                    text=text_content,
+                    voice_profile_id=voice_profile_id,
+                    requested_audio_format=requested_audio_format,
+                    character_id=character_id,
+                    utterance_purpose=utterance_purpose,
+                )
+            )
 
         request_state = self._request_state_from_adapter_status(adapter_result.status)
         audio_url = adapter_result.audio_url
@@ -303,7 +328,7 @@ class VoiceOutputDemoService:
             **base_response_kwargs,
             accepted=accepted,
             request_state=request_state,
-            framework_call_state=adapter_result.status,
+            framework_call_state="not_called" if direct_mina else adapter_result.status,
             framework_api_name=adapter_result.framework_api_name,
             audio_url=audio_url,
             audio_artifact_ref=audio_artifact_ref,
@@ -316,6 +341,38 @@ class VoiceOutputDemoService:
             evidence_status="not_evidence",
             runtime_notes=runtime_notes,
             message=message,
+        )
+
+    def _synthesize_mina(self) -> FrameworkVoiceOutputResult:
+        try:
+            audio = synthesize_mina_mp3(
+                api_key=self._config.voice_output_elevenlabs_api_key,
+                voice_id=self._config.voice_output_mina_voice_id,
+            )
+        except MinaVoiceSynthesisError:
+            return FrameworkVoiceOutputResult(
+                status="failed",
+                audio_format="mp3",
+                message="Mina voice synthesis failed. You can retry the request.",
+            )
+
+        published = self._artifact_store.publish_mp3(audio)
+        if published is None:
+            return FrameworkVoiceOutputResult(
+                status="generated_handoff_invalid",
+                is_generated=True,
+                audio_format="mp3",
+                message="Mina audio was generated but could not be published.",
+            )
+        return FrameworkVoiceOutputResult(
+            status="generated",
+            is_generated=True,
+            audio_ready=True,
+            audio_format=published.audio_format,
+            audio_url=published.audio_url,
+            audio_handoff_kind="url",
+            has_audio_handoff=True,
+            message="Mina audio was generated and is available for playback.",
         )
 
     def _is_safe_public_audio_url(self, value: str | None) -> bool:
@@ -383,6 +440,28 @@ class VoiceOutputDemoService:
                     "Voice output demo is disabled. Set VOICE_OUTPUT_DEMO_ENABLED=1 "
                     "to test the guarded TTS demo boundary."
                 ),
+            )
+
+        if self._normalized_voice_output_adapter_mode() == MINA_VOICE_OUTPUT_MODE:
+            if not self._config.voice_output_real_tts_enabled:
+                return CapabilityStatus(
+                    status="unavailable",
+                    source="real_tts_runtime_disabled",
+                    message="The explicit real TTS runtime gate is disabled.",
+                )
+            if not (
+                self._config.voice_output_elevenlabs_api_key
+                and self._config.voice_output_mina_voice_id
+            ):
+                return CapabilityStatus(
+                    status="unavailable",
+                    source="mina_voice_config_missing",
+                    message="The Backend requires an ElevenLabs key and Mina voice ID.",
+                )
+            return CapabilityStatus(
+                status="available",
+                source="mina_elevenlabs_runtime_enabled",
+                message="The direct Mina voice output adapter is configured.",
             )
 
         if engine == "mock":
@@ -526,6 +605,9 @@ class VoiceOutputDemoService:
 
         if not self._config.voice_output_demo_enabled:
             checks.extend(self._skip_checks("VOICE_OUTPUT_DEMO_ENABLED is disabled."))
+            return self._probe_result("not_checked", "not_checked", (), (), checks)
+
+        if self._normalized_voice_output_adapter_mode() == MINA_VOICE_OUTPUT_MODE:
             return self._probe_result("not_checked", "not_checked", (), (), checks)
 
         if engine != "framework":
@@ -764,6 +846,8 @@ class VoiceOutputDemoService:
         return self._config.voice_output_adapter_mode.strip().lower() or "disabled"
 
     def _resolve_mode(self, engine: str) -> str:
+        if self._normalized_voice_output_adapter_mode() == MINA_VOICE_OUTPUT_MODE:
+            return "local_mina"
         if engine == "framework":
             return "framework_local"
 

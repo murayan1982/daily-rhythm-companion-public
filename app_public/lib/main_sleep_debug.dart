@@ -4,17 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'debug_ai_advice.dart';
+import 'debug_mina_demo.dart';
 
-void main() => runApp(
-  SleepDebugApp(
-    adviceClient: kDebugMode ? DebugAiAdviceClient.fromEnvironment() : null,
-  ),
-);
+void main() {
+  final client = kDebugMode ? DebugAiAdviceClient.fromEnvironment() : null;
+  const minaDemo = kDebugMode && bool.fromEnvironment('DRC_DEBUG_MINA_STAGE3');
+  runApp(
+    SleepDebugApp(
+      adviceClient: client,
+      minaResponse: minaDemo ? fixedMinaResponse : null,
+      minaVoice: minaDemo ? minaVoiceFromEnvironment(client) : null,
+    ),
+  );
+}
 
 class SleepDebugApp extends StatefulWidget {
-  const SleepDebugApp({super.key, this.adviceClient});
+  const SleepDebugApp({
+    super.key,
+    this.adviceClient,
+    this.minaResponse,
+    this.minaVoice,
+  });
 
   final DebugAiAdviceClient? adviceClient;
+  final DebugMinaResponse? minaResponse;
+  final DebugMinaVoice? minaVoice;
 
   @override
   State<SleepDebugApp> createState() => _SleepDebugAppState();
@@ -33,11 +47,21 @@ class _SleepDebugAppState extends State<SleepDebugApp> {
       builder: (context, snapshot) => ProductionApp(
         journeyHeader: const _SleepCard(),
         adviceExtension: kDebugMode
-            ? (mood, character) => DebugAiAdviceCard(
-                client: widget.adviceClient,
-                mood: mood,
-                character: character,
-              )
+            ? (mood, character) {
+                final response = widget.minaResponse;
+                return response == null
+                    ? DebugAiAdviceCard(
+                        client: widget.adviceClient,
+                        mood: mood,
+                        character: character,
+                      )
+                    : DebugMinaDemo(
+                        mood: mood,
+                        character: character,
+                        response: response,
+                        voice: widget.minaVoice,
+                      );
+              }
             : null,
         characterPortrait: (option) {
           final bytes = snapshot.data?[option.characterId];

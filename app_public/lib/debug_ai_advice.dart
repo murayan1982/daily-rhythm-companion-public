@@ -58,39 +58,74 @@ class DebugAiAdviceClient {
       if (syntheticSleepMinutes != null)
         'sleep_summary': {'total_sleep_minutes': syntheticSleepMinutes},
     });
+    final json = await _requestJson(endpoint, body);
+    if (json.length != 2) {
+      throw const FormatException('Invalid advice response');
+    }
+    final message = json['message'];
+    final tag = json['expression_tag'];
+    if (message is! String ||
+        message.trim().isEmpty ||
+        message.trim().runes.length > 240 ||
+        tag is! String ||
+        !_expressionTags.contains(tag)) {
+      throw const FormatException('Invalid advice response');
+    }
+    return (message: message.trim(), expressionTag: tag);
+  }
+
+  Future<Uri> requestMinaAudio(String message, String voiceProfileId) async {
+    final url = endpoint.replace(path: '/demo/voice-output');
+    final json = await _requestJson(
+      url,
+      jsonEncode({
+        'output_mode': 'tts',
+        'text_content': message,
+        'character_id': 'gentle_mina',
+        'voice_profile_id': voiceProfileId,
+        'audio_format': 'mp3',
+      }),
+    );
+    final path = json['audio_url'];
+    if (json['accepted'] != true ||
+        json['audio_ready'] != true ||
+        json['audio_format'] != 'mp3' ||
+        path is! String ||
+        !RegExp(r'^/demo/voice-output/audio/[0-9a-f]{32}$').hasMatch(path)) {
+      throw const FormatException('Invalid FW audio response');
+    }
+    return url.replace(path: path);
+  }
+
+  Future<Map<String, dynamic>> _requestJson(Uri url, String body) async {
     final transport = _transport;
     final client = transport == null
         ? (HttpClient()..findProxy = (_) => 'DIRECT')
         : null;
     try {
       final pending = transport != null
-          ? transport(endpoint, body)
-          : _post(client!, body);
+          ? transport(url, body)
+          : _post(client!, url, body);
       final response = await pending.timeout(timeout);
       if (response.statusCode != HttpStatus.ok) {
         throw HttpException('Unexpected status ${response.statusCode}');
       }
       final json = jsonDecode(response.body);
-      if (json is! Map<String, dynamic> || json.length != 2) {
-        throw const FormatException('Invalid advice response');
+      if (json is! Map<String, dynamic>) {
+        throw const FormatException('Invalid JSON response');
       }
-      final message = json['message'];
-      final tag = json['expression_tag'];
-      if (message is! String ||
-          message.trim().isEmpty ||
-          message.trim().runes.length > 240 ||
-          tag is! String ||
-          !_expressionTags.contains(tag)) {
-        throw const FormatException('Invalid advice response');
-      }
-      return (message: message.trim(), expressionTag: tag);
+      return json;
     } finally {
       client?.close(force: true);
     }
   }
 
-  Future<DebugAdviceHttpResponse> _post(HttpClient client, String body) async {
-    final request = await client.postUrl(endpoint);
+  Future<DebugAdviceHttpResponse> _post(
+    HttpClient client,
+    Uri url,
+    String body,
+  ) async {
+    final request = await client.postUrl(url);
     request.followRedirects = false;
     request.headers.contentType = ContentType.json;
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');

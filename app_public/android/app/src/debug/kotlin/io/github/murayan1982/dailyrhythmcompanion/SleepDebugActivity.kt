@@ -23,9 +23,11 @@ import java.time.ZoneId
 
 class SleepDebugActivity : FlutterActivity() {
     private var pending: MethodChannel.Result? = null
+    private var minaAudio: DebugMinaAudio? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        minaAudio = DebugMinaAudio(flutterEngine.dartExecutor.binaryMessenger, cacheDir)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "drc/debug_character_images")
             .setMethodCallHandler { call, result ->
                 if (call.method == "load") {
@@ -153,6 +155,8 @@ class SleepDebugActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        minaAudio?.close()
+        minaAudio = null
         complete("error")
         super.onDestroy()
     }

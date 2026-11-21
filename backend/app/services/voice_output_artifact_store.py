@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 from threading import RLock
+from tempfile import NamedTemporaryFile
 from time import time
 from typing import Callable, Iterable
 from uuid import uuid4
@@ -168,6 +169,26 @@ class VoiceOutputArtifactStore:
                 )
 
             return None
+
+    def publish_mp3(self, audio: bytes) -> PublishedVoiceOutputArtifact | None:
+        """Stage and publish server-generated MP3 bytes through the managed store."""
+        if not audio:
+            return None
+
+        with _ARTIFACT_STORE_LOCK:
+            source: Path | None = None
+            try:
+                with NamedTemporaryFile(
+                    dir=self.framework_artifact_dir, suffix=".mp3", delete=False
+                ) as staged:
+                    source = Path(staged.name)
+                    staged.write(audio)
+                return self.publish_framework_artifact(source, audio_format="mp3")
+            except OSError:
+                return None
+            finally:
+                if source is not None:
+                    self._unlink(source)
 
     def resolve_public_artifact(self, artifact_id: str) -> Path | None:
         """Resolve one non-expired opaque ID without path traversal or escapes."""
