@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from datetime import timedelta
 from hashlib import sha256
 import os
@@ -10,12 +11,18 @@ from fastapi.testclient import TestClient
 import pytest
 
 from app.api.public_advice import router
-from app.services.postgres_public_advice import PostgresAdviceInvites, postgres_advice_runtime
+from app.services.advice_cost import LOCAL_TEST_MODEL
+from app.services.postgres_public_advice import (
+    PostgresAdviceGenerationControl,
+    PostgresAdviceInvites,
+    postgres_advice_runtime,
+)
 from scripts.public_advice_invite import create_local_app, main
 
 
 INPUT = {"mood": "normal", "character_id": "gentle_mina"}
 PATH = "/v1/advice"
+MAX_COST = LOCAL_TEST_MODEL.maximum_cost
 
 
 @pytest.fixture
@@ -33,6 +40,9 @@ def db():
         connection.execute(f"CREATE SCHEMA {schema}")
     try:
         PostgresAdviceInvites(dsn).initialize_schema()
+        control = PostgresAdviceGenerationControl(dsn)
+        control.set_monthly_budget(MAX_COST * 9)
+        control.set_enabled(True)
         yield dsn, psycopg.connect
     finally:
         with psycopg.connect(base_dsn) as connection:
@@ -44,17 +54,36 @@ def reply(app, issued):
         return client.post(PATH, json=INPUT, headers={"Authorization": f"Bearer {issued.bearer_token}"})
 
 
-def worker(dsn, generate, *, per_user=3, total=9):
+def worker(dsn, provider, *, per_user=3, total=9):
     app = FastAPI()
     app.include_router(router)
     app.state.public_advice_runtime = postgres_advice_runtime(
-        dsn, per_user=per_user, total=total, generate=generate
+        dsn, per_user=per_user, total=total, model=LOCAL_TEST_MODEL, provider=provider
     )
     return app
 
 
 def test_unconfigured_invite_app_stays_disabled(monkeypatch):
     monkeypatch.delenv("DRC_PUBLIC_ADVICE_POSTGRES_DSN", raising=False)
+    with TestClient(create_local_app()) as client:
+        response = client.post(PATH, json=INPUT)
+    assert response.status_code == 503
+    assert response.json() == {"detail": "advice_unavailable"}
+
+
+def test_synthetic_cost_rounds_up_and_covers_the_fixed_prompt():
+    assert MAX_COST == 394
+    with pytest.raises(ValueError, match="full synthetic prompt"):
+        replace(LOCAL_TEST_MODEL, max_input_tokens=64)
+    with pytest.raises(ValueError, match="positive integer"):
+        replace(LOCAL_TEST_MODEL, input_price_per_million=1.5)
+
+
+def test_missing_model_configuration_does_not_start_generation(monkeypatch):
+    monkeypatch.setenv("DRC_PUBLIC_ADVICE_POSTGRES_DSN", "unused")
+    monkeypatch.setenv("DRC_PUBLIC_ADVICE_TEST_PER_USER", "3")
+    monkeypatch.setenv("DRC_PUBLIC_ADVICE_TEST_TOTAL", "9")
+    monkeypatch.delenv("DRC_PUBLIC_ADVICE_TEST_MODEL", raising=False)
     with TestClient(create_local_app()) as client:
         response = client.post(PATH, json=INPUT)
     assert response.status_code == 503
@@ -74,6 +103,7 @@ def test_operator_expiry_revocation_reissue_and_backend_restart(db, monkeypatch,
     monkeypatch.setenv("DRC_PUBLIC_ADVICE_POSTGRES_DSN", dsn)
     monkeypatch.setenv("DRC_PUBLIC_ADVICE_TEST_PER_USER", "1")
     monkeypatch.setenv("DRC_PUBLIC_ADVICE_TEST_TOTAL", "2")
+    monkeypatch.setenv("DRC_PUBLIC_ADVICE_TEST_MODEL", LOCAL_TEST_MODEL.name)
     monkeypatch.setattr("sys.argv", ["invite", "issue", "participant-1", "--ttl-hours", "1"])
     assert main() == 0
     issued = capsys.readouterr().out.splitlines()
@@ -107,12 +137,14 @@ def test_operator_expiry_revocation_reissue_and_backend_restart(db, monkeypatch,
     assert reply(restarted, third).json() == {"detail": "global_quota_exceeded"}
 
 
-@pytest.mark.parametrize("same_user", [True, False])
-def test_independent_workers_respect_both_limits(db, same_user):
+@pytest.mark.parametrize("exhausted", ["user", "global", "budget"])
+def test_independent_workers_respect_limits(db, exhausted):
     dsn, connect = db
+    if exhausted == "budget":
+        PostgresAdviceGenerationControl(dsn).set_monthly_budget(MAX_COST * 2)
     invites = PostgresAdviceInvites(dsn)
     tokens = [
-        invites.issue("same-user" if same_user else f"user-{i}", timedelta(hours=1))
+        invites.issue("same-user" if exhausted == "user" else f"user-{i}", timedelta(hours=1))
         for i in range(6)
     ]
     barrier = Barrier(len(tokens))
@@ -125,23 +157,32 @@ def test_independent_workers_respect_both_limits(db, same_user):
         return "無理せず進もう。"
 
     def send(token):
-        app = worker(dsn, generate, per_user=2, total=9 if same_user else 2)
+        app = worker(dsn, generate, per_user=2, total=2 if exhausted == "global" else 9)
         barrier.wait(timeout=10)
         return reply(app, token)
 
     with ThreadPoolExecutor(max_workers=len(tokens)) as pool:
         results = list(pool.map(send, tokens))
     assert sorted(result.status_code for result in results) == [200, 200, 429, 429, 429, 429]
-    limit = "user_quota_exceeded" if same_user else "global_quota_exceeded"
+    limit = "user_quota_exceeded" if exhausted == "user" else "global_quota_exceeded"
     assert all(result.json() == {"detail": limit} for result in results if result.status_code == 429)
-    assert calls == [INPUT, INPUT]
+    assert len(calls) == 2
+    for call in calls:
+        assert call["model"] == LOCAL_TEST_MODEL.name
+        assert "Give one short Japanese" in call["prompt"]
+        assert call["prompt"].endswith("Mood: normal\nCharacter: gentle_mina")
+        assert len(call["prompt"].encode("utf-8")) <= call["max_input_tokens"] == 128
+        assert call["max_output_tokens"] == 96
     with connect(dsn) as connection:
         total, = connection.execute("SELECT attempts FROM drc_advice_daily_total").fetchone()
         user_total, = connection.execute("SELECT sum(attempts) FROM drc_advice_daily_user").fetchone()
+        cost, = connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchone()
     assert total == user_total == 2
+    assert cost == MAX_COST * 2
 
 
-def test_failed_generation_is_charged_and_day_uses_utc(db):
+@pytest.mark.parametrize("provider_error", [RuntimeError, TimeoutError])
+def test_failed_generation_is_charged_and_day_and_month_use_utc(db, provider_error):
     dsn, connect = db
     from psycopg.conninfo import make_conninfo
 
@@ -151,6 +192,10 @@ def test_failed_generation_is_charged_and_day_uses_utc(db):
         ).fetchone()
         # Preserve a previous day's tally without importing it into today's quota.
         connection.execute("INSERT INTO drc_advice_daily_total VALUES (%s, 99)", (utc_day - timedelta(days=1),))
+        previous_month = (utc_day.replace(day=1) - timedelta(days=1)).replace(day=1)
+        connection.execute(
+            "INSERT INTO drc_advice_monthly_cost VALUES (%s, %s)", (previous_month, 99 * MAX_COST)
+        )
 
     zone = "Pacific/Honolulu" if hour < 10 else "Pacific/Kiritimati"
     from psycopg.conninfo import conninfo_to_dict
@@ -160,25 +205,32 @@ def test_failed_generation_is_charged_and_day_uses_utc(db):
     token = invites.issue("worker-test", timedelta(hours=1))
 
     def fail(**selection):
-        raise RuntimeError("Synthetic upstream failure")
+        raise provider_error("Synthetic upstream failure")
 
     app = worker(dsn, fail, per_user=1, total=1)
     assert reply(app, token).json() == {"detail": "upstream_failure"}
     assert reply(app, token).json() == {"detail": "user_quota_exceeded"}
     with connect(dsn) as connection:
         day, used = connection.execute("SELECT utc_day, attempts FROM drc_advice_daily_user").fetchone()
+        cost, = connection.execute(
+            "SELECT reserved_units FROM drc_advice_monthly_cost WHERE utc_month = %s",
+            (utc_day.replace(day=1),),
+        ).fetchone()
     assert (day, used) == (utc_day, 1)
+    assert cost == MAX_COST
 
 
-@pytest.mark.parametrize("failure", ["authentication", "quota_write"])
+@pytest.mark.parametrize("failure", ["authentication", "quota_write", "cost_write"])
 def test_store_failure_returns_503_without_generation_and_rolls_back(db, failure):
     dsn, connect = db
     token = PostgresAdviceInvites(dsn).issue("participant-1", timedelta(hours=1))
     with connect(dsn) as connection:
         if failure == "authentication":
             connection.execute("ALTER TABLE drc_advice_invites RENAME TO unavailable_invites")
-        else:
+        elif failure == "quota_write":
             connection.execute("ALTER TABLE drc_advice_daily_user ADD CHECK (attempts = 0)")
+        else:
+            connection.execute("ALTER TABLE drc_advice_monthly_cost ADD CHECK (reserved_units = 0)")
 
     def generate(**selection):
         pytest.fail("A storage error must prevent the upstream call.")
@@ -189,3 +241,66 @@ def test_store_failure_returns_503_without_generation_and_rolls_back(db, failure
     with connect(dsn) as connection:
         assert connection.execute("SELECT * FROM drc_advice_daily_total").fetchall() == []
         assert connection.execute("SELECT * FROM drc_advice_daily_user").fetchall() == []
+        assert connection.execute("SELECT * FROM drc_advice_monthly_cost").fetchall() == []
+
+
+@pytest.mark.parametrize("remaining", [0, MAX_COST - 1])
+def test_exact_budget_or_short_remaining_balance(db, remaining):
+    dsn, connect = db
+    PostgresAdviceGenerationControl(dsn).set_monthly_budget(MAX_COST + remaining)
+    invites = PostgresAdviceInvites(dsn)
+    token = invites.issue("worker-test", timedelta(hours=1))
+    calls = []
+
+    def generate(**parameters):
+        calls.append(parameters)
+        return "無理せず進もう。"
+
+    assert reply(worker(dsn, generate), token).status_code == 200
+    invites.initialize_schema()
+    restarted = worker(dsn, generate)
+    denied = reply(restarted, token)
+    assert denied.status_code == 429
+    assert denied.json() == {"detail": "global_quota_exceeded"}
+    assert len(calls) == 1
+    with connect(dsn) as connection:
+        assert connection.execute("SELECT attempts FROM drc_advice_daily_total").fetchall() == [(1,)]
+        assert connection.execute("SELECT attempts FROM drc_advice_daily_user").fetchall() == [(1,)]
+        assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == [(MAX_COST,)]
+
+
+def test_operator_stop_and_missing_budget_fail_closed(db, monkeypatch):
+    dsn, connect = db
+    token = PostgresAdviceInvites(dsn).issue("worker-test", timedelta(hours=1))
+    calls = []
+
+    def generate(**parameters):
+        calls.append(parameters)
+        return "無理せず進もう。"
+
+    app = worker(dsn, generate)
+    monkeypatch.setenv("DRC_PUBLIC_ADVICE_POSTGRES_DSN", dsn)
+    monkeypatch.setattr("sys.argv", ["invite", "pause"])
+    assert main() == 0
+    stopped = reply(app, token)
+    assert stopped.status_code == 503
+    assert stopped.json() == {"detail": "advice_unavailable"}
+    with connect(dsn) as connection:
+        connection.execute("UPDATE drc_advice_generation_control SET monthly_budget = NULL")
+    monkeypatch.setattr("sys.argv", ["invite", "resume"])
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code == 1
+    assert reply(app, token).status_code == 503
+    assert not calls
+    with connect(dsn) as connection:
+        assert connection.execute("SELECT * FROM drc_advice_daily_total").fetchall() == []
+        assert connection.execute("SELECT * FROM drc_advice_daily_user").fetchall() == []
+        assert connection.execute("SELECT * FROM drc_advice_monthly_cost").fetchall() == []
+
+    monkeypatch.setattr("sys.argv", ["invite", "set-monthly-budget", str(MAX_COST)])
+    assert main() == 0
+    monkeypatch.setattr("sys.argv", ["invite", "resume"])
+    assert main() == 0
+    assert reply(app, token).status_code == 200
+    assert len(calls) == 1

@@ -8,13 +8,18 @@ from uuid import UUID
 from fastapi import FastAPI
 
 from app.api.public_advice import router
-from app.services.postgres_public_advice import PostgresAdviceInvites, postgres_advice_runtime
+from app.services.advice_cost import LOCAL_TEST_MODEL
+from app.services.postgres_public_advice import (
+    PostgresAdviceGenerationControl,
+    PostgresAdviceInvites,
+    postgres_advice_runtime,
+)
 
 
 _DSN_ENV = "DRC_PUBLIC_ADVICE_POSTGRES_DSN"
 
 
-def _test_advice(*, mood: str, character_id: str) -> str:
+def _test_advice(*, model: str, prompt: str, max_input_tokens: int, max_output_tokens: int) -> str:
     return "今日は自分のペースでいこう。"
 
 
@@ -27,9 +32,12 @@ def create_local_app() -> FastAPI:
         total = int(os.getenv("DRC_PUBLIC_ADVICE_TEST_TOTAL", ""))
     except ValueError:
         return app
-    if dsn and per_user > 0 and total > 0:
+    if (
+        dsn and per_user > 0 and total > 0
+        and os.getenv("DRC_PUBLIC_ADVICE_TEST_MODEL") == LOCAL_TEST_MODEL.name
+    ):
         app.state.public_advice_runtime = postgres_advice_runtime(
-            dsn, per_user=per_user, total=total, generate=_test_advice
+            dsn, per_user=per_user, total=total, model=LOCAL_TEST_MODEL, provider=_test_advice
         )
     return app
 
@@ -43,6 +51,10 @@ def main() -> int:
     issue.add_argument("--ttl-hours", type=int, required=True)
     revoke = commands.add_parser("revoke")
     revoke.add_argument("token_id", type=UUID)
+    budget = commands.add_parser("set-monthly-budget")
+    budget.add_argument("units", type=int)
+    commands.add_parser("pause")
+    commands.add_parser("resume")
     args = parser.parse_args()
     dsn = os.getenv(_DSN_ENV)
     if not dsn:
@@ -57,6 +69,12 @@ def main() -> int:
             if not invites.revoke(args.token_id):
                 parser.exit(1, "Token not found or already revoked.\n")
             print("Token revoked.")
+        elif args.command == "set-monthly-budget":
+            PostgresAdviceGenerationControl(dsn).set_monthly_budget(args.units)
+            print("Monthly budget updated.")
+        elif args.command in ("pause", "resume"):
+            PostgresAdviceGenerationControl(dsn).set_enabled(args.command == "resume")
+            print("Generation enabled." if args.command == "resume" else "Generation paused.")
         else:
             issued = invites.issue(args.user_id, timedelta(hours=args.ttl_hours))
             print(f"Token ID: {issued.token_id}")
