@@ -56,6 +56,8 @@ class AppConfig:
     voice_output_real_tts_enabled: bool = False
     voice_output_elevenlabs_api_key: str = field(default="", repr=False)
     voice_output_mina_voice_id: str = field(default="", repr=False)
+    voice_output_sora_voice_id: str = field(default="", repr=False)
+    voice_output_rei_voice_id: str = field(default="", repr=False)
     voice_output_utterance_purpose: str = "demo"
     voice_output_artifact_ttl_seconds: int = 86400
     voice_output_artifact_max_count: int = 100
@@ -332,6 +334,8 @@ def load_config() -> AppConfig:
         voice_output_real_tts_enabled=_env_flag("VOICE_OUTPUT_REAL_TTS_ENABLED"),
         voice_output_elevenlabs_api_key=os.getenv("ELEVENLABS_API_KEY", "").strip(),
         voice_output_mina_voice_id=os.getenv("DRC_DEBUG_MINA_ELEVENLABS_VOICE_ID", "").strip(),
+        voice_output_sora_voice_id=os.getenv("DRC_DEBUG_SORA_ELEVENLABS_VOICE_ID", "").strip(),
+        voice_output_rei_voice_id=os.getenv("DRC_DEBUG_REI_ELEVENLABS_VOICE_ID", "").strip(),
         voice_output_utterance_purpose=os.getenv(
             "VOICE_OUTPUT_UTTERANCE_PURPOSE",
             "demo",

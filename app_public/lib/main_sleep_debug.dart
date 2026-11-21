@@ -4,21 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'debug_ai_advice.dart';
+import 'debug_advice_playback.dart';
 import 'debug_mina_demo.dart';
-import 'debug_mina_playback.dart';
 
 void main() {
   final client = kDebugMode ? DebugAiAdviceClient.fromEnvironment() : null;
   const minaDemo = kDebugMode && bool.fromEnvironment('DRC_DEBUG_MINA_STAGE3');
-  const minaAiVoice =
-      kDebugMode && bool.fromEnvironment('DRC_DEBUG_MINA_AI_VOICE');
+  const characterAiVoice =
+      kDebugMode &&
+      (bool.fromEnvironment('DRC_DEBUG_CHARACTER_AI_VOICE') ||
+          bool.fromEnvironment('DRC_DEBUG_MINA_AI_VOICE'));
   runApp(
     SleepDebugApp(
       adviceClient: client,
       minaResponse: minaDemo ? fixedMinaResponse : null,
       minaVoice: minaDemo ? minaVoiceFromEnvironment(client) : null,
-      minaAiVoice: minaAiVoice && client != null
-          ? minaVoiceFor(client.requestGeneratedMinaAudio)
+      characterAiVoice: characterAiVoice && client != null
+          ? (character) => adviceVoiceFor(
+              (ref) => client.requestGeneratedCharacterAudio(character, ref),
+            )
           : null,
     ),
   );
@@ -30,13 +34,13 @@ class SleepDebugApp extends StatefulWidget {
     this.adviceClient,
     this.minaResponse,
     this.minaVoice,
-    this.minaAiVoice,
+    this.characterAiVoice,
   });
 
   final DebugAiAdviceClient? adviceClient;
   final DebugMinaResponse? minaResponse;
-  final DebugMinaVoice? minaVoice;
-  final DebugMinaVoice? minaAiVoice;
+  final DebugAdviceVoice? minaVoice;
+  final DebugCharacterVoice? characterAiVoice;
 
   @override
   State<SleepDebugApp> createState() => _SleepDebugAppState();
@@ -62,7 +66,7 @@ class _SleepDebugAppState extends State<SleepDebugApp> {
                         client: widget.adviceClient,
                         mood: mood,
                         character: character,
-                        minaVoice: widget.minaAiVoice,
+                        characterVoice: widget.characterAiVoice,
                       )
                     : DebugMinaDemo(
                         mood: mood,

@@ -5,13 +5,16 @@ import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_mood.dart';
 import 'package:flutter/material.dart';
 
-import 'debug_mina_playback.dart';
+import 'debug_advice_playback.dart';
 
 typedef DebugAdviceHttpResponse = ({int statusCode, String body});
 typedef DebugAdviceTransport =
     Future<DebugAdviceHttpResponse> Function(Uri endpoint, String jsonBody);
 typedef DebugAdviceResult = ({String message, String expressionTag});
-typedef DebugMinaAdviceResult = ({DebugAdviceResult advice, String voiceRef});
+typedef DebugCharacterAdviceResult = ({
+  DebugAdviceResult advice,
+  String? voiceRef,
+});
 
 class DebugAiAdviceClient {
   const DebugAiAdviceClient({
@@ -67,23 +70,26 @@ class DebugAiAdviceClient {
     return _decodeAdvice(json);
   }
 
-  Future<DebugMinaAdviceResult> generateMinaAdvice({
+  Future<DebugCharacterAdviceResult> generateCharacterAdvice({
     required ProductionMood mood,
+    required ProductionCharacter character,
     int? syntheticSleepMinutes,
   }) async {
     final json = await _generateJson(
-      endpoint.replace(path: '/debug/mina/ai-advice'),
+      endpoint.replace(path: '/debug/character/ai-advice'),
       mood,
-      ProductionCharacter.gentleMina,
+      character,
       syntheticSleepMinutes,
     );
     final ref = json['voice_ref'];
     if (json.length != 3 ||
-        ref is! String ||
-        !RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(ref)) {
-      throw const FormatException('Invalid Mina advice reference');
+        !json.containsKey('voice_ref') ||
+        (ref != null &&
+            (ref is! String ||
+                !RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(ref)))) {
+      throw const FormatException('Invalid character advice reference');
     }
-    return (advice: _decodeAdvice(json), voiceRef: ref);
+    return (advice: _decodeAdvice(json), voiceRef: ref as String?);
   }
 
   Future<Map<String, dynamic>> _generateJson(
@@ -123,8 +129,13 @@ class DebugAiAdviceClient {
         'audio_format': 'mp3',
       });
 
-  Future<Uri> requestGeneratedMinaAudio(String ref) =>
-      _requestAudio('/debug/mina/voice', {'voice_ref': ref});
+  Future<Uri> requestGeneratedCharacterAudio(
+    ProductionCharacter character,
+    String ref,
+  ) => _requestAudio('/debug/character/voice', {
+    'voice_ref': ref,
+    'character_id': productionCharacterOptionFor(character).characterId,
+  });
 
   Future<Uri> _requestAudio(String path, Map<String, String> data) async {
     final json = await _requestJson(
@@ -200,14 +211,14 @@ class DebugAiAdviceCard extends StatefulWidget {
     required this.client,
     required this.mood,
     required this.character,
-    this.minaVoice,
+    this.characterVoice,
     super.key,
   });
 
   final DebugAiAdviceClient? client;
   final ProductionMood? mood;
   final ProductionCharacter? character;
-  final DebugMinaVoice? minaVoice;
+  final DebugCharacterVoice? characterVoice;
 
   @override
   State<DebugAiAdviceCard> createState() => _DebugAiAdviceCardState();
@@ -215,7 +226,7 @@ class DebugAiAdviceCard extends StatefulWidget {
 
 class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
   static const _syntheticSleepMinutes = 385;
-  final _playback = DebugMinaPlayback();
+  final _playback = DebugAdvicePlayback();
   bool _includeSyntheticSleep = false;
   bool _loading = false;
   bool _failed = false;
@@ -223,17 +234,13 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
   DebugAdviceResult? _result;
   String? _voiceRef;
 
-  bool get _minaVoiceEnabled =>
-      widget.character == ProductionCharacter.gentleMina &&
-      widget.minaVoice != null;
-
   @override
   void didUpdateWidget(covariant DebugAiAdviceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.mood != widget.mood ||
         oldWidget.character != widget.character ||
         oldWidget.client != widget.client ||
-        oldWidget.minaVoice != widget.minaVoice) {
+        oldWidget.characterVoice != widget.characterVoice) {
       _requestId++;
       _loading = false;
       _failed = false;
@@ -269,9 +276,10 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
     String? voiceRef;
     try {
       final sleep = _includeSyntheticSleep ? _syntheticSleepMinutes : null;
-      if (_minaVoiceEnabled) {
-        final generated = await client.generateMinaAdvice(
+      if (widget.characterVoice != null) {
+        final generated = await client.generateCharacterAdvice(
           mood: mood,
+          character: character,
           syntheticSleepMinutes: sleep,
         );
         result = generated.advice;
@@ -298,7 +306,9 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
   @override
   Widget build(BuildContext context) {
     final configured = widget.client != null;
-    final ready = widget.mood != null && widget.character != null;
+    final character = widget.character;
+    final ready = widget.mood != null && character != null;
+    final characterVoice = widget.characterVoice;
     final status = !configured
         ? '開発用の接続先を指定すると利用できます。'
         : !ready
@@ -337,16 +347,24 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
               onPressed: configured && ready && !_loading ? _generate : null,
               child: const Text('AIアドバイスを生成'),
             ),
-            if (_minaVoiceEnabled && ready)
-              DebugMinaExpression(_result?.expressionTag),
+            if (characterVoice != null && ready)
+              DebugAdviceExpression(character, _result?.expressionTag),
             if (status != null)
               Semantics(liveRegion: true, child: Text(status)),
-            if (_voiceRef case final ref?)
-              DebugMinaPlaybackControls(
-                playback: _playback,
-                voice: widget.minaVoice,
-                input: ref,
-              ),
+            if (characterVoice != null && character != null && _result != null)
+              if (_voiceRef case final ref?)
+                DebugAdvicePlaybackControls(
+                  playback: _playback,
+                  voice: characterVoice(character),
+                  input: ref,
+                )
+              else
+                Semantics(
+                  liveRegion: true,
+                  child: Text(
+                    '${productionCharacterOptionFor(character).displayName}の読み上げは利用できません。',
+                  ),
+                ),
           ],
         ),
       ),

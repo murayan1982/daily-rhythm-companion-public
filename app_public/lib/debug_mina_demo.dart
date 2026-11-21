@@ -3,17 +3,17 @@ import 'package:drc_production/core/production_mood.dart';
 import 'package:flutter/material.dart';
 
 import 'debug_ai_advice.dart';
-import 'debug_mina_playback.dart';
+import 'debug_advice_playback.dart';
 
 typedef DebugMinaResponse = Future<DebugAdviceResult> Function();
 
 Future<DebugAdviceResult> fixedMinaResponse() async =>
     (message: 'ひと息ついてから、できることを一つ選びましょう。', expressionTag: 'supportive');
 
-DebugMinaVoice? minaVoiceFromEnvironment(DebugAiAdviceClient? client) {
+DebugAdviceVoice? minaVoiceFromEnvironment(DebugAiAdviceClient? client) {
   const profile = String.fromEnvironment('DRC_DEBUG_MINA_VOICE_PROFILE_ID');
   if (client == null || profile.trim().isEmpty) return null;
-  return minaVoiceFor(
+  return adviceVoiceFor(
     (message) => client.requestMinaAudio(message, profile.trim()),
   );
 }
@@ -30,14 +30,14 @@ class DebugMinaDemo extends StatefulWidget {
   final ProductionMood? mood;
   final ProductionCharacter? character;
   final DebugMinaResponse response;
-  final DebugMinaVoice? voice;
+  final DebugAdviceVoice? voice;
 
   @override
   State<DebugMinaDemo> createState() => _DebugMinaDemoState();
 }
 
 class _DebugMinaDemoState extends State<DebugMinaDemo> {
-  final _playback = DebugMinaPlayback();
+  final _playback = DebugAdvicePlayback();
   int _generation = 0;
   DebugAdviceResult? _result;
   String? _status;
@@ -93,7 +93,10 @@ class _DebugMinaDemoState extends State<DebugMinaDemo> {
           children: [
             Semantics(header: true, child: const Text('ミナの固定アドバイス（開発版）')),
             if (ready)
-              DebugMinaExpression(result?.expressionTag)
+              DebugAdviceExpression(
+                ProductionCharacter.gentleMina,
+                result?.expressionTag,
+              )
             else
               const Text('気分とミナを選ぶと固定アドバイスを表示できます。'),
             TextButton(
@@ -102,7 +105,7 @@ class _DebugMinaDemoState extends State<DebugMinaDemo> {
             ),
             if (result != null) ...[
               Semantics(liveRegion: true, child: Text(result.message)),
-              DebugMinaPlaybackControls(
+              DebugAdvicePlaybackControls(
                 playback: _playback,
                 voice: widget.voice,
                 input: result.message,

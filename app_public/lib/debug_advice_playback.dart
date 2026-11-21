@@ -2,16 +2,19 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data' show BytesBuilder;
 
+import 'package:drc_production/core/production_character.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-typedef DebugMinaVoice = ({
+typedef DebugAdviceVoice = ({
   Future<Uint8List> Function(String input) fetch,
   Future<void> Function(Uint8List audio) play,
   Future<void> Function() stop,
 });
 
-DebugMinaVoice minaVoiceFor(Future<Uri> Function(String) requestAudio) {
+typedef DebugCharacterVoice = DebugAdviceVoice Function(ProductionCharacter);
+
+DebugAdviceVoice adviceVoiceFor(Future<Uri> Function(String) requestAudio) {
   const channel = MethodChannel('drc/debug_mina_audio');
   return (
     fetch: (input) async {
@@ -50,9 +53,9 @@ Future<Uint8List> _downloadAudio(HttpClient http, Uri url) async {
   return bytes.takeBytes();
 }
 
-class DebugMinaPlayback extends ChangeNotifier {
+class DebugAdvicePlayback extends ChangeNotifier {
   int _operation = 0;
-  DebugMinaVoice? _activeVoice;
+  DebugAdviceVoice? _activeVoice;
   String? _status;
 
   bool get busy => _activeVoice != null;
@@ -72,7 +75,7 @@ class DebugMinaPlayback extends ChangeNotifier {
     if (voice != null) unawaited(_stopAudio(voice));
   }
 
-  Future<void> _stopAudio(DebugMinaVoice voice) async {
+  Future<void> _stopAudio(DebugAdviceVoice voice) async {
     try {
       await voice.stop();
     } catch (_) {
@@ -80,7 +83,7 @@ class DebugMinaPlayback extends ChangeNotifier {
     }
   }
 
-  Future<void> play(DebugMinaVoice voice, String input) async {
+  Future<void> play(DebugAdviceVoice voice, String input) async {
     if (busy) return;
     final operation = ++_operation;
     _activeVoice = voice;
@@ -109,17 +112,19 @@ class DebugMinaPlayback extends ChangeNotifier {
   }
 }
 
-class DebugMinaPlaybackControls extends StatelessWidget {
-  const DebugMinaPlaybackControls({
+class DebugAdvicePlaybackControls extends StatelessWidget {
+  const DebugAdvicePlaybackControls({
     required this.playback,
     required this.voice,
     required this.input,
+    this.unavailableMessage = 'ミナの開発用音声設定が必要です。',
     super.key,
   });
 
-  final DebugMinaPlayback playback;
-  final DebugMinaVoice? voice;
+  final DebugAdvicePlayback playback;
+  final DebugAdviceVoice? voice;
   final String input;
+  final String unavailableMessage;
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
@@ -129,7 +134,7 @@ class DebugMinaPlaybackControls extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (output == null) const Text('ミナの開発用音声設定が必要です。'),
+          if (output == null) Text(unavailableMessage),
           TextButton(
             onPressed: output == null || playback.busy
                 ? null
@@ -146,20 +151,27 @@ class DebugMinaPlaybackControls extends StatelessWidget {
   );
 }
 
-class DebugMinaExpression extends StatelessWidget {
-  const DebugMinaExpression(this.tag, {super.key});
+class DebugAdviceExpression extends StatelessWidget {
+  const DebugAdviceExpression(this.character, this.tag, {super.key});
 
+  final ProductionCharacter character;
   final String? tag;
 
   @override
   Widget build(BuildContext context) {
-    final supportive = tag == 'supportive';
+    final name = productionCharacterOptionFor(character).displayName;
+    final (label, emoji) = switch ((character, tag)) {
+      (ProductionCharacter.gentleMina, 'supportive') => ('寄り添い', '😌'),
+      (ProductionCharacter.cheerfulSora, 'happy') => ('笑顔', '😄'),
+      (ProductionCharacter.coolRei, 'thinking') => ('考え中', '🤔'),
+      _ => ('通常', '🙂'),
+    };
     return Semantics(
       container: true,
-      label: supportive ? 'ミナの表情：寄り添い' : 'ミナの表情：通常',
+      label: '$nameの表情：$label',
       liveRegion: true,
       excludeSemantics: true,
-      child: CircleAvatar(child: Text(supportive ? '😌' : '🙂')),
+      child: CircleAvatar(child: Text(emoji)),
     );
   }
 }

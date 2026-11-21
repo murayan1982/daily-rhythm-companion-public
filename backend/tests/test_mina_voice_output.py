@@ -14,7 +14,7 @@ from app.api import voice_output_demo as voice_api
 from app.config import AppConfig
 from app.main import app
 from app.services import voice_output_demo_service as voice_service
-from app.services.debug_mina_advice_store import DebugMinaAdviceStore
+from app.services.debug_advice_voice_store import DebugAdviceVoiceStore
 from app.services.framework_voice_output_adapter import FrameworkVoiceOutputResult
 from app.services.voice_output_artifact_store import VoiceOutputArtifactStore
 
@@ -33,6 +33,13 @@ _VOICE = "offline-voice-fixture"
 _MINA_ADVICE = "/debug/mina/ai-advice"
 _MINA_AUDIO = "/debug/mina/voice"
 _ADVICE_INPUT = {"mood": "tired", "character_id": "gentle_mina"}
+_CHARACTER_ADVICE = "/debug/character/ai-advice"
+_CHARACTER_AUDIO = "/debug/character/voice"
+_CHARACTERS = {
+    "gentle_mina": ("今日は短い休憩を入れましょう。", "thinking", "MINA", _VOICE),
+    "cheerful_sora": ("元気に一歩ずつ進もう。", "happy", "SORA", "offline-sora"),
+    "cool_rei": ("やることを一つ決めよう。", "thinking", "REI", "offline-rei"),
+}
 
 
 @pytest.fixture
@@ -192,16 +199,20 @@ def test_framework_mode_keeps_legacy_file_handoff(local_voice, monkeypatch, tmp_
 @pytest.fixture
 def generated_advice(monkeypatch):
     now = [10.0]
-    store = DebugMinaAdviceStore(clock=lambda: now[0])
-    monkeypatch.setattr(debug_advice, "mina_advice", store)
+    store = DebugAdviceVoiceStore(clock=lambda: now[0])
+    monkeypatch.setattr(debug_advice, "advice_voice", store)
     monkeypatch.setattr(debug_advice, "config", AppConfig(debug_ai_advice_enabled=True))
-    message = "今日は短い休憩を入れましょう。"
+    message = _CHARACTERS["gentle_mina"][0]
 
     def reply(*, prompt):
-        assert "Character ID: gentle_mina" in prompt
+        character_id = next(
+            character_id for character_id in _CHARACTERS
+            if f"Character ID: {character_id}" in prompt
+        )
+        text, tag, _, _ = _CHARACTERS[character_id]
         return SimpleNamespace(
             status="responded",
-            reply_text=json.dumps({"message": f"  {message}  ", "expression_tag": "thinking"}),
+            reply_text=json.dumps({"message": f"  {text}  ", "expression_tag": tag}),
         )
 
     monkeypatch.setitem(
@@ -269,3 +280,58 @@ def test_generated_mina_voice_requires_debug_and_direct_mode(
     monkeypatch.setattr(debug_advice, "config", AppConfig())
     assert client.post(_MINA_AUDIO, json=request).status_code == 503
     assert not calls
+
+
+@pytest.mark.parametrize("character_id", _CHARACTERS)
+def test_generated_advice_synthesizes_only_matching_character_and_text(
+    local_voice, generated_advice, monkeypatch, character_id
+):
+    client, calls, _, _ = local_voice
+    text, tag, voice_key, voice_id = _CHARACTERS[character_id]
+    monkeypatch.setenv(f"DRC_DEBUG_{voice_key}_ELEVENLABS_VOICE_ID", voice_id)
+    if character_id != "gentle_mina":
+        monkeypatch.delenv("DRC_DEBUG_MINA_ELEVENLABS_VOICE_ID")
+    response = client.post(_CHARACTER_ADVICE, json={**_ADVICE_INPUT, "character_id": character_id})
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    advice = response.json()
+    assert advice["message"] == text and advice["expression_tag"] == tag
+    assert not calls
+
+    request = {"character_id": character_id, "voice_ref": advice["voice_ref"]}
+    other = next(other for other in _CHARACTERS if other != character_id)
+    assert client.post(_CHARACTER_AUDIO, json={**request, "character_id": other}).status_code == 404
+    if character_id != "gentle_mina":
+        assert client.post(_MINA_AUDIO, json={"voice_ref": request["voice_ref"]}).status_code == 404
+    assert client.post(_CHARACTER_AUDIO, json={**request, "text_content": text}).status_code == 422
+    assert client.post(_CHARACTER_AUDIO, json={**request, "voice_ref": "x" * 32}).status_code == 404
+    assert not calls
+    audio_response = client.post(_CHARACTER_AUDIO, json=request)
+    assert audio_response.status_code == 200
+    audio = audio_response.json()
+    assert audio["accepted"] and audio["audio_ready"] and audio["audio_format"] == "mp3"
+    assert voice_id not in audio_response.text and text not in audio_response.text
+    downloaded = client.get(audio["audio_url"])
+    assert downloaded.status_code == 200 and downloaded.content == _MP3
+    assert len(calls) == 1 and (calls[0]["text"], calls[0]["voice_id"]) == (text, voice_id)
+    _, now = generated_advice
+    now[0] += 300
+    assert client.post(_CHARACTER_AUDIO, json=request).status_code == 404
+    assert len(calls) == 1
+
+
+def test_missing_character_voice_keeps_advice_without_an_audio_reference(
+    local_voice, generated_advice, monkeypatch
+):
+    client, calls, _, _ = local_voice
+    monkeypatch.delenv("DRC_DEBUG_SORA_ELEVENLABS_VOICE_ID", raising=False)
+    request = {**_ADVICE_INPUT, "character_id": "cheerful_sora"}
+    no_voice = client.post(_CHARACTER_ADVICE, json=request)
+    text, tag, _, voice = _CHARACTERS["cheerful_sora"]
+    assert no_voice.status_code == 200
+    assert no_voice.json() == {"message": text, "expression_tag": tag, "voice_ref": None}
+    monkeypatch.setenv("DRC_DEBUG_SORA_ELEVENLABS_VOICE_ID", voice)
+    issued = client.post(_CHARACTER_ADVICE, json=request).json()["voice_ref"]
+    monkeypatch.delenv("DRC_DEBUG_SORA_ELEVENLABS_VOICE_ID")
+    rejected = client.post(_CHARACTER_AUDIO, json={"character_id": "cheerful_sora", "voice_ref": issued})
+    assert rejected.status_code == 200 and not rejected.json()["accepted"] and not calls

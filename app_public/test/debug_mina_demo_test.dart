@@ -6,7 +6,7 @@ import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_mood.dart';
 import 'package:drc_public_app/debug_ai_advice.dart';
 import 'package:drc_public_app/debug_mina_demo.dart';
-import 'package:drc_public_app/debug_mina_playback.dart';
+import 'package:drc_public_app/debug_advice_playback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -18,7 +18,7 @@ final failure = find.text('音声を再生できませんでした。再試行�
 
 Future<void> showDemo(
   WidgetTester tester, {
-  DebugMinaVoice? voice,
+  DebugAdviceVoice? voice,
   DebugMinaResponse response = fixedMinaResponse,
   ProductionMood mood = ProductionMood.normal,
   ProductionCharacter character = ProductionCharacter.gentleMina,
@@ -134,7 +134,7 @@ void main() {
       final fetched = Completer<Uint8List>();
       var plays = 0;
       var stops = 0;
-      final DebugMinaVoice voice = (
+      final DebugAdviceVoice voice = (
         fetch: (_) => fetched.future,
         play: (_) async => plays++,
         stop: () async => stops++,

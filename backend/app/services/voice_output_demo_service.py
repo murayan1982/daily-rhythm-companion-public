@@ -21,8 +21,8 @@ from app.services.mina_voice_output import (
     MINA_CHARACTER_ID,
     MINA_FIXED_ADVICE,
     MINA_VOICE_OUTPUT_MODE,
-    MinaVoiceSynthesisError,
-    synthesize_mina_mp3,
+    DebugVoiceSynthesisError,
+    synthesize_debug_mp3,
 )
 from app.services.voice_output_artifact_store import VoiceOutputArtifactStore
 
@@ -117,20 +117,6 @@ class VoiceOutputDemoService:
         request: VoiceOutputDemoRequest,
     ) -> VoiceOutputDemoRequestResponse:
         """Handle a guarded voice output demo request."""
-        return self._submit_request(request)
-
-    def submit_generated_mina(self, message: str) -> VoiceOutputDemoRequestResponse:
-        """Synthesize Mina advice resolved by the debug API from its own store."""
-        return self._submit_request(
-            VoiceOutputDemoRequest(
-                text_content=message, character_id=MINA_CHARACTER_ID, audio_format="mp3"
-            ),
-            generated_mina=True,
-        )
-
-    def _submit_request(
-        self, request: VoiceOutputDemoRequest, *, generated_mina: bool = False
-    ) -> VoiceOutputDemoRequestResponse:
         status = self.build_status()
         direct_mina = status.adapter_mode == MINA_VOICE_OUTPUT_MODE
         output_mode = self._normalized_request_value(request.output_mode) or "tts"
@@ -199,7 +185,7 @@ class VoiceOutputDemoService:
                 message=self._build_runtime_guard_message(status.capability),
             )
 
-        if status.capability.status != "available" or (generated_mina and not direct_mina):
+        if status.capability.status != "available":
             return VoiceOutputDemoRequestResponse(
                 **base_response_kwargs,
                 accepted=False,
@@ -221,7 +207,7 @@ class VoiceOutputDemoService:
             if (
                 output_mode != "tts"
                 or character_id != MINA_CHARACTER_ID
-                or (not generated_mina and text_content != MINA_FIXED_ADVICE)
+                or text_content != MINA_FIXED_ADVICE
                 or requested_audio_format != "mp3"
             ):
                 return VoiceOutputDemoRequestResponse(
@@ -229,7 +215,9 @@ class VoiceOutputDemoService:
                     request_state="blocked_invalid_request",
                     message="Direct Mina TTS accepts only the fixed Mina advice in MP3 format.",
                 )
-            adapter_result = self._synthesize_mina(text_content)
+            adapter_result = self._synthesize_debug(
+                text_content, self._config.voice_output_mina_voice_id, mina=True
+            )
         else:
             framework_root = Path(self._config.framework_project_root or "").expanduser().resolve()
             adapter = FrameworkVoiceOutputAdapter(
@@ -356,18 +344,47 @@ class VoiceOutputDemoService:
             message=message,
         )
 
-    def _synthesize_mina(self, message: str) -> FrameworkVoiceOutputResult:
+    def _generated_voice_id(self, character_id: str) -> str:
+        if not (
+            self._normalized_voice_output_adapter_mode() == MINA_VOICE_OUTPUT_MODE
+            and self._config.voice_output_demo_enabled
+            and self._config.voice_output_real_tts_enabled
+            and self._config.voice_output_elevenlabs_api_key
+        ):
+            return ""
+        return {
+            MINA_CHARACTER_ID: self._config.voice_output_mina_voice_id,
+            "cheerful_sora": self._config.voice_output_sora_voice_id,
+            "cool_rei": self._config.voice_output_rei_voice_id,
+        }.get(character_id, "")
+
+    def generated_voice_available(self, character_id: str) -> bool:
+        return bool(self._generated_voice_id(character_id))
+
+    def submit_generated_voice(
+        self, character_id: str, message: str
+    ) -> FrameworkVoiceOutputResult | None:
+        """Synthesize advice resolved by the debug API from its own store."""
+        voice_id = self._generated_voice_id(character_id)
+        if not voice_id:
+            return None
+        return self._synthesize_debug(message, voice_id)
+
+    def _synthesize_debug(
+        self, message: str, voice_id: str, *, mina: bool = False
+    ) -> FrameworkVoiceOutputResult:
+        name = "Mina" if mina else "Character"
         try:
-            audio = synthesize_mina_mp3(
+            audio = synthesize_debug_mp3(
                 message=message,
                 api_key=self._config.voice_output_elevenlabs_api_key,
-                voice_id=self._config.voice_output_mina_voice_id,
+                voice_id=voice_id,
             )
-        except MinaVoiceSynthesisError:
+        except DebugVoiceSynthesisError:
             return FrameworkVoiceOutputResult(
                 status="failed",
                 audio_format="mp3",
-                message="Mina voice synthesis failed. You can retry the request.",
+                message=f"{name} voice synthesis failed. You can retry the request.",
             )
 
         published = self._artifact_store.publish_mp3(audio)
@@ -376,7 +393,7 @@ class VoiceOutputDemoService:
                 status="generated_handoff_invalid",
                 is_generated=True,
                 audio_format="mp3",
-                message="Mina audio was generated but could not be published.",
+                message=f"{name} audio was generated but could not be published.",
             )
         return FrameworkVoiceOutputResult(
             status="generated",
@@ -386,7 +403,7 @@ class VoiceOutputDemoService:
             audio_url=published.audio_url,
             audio_handoff_kind="url",
             has_audio_handoff=True,
-            message="Mina audio was generated and is available for playback.",
+            message=f"{name} audio was generated and is available for playback.",
         )
 
     def _is_safe_public_audio_url(self, value: str | None) -> bool:

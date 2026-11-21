@@ -9,11 +9,11 @@ MINA_FIXED_ADVICE = "ひと息ついてから、できることを一つ選び�
 _MAX_MP3_BYTES = 2 * 1024 * 1024
 
 
-class MinaVoiceSynthesisError(RuntimeError):
+class DebugVoiceSynthesisError(RuntimeError):
     """Safe failure at the direct development TTS boundary."""
 
 
-def synthesize_mina_mp3(*, message: str, api_key: str, voice_id: str) -> bytes:
+def synthesize_debug_mp3(*, message: str, api_key: str, voice_id: str) -> bytes:
     """Synthesize a message already validated by the development voice service."""
     try:
         from elevenlabs.client import ElevenLabs
@@ -29,13 +29,13 @@ def synthesize_mina_mp3(*, message: str, api_key: str, voice_id: str) -> bytes:
                 request_options={"max_retries": 0},
             ):
                 if len(audio) + len(chunk) > _MAX_MP3_BYTES:
-                    raise MinaVoiceSynthesisError("Mina audio exceeded the size limit.")
+                    raise DebugVoiceSynthesisError("Audio exceeded the size limit.")
                 audio.extend(chunk)
             if not audio:
-                raise MinaVoiceSynthesisError("Mina audio was empty.")
+                raise DebugVoiceSynthesisError("Audio was empty.")
             return bytes(audio)
-    except MinaVoiceSynthesisError:
+    except DebugVoiceSynthesisError:
         raise
     except Exception:
         # Provider exceptions can contain request details or a raw response body.
-        raise MinaVoiceSynthesisError("Mina voice synthesis failed.") from None
+        raise DebugVoiceSynthesisError("Voice synthesis failed.") from None

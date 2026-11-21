@@ -11,7 +11,7 @@ from app.models.motion_demo import MotionExpressionId
 from app.models.sleep import SleepSummary
 from app.services.advice_prompt_builder import build_advice_prompt
 from app.services.character_service import CharacterService
-from app.services.debug_mina_advice_store import DebugMinaAdviceStore
+from app.services.debug_advice_voice_store import DebugAdviceVoiceStore
 from app.services.framework_text_chat_drc_live_reply import (
     FrameworkTextChatDrcLiveReplyService,
 )
@@ -25,11 +25,14 @@ class SyntheticSleepSummary(BaseModel):
     total_sleep_minutes: int = Field(strict=True, ge=0, le=1440)
 
 
+DebugCharacterId = Literal["gentle_mina", "cheerful_sora", "cool_rei"]
+
+
 class DebugAdviceRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     mood: Literal["energetic", "normal", "tired"]
-    character_id: Literal["gentle_mina", "cheerful_sora", "cool_rei"]
+    character_id: DebugCharacterId
     sleep_summary: SyntheticSleepSummary | None = None
 
 
@@ -48,10 +51,18 @@ class DebugMinaAdviceResponse(DebugAdviceResponse):
     voice_ref: str
 
 
+class DebugCharacterAdviceResponse(DebugAdviceResponse):
+    voice_ref: str | None
+
+
 class DebugMinaVoiceRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     voice_ref: str = Field(min_length=32, max_length=32, pattern=r"^[A-Za-z0-9_-]+$")
+
+
+class DebugCharacterVoiceRequest(DebugMinaVoiceRequest):
+    character_id: DebugCharacterId
 
 
 class DebugMinaVoiceResponse(BaseModel):
@@ -65,7 +76,7 @@ router = APIRouter(prefix="/debug")
 config = load_config()
 characters = {preset.character_id: preset for preset in CharacterService().list_presets()}
 provider_lock = Lock()
-mina_advice = DebugMinaAdviceStore()
+advice_voice = DebugAdviceVoiceStore()
 
 
 def get_debug_advice_provider() -> FrameworkTextChatDrcLiveReplyService:
@@ -134,24 +145,62 @@ def create_debug_mina_advice(
     return DebugMinaAdviceResponse(
         message=advice.message,
         expression_tag=advice.expression_tag,
-        voice_ref=mina_advice.issue(advice.message),
+        voice_ref=advice_voice.issue(request.character_id, advice.message),
     )
 
 
 @router.post("/mina/voice", response_model=DebugMinaVoiceResponse)
 def create_debug_mina_voice(request: DebugMinaVoiceRequest) -> DebugMinaVoiceResponse:
+    return _play_advice("gentle_mina", request.voice_ref, legacy_mina=True)
+
+
+@router.post("/character/ai-advice", response_model=DebugCharacterAdviceResponse)
+def create_debug_character_advice(
+    request: DebugAdviceRequest,
+    response: Response,
+    provider: Annotated[FrameworkTextChatDrcLiveReplyService, Depends(get_debug_advice_provider)],
+) -> DebugCharacterAdviceResponse:
+    advice = create_debug_advice(request, provider)
+    service = VoiceOutputDemoService(load_config())
+    voice_ref = (
+        advice_voice.issue(request.character_id, advice.message)
+        if service.generated_voice_available(request.character_id)
+        else None
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return DebugCharacterAdviceResponse(
+        message=advice.message, expression_tag=advice.expression_tag, voice_ref=voice_ref
+    )
+
+
+@router.post("/character/voice", response_model=DebugMinaVoiceResponse)
+def create_debug_character_voice(
+    request: DebugCharacterVoiceRequest,
+) -> DebugMinaVoiceResponse:
+    return _play_advice(request.character_id, request.voice_ref)
+
+
+def _play_advice(
+    character_id: str, ref: str, *, legacy_mina: bool = False
+) -> DebugMinaVoiceResponse:
     if not config.debug_ai_advice_enabled:
         raise HTTPException(status_code=503, detail="Debug AI advice is disabled.")
     voice_config = load_config()
     if voice_config.voice_output_adapter_mode.strip().lower() != MINA_VOICE_OUTPUT_MODE:
-        raise HTTPException(status_code=503, detail="Debug Mina voice is disabled.")
-    message = mina_advice.resolve(request.voice_ref)
+        detail = "Debug Mina voice is disabled." if legacy_mina else "Debug character voice is disabled."
+        raise HTTPException(status_code=503, detail=detail)
+    message = advice_voice.resolve(ref, character_id)
     if message is None:
-        raise HTTPException(status_code=404, detail="Mina advice reference is unavailable.")
-    result = VoiceOutputDemoService(voice_config).submit_generated_mina(message)
+        detail = (
+            "Mina advice reference is unavailable."
+            if legacy_mina
+            else "Character advice reference is unavailable."
+        )
+        raise HTTPException(status_code=404, detail=detail)
+    result = VoiceOutputDemoService(voice_config).submit_generated_voice(character_id, message)
     return DebugMinaVoiceResponse(
-        accepted=result.accepted,
-        audio_ready=result.audio_ready,
-        audio_format=result.audio_format,
-        audio_url=result.audio_url,
+        accepted=bool(result and result.audio_ready),
+        audio_ready=bool(result and result.audio_ready),
+        audio_format=result.audio_format if result else None,
+        audio_url=result.audio_url if result else None,
     )

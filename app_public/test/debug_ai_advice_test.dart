@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drc_public_app/debug_ai_advice.dart';
-import 'package:drc_public_app/debug_mina_playback.dart';
+import 'package:drc_public_app/debug_advice_playback.dart';
 import 'package:drc_public_app/main_sleep_debug.dart';
 import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_local_advice.dart';
@@ -25,7 +25,7 @@ Future<void> _start(
   WidgetTester tester,
   DebugAdviceTransport transport, {
   Duration timeout = const Duration(seconds: 15),
-  DebugMinaVoice Function(DebugAiAdviceClient)? minaVoice,
+  DebugCharacterVoice Function(DebugAiAdviceClient)? characterVoice,
 }) async {
   final client = DebugAiAdviceClient(
     endpoint: _endpoint,
@@ -33,7 +33,10 @@ Future<void> _start(
     timeout: timeout,
   );
   await tester.pumpWidget(
-    SleepDebugApp(adviceClient: client, minaAiVoice: minaVoice?.call(client)),
+    SleepDebugApp(
+      adviceClient: client,
+      characterAiVoice: characterVoice?.call(client),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -64,7 +67,11 @@ void main() {
   const audioPath = '/demo/voice-output/audio/$firstRef';
   const audioFailure = '音声を再生できませんでした。再試行できます。';
 
-  DebugAdviceHttpResponse minaReply(String message, String tag, String ref) => (
+  DebugAdviceHttpResponse characterReply(
+    String message,
+    String tag,
+    String? ref,
+  ) => (
     statusCode: 200,
     body: jsonEncode({
       'message': message,
@@ -84,15 +91,18 @@ void main() {
         tester,
         (endpoint, body) async {
           requests.add(endpoint.path);
-          if (endpoint.path == '/debug/mina/ai-advice') {
+          if (endpoint.path == '/debug/character/ai-advice') {
             expect(jsonDecode(body), {
               'mood': 'tired',
               'character_id': 'gentle_mina',
             });
-            return minaReply('生成済みの本文', 'supportive', firstRef);
+            return characterReply('生成済みの本文', 'supportive', firstRef);
           }
-          expect(endpoint.path, '/debug/mina/voice');
-          expect(jsonDecode(body), {'voice_ref': firstRef});
+          expect(endpoint.path, '/debug/character/voice');
+          expect(jsonDecode(body), {
+            'voice_ref': firstRef,
+            'character_id': 'gentle_mina',
+          });
           if (requests.length == 2) return (statusCode: 503, body: '{}');
           return (
             statusCode: 200,
@@ -104,25 +114,29 @@ void main() {
             }),
           );
         },
-        minaVoice: (client) => (
-          fetch: (ref) async {
-            expect(
-              (await client.requestGeneratedMinaAudio(ref)).path,
-              audioPath,
-            );
-            return Uint8List.fromList([1]);
-          },
-          play: (_) {
-            plays++;
-            return playback.future;
-          },
-          stop: () async => stops++,
-        ),
+        characterVoice: (client) =>
+            (character) => (
+              fetch: (ref) async {
+                expect(
+                  (await client.requestGeneratedCharacterAudio(
+                    character,
+                    ref,
+                  )).path,
+                  audioPath,
+                );
+                return Uint8List.fromList([1]);
+              },
+              play: (_) {
+                plays++;
+                return playback.future;
+              },
+              stop: () async => stops++,
+            ),
       );
       await _select(tester);
       expect(requests, isEmpty);
       await _tap(tester, _generateLabel);
-      expect(requests, ['/debug/mina/ai-advice']);
+      expect(requests, ['/debug/character/ai-advice']);
       expect(find.text('生成済みの本文'), findsOneWidget);
       expect(find.text('😌'), findsOneWidget);
       await _tap(tester, '再生');
@@ -140,7 +154,103 @@ void main() {
     },
   );
 
-  for (final action in ['再生成', '停止', '気分変更', 'キャラクター変更']) {
+  for (final (character, tag, emoji) in [
+    (ProductionCharacter.cheerfulSora, 'happy', '😄'),
+    (ProductionCharacter.coolRei, 'thinking', '🤔'),
+  ]) {
+    final option = productionCharacterOptionFor(character);
+    testWidgets(
+      '${option.displayName} uses its own response, face and voice reference',
+      (tester) async {
+        final message = '${option.displayName}の生成本文';
+        final requests = <String>[];
+        var plays = 0;
+        await _start(
+          tester,
+          (endpoint, body) async {
+            requests.add(endpoint.path);
+            if (endpoint.path == '/debug/character/ai-advice') {
+              expect(jsonDecode(body), {
+                'mood': 'tired',
+                'character_id': option.characterId,
+              });
+              return characterReply(message, tag, freshRef);
+            }
+            expect(endpoint.path, '/debug/character/voice');
+            expect(jsonDecode(body), {
+              'voice_ref': freshRef,
+              'character_id': option.characterId,
+            });
+            return (
+              statusCode: 200,
+              body: jsonEncode({
+                'accepted': true,
+                'audio_ready': true,
+                'audio_format': 'mp3',
+                'audio_url': audioPath,
+              }),
+            );
+          },
+          characterVoice: (client) =>
+              (selected) => (
+                fetch: (ref) async {
+                  expect(selected, character);
+                  expect(
+                    (await client.requestGeneratedCharacterAudio(
+                      selected,
+                      ref,
+                    )).path,
+                    audioPath,
+                  );
+                  return Uint8List(1);
+                },
+                play: (_) async => plays++,
+                stop: () async {},
+              ),
+        );
+        await _tap(tester, '😪 だるい');
+        await _tap(tester, option.displayName);
+        expect(requests, isEmpty);
+        await _tap(tester, _generateLabel);
+        expect(find.text(message), findsOneWidget);
+        expect(find.text(emoji), findsOneWidget);
+        expect(requests, ['/debug/character/ai-advice']);
+        await _tap(tester, '再生');
+        expect(requests, [
+          '/debug/character/ai-advice',
+          '/debug/character/voice',
+        ]);
+        expect(plays, 1);
+      },
+    );
+  }
+
+  testWidgets('unconfigured Sora voice preserves the advice and expression', (
+    tester,
+  ) async {
+    await _start(
+      tester,
+      (endpoint, _) async {
+        expect(endpoint.path, '/debug/character/ai-advice');
+        return characterReply('ソラの本文', 'happy', null);
+      },
+      characterVoice: (_) =>
+          (_) => (
+            fetch: (_) async => throw StateError('unexpected play'),
+            play: (_) async {},
+            stop: () async {},
+          ),
+    );
+    await _tap(tester, '😪 だるい');
+    await _tap(tester, 'ソラ');
+    await _tap(tester, _generateLabel);
+    expect(find.text('ソラの本文'), findsOneWidget);
+    expect(find.text('😄'), findsOneWidget);
+    expect(find.text('ソラの読み上げは利用できません。'), findsOneWidget);
+    expect(find.text('再生'), findsNothing);
+  });
+
+  for (final action in ['再生成', '停止', '気分変更', 'ソラ', 'レイ']) {
     testWidgets('Mina ignores audio arriving after $action', (tester) async {
       final pending = Completer<Uint8List>();
       final refs = <String>[];
@@ -150,21 +260,22 @@ void main() {
       await _start(
         tester,
         (endpoint, body) async {
-          expect(endpoint.path, '/debug/mina/ai-advice');
+          expect(endpoint.path, '/debug/character/ai-advice');
           return generates++ == 0
-              ? minaReply('古い本文', 'supportive', firstRef)
-              : minaReply('新しい本文', 'thinking', freshRef);
+              ? characterReply('古い本文', 'supportive', firstRef)
+              : characterReply('新しい本文', 'thinking', freshRef);
         },
-        minaVoice: (_) => (
-          fetch: (ref) {
-            refs.add(ref);
-            return ref == firstRef
-                ? pending.future
-                : Future.value(Uint8List(1));
-          },
-          play: (_) async => plays++,
-          stop: () async => stops++,
-        ),
+        characterVoice: (_) =>
+            (character) => (
+              fetch: (ref) {
+                refs.add(ref);
+                return ref == firstRef
+                    ? pending.future
+                    : Future.value(Uint8List(1));
+              },
+              play: (_) async => plays++,
+              stop: () async => stops++,
+            ),
       );
       await _select(tester);
       await _tap(tester, _generateLabel);
@@ -173,7 +284,7 @@ void main() {
         '再生成' => _generateLabel,
         '停止' => '停止',
         '気分変更' => '☀️ 元気',
-        _ => 'ソラ',
+        _ => action,
       });
       pending.complete(Uint8List(1));
       await tester.pumpAndSettle();
@@ -191,36 +302,38 @@ void main() {
     });
   }
 
-  testWidgets(
-    'Mina ignores an older AI result after selection and regeneration',
-    (tester) async {
+  for (final nextChoice in ['☀️ 元気', 'ソラ', 'レイ']) {
+    testWidgets('Mina ignores an older AI result after selecting $nextChoice', (
+      tester,
+    ) async {
       final old = Completer<DebugAdviceHttpResponse>();
       var count = 0;
       await _start(
         tester,
         (endpoint, _) {
-          expect(endpoint.path, '/debug/mina/ai-advice');
+          expect(endpoint.path, '/debug/character/ai-advice');
           return count++ == 0
               ? old.future
-              : Future.value(minaReply('現在の本文', 'thinking', freshRef));
+              : Future.value(characterReply('現在の本文', 'speaking', freshRef));
         },
-        minaVoice: (_) => (
-          fetch: (_) async => throw StateError('unexpected play'),
-          play: (_) async {},
-          stop: () async {},
-        ),
+        characterVoice: (_) =>
+            (character) => (
+              fetch: (_) async => throw StateError('unexpected play'),
+              play: (_) async {},
+              stop: () async {},
+            ),
       );
       await _select(tester);
       await _tap(tester, _generateLabel);
-      await _tap(tester, '☀️ 元気');
+      await _tap(tester, nextChoice);
       await _tap(tester, _generateLabel);
-      old.complete(minaReply('以前の本文', 'supportive', firstRef));
+      old.complete(characterReply('以前の本文', 'supportive', firstRef));
       await tester.pumpAndSettle();
       expect(find.text('現在の本文'), findsOneWidget);
       expect(find.text('以前の本文'), findsNothing);
       expect(find.text('🙂'), findsOneWidget);
-    },
-  );
+    });
+  }
 
   testWidgets('Mina AI failure keeps local advice and offers no playback', (
     tester,
@@ -228,14 +341,15 @@ void main() {
     await _start(
       tester,
       (endpoint, _) async {
-        expect(endpoint.path, '/debug/mina/ai-advice');
+        expect(endpoint.path, '/debug/character/ai-advice');
         return (statusCode: 502, body: '{}');
       },
-      minaVoice: (_) => (
-        fetch: (_) async => throw StateError('unexpected play'),
-        play: (_) async {},
-        stop: () async {},
-      ),
+      characterVoice: (_) =>
+          (character) => (
+            fetch: (_) async => throw StateError('unexpected play'),
+            play: (_) async {},
+            stop: () async {},
+          ),
     );
     await _select(tester);
     await _tap(tester, _generateLabel);
