@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import re
 import sys
@@ -8,9 +9,12 @@ from types import SimpleNamespace
 from fastapi.testclient import TestClient
 import pytest
 
+from app.api import debug_advice
 from app.api import voice_output_demo as voice_api
+from app.config import AppConfig
 from app.main import app
 from app.services import voice_output_demo_service as voice_service
+from app.services.debug_mina_advice_store import DebugMinaAdviceStore
 from app.services.framework_voice_output_adapter import FrameworkVoiceOutputResult
 from app.services.voice_output_artifact_store import VoiceOutputArtifactStore
 
@@ -26,6 +30,9 @@ _FIXTURE = {
 _MP3 = b"ID3\x04\x00\x00offline audio fixture"
 _KEY = "offline-key-fixture"
 _VOICE = "offline-voice-fixture"
+_MINA_ADVICE = "/debug/mina/ai-advice"
+_MINA_AUDIO = "/debug/mina/voice"
+_ADVICE_INPUT = {"mood": "tired", "character_id": "gentle_mina"}
 
 
 @pytest.fixture
@@ -179,4 +186,86 @@ def test_framework_mode_keeps_legacy_file_handoff(local_voice, monkeypatch, tmp_
     data = _assert_playable(client, client.post(_ROUTE, json=_FIXTURE))
     assert data["adapter_mode"] == "framework"
     assert data["framework_call_state"] == "generated"
+    assert not calls
+
+
+@pytest.fixture
+def generated_advice(monkeypatch):
+    now = [10.0]
+    store = DebugMinaAdviceStore(clock=lambda: now[0])
+    monkeypatch.setattr(debug_advice, "mina_advice", store)
+    monkeypatch.setattr(debug_advice, "config", AppConfig(debug_ai_advice_enabled=True))
+    message = "今日は短い休憩を入れましょう。"
+
+    def reply(*, prompt):
+        assert "Character ID: gentle_mina" in prompt
+        return SimpleNamespace(
+            status="responded",
+            reply_text=json.dumps({"message": f"  {message}  ", "expression_tag": "thinking"}),
+        )
+
+    monkeypatch.setitem(
+        app.dependency_overrides,
+        debug_advice.get_debug_advice_provider,
+        lambda: SimpleNamespace(reply=reply),
+    )
+    return message, now
+
+
+def test_generated_mina_retries_and_synthesizes_exact_displayed_text(local_voice, generated_advice):
+    client, calls, outcomes, _ = local_voice
+    message, _ = generated_advice
+    advice = client.post(_MINA_ADVICE, json=_ADVICE_INPUT)
+    assert advice.status_code == 200
+    assert advice.headers["cache-control"] == "no-store"
+    data = advice.json()
+    assert data["message"] == message
+    assert data["expression_tag"] == "thinking"
+    assert not calls
+
+    request = {"voice_ref": data["voice_ref"]}
+    outcomes.append(RuntimeError("private provider details"))
+    failed = client.post(_MINA_AUDIO, json=request)
+    assert failed.status_code == 200
+    assert failed.json() == {
+        "accepted": False, "audio_ready": False, "audio_format": "mp3", "audio_url": None,
+    }
+    voiced = client.post(_MINA_AUDIO, json=request)
+    assert voiced.status_code == 200
+    assert message not in voiced.text and _VOICE not in voiced.text
+    payload = voiced.json()
+    assert payload["accepted"] and payload["audio_ready"]
+    audio = client.get(payload["audio_url"])
+    assert audio.status_code == 200 and audio.content == _MP3
+    assert [call["text"] for call in calls] == [data["message"], data["message"]]
+
+
+def test_generated_mina_rejects_unknown_expired_and_client_supplied_text(local_voice, generated_advice):
+    client, calls, _, _ = local_voice
+    message, now = generated_advice
+    assert client.post(_MINA_ADVICE, json={**_ADVICE_INPUT, "character_id": "cool_rei"}).status_code == 422
+    advice = client.post(_MINA_ADVICE, json=_ADVICE_INPUT).json()
+    request = {"voice_ref": advice["voice_ref"]}
+    assert client.post(_MINA_AUDIO, json={"voice_ref": "!"}).status_code == 422
+    assert client.post(_MINA_AUDIO, json={"voice_ref": "g" * 32}).status_code == 404
+    assert client.post(_MINA_AUDIO, json={**request, "text_content": message}).status_code == 422
+    assert client.post(_ROUTE, json={**_FIXTURE, "text_content": message}).json()[
+        "request_state"
+    ] == "blocked_invalid_request"
+    now[0] += 300
+    assert client.post(_MINA_AUDIO, json=request).status_code == 404
+    assert not calls
+
+
+def test_generated_mina_voice_requires_debug_and_direct_mode(
+    local_voice, generated_advice, monkeypatch
+):
+    client, calls, _, _ = local_voice
+    advice = client.post(_MINA_ADVICE, json=_ADVICE_INPUT).json()
+    request = {"voice_ref": advice["voice_ref"]}
+    monkeypatch.setenv("VOICE_OUTPUT_ADAPTER_MODE", "framework")
+    assert client.post(_MINA_AUDIO, json=request).status_code == 503
+    monkeypatch.setenv("VOICE_OUTPUT_ADAPTER_MODE", "elevenlabs_mina")
+    monkeypatch.setattr(debug_advice, "config", AppConfig())
+    assert client.post(_MINA_AUDIO, json=request).status_code == 503
     assert not calls

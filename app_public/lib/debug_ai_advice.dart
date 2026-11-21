@@ -5,10 +5,13 @@ import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_mood.dart';
 import 'package:flutter/material.dart';
 
+import 'debug_mina_playback.dart';
+
 typedef DebugAdviceHttpResponse = ({int statusCode, String body});
 typedef DebugAdviceTransport =
     Future<DebugAdviceHttpResponse> Function(Uri endpoint, String jsonBody);
 typedef DebugAdviceResult = ({String message, String expressionTag});
+typedef DebugMinaAdviceResult = ({DebugAdviceResult advice, String voiceRef});
 
 class DebugAiAdviceClient {
   const DebugAiAdviceClient({
@@ -52,16 +55,53 @@ class DebugAiAdviceClient {
     required ProductionCharacter character,
     int? syntheticSleepMinutes,
   }) async {
+    final json = await _generateJson(
+      endpoint,
+      mood,
+      character,
+      syntheticSleepMinutes,
+    );
+    if (json.length != 2) {
+      throw const FormatException('Invalid advice response');
+    }
+    return _decodeAdvice(json);
+  }
+
+  Future<DebugMinaAdviceResult> generateMinaAdvice({
+    required ProductionMood mood,
+    int? syntheticSleepMinutes,
+  }) async {
+    final json = await _generateJson(
+      endpoint.replace(path: '/debug/mina/ai-advice'),
+      mood,
+      ProductionCharacter.gentleMina,
+      syntheticSleepMinutes,
+    );
+    final ref = json['voice_ref'];
+    if (json.length != 3 ||
+        ref is! String ||
+        !RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(ref)) {
+      throw const FormatException('Invalid Mina advice reference');
+    }
+    return (advice: _decodeAdvice(json), voiceRef: ref);
+  }
+
+  Future<Map<String, dynamic>> _generateJson(
+    Uri url,
+    ProductionMood mood,
+    ProductionCharacter character,
+    int? syntheticSleepMinutes,
+  ) {
     final body = jsonEncode({
       'mood': productionMoodOptionFor(mood).code,
       'character_id': productionCharacterOptionFor(character).characterId,
       if (syntheticSleepMinutes != null)
         'sleep_summary': {'total_sleep_minutes': syntheticSleepMinutes},
     });
-    final json = await _requestJson(endpoint, body);
-    if (json.length != 2) {
-      throw const FormatException('Invalid advice response');
-    }
+    return _requestJson(url, body);
+  }
+
+  DebugAdviceResult _decodeAdvice(Map<String, dynamic> json) {
     final message = json['message'];
     final tag = json['expression_tag'];
     if (message is! String ||
@@ -74,27 +114,34 @@ class DebugAiAdviceClient {
     return (message: message.trim(), expressionTag: tag);
   }
 
-  Future<Uri> requestMinaAudio(String message, String voiceProfileId) async {
-    final url = endpoint.replace(path: '/demo/voice-output');
-    final json = await _requestJson(
-      url,
-      jsonEncode({
+  Future<Uri> requestMinaAudio(String message, String voiceProfileId) =>
+      _requestAudio('/demo/voice-output', {
         'output_mode': 'tts',
         'text_content': message,
         'character_id': 'gentle_mina',
         'voice_profile_id': voiceProfileId,
         'audio_format': 'mp3',
-      }),
+      });
+
+  Future<Uri> requestGeneratedMinaAudio(String ref) =>
+      _requestAudio('/debug/mina/voice', {'voice_ref': ref});
+
+  Future<Uri> _requestAudio(String path, Map<String, String> data) async {
+    final json = await _requestJson(
+      endpoint.replace(path: path),
+      jsonEncode(data),
     );
-    final path = json['audio_url'];
+    final audioPath = json['audio_url'];
     if (json['accepted'] != true ||
         json['audio_ready'] != true ||
         json['audio_format'] != 'mp3' ||
-        path is! String ||
-        !RegExp(r'^/demo/voice-output/audio/[0-9a-f]{32}$').hasMatch(path)) {
-      throw const FormatException('Invalid FW audio response');
+        audioPath is! String ||
+        !RegExp(
+          r'^/demo/voice-output/audio/[0-9a-f]{32}$',
+        ).hasMatch(audioPath)) {
+      throw const FormatException('Invalid audio response');
     }
-    return url.replace(path: path);
+    return endpoint.replace(path: audioPath);
   }
 
   Future<Map<String, dynamic>> _requestJson(Uri url, String body) async {
@@ -153,12 +200,14 @@ class DebugAiAdviceCard extends StatefulWidget {
     required this.client,
     required this.mood,
     required this.character,
+    this.minaVoice,
     super.key,
   });
 
   final DebugAiAdviceClient? client;
   final ProductionMood? mood;
   final ProductionCharacter? character;
+  final DebugMinaVoice? minaVoice;
 
   @override
   State<DebugAiAdviceCard> createState() => _DebugAiAdviceCardState();
@@ -166,23 +215,42 @@ class DebugAiAdviceCard extends StatefulWidget {
 
 class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
   static const _syntheticSleepMinutes = 385;
+  final _playback = DebugMinaPlayback();
   bool _includeSyntheticSleep = false;
   bool _loading = false;
   bool _failed = false;
   int _requestId = 0;
   DebugAdviceResult? _result;
+  String? _voiceRef;
+
+  bool get _minaVoiceEnabled =>
+      widget.character == ProductionCharacter.gentleMina &&
+      widget.minaVoice != null;
 
   @override
   void didUpdateWidget(covariant DebugAiAdviceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.mood != widget.mood ||
         oldWidget.character != widget.character ||
-        oldWidget.client != widget.client) {
+        oldWidget.client != widget.client ||
+        oldWidget.minaVoice != widget.minaVoice) {
       _requestId++;
       _loading = false;
       _failed = false;
-      _result = null;
+      _clearResult();
     }
+  }
+
+  @override
+  void dispose() {
+    _playback.dispose();
+    super.dispose();
+  }
+
+  void _clearResult() {
+    _playback.stop();
+    _result = null;
+    _voiceRef = null;
   }
 
   Future<void> _generate() async {
@@ -194,24 +262,34 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
     setState(() {
       _loading = true;
       _failed = false;
-      _result = null;
+      _clearResult();
     });
 
     DebugAdviceResult? result;
+    String? voiceRef;
     try {
-      result = await client.generate(
-        mood: mood,
-        character: character,
-        syntheticSleepMinutes: _includeSyntheticSleep
-            ? _syntheticSleepMinutes
-            : null,
-      );
+      final sleep = _includeSyntheticSleep ? _syntheticSleepMinutes : null;
+      if (_minaVoiceEnabled) {
+        final generated = await client.generateMinaAdvice(
+          mood: mood,
+          syntheticSleepMinutes: sleep,
+        );
+        result = generated.advice;
+        voiceRef = generated.voiceRef;
+      } else {
+        result = await client.generate(
+          mood: mood,
+          character: character,
+          syntheticSleepMinutes: sleep,
+        );
+      }
     } catch (_) {
       // The shared journey already displays the current on-device advice.
     }
     if (!mounted || id != _requestId) return;
     setState(() {
       _result = result;
+      _voiceRef = voiceRef;
       _failed = result == null;
       _loading = false;
     });
@@ -250,7 +328,7 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
                   : (checked) {
                       setState(() {
                         _includeSyntheticSleep = checked ?? false;
-                        _result = null;
+                        _clearResult();
                         _failed = false;
                       });
                     },
@@ -259,8 +337,16 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
               onPressed: configured && ready && !_loading ? _generate : null,
               child: const Text('AIアドバイスを生成'),
             ),
+            if (_minaVoiceEnabled && ready)
+              DebugMinaExpression(_result?.expressionTag),
             if (status != null)
               Semantics(liveRegion: true, child: Text(status)),
+            if (_voiceRef case final ref?)
+              DebugMinaPlaybackControls(
+                playback: _playback,
+                voice: widget.minaVoice,
+                input: ref,
+              ),
           ],
         ),
       ),

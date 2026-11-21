@@ -6,6 +6,7 @@ import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_mood.dart';
 import 'package:drc_public_app/debug_ai_advice.dart';
 import 'package:drc_public_app/debug_mina_demo.dart';
+import 'package:drc_public_app/debug_mina_playback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -13,8 +13,8 @@ class MinaVoiceSynthesisError(RuntimeError):
     """Safe failure at the direct development TTS boundary."""
 
 
-def synthesize_mina_mp3(*, api_key: str, voice_id: str) -> bytes:
-    """Synthesize only the Stage 3 fixture through the installed ElevenLabs SDK."""
+def synthesize_mina_mp3(*, message: str, api_key: str, voice_id: str) -> bytes:
+    """Synthesize a message already validated by the development voice service."""
     try:
         from elevenlabs.client import ElevenLabs
 
@@ -23,7 +23,7 @@ def synthesize_mina_mp3(*, api_key: str, voice_id: str) -> bytes:
             audio = bytearray()
             for chunk in client.text_to_speech.convert(
                 voice_id=voice_id,
-                text=MINA_FIXED_ADVICE,
+                text=message,
                 model_id="eleven_multilingual_v2",
                 output_format="mp3_44100_128",
                 request_options={"max_retries": 0},

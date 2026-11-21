@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drc_public_app/debug_ai_advice.dart';
+import 'package:drc_public_app/debug_mina_playback.dart';
 import 'package:drc_public_app/main_sleep_debug.dart';
 import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_local_advice.dart';
@@ -24,15 +25,15 @@ Future<void> _start(
   WidgetTester tester,
   DebugAdviceTransport transport, {
   Duration timeout = const Duration(seconds: 15),
+  DebugMinaVoice Function(DebugAiAdviceClient)? minaVoice,
 }) async {
+  final client = DebugAiAdviceClient(
+    endpoint: _endpoint,
+    transport: transport,
+    timeout: timeout,
+  );
   await tester.pumpWidget(
-    SleepDebugApp(
-      adviceClient: DebugAiAdviceClient(
-        endpoint: _endpoint,
-        transport: transport,
-        timeout: timeout,
-      ),
-    ),
+    SleepDebugApp(adviceClient: client, minaAiVoice: minaVoice?.call(client)),
   );
   await tester.pumpAndSettle();
 }
@@ -58,6 +59,192 @@ void _expectLocalAdvice() {
 }
 
 void main() {
+  const firstRef = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  const freshRef = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  const audioPath = '/demo/voice-output/audio/$firstRef';
+  const audioFailure = '音声を再生できませんでした。再試行できます。';
+
+  DebugAdviceHttpResponse minaReply(String message, String tag, String ref) => (
+    statusCode: 200,
+    body: jsonEncode({
+      'message': message,
+      'expression_tag': tag,
+      'voice_ref': ref,
+    }),
+  );
+
+  testWidgets(
+    'Mina expressions update and play sends only the issued reference',
+    (tester) async {
+      final requests = <String>[];
+      var plays = 0;
+      var stops = 0;
+      final playback = Completer<void>();
+      await _start(
+        tester,
+        (endpoint, body) async {
+          requests.add(endpoint.path);
+          if (endpoint.path == '/debug/mina/ai-advice') {
+            expect(jsonDecode(body), {
+              'mood': 'tired',
+              'character_id': 'gentle_mina',
+            });
+            return minaReply('生成済みの本文', 'supportive', firstRef);
+          }
+          expect(endpoint.path, '/debug/mina/voice');
+          expect(jsonDecode(body), {'voice_ref': firstRef});
+          if (requests.length == 2) return (statusCode: 503, body: '{}');
+          return (
+            statusCode: 200,
+            body: jsonEncode({
+              'accepted': true,
+              'audio_ready': true,
+              'audio_format': 'mp3',
+              'audio_url': audioPath,
+            }),
+          );
+        },
+        minaVoice: (client) => (
+          fetch: (ref) async {
+            expect(
+              (await client.requestGeneratedMinaAudio(ref)).path,
+              audioPath,
+            );
+            return Uint8List.fromList([1]);
+          },
+          play: (_) {
+            plays++;
+            return playback.future;
+          },
+          stop: () async => stops++,
+        ),
+      );
+      await _select(tester);
+      expect(requests, isEmpty);
+      await _tap(tester, _generateLabel);
+      expect(requests, ['/debug/mina/ai-advice']);
+      expect(find.text('生成済みの本文'), findsOneWidget);
+      expect(find.text('😌'), findsOneWidget);
+      await _tap(tester, '再生');
+      expect(find.text(audioFailure), findsOneWidget);
+      expect(find.text('生成済みの本文'), findsOneWidget);
+      expect(find.text('😌'), findsOneWidget);
+      await _tap(tester, '再生');
+      expect(plays, 1);
+      await _tap(tester, '停止');
+      expect(stops, 1);
+      playback.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('停止'), findsNothing);
+      expect(find.text('生成済みの本文'), findsOneWidget);
+    },
+  );
+
+  for (final action in ['再生成', '停止', '気分変更', 'キャラクター変更']) {
+    testWidgets('Mina ignores audio arriving after $action', (tester) async {
+      final pending = Completer<Uint8List>();
+      final refs = <String>[];
+      var plays = 0;
+      var stops = 0;
+      var generates = 0;
+      await _start(
+        tester,
+        (endpoint, body) async {
+          expect(endpoint.path, '/debug/mina/ai-advice');
+          return generates++ == 0
+              ? minaReply('古い本文', 'supportive', firstRef)
+              : minaReply('新しい本文', 'thinking', freshRef);
+        },
+        minaVoice: (_) => (
+          fetch: (ref) {
+            refs.add(ref);
+            return ref == firstRef
+                ? pending.future
+                : Future.value(Uint8List(1));
+          },
+          play: (_) async => plays++,
+          stop: () async => stops++,
+        ),
+      );
+      await _select(tester);
+      await _tap(tester, _generateLabel);
+      await _tap(tester, '再生');
+      await _tap(tester, switch (action) {
+        '再生成' => _generateLabel,
+        '停止' => '停止',
+        '気分変更' => '☀️ 元気',
+        _ => 'ソラ',
+      });
+      pending.complete(Uint8List(1));
+      await tester.pumpAndSettle();
+      expect(plays, 0);
+      expect(stops, 1);
+      expect(refs, [firstRef]);
+      if (action == '再生成') {
+        expect(find.text('古い本文'), findsNothing);
+        expect(find.text('新しい本文'), findsOneWidget);
+        expect(find.text('🙂'), findsOneWidget);
+        await _tap(tester, '再生');
+        expect(refs, [firstRef, freshRef]);
+        expect(plays, 1);
+      }
+    });
+  }
+
+  testWidgets(
+    'Mina ignores an older AI result after selection and regeneration',
+    (tester) async {
+      final old = Completer<DebugAdviceHttpResponse>();
+      var count = 0;
+      await _start(
+        tester,
+        (endpoint, _) {
+          expect(endpoint.path, '/debug/mina/ai-advice');
+          return count++ == 0
+              ? old.future
+              : Future.value(minaReply('現在の本文', 'thinking', freshRef));
+        },
+        minaVoice: (_) => (
+          fetch: (_) async => throw StateError('unexpected play'),
+          play: (_) async {},
+          stop: () async {},
+        ),
+      );
+      await _select(tester);
+      await _tap(tester, _generateLabel);
+      await _tap(tester, '☀️ 元気');
+      await _tap(tester, _generateLabel);
+      old.complete(minaReply('以前の本文', 'supportive', firstRef));
+      await tester.pumpAndSettle();
+      expect(find.text('現在の本文'), findsOneWidget);
+      expect(find.text('以前の本文'), findsNothing);
+      expect(find.text('🙂'), findsOneWidget);
+    },
+  );
+
+  testWidgets('Mina AI failure keeps local advice and offers no playback', (
+    tester,
+  ) async {
+    await _start(
+      tester,
+      (endpoint, _) async {
+        expect(endpoint.path, '/debug/mina/ai-advice');
+        return (statusCode: 502, body: '{}');
+      },
+      minaVoice: (_) => (
+        fetch: (_) async => throw StateError('unexpected play'),
+        play: (_) async {},
+        stop: () async {},
+      ),
+    );
+    await _select(tester);
+    await _tap(tester, _generateLabel);
+    _expectLocalAdvice();
+    expect(find.text(_failure), findsOneWidget);
+    expect(find.text('再生'), findsNothing);
+    expect(find.text('🙂'), findsOneWidget);
+  });
+
   for (final includeSyntheticSleep in [false, true]) {
     testWidgets(
       'only Generate sends the selected fields, synthetic sleep: $includeSyntheticSleep',
