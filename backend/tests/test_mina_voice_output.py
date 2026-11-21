@@ -15,6 +15,11 @@ from app.config import AppConfig
 from app.main import app
 from app.services import voice_output_demo_service as voice_service
 from app.services.debug_advice_voice_store import DebugAdviceVoiceStore
+from app.services.debug_advice_conversation import (
+    ConversationReply,
+    ConversationUnavailable,
+    DebugAdviceConversationStore,
+)
 from app.services.framework_voice_output_adapter import FrameworkVoiceOutputResult
 from app.services.voice_output_artifact_store import VoiceOutputArtifactStore
 
@@ -335,3 +340,84 @@ def test_missing_character_voice_keeps_advice_without_an_audio_reference(
     monkeypatch.delenv("DRC_DEBUG_SORA_ELEVENLABS_VOICE_ID")
     rejected = client.post(_CHARACTER_AUDIO, json={"character_id": "cheerful_sora", "voice_ref": issued})
     assert rejected.status_code == 200 and not rejected.json()["accepted"] and not calls
+
+
+@pytest.mark.parametrize("character_id", _CHARACTERS)
+def test_debug_conversation_uses_advice_and_two_turns_with_retry(
+    local_voice, monkeypatch, character_id
+):
+    client, calls, _, artifacts = local_voice
+    store = DebugAdviceConversationStore(ttl=60, capacity=8, turn_limit=8)
+    monkeypatch.setattr(debug_advice, "conversations", store)
+    monkeypatch.setattr(debug_advice, "config", AppConfig(debug_ai_advice_enabled=True))
+    advice, tag, voice_key, voice_id = _CHARACTERS[character_id]
+    monkeypatch.setenv(f"DRC_DEBUG_{voice_key}_ELEVENLABS_VOICE_ID", voice_id)
+    prompts = []
+
+    def reply(*, prompt):
+        prompts.append(prompt)
+        if len(prompts) == 2:
+            raise RuntimeError("offline provider failure")
+        output = advice if len(prompts) == 1 else f"返信{len(prompts)}。"
+        return SimpleNamespace(
+            status="responded",
+            reply_text=json.dumps({"message": output, "expression_tag": tag}),
+        )
+
+    monkeypatch.setitem(
+        app.dependency_overrides,
+        debug_advice.get_debug_advice_provider,
+        lambda: SimpleNamespace(reply=reply),
+    )
+    path = "/debug/conversation"
+    assert client.post(path + "/start", json={"advice_ref": "x" * 32}).status_code == 404
+    assert not prompts
+    generated = client.post(path + "/advice", json={**_ADVICE_INPUT, "character_id": character_id}).json()
+    assert generated["message"] == advice and len(prompts) == 1
+    started = client.post(path + "/start", json={"advice_ref": generated["advice_ref"]})
+    assert started.status_code == 200 and len(prompts) == 1 and not calls
+    session = {"session_id": started.json()["session_id"]}
+    first_request = {**session, "turn": 1, "message": "最初の質問"}
+    assert client.post(path + "/turn", json=first_request).status_code == 502
+    first = client.post(path + "/turn", json=first_request).json()
+    assert first["message"] == "返信3。"
+    assert client.post(path + "/turn", json=first_request).json() == first
+    assert len(prompts) == 3
+    assert client.post(path + "/turn", json={**first_request, "message": "別の質問"}).status_code == 409
+
+    second = client.post(
+        path + "/turn", json={**session, "turn": 2, "message": "追加質問"},
+    ).json()
+    assert second["message"] == "返信4。" and second["expression_tag"] == tag
+    assert f"({character_id})" in prompts[-1] and advice in prompts[-1]
+    assert prompts[-1].count("最初の質問") == 1
+    assert prompts[-1].count(first["message"]) == 1 and "追加質問" in prompts[-1]
+    assert not calls
+    voice = {**session, "voice_ref": second["voice_ref"]}
+    assert client.post(path + "/voice", json={**voice, "message": "任意の本文"}).status_code == 422
+    audio = client.post(path + "/voice", json=voice)
+    assert audio.status_code == 200 and audio.headers["content-type"] == "audio/mpeg"
+    assert audio.content == _MP3 and audio.headers["cache-control"] == "no-store"
+    assert len(calls) == 1 and (calls[0]["text"], calls[0]["voice_id"]) == (second["message"], voice_id)
+    assert not list(artifacts.framework_artifact_dir.iterdir())
+
+    assert client.post(path + "/end", json=session).json() == {"closed": True}
+    assert client.post(path + "/voice", json=voice).status_code == 404
+    assert client.post(path + "/turn", json=first_request).status_code == 404
+    fresh = client.post(path + "/start", json={"advice_ref": generated["advice_ref"]}).json()
+    assert fresh["session_id"] != session["session_id"]
+    client.post(path + "/turn", json={"session_id": fresh["session_id"], "turn": 1, "message": "新しい質問"})
+    assert "最初の質問" not in prompts[-1] and "追加質問" not in prompts[-1]
+
+
+def test_ending_a_debug_conversation_discards_the_inflight_turn():
+    store = DebugAdviceConversationStore(ttl=60, capacity=8, turn_limit=8)
+    session = store.start(store.remember_advice("gentle_mina", "助言"))
+
+    def generate(*_):
+        store.end(session)
+        return ConversationReply("古い返信", "idle", "x" * 32)
+
+    with pytest.raises(ConversationUnavailable):
+        store.reply(session, 1, "質問", generate)
+    assert store.resolve_voice(session, "x" * 32) is None

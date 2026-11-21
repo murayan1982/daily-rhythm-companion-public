@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drc_public_app/debug_ai_advice.dart';
+import 'package:drc_public_app/debug_advice_conversation.dart';
 import 'package:drc_public_app/debug_advice_playback.dart';
 import 'package:drc_public_app/main_sleep_debug.dart';
 import 'package:drc_production/core/production_character.dart';
@@ -26,6 +27,7 @@ Future<void> _start(
   DebugAdviceTransport transport, {
   Duration timeout = const Duration(seconds: 15),
   DebugCharacterVoice Function(DebugAiAdviceClient)? characterVoice,
+  bool adviceChat = false,
 }) async {
   final client = DebugAiAdviceClient(
     endpoint: _endpoint,
@@ -36,6 +38,7 @@ Future<void> _start(
     SleepDebugApp(
       adviceClient: client,
       characterAiVoice: characterVoice?.call(client),
+      adviceChat: adviceChat,
     ),
   );
   await tester.pumpAndSettle();
@@ -62,6 +65,212 @@ void _expectLocalAdvice() {
 }
 
 void main() {
+  const adviceRef = 'cccccccccccccccccccccccccccccccc';
+  const sessionId = 'dddddddddddddddddddddddddddddddd';
+  const chatPath = '/debug/conversation';
+  DebugAdviceHttpResponse chatJson(Map<String, Object?> body) =>
+      (statusCode: 200, body: jsonEncode(body));
+  final initialAdvice = chatJson({
+    'message': '元のアドバイス',
+    'expression_tag': 'supportive',
+    'voice_ref': null,
+    'advice_ref': adviceRef,
+  });
+  final startReply = chatJson({'session_id': sessionId, 'turn_limit': 8});
+
+  Future<void> enterQuestion(WidgetTester tester, String value) async {
+    final input = find.byType(TextField);
+    await tester.ensureVisible(input);
+    await tester.enterText(input, value);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets(
+    'conversation starts only by choice and a retry uses the same turn',
+    (tester) async {
+      final requests = <(String, Object?)>[];
+      var firstAttempts = 0;
+      await _start(tester, (endpoint, body) async {
+        final data = jsonDecode(body);
+        requests.add((endpoint.path, data));
+        switch (endpoint.path) {
+          case '$chatPath/advice':
+            expect(data, {'character_id': 'gentle_mina', 'mood': 'tired'});
+            return initialAdvice;
+          case '$chatPath/start':
+            expect(data, {'advice_ref': adviceRef});
+            return startReply;
+          case '$chatPath/turn':
+            final turn = (data as Map)['turn'];
+            expect(data, {
+              'session_id': sessionId,
+              'turn': turn,
+              'message': turn == 1 ? '最初の質問' : '追加質問',
+            });
+            if (turn == 1 && firstAttempts++ == 0) {
+              return (statusCode: 502, body: '{}');
+            }
+            return chatJson({
+              'message': turn == 1 ? '最初の返信' : '次の返信',
+              'expression_tag': turn == 1 ? 'supportive' : 'speaking',
+              'voice_ref': null,
+            });
+          case '$chatPath/end':
+            expect(data, {'session_id': sessionId});
+            return chatJson({'closed': true});
+          default:
+            throw StateError('Unexpected route');
+        }
+      }, adviceChat: true);
+      await _select(tester);
+      expect(requests, isEmpty);
+      expect(find.text('会話を続ける'), findsNothing);
+      await _tap(tester, _generateLabel);
+      expect(requests.map((r) => r.$1), ['$chatPath/advice']);
+      await _tap(tester, '会話を続ける');
+      expect(requests.map((r) => r.$1), [
+        '$chatPath/advice',
+        '$chatPath/start',
+      ]);
+      await enterQuestion(tester, '最初の質問');
+      expect(requests.length, 2);
+      await _tap(tester, '質問を送る');
+      expect(find.text('元のアドバイス'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        '最初の質問',
+      );
+      await _tap(tester, '質問を再試行');
+      expect(find.text('あなた：最初の質問'), findsOneWidget);
+      expect(find.text('ミナ：最初の返信'), findsOneWidget);
+      expect(find.text('😌'), findsOneWidget);
+      await enterQuestion(tester, '追加質問');
+      await _tap(tester, '質問を送る');
+      expect(find.text('ミナ：次の返信'), findsOneWidget);
+      expect(find.text('🙂'), findsOneWidget);
+      await _tap(tester, '会話を終了');
+      expect(find.text('ミナ：次の返信'), findsNothing);
+      expect(find.text('元のアドバイス'), findsOneWidget);
+      expect(requests.last.$1, '$chatPath/end');
+      await _tap(tester, '会話を続ける');
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        isEmpty,
+      );
+      expect(find.text('あなた：最初の質問'), findsNothing);
+    },
+  );
+
+  for (final resetAction in ['会話を終了', 'ソラ', _generateLabel]) {
+    testWidgets('conversation drops an old reply after $resetAction', (
+      tester,
+    ) async {
+      final pending = Completer<DebugAdviceHttpResponse>();
+      var ended = 0;
+      await _start(tester, (endpoint, _) async {
+        switch (endpoint.path) {
+          case '$chatPath/advice':
+            return initialAdvice;
+          case '$chatPath/start':
+            return startReply;
+          case '$chatPath/turn':
+            return pending.future;
+          case '$chatPath/end':
+            ended++;
+            return chatJson({'closed': true});
+          default:
+            throw StateError('Unexpected route');
+        }
+      }, adviceChat: true);
+      await _select(tester);
+      await _tap(tester, _generateLabel);
+      await _tap(tester, '会話を続ける');
+      await enterQuestion(tester, '遅い質問');
+      await _tap(tester, '質問を送る');
+      await _tap(tester, resetAction);
+      pending.complete(
+        chatJson({
+          'message': '遅れて届いた返信',
+          'expression_tag': 'supportive',
+          'voice_ref': null,
+        }),
+      );
+      await tester.pumpAndSettle();
+      expect(ended, 1);
+      expect(find.textContaining('遅れて届いた返信'), findsNothing);
+      expect(find.byType(TextField), findsNothing);
+      if (resetAction != 'ソラ') expect(find.text('元のアドバイス'), findsOneWidget);
+    });
+  }
+
+  testWidgets(
+    'reply playback is optional and pending audio is dropped on close',
+    (tester) async {
+      final playback = DebugAdvicePlayback();
+      final pending = Completer<Uint8List>();
+      var requests = 0;
+      var plays = 0;
+      var stops = 0;
+      var ended = 0;
+      var open = true;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) => !open
+                  ? const SizedBox()
+                  : DebugAdviceConversation(
+                      character: ProductionCharacter.cheerfulSora,
+                      adviceTag: 'idle',
+                      playback: playback,
+                      start: () async => (id: sessionId, turnLimit: 8),
+                      send: (_, _, _) async => (
+                        message: 'ソラの返信',
+                        expressionTag: 'happy',
+                        voiceRef: adviceRef,
+                      ),
+                      end: (_) async => ended++,
+                      voice: (id) => (
+                        fetch: (ref) {
+                          expect(id, sessionId);
+                          expect(ref, adviceRef);
+                          requests++;
+                          return requests == 1
+                              ? Future.value(Uint8List(1))
+                              : pending.future;
+                        },
+                        play: (_) async => plays++,
+                        stop: () async => stops++,
+                      ),
+                      onClose: () {
+                        playback.stop();
+                        setState(() => open = false);
+                      },
+                    ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await enterQuestion(tester, '質問');
+      await _tap(tester, '質問を送る');
+      expect(find.text('😄'), findsOneWidget);
+      expect(requests, 0);
+      await _tap(tester, '再生');
+      expect(requests, 1);
+      expect(plays, 1);
+      await _tap(tester, '再生');
+      expect(requests, 2);
+      await _tap(tester, '会話を終了');
+      pending.complete(Uint8List(1));
+      await tester.pumpAndSettle();
+      expect(plays, 1);
+      expect(stops, 1);
+      expect(ended, 1);
+      playback.dispose();
+    },
+  );
+
   const firstRef = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
   const freshRef = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
   const audioPath = '/demo/voice-output/audio/$firstRef';

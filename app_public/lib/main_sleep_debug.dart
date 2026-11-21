@@ -10,15 +10,19 @@ import 'debug_mina_demo.dart';
 void main() {
   final client = kDebugMode ? DebugAiAdviceClient.fromEnvironment() : null;
   const minaDemo = kDebugMode && bool.fromEnvironment('DRC_DEBUG_MINA_STAGE3');
+  const adviceChat =
+      kDebugMode && bool.fromEnvironment('DRC_DEBUG_ADVICE_CHAT');
   const characterAiVoice =
       kDebugMode &&
-      (bool.fromEnvironment('DRC_DEBUG_CHARACTER_AI_VOICE') ||
+      (adviceChat ||
+          bool.fromEnvironment('DRC_DEBUG_CHARACTER_AI_VOICE') ||
           bool.fromEnvironment('DRC_DEBUG_MINA_AI_VOICE'));
   runApp(
     SleepDebugApp(
       adviceClient: client,
       minaResponse: minaDemo ? fixedMinaResponse : null,
       minaVoice: minaDemo ? minaVoiceFromEnvironment(client) : null,
+      adviceChat: adviceChat,
       characterAiVoice: characterAiVoice && client != null
           ? (character) => adviceVoiceFor(
               (ref) => client.requestGeneratedCharacterAudio(character, ref),
@@ -35,12 +39,14 @@ class SleepDebugApp extends StatefulWidget {
     this.minaResponse,
     this.minaVoice,
     this.characterAiVoice,
+    this.adviceChat = false,
   });
 
   final DebugAiAdviceClient? adviceClient;
   final DebugMinaResponse? minaResponse;
   final DebugAdviceVoice? minaVoice;
   final DebugCharacterVoice? characterAiVoice;
+  final bool adviceChat;
 
   @override
   State<SleepDebugApp> createState() => _SleepDebugAppState();
@@ -67,6 +73,7 @@ class _SleepDebugAppState extends State<SleepDebugApp> {
                         mood: mood,
                         character: character,
                         characterVoice: widget.characterAiVoice,
+                        conversationEnabled: widget.adviceChat,
                       )
                     : DebugMinaDemo(
                         mood: mood,

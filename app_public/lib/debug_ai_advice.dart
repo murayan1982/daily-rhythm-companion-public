@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_mood.dart';
 import 'package:flutter/material.dart';
 
 import 'debug_advice_playback.dart';
+import 'debug_advice_conversation.dart';
 
 typedef DebugAdviceHttpResponse = ({int statusCode, String body});
 typedef DebugAdviceTransport =
@@ -14,6 +16,7 @@ typedef DebugAdviceResult = ({String message, String expressionTag});
 typedef DebugCharacterAdviceResult = ({
   DebugAdviceResult advice,
   String? voiceRef,
+  String? adviceRef,
 });
 
 class DebugAiAdviceClient {
@@ -52,6 +55,7 @@ class DebugAiAdviceClient {
     'supportive',
     'speaking',
   };
+  static final _opaqueRef = RegExp(r'^[A-Za-z0-9_-]{32}$');
 
   Future<DebugAdviceResult> generate({
     required ProductionMood mood,
@@ -74,22 +78,99 @@ class DebugAiAdviceClient {
     required ProductionMood mood,
     required ProductionCharacter character,
     int? syntheticSleepMinutes,
+    bool withConversation = false,
   }) async {
     final json = await _generateJson(
-      endpoint.replace(path: '/debug/character/ai-advice'),
+      endpoint.replace(
+        path: withConversation
+            ? '/debug/conversation/advice'
+            : '/debug/character/ai-advice',
+      ),
       mood,
       character,
       syntheticSleepMinutes,
     );
-    final ref = json['voice_ref'];
-    if (json.length != 3 ||
-        !json.containsKey('voice_ref') ||
-        (ref != null &&
-            (ref is! String ||
-                !RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(ref)))) {
-      throw const FormatException('Invalid character advice reference');
+    final adviceRef = json['advice_ref'];
+    if (json.length != (withConversation ? 4 : 3) ||
+        (withConversation &&
+            (adviceRef is! String || !_opaqueRef.hasMatch(adviceRef)))) {
+      throw const FormatException('Invalid advice response');
     }
-    return (advice: _decodeAdvice(json), voiceRef: ref as String?);
+    return (
+      advice: _decodeAdvice(json),
+      voiceRef: _decodeVoiceRef(json),
+      adviceRef: withConversation ? adviceRef as String : null,
+    );
+  }
+
+  String? _decodeVoiceRef(Map<String, dynamic> json) {
+    final ref = json['voice_ref'];
+    if (!json.containsKey('voice_ref') ||
+        (ref != null && (ref is! String || !_opaqueRef.hasMatch(ref)))) {
+      throw const FormatException('Invalid character audio reference');
+    }
+    return ref as String?;
+  }
+
+  Future<Map<String, dynamic>> _conversationJson(
+    String action,
+    Map<String, Object> body,
+  ) => _requestJson(
+    endpoint.replace(path: '/debug/conversation/$action'),
+    jsonEncode(body),
+  );
+
+  Future<DebugChatSession> startConversation(String adviceRef) async {
+    final json = await _conversationJson('start', {'advice_ref': adviceRef});
+    final id = json['session_id'];
+    final limit = json['turn_limit'];
+    if (id is! String ||
+        !_opaqueRef.hasMatch(id) ||
+        limit is! int ||
+        limit < 1) {
+      throw const FormatException('Invalid conversation session');
+    }
+    return (id: id, turnLimit: limit);
+  }
+
+  Future<DebugChatReply> sendChatTurn(
+    String id,
+    int turn,
+    String message,
+  ) async {
+    final json = await _conversationJson('turn', {
+      'session_id': id,
+      'turn': turn,
+      'message': message,
+    });
+    if (json.length != 3) {
+      throw const FormatException('Invalid conversation reply');
+    }
+    final advice = _decodeAdvice(json);
+    return (
+      message: advice.message,
+      expressionTag: advice.expressionTag,
+      voiceRef: _decodeVoiceRef(json),
+    );
+  }
+
+  Future<void> endConversation(String id) async {
+    await _conversationJson('end', {'session_id': id});
+  }
+
+  Future<Uint8List> fetchConversationAudio(String id, String ref) async {
+    final http = HttpClient()..findProxy = (_) => 'DIRECT';
+    try {
+      final response = _sendRequest(
+        http,
+        endpoint.replace(path: '/debug/conversation/voice'),
+        jsonEncode({'session_id': id, 'voice_ref': ref}),
+        'audio/mpeg',
+      ).then(readAdviceAudio);
+      return await response.timeout(timeout);
+    } finally {
+      http.close(force: true);
+    }
   }
 
   Future<Map<String, dynamic>> _generateJson(
@@ -183,12 +264,7 @@ class DebugAiAdviceClient {
     Uri url,
     String body,
   ) async {
-    final request = await client.postUrl(url);
-    request.followRedirects = false;
-    request.headers.contentType = ContentType.json;
-    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-    request.add(utf8.encode(body));
-    final response = await request.close();
+    final response = await _sendRequest(client, url, body, 'application/json');
     if (response.statusCode != HttpStatus.ok) {
       return (statusCode: response.statusCode, body: '');
     }
@@ -204,6 +280,20 @@ class DebugAiAdviceClient {
     }
     return (statusCode: response.statusCode, body: utf8.decode(bytes));
   }
+
+  Future<HttpClientResponse> _sendRequest(
+    HttpClient client,
+    Uri url,
+    String body,
+    String accept,
+  ) async {
+    final request = await client.postUrl(url);
+    request.followRedirects = false;
+    request.headers.contentType = ContentType.json;
+    request.headers.set(HttpHeaders.acceptHeader, accept);
+    request.add(utf8.encode(body));
+    return request.close();
+  }
 }
 
 class DebugAiAdviceCard extends StatefulWidget {
@@ -212,6 +302,7 @@ class DebugAiAdviceCard extends StatefulWidget {
     required this.mood,
     required this.character,
     this.characterVoice,
+    this.conversationEnabled = false,
     super.key,
   });
 
@@ -219,6 +310,7 @@ class DebugAiAdviceCard extends StatefulWidget {
   final ProductionMood? mood;
   final ProductionCharacter? character;
   final DebugCharacterVoice? characterVoice;
+  final bool conversationEnabled;
 
   @override
   State<DebugAiAdviceCard> createState() => _DebugAiAdviceCardState();
@@ -233,6 +325,8 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
   int _requestId = 0;
   DebugAdviceResult? _result;
   String? _voiceRef;
+  String? _adviceRef;
+  bool _chatOpen = false;
 
   @override
   void didUpdateWidget(covariant DebugAiAdviceCard oldWidget) {
@@ -240,7 +334,8 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
     if (oldWidget.mood != widget.mood ||
         oldWidget.character != widget.character ||
         oldWidget.client != widget.client ||
-        oldWidget.characterVoice != widget.characterVoice) {
+        oldWidget.characterVoice != widget.characterVoice ||
+        oldWidget.conversationEnabled != widget.conversationEnabled) {
       _requestId++;
       _loading = false;
       _failed = false;
@@ -258,6 +353,8 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
     _playback.stop();
     _result = null;
     _voiceRef = null;
+    _adviceRef = null;
+    _chatOpen = false;
   }
 
   Future<void> _generate() async {
@@ -274,16 +371,19 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
 
     DebugAdviceResult? result;
     String? voiceRef;
+    String? adviceRef;
     try {
       final sleep = _includeSyntheticSleep ? _syntheticSleepMinutes : null;
-      if (widget.characterVoice != null) {
+      if (widget.characterVoice != null || widget.conversationEnabled) {
         final generated = await client.generateCharacterAdvice(
           mood: mood,
           character: character,
           syntheticSleepMinutes: sleep,
+          withConversation: widget.conversationEnabled,
         );
         result = generated.advice;
         voiceRef = generated.voiceRef;
+        adviceRef = generated.adviceRef;
       } else {
         result = await client.generate(
           mood: mood,
@@ -298,6 +398,7 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
     setState(() {
       _result = result;
       _voiceRef = voiceRef;
+      _adviceRef = adviceRef;
       _failed = result == null;
       _loading = false;
     });
@@ -309,6 +410,9 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
     final character = widget.character;
     final ready = widget.mood != null && character != null;
     final characterVoice = widget.characterVoice;
+    final client = widget.client;
+    final adviceRef = _adviceRef;
+    final result = _result;
     final status = !configured
         ? '開発用の接続先を指定すると利用できます。'
         : !ready
@@ -347,11 +451,16 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
               onPressed: configured && ready && !_loading ? _generate : null,
               child: const Text('AIアドバイスを生成'),
             ),
-            if (characterVoice != null && ready)
-              DebugAdviceExpression(character, _result?.expressionTag),
+            if ((characterVoice != null || widget.conversationEnabled) &&
+                ready &&
+                !_chatOpen)
+              DebugAdviceExpression(character, result?.expressionTag),
             if (status != null)
               Semantics(liveRegion: true, child: Text(status)),
-            if (characterVoice != null && character != null && _result != null)
+            if (characterVoice != null &&
+                character != null &&
+                result != null &&
+                !_chatOpen)
               if (_voiceRef case final ref?)
                 DebugAdvicePlaybackControls(
                   playback: _playback,
@@ -364,6 +473,35 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
                   child: Text(
                     '${productionCharacterOptionFor(character).displayName}の読み上げは利用できません。',
                   ),
+                ),
+            if (client != null &&
+                character != null &&
+                result != null &&
+                adviceRef != null)
+              if (_chatOpen)
+                DebugAdviceConversation(
+                  key: ValueKey(adviceRef),
+                  character: character,
+                  adviceTag: result.expressionTag,
+                  playback: _playback,
+                  start: () => client.startConversation(adviceRef),
+                  send: client.sendChatTurn,
+                  end: client.endConversation,
+                  voice: (id) => adviceVoiceWithFetch(
+                    (ref) => client.fetchConversationAudio(id, ref),
+                  ),
+                  onClose: () => setState(() {
+                    _playback.stop();
+                    _chatOpen = false;
+                  }),
+                )
+              else
+                TextButton(
+                  onPressed: () => setState(() {
+                    _playback.stop();
+                    _chatOpen = true;
+                  }),
+                  child: const Text('会話を続ける'),
                 ),
           ],
         ),

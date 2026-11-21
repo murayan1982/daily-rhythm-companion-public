@@ -15,20 +15,26 @@ typedef DebugAdviceVoice = ({
 typedef DebugCharacterVoice = DebugAdviceVoice Function(ProductionCharacter);
 
 DebugAdviceVoice adviceVoiceFor(Future<Uri> Function(String) requestAudio) {
+  return adviceVoiceWithFetch((input) async {
+    final url = await requestAudio(input);
+    final http = HttpClient()..findProxy = (_) => 'DIRECT';
+    try {
+      return await _downloadAudio(
+        http,
+        url,
+      ).timeout(const Duration(seconds: 15));
+    } finally {
+      http.close(force: true);
+    }
+  });
+}
+
+DebugAdviceVoice adviceVoiceWithFetch(
+  Future<Uint8List> Function(String) fetch,
+) {
   const channel = MethodChannel('drc/debug_mina_audio');
   return (
-    fetch: (input) async {
-      final url = await requestAudio(input);
-      final http = HttpClient()..findProxy = (_) => 'DIRECT';
-      try {
-        return await _downloadAudio(
-          http,
-          url,
-        ).timeout(const Duration(seconds: 15));
-      } finally {
-        http.close(force: true);
-      }
-    },
+    fetch: fetch,
     play: (audio) => channel.invokeMethod<void>('play', audio),
     stop: () => channel.invokeMethod<void>('stop'),
   );
@@ -38,6 +44,10 @@ Future<Uint8List> _downloadAudio(HttpClient http, Uri url) async {
   final request = await http.getUrl(url);
   request.followRedirects = false;
   final response = await request.close();
+  return readAdviceAudio(response);
+}
+
+Future<Uint8List> readAdviceAudio(HttpClientResponse response) async {
   if (response.statusCode != HttpStatus.ok ||
       response.headers.contentType?.mimeType != 'audio/mpeg') {
     throw const FormatException('Invalid audio download');

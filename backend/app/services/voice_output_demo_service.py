@@ -370,16 +370,26 @@ class VoiceOutputDemoService:
             return None
         return self._synthesize_debug(message, voice_id)
 
+    def synthesize_generated_voice_bytes(
+        self, character_id: str, message: str
+    ) -> bytes | None:
+        """Return transient audio for text already verified by a debug route."""
+        voice_id = self._generated_voice_id(character_id)
+        return self._synthesize_debug_bytes(message, voice_id) if voice_id else None
+
+    def _synthesize_debug_bytes(self, message: str, voice_id: str) -> bytes:
+        return synthesize_debug_mp3(
+            message=message,
+            api_key=self._config.voice_output_elevenlabs_api_key,
+            voice_id=voice_id,
+        )
+
     def _synthesize_debug(
         self, message: str, voice_id: str, *, mina: bool = False
     ) -> FrameworkVoiceOutputResult:
         name = "Mina" if mina else "Character"
         try:
-            audio = synthesize_debug_mp3(
-                message=message,
-                api_key=self._config.voice_output_elevenlabs_api_key,
-                voice_id=voice_id,
-            )
+            audio = self._synthesize_debug_bytes(message, voice_id)
         except DebugVoiceSynthesisError:
             return FrameworkVoiceOutputResult(
                 status="failed",
