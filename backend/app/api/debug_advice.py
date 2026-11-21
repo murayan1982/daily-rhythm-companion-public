@@ -7,7 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
 
 from app.config import load_config
-from app.models.advice import AdviceRequest
+from app.models.advice import (
+    AdviceCharacterId as DebugCharacterId,
+    AdviceMessage,
+    AdviceMood,
+    AdviceRequest,
+)
 from app.models.character import CharacterContext
 from app.models.chat import ChatMessage
 from app.models.motion_demo import MotionExpressionId
@@ -34,13 +39,10 @@ class SyntheticSleepSummary(BaseModel):
     total_sleep_minutes: int = Field(strict=True, ge=0, le=1440)
 
 
-DebugCharacterId = Literal["gentle_mina", "cheerful_sora", "cool_rei"]
-
-
 class DebugAdviceRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    mood: Literal["energetic", "normal", "tired"]
+    mood: AdviceMood
     character_id: DebugCharacterId
     sleep_summary: SyntheticSleepSummary | None = None
 
@@ -48,7 +50,7 @@ class DebugAdviceRequest(BaseModel):
 class DebugAdviceResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    message: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=240)]
+    message: AdviceMessage
     expression_tag: MotionExpressionId
 
 

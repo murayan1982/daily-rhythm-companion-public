@@ -18,6 +18,7 @@ from app.api import (
     google_health,
     health,
     motion_demo,
+    public_advice,
     realtime_text,
     sleep,
     sleep_provider_selection,
@@ -48,6 +49,7 @@ app.include_router(characters.router)
 app.include_router(sleep.router)
 app.include_router(sleep_provider_selection.router)
 app.include_router(advice.router)
+app.include_router(public_advice.router)
 app.include_router(debug_advice.router)
 app.include_router(chat.router)
 app.include_router(daily_records.router)
