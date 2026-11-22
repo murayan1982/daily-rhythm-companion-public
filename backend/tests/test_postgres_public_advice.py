@@ -18,6 +18,7 @@ import pytest
 from app.api.public_advice import router
 from app.main import app as normal_app
 from app.models.advice import AdviceCharacterId, AdviceMood
+from app.public_main import app as public_app
 from app.services.advice_cost import LOCAL_TEST_MODEL
 from app.services.gemini_public_advice import (
     GEMINI_MODEL,
@@ -521,8 +522,9 @@ def test_normal_app_starts_with_unavailable_ledger(
         assert (response.status_code, response.json()) == (503, {"detail": "advice_unavailable"})
 
 
-def test_normal_app_lifespan_enforces_invite_and_quota_before_gemini(
-    db, monkeypatch, normal_gemini_settings,
+@pytest.mark.parametrize("application", [normal_app, public_app], ids=["normal", "public"])
+def test_app_lifespan_enforces_invite_and_quota_before_gemini(
+    db, monkeypatch, normal_gemini_settings, application,
 ):
     sdk = pytest.importorskip("google.genai")
     if sdk.__version__ != GEMINI_SDK_VERSION:
@@ -556,8 +558,8 @@ def test_normal_app_lifespan_enforces_invite_and_quota_before_gemini(
     unavailable = {"detail": "advice_unavailable"}
     token1, token2, token3 = [participant.bearer_token for participant in participants]
     control.set_enabled(False)
-    with TestClient(normal_app) as client:
-        assert hasattr(normal_app.state, "public_advice_runtime")
+    with TestClient(application) as client:
+        assert hasattr(application.state, "public_advice_runtime")
         assert_response("x" * 43, 401, {"detail": "authentication_required"})
         assert_response(token1, 503, unavailable)
         control.set_monthly_budget(511)
@@ -585,7 +587,7 @@ def test_normal_app_lifespan_enforces_invite_and_quota_before_gemini(
         with connect(dsn) as connection:
             assert connection.execute("SELECT attempts FROM drc_advice_daily_total").fetchall() == [(2,)]
             assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == [(1024,)]
-    assert not hasattr(normal_app.state, "public_advice_runtime")
+    assert not hasattr(application.state, "public_advice_runtime")
 
 
 def test_gemini_candidate_input_fits_using_published_local_tokenizer():
