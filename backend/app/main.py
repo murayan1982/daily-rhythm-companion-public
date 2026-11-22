@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import load_config
+from app.services.public_advice_startup import public_advice_lifespan
 from app.version import APP_VERSION
 
 from app.api import (
@@ -32,6 +33,7 @@ config = load_config()
 app = FastAPI(
     title="Daily Rhythm Companion API",
     version=APP_VERSION,
+    lifespan=public_advice_lifespan,
 )
 
 app.add_middleware(

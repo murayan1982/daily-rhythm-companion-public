@@ -116,6 +116,16 @@ class PostgresAdviceGenerationControl:
     def __init__(self, dsn: str):
         self._dsn = dsn
 
+    def has_monthly_budget(self) -> bool:
+        with _connection(self._dsn) as connection:
+            row = connection.execute(
+                """
+                SELECT monthly_budget IS NOT NULL
+                FROM drc_advice_generation_control WHERE singleton
+                """
+            ).fetchone()
+        return row is not None and row[0]
+
     def set_monthly_budget(self, units: int) -> None:
         if units <= 0:
             raise ValueError("The monthly budget must be positive.")

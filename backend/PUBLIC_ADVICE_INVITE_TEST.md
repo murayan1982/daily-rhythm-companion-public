@@ -25,6 +25,41 @@ python -m uvicorn scripts.public_advice_invite:create_local_app --factory --host
 
 失効は別の運営者用シェルに同じ DSN を設定し、`python -m scripts.public_advice_invite revoke <管理用のToken-ID>` を実行する。管理コマンドは HTTP API に公開されない。
 
+## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
+
+マイクロドル専用のローカル PostgreSQL データベース（例 `drc_advice_gemini_test`）を作成する。合成モデルの台帳や上記のテスト単位の予算は別の DB に置く。以下は `backend` で実行する検証用 PowerShell の例。全ワーカーに同じ DSN と回数上限を設定する。本番の回数上限と月額予算は未決定。
+
+```powershell
+python -m pip install -r requirements.txt -r requirements-public-advice-gemini.txt
+$env:DRC_SKIP_BACKEND_DOTENV = '1'
+$env:CONVERSATION_ENGINE = 'mock'
+$env:SLEEP_PROVIDER = 'mock'
+$env:DRC_PUBLIC_ADVICE_GEMINI_ENABLED = '1'
+$env:DRC_PUBLIC_ADVICE_GEMINI_POSTGRES_DSN = 'host=127.0.0.1 port=5432 dbname=drc_advice_gemini_test user=drc_test'
+$env:DRC_PUBLIC_ADVICE_GEMINI_DAILY_PER_USER = '1'
+$env:DRC_PUBLIC_ADVICE_GEMINI_DAILY_TOTAL = '2'
+$env:DRC_GEMINI_TOKENIZER_DIR = 'C:\path\to\reviewed-tokenizer-files'
+
+$env:DRC_PUBLIC_ADVICE_POSTGRES_DSN = $env:DRC_PUBLIC_ADVICE_GEMINI_POSTGRES_DSN
+python -m scripts.public_advice_invite init-db
+python -m scripts.public_advice_invite set-monthly-budget 1024
+python -m scripts.public_advice_invite issue participant-001 --ttl-hours 1
+python -m scripts.public_advice_invite resume
+
+$key = Read-Host 'Gemini development key' -AsSecureString
+try {
+    $env:DRC_PUBLIC_ADVICE_GEMINI_API_KEY = [System.Net.NetworkCredential]::new('', $key).Password
+    python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --lifespan on --no-access-log
+} finally {
+    Remove-Item Env:DRC_PUBLIC_ADVICE_GEMINI_API_KEY -ErrorAction SilentlyContinue
+    $key.Dispose()
+}
+```
+
+`DRC_GEMINI_TOKENIZER_DIR` には、下記の SHA-256 に一致する `tokenizer.json` と `chat_template.jinja` を置く。起動時にオフラインで全9通りの入力を数える。フラグが未設定なら生成は無効。起動時にキー・DB・月次予算・回数上限・トークナイザーのいずれかを確認できない場合も `/v1/advice` は `503 advice_unavailable` を返す。初期設定を修正した場合は FastAPI を再起動する。
+
+発行した招待トークンを `Authorization: Bearer …` に設定して `POST http://127.0.0.1:8000/v1/advice` を呼ぶ。無効なトークンは `401`、回数または予算の上限は `429`。停止・DB 障害は `503`。認証・回数・月次予算の確認と512マイクロドルの確保が完了してから Gemini へ最大1回送信する。停止と再開には同じ DSN を指定した運営者用シェルで `pause` または `resume` を使う。再起動は不要。
+
 ## 費用の予約と生成停止
 
 - 回数は DB の UTC 日付ごとに、予算は UTC の暦月（毎月1日 00:00 から翌月1日 00:00 まで）ごとに集計する。回数と最大見込み費用は、生成前に同じ PostgreSQL トランザクションで確保する。旧版から切り替えるときはすべての旧ワーカーを停止し、`init-db` と予算設定を行ってから新版を起動する。既存のトークンと回数枠は引き継がれ、費用の集計はこの機能の有効化後の予約から始まる。
@@ -62,7 +97,7 @@ python -m pytest -q tests/test_postgres_public_advice.py tests/test_public_advic
 
 候補は固定モデルのノンストリーミング `generateContent` を使う。SDK 1.70.0 の同期 HTTP 経路で `HttpRetryOptions(attempts=1)` を設定し、HTTP リダイレクトと自動関数呼び出しも無効にする。認証、日次回数枠、月次予算の確保後にだけ1回送る。応答の使用量が上限を超える、または打ち切りの場合は `502 upstream_failure` とし、予約額を保持する。既存の FW 経路は会話セッションを持ち、関係性を要約する追加呼び出しがあり得るため、この候補の経路には使用しない。 [固定 SDK のリトライ実装](https://github.com/googleapis/python-genai/blob/v1.70.0/google/genai/_api_client.py)
 
-通常の招待制起動は引き続き固定応答を使う。Gemini 候補ランタイムは既定の起動経路に接続していない。本番に進むには、256で打ち切られた場合も含む実際の応答と課金、本番用のマイクロドル専用台帳、公開時の単価と本番月額予算を確認する。合成モデル用の台帳は単位が異なるため共用しない。
+固定応答の検証には `scripts.public_advice_invite:create_local_app` を使う。通常の FastAPI 起動では上記の明示設定を行った場合に Gemini 候補ランタイムが有効になる。本番に進むには、256で打ち切られた場合も含む実際の応答と課金、本番用のマイクロドル専用台帳、公開時の単価と本番月額予算を確認する。
 
 ### Windows 検証用 Backend の実通信記録
 

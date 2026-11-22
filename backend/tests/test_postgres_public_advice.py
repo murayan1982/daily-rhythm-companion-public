@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import timedelta
+from functools import partial
 from hashlib import sha256
 import json
 import os
@@ -15,6 +16,7 @@ import httpx
 import pytest
 
 from app.api.public_advice import router
+from app.main import app as normal_app
 from app.models.advice import AdviceCharacterId, AdviceMood
 from app.services.advice_cost import LOCAL_TEST_MODEL
 from app.services.gemini_public_advice import (
@@ -30,6 +32,7 @@ from app.services.postgres_public_advice import (
     PostgresAdviceInvites,
     postgres_advice_runtime,
 )
+from app.services import public_advice_startup
 from scripts.public_advice_invite import create_local_app, main
 
 
@@ -459,30 +462,147 @@ def test_gemini_candidate_refuses_an_over_limit_input_before_opening_runtime(gem
             pytest.fail("The runtime should be unavailable when an input exceeds the limit.")
 
 
+@pytest.fixture
+def normal_gemini_settings(monkeypatch):
+    def configure(dsn):
+        monkeypatch.setenv("DRC_PUBLIC_ADVICE_GEMINI_ENABLED", "1")
+        monkeypatch.setenv("DRC_PUBLIC_ADVICE_GEMINI_API_KEY", "mock-transport-only")
+        monkeypatch.setenv("DRC_PUBLIC_ADVICE_GEMINI_POSTGRES_DSN", dsn)
+        monkeypatch.setenv("DRC_PUBLIC_ADVICE_GEMINI_DAILY_PER_USER", "1")
+        monkeypatch.setenv("DRC_PUBLIC_ADVICE_GEMINI_DAILY_TOTAL", "2")
+        if not os.getenv("DRC_GEMINI_TOKENIZER_DIR"):
+            monkeypatch.setenv("DRC_GEMINI_TOKENIZER_DIR", "offline-test-counter")
+            monkeypatch.setattr(public_advice_startup, "load_gemini_input_counter", lambda _: lambda *_: 83)
+
+    return configure
+
+
+@pytest.mark.parametrize("missing", [
+    "DRC_PUBLIC_ADVICE_GEMINI_ENABLED",
+    "DRC_PUBLIC_ADVICE_GEMINI_API_KEY",
+    "DRC_PUBLIC_ADVICE_GEMINI_POSTGRES_DSN",
+    "DRC_PUBLIC_ADVICE_GEMINI_DAILY_TOTAL",
+    "DRC_GEMINI_TOKENIZER_DIR",
+])
+def test_normal_app_disables_incomplete_gemini_configuration(monkeypatch, normal_gemini_settings, missing):
+    normal_gemini_settings("unused")
+    monkeypatch.delenv(missing)
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("Disabled or incomplete configuration reached DB or Gemini setup.")
+
+    monkeypatch.setattr(PostgresAdviceGenerationControl, "has_monthly_budget", unexpected)
+    monkeypatch.setattr(public_advice_startup, "gemini_advice_runtime", unexpected)
+    with TestClient(normal_app) as client:
+        response = client.post(PATH, json=INPUT)
+    assert (response.status_code, response.json()) == (503, {"detail": "advice_unavailable"})
+
+
+@pytest.mark.parametrize("fault", ["missing_budget", "missing_database"])
+def test_normal_app_starts_with_unavailable_ledger(
+    db, monkeypatch, normal_gemini_settings, fault
+):
+    dsn, connect = db
+    if fault == "missing_budget":
+        with connect(dsn) as connection:
+            connection.execute("UPDATE drc_advice_generation_control SET enabled = false, monthly_budget = NULL")
+    else:
+        from psycopg.conninfo import make_conninfo
+
+        dsn = make_conninfo(dsn, dbname="drc_missing_" + uuid4().hex)
+    normal_gemini_settings(dsn)
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("An unavailable ledger reached Gemini setup.")
+
+    monkeypatch.setattr(public_advice_startup, "gemini_advice_runtime", unexpected)
+    with TestClient(normal_app) as client:
+        response = client.post(PATH, json=INPUT)
+        assert (response.status_code, response.json()) == (503, {"detail": "advice_unavailable"})
+
+
+def test_normal_app_lifespan_enforces_invite_and_quota_before_gemini(
+    db, monkeypatch, normal_gemini_settings,
+):
+    sdk = pytest.importorskip("google.genai")
+    if sdk.__version__ != GEMINI_SDK_VERSION:
+        pytest.skip(f"This transport test requires google-genai {GEMINI_SDK_VERSION}.")
+    dsn, connect = db
+    normal_gemini_settings(dsn)
+    control = PostgresAdviceGenerationControl(dsn)
+    invites = PostgresAdviceInvites(dsn)
+    participants = [invites.issue(f"participant-{index}", timedelta(hours=1)) for index in range(3)]
+    requests = []
+
+    def handle(request):
+        requests.append(request)
+        assert request.method == "POST"
+        assert request.url.path == f"/v1beta/models/{GEMINI_MODEL}:generateContent"
+        with connect(dsn) as connection:
+            assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == [
+                (len(requests) * 512,),
+            ]
+        return gemini_mock_reply()
+
+    monkeypatch.setattr(
+        public_advice_startup, "gemini_advice_runtime",
+        partial(gemini_advice_runtime, transport=httpx.MockTransport(handle)),
+    )
+
+    def assert_response(token, status, detail):
+        response = client.post(PATH, json=INPUT, headers={"Authorization": f"Bearer {token}"})
+        assert (response.status_code, response.json()) == (status, detail)
+
+    unavailable = {"detail": "advice_unavailable"}
+    token1, token2, token3 = [participant.bearer_token for participant in participants]
+    control.set_enabled(False)
+    with TestClient(normal_app) as client:
+        assert hasattr(normal_app.state, "public_advice_runtime")
+        assert_response("x" * 43, 401, {"detail": "authentication_required"})
+        assert_response(token1, 503, unavailable)
+        control.set_monthly_budget(511)
+        control.set_enabled(True)
+        assert_response(token1, 429, {"detail": "global_quota_exceeded"})
+        assert not requests
+
+        control.set_monthly_budget(1536)
+        assert_response(token1, 200, {"message": "無理せず進もう。"})
+        assert_response(token1, 429, {"detail": "user_quota_exceeded"})
+        assert len(requests) == 1
+        assert_response(token2, 200, {"message": "無理せず進もう。"})
+        assert_response(token3, 429, {"detail": "global_quota_exceeded"})
+        control.set_enabled(False)
+        assert_response(token3, 503, unavailable)
+        control.set_enabled(True)
+        with connect(dsn) as connection:
+            connection.execute("ALTER TABLE drc_advice_generation_control RENAME TO unavailable_control")
+        assert_response(token3, 503, unavailable)
+        with connect(dsn) as connection:
+            connection.execute("ALTER TABLE unavailable_control RENAME TO drc_advice_generation_control")
+            connection.execute("ALTER TABLE drc_advice_invites RENAME TO unavailable_invites")
+        assert_response(token3, 503, unavailable)
+        assert len(requests) == 2
+        with connect(dsn) as connection:
+            assert connection.execute("SELECT attempts FROM drc_advice_daily_total").fetchall() == [(2,)]
+            assert connection.execute("SELECT reserved_units FROM drc_advice_monthly_cost").fetchall() == [(1024,)]
+    assert not hasattr(normal_app.state, "public_advice_runtime")
+
+
 def test_gemini_candidate_input_fits_using_published_local_tokenizer():
     directory = os.getenv("DRC_GEMINI_TOKENIZER_DIR")
     if not directory:
         pytest.skip("Local Gemma tokenizer artifacts are not configured.")
-    from jinja2 import Environment
     from tokenizers import Tokenizer
 
     folder = Path(directory)
     tokenizer = Tokenizer.from_file(str(folder / "tokenizer.json"))
-    template = Environment().from_string((folder / "chat_template.jinja").read_text(encoding="utf-8"))
+    count = public_advice_startup.load_gemini_input_counter(folder)
     counts = {}
     for mood in get_args(AdviceMood):
         for character in get_args(AdviceCharacterId):
             prompt = advice_prompt(mood, character)
             text_count = sum(len(tokenizer.encode(text).ids) for text in (SYSTEM_INSTRUCTION, prompt))
-            formatted = template.render(
-                messages=[
-                    {"role": "system", "content": SYSTEM_INSTRUCTION},
-                    {"role": "user", "content": prompt},
-                ],
-                add_generation_prompt=True,
-                bos_token="<bos>",
-            )
-            framed_count = len(tokenizer.encode(formatted, add_special_tokens=False).ids)
+            framed_count = count(SYSTEM_INSTRUCTION, prompt)
             counts[mood, character] = (text_count, framed_count)
     assert len(counts) == 9
     assert all(0 < text <= framed <= 512 for text, framed in counts.values()), counts
