@@ -58,8 +58,33 @@ python -m pytest -q tests/test_postgres_public_advice.py tests/test_public_advic
 | `normal` | 69 / 83 | 68 / 82 | 66 / 80 |
 | `tired` | 69 / 83 | 68 / 82 | 66 / 80 |
 
-全9通りでローカル計測値は512以内。Gemini Developer API が計上する正確な入力トークン数は未確認。再現するには、公開ファイル `tokenizer.json` と `chat_template.jinja` を置いたディレクトリを `DRC_GEMINI_TOKENIZER_DIR` に設定し、検証用 Python に `tokenizers==0.22.2` と `jinja2==3.1.6` を入れて `tests/test_postgres_public_advice.py` を実行する。使用したファイルの SHA-256 は順に `91d9cf86906f78e197021fda88214d448e5c120665d0243a8e776e046986c6bc`、`0a2c8073c878ab1da004bee933a998606537bbb62016310352c7285c3f01c5b5`。
+全9通りでローカル計測値は512以内。Gemini Developer API が実際に計上した値は下記の実通信記録に示す。再現するには、公開ファイル `tokenizer.json` と `chat_template.jinja` を置いたディレクトリを `DRC_GEMINI_TOKENIZER_DIR` に設定し、検証用 Python に `tokenizers==0.22.2` と `jinja2==3.1.6` を入れて `tests/test_postgres_public_advice.py` を実行する。使用したファイルの SHA-256 は順に `91d9cf86906f78e197021fda88214d448e5c120665d0243a8e776e046986c6bc`、`0a2c8073c878ab1da004bee933a998606537bbb62016310352c7285c3f01c5b5`。
 
 候補は固定モデルのノンストリーミング `generateContent` を使う。SDK 1.70.0 の同期 HTTP 経路で `HttpRetryOptions(attempts=1)` を設定し、HTTP リダイレクトと自動関数呼び出しも無効にする。認証、日次回数枠、月次予算の確保後にだけ1回送る。応答の使用量が上限を超える、または打ち切りの場合は `502 upstream_failure` とし、予約額を保持する。既存の FW 経路は会話セッションを持ち、関係性を要約する追加呼び出しがあり得るため、この候補の経路には使用しない。 [固定 SDK のリトライ実装](https://github.com/googleapis/python-genai/blob/v1.70.0/google/genai/_api_client.py)
 
-通常の招待制起動は引き続き固定応答を使う。Gemini 候補ランタイムは既定の起動経路に接続していない。本番に進むには、同一内容9通りのサーバー計上、256で打ち切られた場合も含む実際の応答と課金、マイクロドル専用の予算台帳、公開時の単価と本番月額予算を確認する。合成モデル用の台帳は単位が異なるため共用しない。
+通常の招待制起動は引き続き固定応答を使う。Gemini 候補ランタイムは既定の起動経路に接続していない。本番に進むには、256で打ち切られた場合も含む実際の応答と課金、本番用のマイクロドル専用台帳、公開時の単価と本番月額予算を確認する。合成モデル用の台帳は単位が異なるため共用しない。
+
+### Windows 検証用 Backend の実通信記録
+
+`d2e73c9` の `POST /v1/advice` で、合成入力 `normal` / `gentle_mina` を検証した。ループバック API と Gemini はともに HTTP 200。本文は1〜240文字の検証に合格し、入力70トークン、回答31トークン、終了理由は `STOP` だった。専用台帳で512マイクロドルを送信前に予約し、応答後も保持した。
+
+この1件の入力・回答分の費用推計は `70 × 0.25 + 31 × 1.50 = 64` マイクロドル。
+
+続く8件の結果を保存済みの実通信記録と照合し、**気分3種 × キャラクター3人の全9通りで実通信検証完了**。全9件で Gemini と `/v1/advice` が HTTP 200 を返し、本文は1〜240文字の検証に合格した。終了理由は全件 `STOP`、上流への送信は各1回だった。
+
+| 気分 | キャラクター | 入力トークン | 回答トークン |
+| --- | --- | ---: | ---: |
+| `energetic` | `gentle_mina` | 70 | 48 |
+| `energetic` | `cheerful_sora` | 69 | 33 |
+| `energetic` | `cool_rei` | 67 | 21 |
+| `normal` | `cheerful_sora` | 69 | 36 |
+| `normal` | `cool_rei` | 67 | 16 |
+| `tired` | `gentle_mina` | 70 | 31 |
+| `tired` | `cheerful_sora` | 69 | 36 |
+| `tired` | `cool_rei` | 67 | 27 |
+
+成功9件の入力は67〜70トークン、回答は16〜48トークンだった。入力・回答分の費用推計は今回の8件で合計509マイクロドル、成功9件で合計573マイクロドル。思考・キャッシュのトークン数と実請求額は未確認。
+
+DRC の費用予約は各512マイクロドルで、今回の8件で合計4,096マイクロドル、成功9件で合計4,608マイクロドル。初回の Gemini HTTP 400 は別の試行として扱い、成功分の集計から除外した。
+
+差し替え通信では、文字数の条件を満たす途中の本文と終了理由 `MAX_TOKENS` を上流の HTTP 200 で返した。既存の候補アダプターは本文を拒否し、`/v1/advice` は HTTP 502 を返した。送信試行は1回で、512マイクロドルの予約は残った。実通信での打ち切りは未確認。
