@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'health_connect_sleep_card.dart';
-import 'invite_advice_debug.dart';
+import 'invite_advice.dart';
 
 void main() {
   runApp(
@@ -19,4 +19,11 @@ void main() {
 Widget _buildInviteAdviceCard(
   ProductionMood? mood,
   ProductionCharacter? character,
-) => InviteAdviceDebugCard(mood: mood, character: character);
+) => InviteAdviceCard(
+  mood: mood,
+  character: character,
+  client: InviteAdviceClient(endpoint: _loopbackEndpoint),
+  tokenLabel: '招待トークン（検証用）',
+);
+
+final _loopbackEndpoint = Uri.http('127.0.0.1:8000', '/v1/advice');

@@ -14,9 +14,9 @@ typedef InviteAdviceTransport =
     );
 
 class InviteAdviceClient {
-  const InviteAdviceClient({this.transport});
+  const InviteAdviceClient({required this.endpoint, this.transport});
 
-  static final _endpoint = Uri.http('127.0.0.1:8000', '/v1/advice');
+  final Uri endpoint;
   final InviteAdviceTransport? transport;
 
   Future<({int status, String? message})> generate({
@@ -25,7 +25,7 @@ class InviteAdviceClient {
     required String token,
   }) async {
     final reply = await (transport ?? _post)(
-      _endpoint,
+      endpoint,
       {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
@@ -91,23 +91,25 @@ class InviteAdviceClient {
   }
 }
 
-class InviteAdviceDebugCard extends StatefulWidget {
-  const InviteAdviceDebugCard({
+class InviteAdviceCard extends StatefulWidget {
+  const InviteAdviceCard({
     super.key,
     this.mood,
     this.character,
-    this.client = const InviteAdviceClient(),
+    required this.client,
+    this.tokenLabel = '招待トークン',
   });
 
   final ProductionMood? mood;
   final ProductionCharacter? character;
   final InviteAdviceClient client;
+  final String tokenLabel;
 
   @override
-  State<InviteAdviceDebugCard> createState() => _InviteAdviceDebugCardState();
+  State<InviteAdviceCard> createState() => _InviteAdviceCardState();
 }
 
-class _InviteAdviceDebugCardState extends State<InviteAdviceDebugCard> {
+class _InviteAdviceCardState extends State<InviteAdviceCard> {
   final _token = TextEditingController();
   static final _tokenSyntax = RegExp(r'^[a-zA-Z0-9_-]{1,128}$');
   int _generation = 0;
@@ -115,7 +117,7 @@ class _InviteAdviceDebugCardState extends State<InviteAdviceDebugCard> {
   String? _result;
 
   @override
-  void didUpdateWidget(InviteAdviceDebugCard oldWidget) {
+  void didUpdateWidget(InviteAdviceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.mood != widget.mood ||
         oldWidget.character != widget.character) {
@@ -192,7 +194,7 @@ class _InviteAdviceDebugCardState extends State<InviteAdviceDebugCard> {
           children: [
             TextField(
               controller: _token,
-              decoration: const InputDecoration(labelText: '招待トークン（検証用）'),
+              decoration: InputDecoration(labelText: widget.tokenLabel),
               obscureText: true,
               autocorrect: false,
               enableSuggestions: false,

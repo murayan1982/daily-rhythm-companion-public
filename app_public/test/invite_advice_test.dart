@@ -5,16 +5,15 @@ import 'dart:io';
 import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_local_advice.dart';
 import 'package:drc_production/core/production_mood.dart';
-import 'package:drc_production/production_app.dart';
-import 'package:drc_public_app/health_connect_sleep_card.dart';
-import 'package:drc_public_app/invite_advice_debug.dart';
+import 'package:drc_public_app/invite_advice.dart';
 import 'package:drc_public_app/main_invite_debug.dart' as invite_app;
+import 'package:drc_public_app/main_invite_release.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _generate = 'AIアドバイスを生成';
-const _tokenLabel = '招待トークン（検証用）';
+const _endpointUrl = 'https://invite.example.invalid/v1/advice';
 
 Future<void> _tap(WidgetTester tester, String label) async {
   final target = find.text(label);
@@ -27,16 +26,8 @@ Future<void> _mount(
   WidgetTester tester,
   InviteAdviceTransport transport,
 ) async {
-  final client = InviteAdviceClient(transport: transport);
   await tester.pumpWidget(
-    ProductionApp(
-      journeyHeader: const HealthConnectSleepCard(),
-      adviceExtension: (mood, character) => InviteAdviceDebugCard(
-        mood: mood,
-        character: character,
-        client: client,
-      ),
-    ),
+    buildInviteReleaseApp(endpointUrl: _endpointUrl, transport: transport),
   );
   await tester.pumpAndSettle();
 }
@@ -64,7 +55,14 @@ void main() {
   ) async {
     invite_app.main();
     await tester.pumpAndSettle();
-    expect(find.text(_tokenLabel), findsOneWidget);
+    expect(find.text('招待トークン（検証用）'), findsOneWidget);
+    expect(
+      tester
+          .widget<InviteAdviceCard>(find.byType(InviteAdviceCard))
+          .client
+          .endpoint,
+      Uri.parse('http://127.0.0.1:8000/v1/advice'),
+    );
     expect(
       tester.widget<TextField>(find.byType(TextField)).obscureText,
       isTrue,
@@ -76,6 +74,41 @@ void main() {
       isNull,
     );
   });
+
+  for (final url in [
+    '',
+    'http://invite.example.invalid/v1/advice',
+    'https:///v1/advice',
+    'https://invite.example.invalid:99999/v1/advice',
+    'https://invite.example.invalid:notaport/v1/advice',
+    'https://example.invalid/other',
+    'https://example.invalid/v1/advice?',
+    'https://example.invalid/v1/advice#ref',
+    'https://user@example.invalid/v1/advice',
+    'https://example.invalid /v1/advice',
+  ]) {
+    testWidgets('invalid release URL keeps offline advice available: $url', (
+      tester,
+    ) async {
+      var calls = 0;
+      await tester.pumpWidget(
+        buildInviteReleaseApp(
+          endpointUrl: url,
+          transport: (_, _, _) async {
+            calls++;
+            return (status: 200, body: '{"message":"unexpected"}');
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _tap(tester, '☀️ 元気');
+      await _tap(tester, 'ミナ');
+      _expectLocalAdvice();
+      expect(find.text(_generate), findsNothing);
+      expect(find.byType(TextField), findsNothing);
+      expect(calls, 0);
+    });
+  }
 
   testWidgets('only Generate sends the Bearer and two selection fields', (
     tester,
@@ -90,7 +123,7 @@ void main() {
     var calls = 0;
     await _mount(tester, (endpoint, headers, body) async {
       calls++;
-      expect(endpoint.toString(), 'http://127.0.0.1:8000/v1/advice');
+      expect(endpoint.toString(), _endpointUrl);
       expect(headers['authorization'], 'Bearer synthetic-invite');
       expect(headers['content-type'], 'application/json; charset=utf-8');
       expect(jsonDecode(body), {
@@ -102,6 +135,9 @@ void main() {
     await _tap(tester, 'Health Connect から読み込む');
     expect(find.textContaining('記録の長さ 1時間0分'), findsOneWidget);
     await _selectAndEnterToken(tester);
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.decoration?.labelText, '招待トークン');
+    expect(field.obscureText, isTrue);
     _expectLocalAdvice();
     expect(calls, 0);
 
@@ -115,6 +151,7 @@ void main() {
     (429, '生成の上限に達しました。'),
     (502, 'AIアドバイスを利用できません。'),
     (503, 'AIアドバイスを利用できません。'),
+    (307, 'AIアドバイスを取得できませんでした。'),
     (null, 'AIアドバイスを取得できませんでした。'),
     (200, 'AIアドバイスを取得できませんでした。'),
   ]) {

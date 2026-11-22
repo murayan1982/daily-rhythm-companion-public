@@ -19,6 +19,12 @@ fun requiredSigningProperty(name: String): String =
         "$name is required in android/key.properties"
     }
 
+val flutterProjectDirectory = rootProject.projectDir.parentFile
+val inviteReleaseTarget = flutterProjectDirectory.resolve("lib/main_invite_release.dart")
+val buildsInviteRelease = providers.gradleProperty("target").orNull?.let {
+    flutterProjectDirectory.resolve(it).canonicalFile == inviteReleaseTarget.canonicalFile
+} ?: false
+
 android {
     namespace = "io.github.murayan1982.dailyrhythmcompanion"
     compileSdk = 36
@@ -65,6 +71,12 @@ android {
                 signingConfig = it
             }
         }
+    }
+
+    // Flutter passes -t as the Gradle target property. Only this release target
+    // uses the invite manifest overlay; the default release command is unchanged.
+    if (buildsInviteRelease) {
+        sourceSets.getByName("release").manifest.srcFile("src/inviteRelease/AndroidManifest.xml")
     }
 }
 
