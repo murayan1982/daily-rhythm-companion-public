@@ -72,7 +72,7 @@ void main() {
     expect(find.text('キャラクターを選んでください。'), findsOneWidget);
   });
 
-  testWidgets('ready state shows selection, message, and permanent notices', (
+  testWidgets('button shows selection, message, and source notice', (
     tester,
   ) async {
     final expected = productionLocalAdviceFor(
@@ -87,6 +87,10 @@ void main() {
       ),
     );
     expect(find.text('今日のアドバイス'), findsOneWidget);
+    expect(find.text(expected.message), findsNothing);
+    expect(find.text(ProductionDailyAdvice.localRuleNotice), findsNothing);
+    await tester.tap(find.text('アドバイス生成'));
+    await tester.pump();
     expect(find.text('キャラクター: レイ'), findsOneWidget);
     expect(find.text('気分: だるい'), findsOneWidget);
     expect(find.text(expected.message), findsOneWidget);
@@ -95,7 +99,9 @@ void main() {
     expect(find.text(ProductionDailyAdvice.medicalNotice), findsOneWidget);
   });
 
-  testWidgets('semantics identifies readiness without actions', (tester) async {
+  testWidgets('generated body is readable without being an action', (
+    tester,
+  ) async {
     final handle = tester.ensureSemantics();
     try {
       await tester.pumpWidget(
@@ -105,9 +111,9 @@ void main() {
           character: ProductionCharacter.cheerfulSora,
         ),
       );
-      final finder = find.bySemanticsLabel(
-        RegExp('選択した気分はふつう.*選択したキャラクターはソラ.*アドバイス.*今日は小さく'),
-      );
+      await tester.tap(find.text('アドバイス生成'));
+      await tester.pump();
+      final finder = find.bySemanticsLabel(RegExp('^今日は小さく'));
       expect(finder, findsOneWidget);
       final data = tester.getSemantics(finder).getSemanticsData();
       expect(data.hasAction(SemanticsAction.tap), isFalse);

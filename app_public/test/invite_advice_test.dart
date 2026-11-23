@@ -13,8 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-const _generate = 'AIアドバイスを生成';
+const _generate = 'アドバイス生成';
 const _endpointUrl = 'https://invite.example.invalid/v1/advice';
+const _loading = 'AIアドバイスを生成しています。';
+const _fallback = ProductionDailyAdvice.fallbackNotice;
 
 Future<void> _tap(WidgetTester tester, String label) async {
   final target = find.text(label);
@@ -49,13 +51,12 @@ Future<void> _selectAndEnterToken(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-void _expectLocalAdvice() {
-  final advice = productionLocalAdviceFor(
+final _localBody = find.text(
+  productionLocalAdviceFor(
     mood: ProductionMood.energetic,
     character: ProductionCharacter.gentleMina,
-  );
-  expect(find.text(advice.message), findsOneWidget);
-}
+  ).message,
+);
 
 void main() {
   testWidgets('invite entry point exposes a masked token field', (
@@ -66,7 +67,7 @@ void main() {
     expect(find.text('招待トークン（検証用）'), findsOneWidget);
     expect(
       tester
-          .widget<InviteAdviceCard>(find.byType(InviteAdviceCard))
+          .widget<InviteAdviceApp>(find.byType(InviteAdviceApp))
           .client
           .endpoint,
       Uri.parse('http://127.0.0.1:8000/v1/advice'),
@@ -111,8 +112,10 @@ void main() {
       await tester.pumpAndSettle();
       await _tap(tester, '☀️ 元気');
       await _tap(tester, 'ミナ');
-      _expectLocalAdvice();
-      expect(find.text(_generate), findsNothing);
+      expect(_localBody, findsNothing);
+      await _tap(tester, _generate);
+      expect(_localBody, findsOneWidget);
+      expect(find.text(_fallback), findsNothing);
       expect(find.byType(TextField), findsNothing);
       expect(calls, 0);
     });
@@ -146,53 +149,49 @@ void main() {
     final field = tester.widget<TextField>(find.byType(TextField));
     expect(field.decoration?.labelText, '招待トークン');
     expect(field.obscureText, isTrue);
-    _expectLocalAdvice();
+    expect(_localBody, findsNothing);
     expect(calls, 0);
 
     await _tap(tester, _generate);
-    final onlineAdvice = find.byType(InviteAdviceCard);
-    expect(
-      find.descendant(of: onlineAdvice, matching: find.text('固定の検証応答です。')),
-      findsOneWidget,
-    );
-    final localNotice = find.text(ProductionDailyAdvice.localRuleNotice);
-    expect(
-      find.descendant(of: onlineAdvice, matching: localNotice),
-      findsNothing,
-    );
-    _expectLocalAdvice();
-    expect(localNotice, findsOneWidget);
+    expect(find.text('固定の検証応答です。'), findsOneWidget);
+    expect(_localBody, findsNothing);
+    expect(find.text(ProductionDailyAdvice.localRuleNotice), findsNothing);
+    expect(find.text(_fallback), findsNothing);
     expect(calls, 1);
   });
 
-  for (final (status, message) in [
-    (401, '招待トークンを確認してください。'),
-    (429, '生成の上限に達しました。'),
-    (502, 'AIアドバイスを利用できません。'),
-    (503, 'AIアドバイスを利用できません。'),
-    (307, 'AIアドバイスを取得できませんでした。'),
-    (null, 'AIアドバイスを取得できませんでした。'),
-    (200, 'AIアドバイスを取得できませんでした。'),
-  ]) {
-    testWidgets('status $status leaves the offline advice available', (
+  for (final failure in [401, 429, 502, 503, 307, 200, 'offline', 'timeout']) {
+    testWidgets('$failure falls back and the same button retries', (
       tester,
     ) async {
       var calls = 0;
       await _mount(tester, (_, _, _) async {
-        calls++;
-        if (status == null) throw const SocketException('disconnected');
-        return (status: status, body: '{"message":""}');
+        if (++calls > 1) {
+          return (status: 200, body: '{"message":"再試行の応答"}');
+        }
+        return switch (failure) {
+          'offline' => throw const SocketException('disconnected'),
+          'timeout' => throw TimeoutException('request timed out'),
+          final int status => (status: status, body: '{"message":""}'),
+          _ => throw StateError('Unexpected test case'),
+        };
       });
       await _selectAndEnterToken(tester);
       await _tap(tester, _generate);
-      expect(find.textContaining(message), findsOneWidget);
-      _expectLocalAdvice();
+      expect(find.text(_fallback), findsOneWidget);
+      expect(_localBody, findsOneWidget);
+      expect(find.text(ProductionDailyAdvice.localRuleNotice), findsOneWidget);
       expect(calls, 1);
+      await _tap(tester, _generate);
+      expect(find.text('再試行の応答'), findsOneWidget);
+      expect(find.text(_fallback), findsNothing);
+      expect(_localBody, findsNothing);
+      expect(calls, 2);
     });
   }
 
-  for (final changed in ['😪 だるい', 'ソラ']) {
-    testWidgets('reply after selection changes to $changed is discarded', (
+  for (final (changed, status) in [('😪 だるい', 200), ('ソラ', 503)]) {
+    testWidgets('stale $status after changing to $changed is discarded', (
       tester,
     ) async {
       final first = Completer<InviteAdviceHttpResponse>();
@@ -203,11 +202,21 @@ void main() {
       });
       await _selectAndEnterToken(tester);
       await _tap(tester, _generate);
+      expect(find.text(_loading), findsOneWidget);
+      final button = find.widgetWithText(FilledButton, _generate);
+      expect(tester.widget<FilledButton>(button).onPressed, isNull);
+      await tester.tap(button, warnIfMissed: false);
+      expect(calls, 1);
       await _tap(tester, changed);
-      await _tap(tester, _generate);
-      first.complete((status: 200, body: '{"message":"古い応答"}'));
+      expect(find.text(_loading), findsNothing);
+      first.complete((status: status, body: '{"message":"古い応答"}'));
       await tester.pumpAndSettle();
       expect(find.text('古い応答'), findsNothing);
+      expect(find.text(_fallback), findsNothing);
+      expect(find.text(ProductionDailyAdvice.localRuleNotice), findsNothing);
+      expect(_localBody, findsNothing);
+      expect(calls, 1);
+      await _tap(tester, _generate);
       expect(find.text('新しい応答'), findsOneWidget);
       expect(calls, 2);
     });

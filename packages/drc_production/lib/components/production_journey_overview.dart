@@ -15,10 +15,12 @@ class ProductionJourneyOverview extends StatefulWidget {
     super.key,
     this.characterPortrait,
     this.adviceExtension,
+    this.onlineAdvice,
   });
 
   final CharacterPortraitBuilder? characterPortrait;
   final JourneyAdviceBuilder? adviceExtension;
+  final ProductionOnlineAdvice? onlineAdvice;
 
   @override
   State<ProductionJourneyOverview> createState() =>
@@ -58,6 +60,7 @@ class _ProductionJourneyOverviewState extends State<ProductionJourneyOverview> {
         item: item,
         selectedMood: _selectedMood,
         selectedCharacter: _selectedCharacter,
+        onlineAdvice: widget.onlineAdvice,
         extension: widget.adviceExtension?.call(
           _selectedMood,
           _selectedCharacter,

@@ -1,9 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:drc_production/components/production_daily_advice.dart';
 import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_mood.dart';
+import 'package:drc_production/production_app.dart';
 import 'package:flutter/material.dart';
+
+import 'bundled_character_portrait.dart';
+import 'health_connect_sleep_card.dart';
 
 typedef InviteAdviceHttpResponse = ({int status, String body});
 typedef InviteAdviceTransport =
@@ -19,7 +24,7 @@ class InviteAdviceClient {
   final Uri endpoint;
   final InviteAdviceTransport? transport;
 
-  Future<({int status, String? message})> generate({
+  Future<String> generate({
     required ProductionMood mood,
     required ProductionCharacter character,
     required String token,
@@ -35,7 +40,9 @@ class InviteAdviceClient {
         'character_id': productionCharacterOptionFor(character).characterId,
       }),
     );
-    if (reply.status != 200) return (status: reply.status, message: null);
+    if (reply.status != 200) {
+      throw const HttpException('Invite advice request failed');
+    }
 
     final value = jsonDecode(reply.body);
     if (value is Map<String, dynamic> &&
@@ -43,7 +50,7 @@ class InviteAdviceClient {
         value['message'] is String) {
       final message = (value['message'] as String).trim();
       if (message.isNotEmpty && message.runes.length <= 240) {
-        return (status: 200, message: message);
+        return message;
       }
     }
     throw const FormatException('Invalid invite advice response');
@@ -91,47 +98,39 @@ class InviteAdviceClient {
   }
 }
 
-class InviteAdviceCard extends StatefulWidget {
-  const InviteAdviceCard({
+class InviteAdviceApp extends StatefulWidget {
+  const InviteAdviceApp({
     super.key,
-    this.mood,
-    this.character,
     required this.client,
     this.tokenLabel = '招待トークン',
     this.initiallyShowToken = false,
   });
 
-  final ProductionMood? mood;
-  final ProductionCharacter? character;
   final InviteAdviceClient client;
   final String tokenLabel;
   final bool initiallyShowToken;
 
   @override
-  State<InviteAdviceCard> createState() => _InviteAdviceCardState();
+  State<InviteAdviceApp> createState() => _InviteAdviceAppState();
 }
 
-class _InviteAdviceCardState extends State<InviteAdviceCard> {
+class _InviteAdviceAppState extends State<InviteAdviceApp> {
   final _token = TextEditingController();
   late bool _showToken = widget.initiallyShowToken;
   static final _tokenSyntax = RegExp(r'^[a-zA-Z0-9_-]{1,128}$');
-  int _generation = 0;
-  bool _waiting = false;
-  String? _result;
+  ProductionAdviceGenerator? _generateOnline;
 
-  @override
-  void didUpdateWidget(InviteAdviceCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.mood != widget.mood ||
-        oldWidget.character != widget.character) {
-      _clearResult();
-    }
-  }
-
-  void _clearResult() {
-    _generation++;
-    _waiting = false;
-    _result = null;
+  void _updateToken(String value) {
+    final token = value.trim();
+    setState(() {
+      _generateOnline = _tokenSyntax.hasMatch(token)
+          ? (mood, character) => widget.client.generate(
+              mood: mood,
+              character: character,
+              token: token,
+            )
+          : null;
+    });
   }
 
   @override
@@ -140,97 +139,35 @@ class _InviteAdviceCardState extends State<InviteAdviceCard> {
     super.dispose();
   }
 
-  Future<void> _generate() async {
-    final mood = widget.mood;
-    final character = widget.character;
-    final token = _token.text.trim();
-    if (_waiting ||
-        mood == null ||
-        character == null ||
-        !_tokenSyntax.hasMatch(token)) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-    final generation = ++_generation;
-    setState(() {
-      _waiting = true;
-      _result = null;
-    });
-    String result;
-    try {
-      final reply = await widget.client.generate(
-        mood: mood,
-        character: character,
-        token: token,
-      );
-      result = switch (reply.status) {
-        200 => reply.message!,
-        401 => '招待トークンを確認してください。端末内アドバイスは上に表示されています。',
-        429 => '生成の上限に達しました。端末内アドバイスは上に表示されています。',
-        502 || 503 => 'AIアドバイスを利用できません。端末内アドバイスは上に表示されています。',
-        _ => _connectionError,
-      };
-    } on Exception {
-      result = _connectionError;
-    }
-    if (!mounted || generation != _generation) return;
-    setState(() {
-      _waiting = false;
-      _result = result;
-    });
-  }
-
-  static const _connectionError = 'AIアドバイスを取得できませんでした。端末内アドバイスは上に表示されています。';
-
   @override
   Widget build(BuildContext context) {
-    final canGenerate =
-        !_waiting &&
-        widget.mood != null &&
-        widget.character != null &&
-        _tokenSyntax.hasMatch(_token.text.trim());
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Semantics(
-          header: true,
-          child: Text('オンラインアドバイス', style: theme.textTheme.titleSmall),
+    return ProductionApp(
+      journeyHeader: const HealthConnectSleepCard(),
+      characterPortrait: buildBundledCharacterPortrait,
+      onlineAdvice: (
+        generate: _generateOnline,
+        settings: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('招待トークンを入力すると、生成時に気分とキャラクターを送信します。'),
+            if (!widget.initiallyShowToken)
+              TextButton(
+                onPressed: () => setState(() => _showToken = !_showToken),
+                child: Text(_showToken ? '招待トークン欄を閉じる' : '招待トークンを入力'),
+              ),
+            if (_showToken)
+              TextField(
+                controller: _token,
+                decoration: InputDecoration(labelText: widget.tokenLabel),
+                obscureText: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                enableIMEPersonalizedLearning: false,
+                onChanged: _updateToken,
+              ),
+          ],
         ),
-        Text(
-          '生成時に気分とキャラクターを送信します。',
-          style: theme.textTheme.bodySmall,
-        ),
-        if (!widget.initiallyShowToken)
-          TextButton(
-            onPressed: () => setState(() => _showToken = !_showToken),
-            child: Text(_showToken ? '招待トークン欄を閉じる' : '招待トークンを入力'),
-          ),
-        if (_showToken)
-          TextField(
-            controller: _token,
-            decoration: InputDecoration(labelText: widget.tokenLabel),
-            obscureText: true,
-            autocorrect: false,
-            enableSuggestions: false,
-            enableIMEPersonalizedLearning: false,
-            onChanged: (_) => setState(_clearResult),
-          ),
-        if (_showToken || _token.text.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          FilledButton(
-            onPressed: canGenerate ? _generate : null,
-            child: const Text('AIアドバイスを生成'),
-          ),
-        ],
-        if (_waiting)
-          Semantics(liveRegion: true, child: const Text('AIアドバイスを生成しています。')),
-        if (_result case final message?)
-          Semantics(
-            liveRegion: true,
-            child: Text(message, style: theme.textTheme.bodyLarge),
-          ),
-      ],
+      ),
     );
   }
 }

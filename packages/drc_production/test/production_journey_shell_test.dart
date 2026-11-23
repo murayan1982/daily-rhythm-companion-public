@@ -107,7 +107,9 @@ void main() {
     );
     expect(find.byType(ProductionMoodCheckIn), findsOneWidget);
     expect(find.byType(ProductionCharacterSelection), findsOneWidget);
-    expect(find.byType(ButtonStyleButton), findsNothing);
+    final generate = find.widgetWithText(FilledButton, 'アドバイス生成');
+    expect(generate, findsOneWidget);
+    expect(tester.widget<FilledButton>(generate).onPressed, isNull);
     expect(find.byType(IconButton), findsNothing);
 
     for (final value in <String>[
@@ -157,6 +159,8 @@ void main() {
     await tester.ensureVisible(find.text('ミナ'));
     await tester.tap(find.text('ミナ'));
     await tester.pump();
+    expect(find.textContaining('今日は調子がよさそうですね'), findsNothing);
+    await _generateAdvice(tester);
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
     expect(find.text('今日は前向きに動けそうです。'), findsOneWidget);
@@ -165,6 +169,9 @@ void main() {
     await tester.ensureVisible(find.text('ソラ'));
     await tester.tap(find.text('ソラ'));
     await tester.pump();
+    expect(find.textContaining('今日は調子がよさそうですね'), findsNothing);
+    expect(find.textContaining('いい調子ですね！'), findsNothing);
+    await _generateAdvice(tester);
     expect(find.text('キャラクター: ソラ'), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
     expect(find.text('今日は前向きに動けそうです。'), findsOneWidget);
@@ -176,6 +183,7 @@ void main() {
     await tester.ensureVisible(find.text('レイ'));
     await tester.tap(find.text('レイ'));
     await tester.pump();
+    await _generateAdvice(tester);
     expect(find.text('キャラクター: レイ'), findsOneWidget);
     expect(find.text('気分: だるい'), findsOneWidget);
     expect(find.textContaining('今日はタスクを増やさない'), findsOneWidget);
@@ -203,6 +211,7 @@ void main() {
     await tester.tap(find.text('ミナ'));
     await tester.pump();
 
+    await _generateAdvice(tester);
     expect(find.text('気分: 元気'), findsOneWidget);
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
@@ -243,6 +252,7 @@ void main() {
     await tester.ensureVisible(find.text('ミナ'));
     await tester.tap(find.text('ミナ'));
     await tester.pump();
+    await _generateAdvice(tester);
     expect(find.byIcon(Icons.check_circle), findsOneWidget);
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
@@ -284,6 +294,7 @@ void main() {
       await tester.ensureVisible(find.text('ミナ'));
       await tester.tap(find.text('ミナ'));
       await tester.pump();
+      await _generateAdvice(tester);
       expect(find.text('気分: 元気'), findsOneWidget);
       expect(find.text('キャラクター: ミナ'), findsOneWidget);
       expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
@@ -295,7 +306,7 @@ void main() {
       expect(find.text('アプリについて'), findsOneWidget);
       expect(
         find.text(
-          'このベータ版では、気分とキャラクターを選ぶと、'
+          'このベータ版では、気分とキャラクターを選び、「アドバイス生成」を押すと、'
           '端末内で今日のアドバイスを表示します。',
         ),
         findsOneWidget,
@@ -405,6 +416,7 @@ void main() {
       find.descendant(of: character, matching: find.byIcon(Icons.check_circle)),
       findsOneWidget,
     );
+    await _generateAdvice(tester);
     expect(find.textContaining('今日は小さく動き出せれば'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -435,6 +447,13 @@ void main() {
       handle.dispose();
     }
   });
+}
+
+Future<void> _generateAdvice(WidgetTester tester) async {
+  final button = find.text('アドバイス生成');
+  await tester.ensureVisible(button);
+  await tester.tap(button);
+  await tester.pumpAndSettle();
 }
 
 class _OverviewHost extends StatelessWidget {

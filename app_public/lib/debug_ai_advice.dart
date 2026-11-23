@@ -420,7 +420,7 @@ class _DebugAiAdviceCardState extends State<DebugAiAdviceCard> {
         : _loading
         ? 'AIアドバイスを生成しています。'
         : _failed
-        ? 'AIアドバイスを取得できませんでした。上の端末内アドバイスを利用できます。時間をおいて再試行してください。'
+        ? 'AIアドバイスを取得できませんでした。「アドバイス生成」で端末内アドバイスを表示できます。時間をおいて再試行してください。'
         : _result?.message;
 
     return Card(

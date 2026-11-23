@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'components/production_character_selection.dart';
+import 'components/production_daily_advice.dart';
 import 'components/production_journey_overview.dart';
 import 'production_about_screen.dart';
 
@@ -10,11 +11,13 @@ class ProductionHomeScreen extends StatelessWidget {
     this.journeyHeader,
     this.characterPortrait,
     this.adviceExtension,
+    this.onlineAdvice,
   });
 
   final Widget? journeyHeader;
   final CharacterPortraitBuilder? characterPortrait;
   final JourneyAdviceBuilder? adviceExtension;
+  final ProductionOnlineAdvice? onlineAdvice;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +79,7 @@ class ProductionHomeScreen extends StatelessWidget {
                   ProductionJourneyOverview(
                     characterPortrait: characterPortrait,
                     adviceExtension: adviceExtension,
+                    onlineAdvice: onlineAdvice,
                   ),
                 ],
               ),

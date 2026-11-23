@@ -13,7 +13,7 @@ void main() {
   );
 }
 
-ProductionApp buildInviteReleaseApp({
+Widget buildInviteReleaseApp({
   required String endpointUrl,
   InviteAdviceTransport? transport,
 }) {
@@ -25,12 +25,8 @@ ProductionApp buildInviteReleaseApp({
     );
   }
 
-  final client = InviteAdviceClient(endpoint: endpoint, transport: transport);
-  return ProductionApp(
-    journeyHeader: const HealthConnectSleepCard(),
-    characterPortrait: buildBundledCharacterPortrait,
-    adviceExtension: (mood, character) =>
-        InviteAdviceCard(mood: mood, character: character, client: client),
+  return InviteAdviceApp(
+    client: InviteAdviceClient(endpoint: endpoint, transport: transport),
   );
 }
 

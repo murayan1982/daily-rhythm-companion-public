@@ -52,7 +52,6 @@ void main() {
         find.descendant(of: choice, matching: find.byIcon(Icons.check_circle)),
         findsOneWidget,
       );
-      expect(find.text('キャラクター: ${entry.value}'), findsOneWidget);
     }
   });
 }

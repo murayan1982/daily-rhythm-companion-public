@@ -27,7 +27,7 @@ class ProductionAboutScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'このベータ版では、気分とキャラクターを選ぶと、'
+                    'このベータ版では、気分とキャラクターを選び、「アドバイス生成」を押すと、'
                     '端末内で今日のアドバイスを表示します。',
                   ),
                   const SizedBox(height: 12),

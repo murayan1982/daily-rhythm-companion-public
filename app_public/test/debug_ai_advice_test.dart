@@ -15,7 +15,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 final _endpoint = Uri.parse('http://127.0.0.1:8000/debug/ai-advice');
 const _generateLabel = 'AIアドバイスを生成';
-const _failure = 'AIアドバイスを取得できませんでした。上の端末内アドバイスを利用できます。時間をおいて再試行してください。';
+const _failure =
+    'AIアドバイスを取得できませんでした。「アドバイス生成」で端末内アドバイスを表示できます。時間をおいて再試行してください。';
 
 DebugAdviceHttpResponse _reply(String message) => (
   statusCode: 200,
@@ -562,6 +563,7 @@ void main() {
     );
     await _select(tester);
     await _tap(tester, _generateLabel);
+    await _tap(tester, 'アドバイス生成');
     _expectLocalAdvice();
     expect(find.text(_failure), findsOneWidget);
     expect(find.text('再生'), findsNothing);
@@ -648,6 +650,7 @@ void main() {
       await _tap(tester, _generateLabel);
       if (entry.key == 'timeout') await tester.pump(const Duration(seconds: 2));
       expect(find.text(_failure), findsOneWidget);
+      await _tap(tester, 'アドバイス生成');
       _expectLocalAdvice();
 
       await _tap(tester, _generateLabel);

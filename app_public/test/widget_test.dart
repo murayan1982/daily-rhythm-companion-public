@@ -20,7 +20,7 @@ void main() {
     expect(find.byType(ProductionApp), findsOneWidget);
     expect(find.text('Daily Rhythm Companion'), findsOneWidget);
     expect(find.text('今日のリズム'), findsOneWidget);
-    expect(find.text('AIアドバイスを生成'), findsNothing);
+    expect(find.text('アドバイス生成'), findsOneWidget);
     expect(find.text('睡眠を読み込む'), findsOneWidget);
     expect(find.text('招待トークンを入力'), findsNothing);
     _expectBundledPortraits(tester);
@@ -47,6 +47,7 @@ void main() {
             await tester.pumpWidget(
               buildInviteReleaseApp(
                 endpointUrl: 'https://invite.example.invalid/v1/advice',
+                transport: (_, _, _) async => fail('No token was entered'),
               ),
             );
           } else {
@@ -65,9 +66,11 @@ void main() {
               character: ProductionCharacter.gentleMina,
             ).message,
           );
+          final generate = find.widgetWithText(FilledButton, 'アドバイス生成');
           expect(bothRequired, findsOneWidget);
           expect(localBody, findsNothing);
           expect(notice, findsNothing);
+          expect(tester.widget<FilledButton>(generate).onPressed, isNull);
 
           final (first, second) = moodFirst ? ('☀️ 元気', 'ミナ') : ('ミナ', '☀️ 元気');
           final firstChoice = find.text(first);
@@ -78,12 +81,19 @@ void main() {
           expect(oneRequired, findsOneWidget);
           expect(localBody, findsNothing);
           expect(notice, findsNothing);
+          expect(tester.widget<FilledButton>(generate).onPressed, isNull);
 
           final secondChoice = find.text(second);
           await tester.ensureVisible(secondChoice);
           await tester.tap(secondChoice);
           await tester.pumpAndSettle();
           expect(oneRequired, findsNothing);
+          expect(localBody, findsNothing);
+          expect(notice, findsNothing);
+          expect(tester.widget<FilledButton>(generate).onPressed, isNotNull);
+          await tester.ensureVisible(generate);
+          await tester.tap(generate);
+          await tester.pumpAndSettle();
           expect(localBody, findsOneWidget);
           expect(notice, findsOneWidget);
         },
@@ -153,6 +163,10 @@ void main() {
         await tester.tap(choice);
         await tester.pumpAndSettle();
       }
+      final generate = find.text('アドバイス生成');
+      await tester.ensureVisible(generate);
+      await tester.tap(generate);
+      await tester.pumpAndSettle();
 
       expect(find.text('気分: 元気'), findsOneWidget);
       expect(find.text('キャラクター: ミナ'), findsOneWidget);
