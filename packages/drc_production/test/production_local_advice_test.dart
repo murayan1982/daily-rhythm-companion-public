@@ -86,7 +86,7 @@ void main() {
         character: expected.character,
       ),
     );
-    expect(find.text('3. 今日のアドバイス'), findsOneWidget);
+    expect(find.text('今日のアドバイス'), findsOneWidget);
     expect(find.text('キャラクター: レイ'), findsOneWidget);
     expect(find.text('気分: だるい'), findsOneWidget);
     expect(find.text(expected.message), findsOneWidget);
@@ -123,23 +123,17 @@ void main() {
     final handle = tester.ensureSemantics();
     try {
       await tester.pumpWidget(_Host(item: adviceItem));
-      expect(
-        find.bySemanticsLabel('3. 今日のアドバイス。気分とキャラクターを選んでください。'),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel('気分とキャラクターを選んでください。'), findsOneWidget);
 
       await tester.pumpWidget(
         _Host(item: adviceItem, character: ProductionCharacter.gentleMina),
       );
-      expect(find.bySemanticsLabel('3. 今日のアドバイス。気分を選んでください。'), findsOneWidget);
+      expect(find.bySemanticsLabel('気分を選んでください。'), findsOneWidget);
 
       await tester.pumpWidget(
         _Host(item: adviceItem, mood: ProductionMood.energetic),
       );
-      expect(
-        find.bySemanticsLabel('3. 今日のアドバイス。キャラクターを選んでください。'),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel('キャラクターを選んでください。'), findsOneWidget);
     } finally {
       handle.dispose();
     }

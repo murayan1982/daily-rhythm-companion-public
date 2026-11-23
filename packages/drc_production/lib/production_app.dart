@@ -22,7 +22,10 @@ class ProductionApp extends StatelessWidget {
       title: 'Daily Rhythm Companion',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF8B543D),
+          surface: const Color(0xFFFFFAF5),
+        ),
       ),
       home: ProductionHomeScreen(
         journeyHeader: journeyHeader,

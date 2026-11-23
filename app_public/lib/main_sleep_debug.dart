@@ -84,7 +84,7 @@ class _SleepDebugAppState extends State<SleepDebugApp> {
                       );
               }
             : null,
-        characterPortrait: (option) {
+        characterPortrait: (option, fallback) {
           final bytes = snapshot.data?[option.characterId];
           if (bytes == null || bytes.isEmpty) return null;
           const size = 56.0;
@@ -94,8 +94,7 @@ class _SleepDebugAppState extends State<SleepDebugApp> {
             height: size,
             cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) =>
-                const SizedBox.shrink(),
+            errorBuilder: (context, error, stackTrace) => fallback,
           );
         },
       ),

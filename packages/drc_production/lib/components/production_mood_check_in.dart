@@ -33,72 +33,31 @@ class _ProductionMoodCheckInState extends State<ProductionMoodCheckIn> {
         ? null
         : productionMoodOptionFor(_selectedMood!);
 
-    return Semantics(
-      container: true,
-      label: '${widget.item.order}. ${widget.item.title}',
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ExcludeSemantics(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 32,
-                      child: Text(
-                        '${widget.item.order}.',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        widget.item.title,
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(widget.item.description, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final option in productionMoodOptions)
-                    ChoiceChip(
-                      label: Text('${option.emoji} ${option.label}'),
-                      selected: _selectedMood == option.mood,
-                      onSelected: (selected) {
-                        if (selected) {
-                          _select(option.mood);
-                        }
-                      },
-                    ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '選択中: ${selectedOption?.label ?? '未選択'}',
-                style: theme.textTheme.bodyLarge,
-              ),
-              if (selectedOption != null) ...[
-                const SizedBox(height: 6),
-                Text(
-                  selectedOption.supportMessage,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ],
-            ],
-          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(widget.item.title, style: theme.textTheme.titleMedium),
         ),
-      ),
+        const SizedBox(height: 4),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final option in productionMoodOptions)
+              ChoiceChip(
+                label: Text('${option.emoji} ${option.label}'),
+                selected: _selectedMood == option.mood,
+                selectedColor: theme.colorScheme.primaryContainer,
+                onSelected: (selected) {
+                  if (selected) _select(option.mood);
+                },
+              ),
+          ],
+        ),
+        if (selectedOption != null)
+          Text(selectedOption.supportMessage, style: theme.textTheme.bodySmall),
+      ],
     );
   }
 }

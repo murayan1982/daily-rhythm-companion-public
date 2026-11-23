@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../core/production_character.dart';
 import '../core/production_journey_step.dart';
 
-typedef CharacterPortraitBuilder = Widget? Function(ProductionCharacterOption);
+typedef CharacterPortraitBuilder =
+    Widget? Function(ProductionCharacterOption option, Widget fallback);
 
 class ProductionCharacterSelection extends StatefulWidget {
   const ProductionCharacterSelection({
@@ -27,75 +28,48 @@ class _ProductionCharacterSelectionState
   ProductionCharacter? _selectedCharacter;
 
   void _select(ProductionCharacter character) {
-    if (_selectedCharacter == character) {
-      return;
-    }
-    setState(() {
-      _selectedCharacter = character;
-    });
+    if (_selectedCharacter == character) return;
+    setState(() => _selectedCharacter = character);
     widget.onChanged?.call(character);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final selectedOption = _selectedCharacter == null
-        ? null
-        : productionCharacterOptionFor(_selectedCharacter!);
-
-    return Semantics(
-      container: true,
-      label: '${widget.item.order}. ${widget.item.title}',
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ExcludeSemantics(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 32,
-                      child: Text(
-                        '${widget.item.order}.',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        widget.item.title,
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(widget.item.description, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: 12),
-              for (final option in productionCharacterOptions) ...[
-                _CharacterOptionCard(
-                  option: option,
-                  portrait: widget.characterPortrait?.call(option),
-                  selected: _selectedCharacter == option.character,
-                  onSelected: () => _select(option.character),
-                ),
-                if (option != productionCharacterOptions.last)
-                  const SizedBox(height: 8),
-              ],
-              const SizedBox(height: 12),
-              Text(
-                '選択中: ${selectedOption?.displayName ?? '未選択'}',
-                style: theme.textTheme.bodyLarge,
-              ),
-            ],
-          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(widget.item.title, style: theme.textTheme.titleMedium),
         ),
-      ),
+        const SizedBox(height: 8),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            const gap = 8.0;
+            final largeText = MediaQuery.textScalerOf(context).scale(14) > 20;
+            final width = largeText || constraints.maxWidth < 270
+                ? constraints.maxWidth
+                : (constraints.maxWidth - gap * 2) / 3;
+            return Wrap(
+              spacing: gap,
+              runSpacing: gap,
+              children: [
+                for (final option in productionCharacterOptions)
+                  SizedBox(
+                    width: width,
+                    child: _CharacterOptionCard(
+                      option: option,
+                      portraitBuilder: widget.characterPortrait,
+                      selected: _selectedCharacter == option.character,
+                      onSelected: () => _select(option.character),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }
@@ -103,61 +77,111 @@ class _ProductionCharacterSelectionState
 class _CharacterOptionCard extends StatelessWidget {
   const _CharacterOptionCard({
     required this.option,
-    required this.portrait,
+    required this.portraitBuilder,
     required this.selected,
     required this.onSelected,
   });
 
   final ProductionCharacterOption option;
-  final Widget? portrait;
+  final CharacterPortraitBuilder? portraitBuilder;
   final bool selected;
   final VoidCallback onSelected;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accessibleLabel =
-        '${option.displayName}。${option.headline}。${option.tagline}。'
-        '${option.toneLabel}。${option.summary}';
-    final choice = ChoiceChip(
-      label: Text(option.displayName),
-      selected: selected,
-      onSelected: (_) => onSelected(),
+    final colors = theme.colorScheme;
+    final (tone, tint, ink) = switch (option.character) {
+      ProductionCharacter.gentleMina => (
+        'やさしい',
+        const Color(0xFFF4DCD1),
+        const Color(0xFF783F32),
+      ),
+      ProductionCharacter.cheerfulSora => (
+        '明るい',
+        const Color(0xFFF6E4BC),
+        const Color(0xFF684711),
+      ),
+      ProductionCharacter.coolRei => (
+        '落ち着き',
+        const Color(0xFFE1E8DE),
+        const Color(0xFF365645),
+      ),
+    };
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+      side: BorderSide(
+        color: selected ? colors.primary : colors.outlineVariant,
+        width: selected ? 2 : 1,
+      ),
     );
-    final image = portrait;
+    final initial = Center(
+      child: Text(
+        option.displayName.substring(0, 1),
+        textScaler: TextScaler.noScaling,
+        style: theme.textTheme.titleLarge?.copyWith(
+          color: ink,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
 
     return Semantics(
-      label: accessibleLabel,
+      label: '${option.displayName}、$tone',
+      button: true,
       selected: selected,
-      child: Card(
-        margin: EdgeInsets.zero,
-        color: selected ? theme.colorScheme.secondaryContainer : null,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+      onTap: onSelected,
+      excludeSemantics: true,
+      child: Material(
+        color: selected ? colors.primaryContainer : colors.surface,
+        shape: shape,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onSelected,
+          child: Stack(
             children: [
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: image == null
-                    ? choice
-                    : Wrap(
-                        spacing: 8,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          ExcludeSemantics(child: image),
-                          choice,
-                        ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(6, 12, 6, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: SizedBox.square(
+                        dimension: 56,
+                        child: ClipOval(
+                          child: ColoredBox(
+                            color: tint,
+                            child:
+                                portraitBuilder?.call(option, initial) ??
+                                initial,
+                          ),
+                        ),
                       ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      option.displayName,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    Text(
+                      tone,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 6),
-              Text(option.headline, style: theme.textTheme.titleSmall),
-              const SizedBox(height: 2),
-              Text(option.tagline, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: 2),
-              Text(option.toneLabel, style: theme.textTheme.labelMedium),
-              const SizedBox(height: 4),
-              Text(option.summary, style: theme.textTheme.bodySmall),
+              if (selected)
+                PositionedDirectional(
+                  top: 6,
+                  end: 6,
+                  child: Icon(
+                    Icons.check_circle,
+                    size: 18,
+                    color: colors.primary,
+                  ),
+                ),
             ],
           ),
         ),

@@ -36,11 +36,7 @@ class _ProductionJourneyOverviewState extends State<ProductionJourneyOverview> {
       children: [
         for (final item in productionJourneyItems) ...[
           _buildActiveStep(item),
-          if (item != productionJourneyItems.last) const SizedBox(height: 12),
-        ],
-        if (widget.adviceExtension case final buildAdvice?) ...[
-          const SizedBox(height: 12),
-          buildAdvice(_selectedMood, _selectedCharacter),
+          if (item != productionJourneyItems.last) const SizedBox(height: 20),
         ],
       ],
     );
@@ -62,6 +58,10 @@ class _ProductionJourneyOverviewState extends State<ProductionJourneyOverview> {
         item: item,
         selectedMood: _selectedMood,
         selectedCharacter: _selectedCharacter,
+        extension: widget.adviceExtension?.call(
+          _selectedMood,
+          _selectedCharacter,
+        ),
       ),
       _ => throw StateError('Inactive step in the Public Beta journey.'),
     };

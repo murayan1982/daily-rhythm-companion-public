@@ -36,10 +36,9 @@ void main() {
     await tester.pumpAndSettle();
 
     for (final entry in names.entries) {
-      final choice = find.widgetWithText(ChoiceChip, entry.value);
-      final row = find.ancestor(of: choice, matching: find.byType(Wrap)).first;
+      final choice = find.widgetWithText(InkWell, entry.value);
       final imageFinder = find.descendant(
-        of: row,
+        of: choice,
         matching: find.byType(Image),
       );
       final image = tester.widget<Image>(imageFinder);
@@ -49,7 +48,10 @@ void main() {
       await tester.ensureVisible(choice);
       await tester.tap(choice);
       await tester.pumpAndSettle();
-      expect(tester.widget<ChoiceChip>(choice).selected, isTrue);
+      expect(
+        find.descendant(of: choice, matching: find.byIcon(Icons.check_circle)),
+        findsOneWidget,
+      );
       expect(find.text('キャラクター: ${entry.value}'), findsOneWidget);
     }
   });

@@ -598,7 +598,7 @@ void main() {
           isNull,
         );
         expect(requests, isEmpty);
-        await _tap(tester, 'Health Connect から読み込む');
+        await _tap(tester, '睡眠を読み込む');
         expect(find.textContaining('記録の長さ 11時間57分'), findsOneWidget);
         await _select(tester);
         if (includeSyntheticSleep) {

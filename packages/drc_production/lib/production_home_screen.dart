@@ -29,7 +29,12 @@ class ProductionHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Rhythm Companion'),
+        title: Text(
+          'Daily Rhythm Companion',
+          style: theme.textTheme.titleMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           Semantics(
             label: 'アプリについて',
@@ -47,7 +52,7 @@ class ProductionHomeScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 720),
@@ -56,17 +61,17 @@ class ProductionHomeScreen extends StatelessWidget {
                 children: [
                   Semantics(
                     header: true,
-                    child: Text('今日のリズム', style: theme.textTheme.headlineSmall),
+                    child: Text(
+                      '今日のリズム',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '気分とキャラクターを選ぶと、端末内で今日のアドバイスを表示します。選択内容は保存されません。',
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   if (journeyHeader case final header?) ...[
                     header,
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                   ],
                   ProductionJourneyOverview(
                     characterPortrait: characterPortrait,

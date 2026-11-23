@@ -73,14 +73,7 @@ void main() {
     await tester.pumpWidget(const _OverviewHost());
 
     for (final item in productionJourneyItems) {
-      expect(
-        find.text(
-          item.step == ProductionJourneyStep.dailyAdvice
-              ? '${item.order}. ${item.title}'
-              : item.title,
-        ),
-        findsOneWidget,
-      );
+      expect(find.text(item.title), findsOneWidget);
     }
 
     expect(find.textContaining('保存'), findsNothing);
@@ -99,49 +92,55 @@ void main() {
     expect(find.text('履歴を振り返る'), findsNothing);
   });
 
-  testWidgets(
-    'overview exposes only the six choice chips and no other actions',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(const _OverviewHost());
+  testWidgets('overview exposes three mood chips and three character cards', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const _OverviewHost());
 
-      expect(find.byType(ChoiceChip), findsNWidgets(6));
-      expect(find.byType(ProductionMoodCheckIn), findsOneWidget);
-      expect(find.byType(ProductionCharacterSelection), findsOneWidget);
-      expect(find.byType(ButtonStyleButton), findsNothing);
-      expect(find.byType(IconButton), findsNothing);
+    expect(find.byType(ChoiceChip), findsNWidgets(3));
+    expect(
+      find.descendant(
+        of: find.byType(ProductionCharacterSelection),
+        matching: find.byType(InkWell),
+      ),
+      findsNWidgets(3),
+    );
+    expect(find.byType(ProductionMoodCheckIn), findsOneWidget);
+    expect(find.byType(ProductionCharacterSelection), findsOneWidget);
+    expect(find.byType(ButtonStyleButton), findsNothing);
+    expect(find.byType(IconButton), findsNothing);
 
-      for (final value in <String>[
-        'developer',
-        'operator',
-        'demo',
-        'diagnostic',
-        'localhost',
-        'Backend',
-        'endpoint',
-        'engine',
-        'mode',
-        'session ID',
-        'technical code',
-        'realtime',
-        'framework',
-        'http://',
-        'https://',
-      ]) {
-        expect(find.textContaining(value, findRichText: true), findsNothing);
-      }
-    },
-  );
+    for (final value in <String>[
+      'developer',
+      'operator',
+      'demo',
+      'diagnostic',
+      'localhost',
+      'Backend',
+      'endpoint',
+      'engine',
+      'mode',
+      'session ID',
+      'technical code',
+      'realtime',
+      'framework',
+      'http://',
+      'https://',
+    ]) {
+      expect(find.textContaining(value, findRichText: true), findsNothing);
+    }
+  });
 
   testWidgets('character selection is available inside the journey', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const _OverviewHost());
 
-    expect(find.text('選択中: 未選択'), findsNWidgets(2));
+    expect(find.byIcon(Icons.check_circle), findsNothing);
     await tester.tap(find.text('ミナ'));
     await tester.pump();
-    expect(find.text('選択中: ミナ'), findsOneWidget);
-    expect(find.text('選択中: 未選択'), findsOneWidget);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    expect(find.text('気分を選んでください。'), findsOneWidget);
   });
 
   testWidgets('advice follows lifted mood and character selections', (
@@ -215,8 +214,13 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
     expect(tester.binding.lifecycleState, AppLifecycleState.resumed);
-    expect(find.text('選択中: 元気'), findsOneWidget);
-    expect(find.text('選択中: ミナ'), findsOneWidget);
+    expect(
+      tester
+          .widget<ChoiceChip>(find.widgetWithText(ChoiceChip, '☀️ 元気'))
+          .selected,
+      isTrue,
+    );
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
@@ -227,32 +231,19 @@ void main() {
   ) async {
     await tester.pumpWidget(const _OverviewHost());
 
-    final moodSelection = find.descendant(
-      of: find.byType(ProductionMoodCheckIn),
-      matching: find.text('選択中: 未選択'),
-    );
-    final characterSelection = find.descendant(
-      of: find.byType(ProductionCharacterSelection),
-      matching: find.text('選択中: 未選択'),
-    );
-    expect(moodSelection, findsOneWidget);
-    expect(characterSelection, findsOneWidget);
+    final moodChoice = find.widgetWithText(ChoiceChip, '☀️ 元気');
+    expect(tester.widget<ChoiceChip>(moodChoice).selected, isFalse);
+    expect(find.byIcon(Icons.check_circle), findsNothing);
 
     await tester.ensureVisible(find.text('☀️ 元気'));
     await tester.tap(find.text('☀️ 元気'));
     await tester.pump();
-    expect(
-      find.descendant(
-        of: find.byType(ProductionMoodCheckIn),
-        matching: find.text('選択中: 元気'),
-      ),
-      findsOneWidget,
-    );
+    expect(tester.widget<ChoiceChip>(moodChoice).selected, isTrue);
 
     await tester.ensureVisible(find.text('ミナ'));
     await tester.tap(find.text('ミナ'));
     await tester.pump();
-    expect(find.text('選択中: ミナ'), findsOneWidget);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
     expect(find.text('キャラクター: ミナ'), findsOneWidget);
     expect(find.text('気分: 元気'), findsOneWidget);
     expect(find.textContaining('今日は調子がよさそうですね'), findsOneWidget);
@@ -262,10 +253,8 @@ void main() {
     await tester.pumpWidget(const _OverviewHost());
     await tester.pump();
 
-    expect(moodSelection, findsOneWidget);
-    expect(characterSelection, findsOneWidget);
-    expect(find.text('選択中: 元気'), findsNothing);
-    expect(find.text('選択中: ミナ'), findsNothing);
+    expect(tester.widget<ChoiceChip>(moodChoice).selected, isFalse);
+    expect(find.byIcon(Icons.check_circle), findsNothing);
     expect(find.text('気分: 元気'), findsNothing);
     expect(find.text('キャラクター: ミナ'), findsNothing);
     expect(find.text('気分とキャラクターを選んでください。'), findsOneWidget);
@@ -384,9 +373,13 @@ void main() {
     expect(find.byType(ProductionJourneyOverview), findsOneWidget);
   });
 
-  testWidgets('journey shell supports 2.0 text scaling without exceptions', (
+  testWidgets('selections work at 320 × 568 with 2.0 text scaling', (
     WidgetTester tester,
   ) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       const MaterialApp(
         home: MediaQuery(
@@ -397,8 +390,22 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
-
+    for (final label in ['🌿 ふつう', 'ソラ']) {
+      final choice = find.text(label);
+      await tester.ensureVisible(choice);
+      await tester.tap(choice);
+      await tester.pumpAndSettle();
+    }
+    final mood = tester.widget<ChoiceChip>(
+      find.widgetWithText(ChoiceChip, '🌿 ふつう'),
+    );
+    expect(mood.selected, isTrue);
+    final character = find.widgetWithText(InkWell, 'ソラ');
+    expect(
+      find.descendant(of: character, matching: find.byIcon(Icons.check_circle)),
+      findsOneWidget,
+    );
+    expect(find.textContaining('今日は小さく動き出せれば'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -412,23 +419,14 @@ void main() {
       final moodItem = productionJourneyItems.singleWhere(
         (item) => item.step == ProductionJourneyStep.moodCheckIn,
       );
-      expect(
-        find.bySemanticsLabel('${moodItem.order}. ${moodItem.title}'),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel(moodItem.title), findsOneWidget);
 
       final characterItem = productionJourneyItems.singleWhere(
         (item) => item.step == ProductionJourneyStep.characterSelection,
       );
-      expect(
-        find.bySemanticsLabel('${characterItem.order}. ${characterItem.title}'),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel(characterItem.title), findsOneWidget);
 
-      expect(
-        find.bySemanticsLabel(RegExp('今日のアドバイス.*気分とキャラクターを選んでください')),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel('今日のアドバイス'), findsOneWidget);
       expect(find.bySemanticsLabel(RegExp('準備中')), findsNothing);
       expect(find.bySemanticsLabel(RegExp('睡眠を確認')), findsNothing);
       expect(find.bySemanticsLabel(RegExp('会話を続ける')), findsNothing);

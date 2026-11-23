@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:drc_production/core/production_character.dart';
 import 'package:drc_production/core/production_local_advice.dart';
 import 'package:drc_production/core/production_mood.dart';
+import 'package:drc_production/components/production_daily_advice.dart';
 import 'package:drc_public_app/invite_advice.dart';
 import 'package:drc_public_app/main_invite_debug.dart' as invite_app;
 import 'package:drc_public_app/main_invite_release.dart';
@@ -36,6 +37,13 @@ Future<void> _selectAndEnterToken(WidgetTester tester) async {
   await _tap(tester, '☀️ 元気');
   await _tap(tester, 'ミナ');
   final field = find.byType(TextField);
+  expect(field, findsNothing);
+  final reveal = find.text('招待トークンを入力');
+  expect(
+    find.descendant(of: find.byType(ProductionDailyAdvice), matching: reveal),
+    findsOneWidget,
+  );
+  await _tap(tester, '招待トークンを入力');
   await tester.ensureVisible(field);
   await tester.enterText(field, 'synthetic-invite');
   await tester.pumpAndSettle();
@@ -69,7 +77,7 @@ void main() {
     );
     expect(
       tester
-          .widget<TextButton>(find.widgetWithText(TextButton, _generate))
+          .widget<FilledButton>(find.widgetWithText(FilledButton, _generate))
           .onPressed,
       isNull,
     );
@@ -132,7 +140,7 @@ void main() {
       });
       return (status: 200, body: jsonEncode({'message': '固定の検証応答です。'}));
     });
-    await _tap(tester, 'Health Connect から読み込む');
+    await _tap(tester, '睡眠を読み込む');
     expect(find.textContaining('記録の長さ 1時間0分'), findsOneWidget);
     await _selectAndEnterToken(tester);
     final field = tester.widget<TextField>(find.byType(TextField));
@@ -142,7 +150,18 @@ void main() {
     expect(calls, 0);
 
     await _tap(tester, _generate);
-    expect(find.text('固定の検証応答です。'), findsOneWidget);
+    final onlineAdvice = find.byType(InviteAdviceCard);
+    expect(
+      find.descendant(of: onlineAdvice, matching: find.text('固定の検証応答です。')),
+      findsOneWidget,
+    );
+    final localNotice = find.text(ProductionDailyAdvice.localRuleNotice);
+    expect(
+      find.descendant(of: onlineAdvice, matching: localNotice),
+      findsNothing,
+    );
+    _expectLocalAdvice();
+    expect(localNotice, findsOneWidget);
     expect(calls, 1);
   });
 

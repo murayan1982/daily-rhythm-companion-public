@@ -11,7 +11,7 @@ class HealthConnectSleepCard extends StatefulWidget {
 class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
     with WidgetsBindingObserver {
   static const _channel = MethodChannel('drc/health_connect_sleep');
-  static const _initial = '睡眠を読み込まずにアドバイスへ進むこともできます。';
+  static const _initial = '読み込まなくても気分を選べます。';
   static const _error = '睡眠を読み取れませんでした。時間をおいて再試行できます。';
   bool _loading = false;
   bool _showingRecord = false;
@@ -109,24 +109,25 @@ class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      color: theme.colorScheme.surfaceContainer,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Semantics(
               header: true,
-              child: Text(
-                '昨夜の睡眠',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              child: Text('昨夜の睡眠', style: theme.textTheme.titleMedium),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Semantics(liveRegion: true, child: Text(_message)),
             TextButton(
               onPressed: _loading ? null : _readSleep,
-              child: const Text('Health Connect から読み込む'),
+              child: const Text('睡眠を読み込む'),
             ),
           ],
         ),

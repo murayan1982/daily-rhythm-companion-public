@@ -98,12 +98,14 @@ class InviteAdviceCard extends StatefulWidget {
     this.character,
     required this.client,
     this.tokenLabel = '招待トークン',
+    this.initiallyShowToken = false,
   });
 
   final ProductionMood? mood;
   final ProductionCharacter? character;
   final InviteAdviceClient client;
   final String tokenLabel;
+  final bool initiallyShowToken;
 
   @override
   State<InviteAdviceCard> createState() => _InviteAdviceCardState();
@@ -111,6 +113,7 @@ class InviteAdviceCard extends StatefulWidget {
 
 class _InviteAdviceCardState extends State<InviteAdviceCard> {
   final _token = TextEditingController();
+  late bool _showToken = widget.initiallyShowToken;
   static final _tokenSyntax = RegExp(r'^[a-zA-Z0-9_-]{1,128}$');
   int _generation = 0;
   bool _waiting = false;
@@ -186,31 +189,48 @@ class _InviteAdviceCardState extends State<InviteAdviceCard> {
         widget.mood != null &&
         widget.character != null &&
         _tokenSyntax.hasMatch(_token.text.trim());
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _token,
-              decoration: InputDecoration(labelText: widget.tokenLabel),
-              obscureText: true,
-              autocorrect: false,
-              enableSuggestions: false,
-              enableIMEPersonalizedLearning: false,
-              onChanged: (_) => setState(_clearResult),
-            ),
-            TextButton(
-              onPressed: canGenerate ? _generate : null,
-              child: const Text('AIアドバイスを生成'),
-            ),
-            if (_waiting) const Text('AIアドバイスを生成しています。'),
-            if (_result case final message?)
-              Semantics(liveRegion: true, child: Text(message)),
-          ],
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          header: true,
+          child: Text('オンラインアドバイス', style: theme.textTheme.titleSmall),
         ),
-      ),
+        Text(
+          '生成時に気分とキャラクターを送信します。',
+          style: theme.textTheme.bodySmall,
+        ),
+        if (!widget.initiallyShowToken)
+          TextButton(
+            onPressed: () => setState(() => _showToken = !_showToken),
+            child: Text(_showToken ? '招待トークン欄を閉じる' : '招待トークンを入力'),
+          ),
+        if (_showToken)
+          TextField(
+            controller: _token,
+            decoration: InputDecoration(labelText: widget.tokenLabel),
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            enableIMEPersonalizedLearning: false,
+            onChanged: (_) => setState(_clearResult),
+          ),
+        if (_showToken || _token.text.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          FilledButton(
+            onPressed: canGenerate ? _generate : null,
+            child: const Text('AIアドバイスを生成'),
+          ),
+        ],
+        if (_waiting)
+          Semantics(liveRegion: true, child: const Text('AIアドバイスを生成しています。')),
+        if (_result case final message?)
+          Semantics(
+            liveRegion: true,
+            child: Text(message, style: theme.textTheme.bodyLarge),
+          ),
+      ],
     );
   }
 }

@@ -24,6 +24,7 @@ Widget _buildInviteAdviceCard(
   character: character,
   client: InviteAdviceClient(endpoint: _loopbackEndpoint),
   tokenLabel: '招待トークン（検証用）',
+  initiallyShowToken: true,
 );
 
 final _loopbackEndpoint = Uri.http('127.0.0.1:8000', '/v1/advice');

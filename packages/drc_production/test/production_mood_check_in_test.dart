@@ -48,7 +48,6 @@ void main() {
     );
 
     expect(find.byType(ChoiceChip), findsNWidgets(3));
-    expect(find.text('選択中: 未選択'), findsOneWidget);
     expect(callbacks, 0);
     for (final chip in tester.widgetList<ChoiceChip>(find.byType(ChoiceChip))) {
       expect(chip.selected, isFalse);
@@ -65,21 +64,18 @@ void main() {
 
     await tester.tap(find.text('☀️ 元気'));
     await tester.pump();
-    expect(find.text('選択中: 元気'), findsOneWidget);
     expect(find.text('今日は前向きに動けそうです。'), findsOneWidget);
     expect(_selectedChips(tester), <String>['☀️ 元気']);
     expect(changes, <ProductionMood>[ProductionMood.energetic]);
 
     await tester.tap(find.text('🌿 ふつう'));
     await tester.pump();
-    expect(find.text('選択中: ふつう'), findsOneWidget);
     expect(find.text('今日はいつも通り過ごせそうです。'), findsOneWidget);
     expect(_selectedChips(tester), <String>['🌿 ふつう']);
     expect(changes.last, ProductionMood.normal);
 
     await tester.tap(find.text('😪 だるい'));
     await tester.pump();
-    expect(find.text('選択中: だるい'), findsOneWidget);
     expect(find.text('今日は回復を優先したい状態です。'), findsOneWidget);
     expect(_selectedChips(tester), <String>['😪 だるい']);
     expect(changes.last, ProductionMood.tired);

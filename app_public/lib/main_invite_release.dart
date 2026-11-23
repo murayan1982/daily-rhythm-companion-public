@@ -1,6 +1,7 @@
 import 'package:drc_production/production_app.dart';
 import 'package:flutter/material.dart';
 
+import 'bundled_character_portrait.dart';
 import 'health_connect_sleep_card.dart';
 import 'invite_advice.dart';
 
@@ -18,12 +19,16 @@ ProductionApp buildInviteReleaseApp({
 }) {
   final endpoint = _httpsAdviceEndpoint(endpointUrl);
   if (endpoint == null) {
-    return const ProductionApp(journeyHeader: HealthConnectSleepCard());
+    return const ProductionApp(
+      journeyHeader: HealthConnectSleepCard(),
+      characterPortrait: buildBundledCharacterPortrait,
+    );
   }
 
   final client = InviteAdviceClient(endpoint: endpoint, transport: transport);
   return ProductionApp(
     journeyHeader: const HealthConnectSleepCard(),
+    characterPortrait: buildBundledCharacterPortrait,
     adviceExtension: (mood, character) =>
         InviteAdviceCard(mood: mood, character: character, client: client),
   );

@@ -1,4 +1,4 @@
-import 'dart:ui' show Tristate;
+import 'dart:ui' show SemanticsAction, Tristate;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -60,7 +60,7 @@ void main() {
     }
   });
 
-  testWidgets('starts unselected with exactly three choices and all copy', (
+  testWidgets('starts with three selectable cards and no check mark', (
     tester,
   ) async {
     var callbacks = 0;
@@ -68,15 +68,11 @@ void main() {
       _Host(item: characterItem, onChanged: (_) => callbacks++),
     );
 
-    expect(find.byType(ChoiceChip), findsNWidgets(3));
-    expect(find.text('選択中: 未選択'), findsOneWidget);
+    expect(find.byType(InkWell), findsNWidgets(3));
+    expect(find.byIcon(Icons.check_circle), findsNothing);
     expect(callbacks, 0);
     for (final option in productionCharacterOptions) {
       expect(find.text(option.displayName), findsOneWidget);
-      expect(find.text(option.headline), findsOneWidget);
-      expect(find.text(option.tagline), findsOneWidget);
-      expect(find.text(option.toneLabel), findsOneWidget);
-      expect(find.text(option.summary), findsOneWidget);
     }
     expect(find.textContaining('保存'), findsNothing);
     expect(find.text('選択内容の保存とアドバイスへの反映は準備中です。'), findsNothing);
@@ -90,19 +86,17 @@ void main() {
 
     await tester.tap(find.text('ミナ'));
     await tester.pump();
-    expect(find.text('選択中: ミナ'), findsOneWidget);
-    expect(_selectedChips(tester), <String>['ミナ']);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
     expect(changes, <ProductionCharacter>[ProductionCharacter.gentleMina]);
 
     await tester.tap(find.text('ミナ'));
     await tester.pump();
-    expect(_selectedChips(tester), <String>['ミナ']);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
     expect(changes, hasLength(1));
 
     await tester.tap(find.text('ソラ'));
     await tester.pump();
-    expect(find.text('選択中: ソラ'), findsOneWidget);
-    expect(_selectedChips(tester), <String>['ソラ']);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
     expect(changes, <ProductionCharacter>[
       ProductionCharacter.gentleMina,
       ProductionCharacter.cheerfulSora,
@@ -113,17 +107,16 @@ void main() {
     final handle = tester.ensureSemantics();
     try {
       await tester.pumpWidget(_Host(item: characterItem));
-      for (final option in productionCharacterOptions) {
-        expect(find.bySemanticsLabel(_accessibleLabel(option)), findsOneWidget);
+      for (final label in ['ミナ、やさしい', 'ソラ、明るい', 'レイ、落ち着き']) {
+        final data = tester
+            .getSemantics(find.bySemanticsLabel(label))
+            .getSemanticsData();
+        expect(data.flagsCollection.isSelected, Tristate.isFalse);
+        expect(data.hasAction(SemanticsAction.tap), isTrue);
       }
-
-      await tester.tap(find.text('レイ'));
+      tester.semantics.tap(find.semantics.byLabel('レイ、落ち着き'));
       await tester.pump();
-      final semantics = tester.getSemantics(
-        find.bySemanticsLabel(
-          _accessibleLabel(productionCharacterOptions.last),
-        ),
-      );
+      final semantics = tester.getSemantics(find.bySemanticsLabel('レイ、落ち着き'));
       expect(
         semantics.getSemanticsData().flagsCollection.isSelected,
         Tristate.isTrue,
@@ -179,19 +172,6 @@ void main() {
       expect(combined, isNot(contains(forbidden)));
     }
   });
-}
-
-String _accessibleLabel(ProductionCharacterOption option) {
-  return '${option.displayName}。${option.headline}。${option.tagline}。'
-      '${option.toneLabel}。${option.summary}';
-}
-
-List<String> _selectedChips(WidgetTester tester) {
-  return tester
-      .widgetList<ChoiceChip>(find.byType(ChoiceChip))
-      .where((chip) => chip.selected)
-      .map((chip) => (chip.label as Text).data!)
-      .toList();
 }
 
 class _Host extends StatelessWidget {
