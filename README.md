@@ -2,97 +2,48 @@
 
 <!-- DRC-V410-ANDROID-PUBLIC-BETA-README:BEGIN -->
 
-## Daily Rhythm Companionとは
+## Daily Rhythm Companion とは
 
-Daily Rhythm Companionは、睡眠や気分などを振り返り、毎日の過ごし方を
-整えることを目指して開発中のAndroidアプリです。キャラクターとの
-やり取りを通じて、日々の振り返りを支える体験を計画しています。
+Daily Rhythm Companion（DRC）は、今日の気分を選び、ミナ・ソラ・レイから
+自分に合うキャラクターを選んで、日々の過ごし方のヒントを受け取る Android アプリです。
+[AI Character Framework](https://github.com/murayan1982/ai-character-framework) の
+活用例として、AI アドバイス、キャラクター音声、テキスト会話も開発しています。
 
-本アプリは医療機器ではなく、診断、治療、緊急支援を提供するサービス
-ではありません。以下には現在利用できる機能ではなく、開発中・計画中の
-内容も含まれます。
+本アプリは医療機器ではありません。診断、治療、緊急支援は提供しません。
 
-## 現在の公開状況
+## Android 版を試す
 
-| 項目 | 状態 |
-| --- | --- |
-| Current development line | DRC v4.1.0 |
-| Distribution plan | GitHub Releases Android Public Beta |
-| Status | `DEVELOPMENT / NOT_YET_RELEASED` |
-| Installable public APK | `NOT_AVAILABLE` |
-| Google Play | `DEFERRED / NOT_CANCELLED` |
-| Current production Backend | `UNWIRED` |
-| Health data provider decision | `PENDING` |
+公開ベータは GitHub Releases から入手できます。気分とキャラクターを選ぶと、
+端末内のアドバイスを利用できます。インストール方法と APK の照合手順は
+[Android インストール案内](docs/v410_android_install_guide.md)をご覧ください。
 
-v4.0.0の既存GitHub Releaseは、過去の検証・公開記録です。
-[DRC v4.0.0 Release](https://github.com/murayan1982/daily-rhythm-companion-public/releases/tag/DRC_v4.0.0)
-で公開されているZIPはソース・記録用アーカイブであり、Androidへ
-インストールできるAPKではありません。
+- [Android 公開ベータ（DRC_v4.1.0-beta）](https://github.com/murayan1982/daily-rhythm-companion-public/releases/tag/DRC_v4.1.0-beta)
+- [公開ベータのプライバシーポリシー](PRIVACY.md)
 
-## Android版を試すには
+## 開発中の機能
 
-一般Androidユーザー向けAPKは、まだ公開していません。Public Beta公開時は、
-このリポジトリの公式GitHub Releasesから配布します。対応端末、APK の照合、
-インストールと更新の手順は[Android インストール案内](docs/v410_android_install_guide.md)をご覧ください。
+| 対象 | できること | 検証状況 |
+| --- | --- | --- |
+| 次期通常版 | Health Connect の昨夜の睡眠表示、気分とキャラクターの選択、ボタン操作での端末内アドバイス表示 | A301OP で睡眠表示・権限取り消し時の動作を確認 |
+| 招待制配布候補 | HTTPS 経由のテキスト生成。AI 生成が失敗したら端末内アドバイスを表示 | APK の構成を検査済み。配布候補での実機 HTTPS 接続は未確認 |
+| 招待制開発ビルド | Gemini でのアドバイス生成、睡眠時間を使った生成、ElevenLabs による任意の音声再生、アドバイス後のテキスト会話 | Windows の検証用 Backend と A301OP で実機確認。実音声の確認には固定アドバイスを使用 |
 
-現在は、他サイト、fork、ミラーからAPKを入手しないでください。公開済みの
-APK URL、release tag、download buttonはまだありません。
+睡眠の読み込みは任意です。招待制配布候補のテキスト生成では、気分と
+キャラクター ID を送信します。招待制開発ビルドで「睡眠時間をアドバイスに使う」を
+オンにした場合は、取得できた昨夜の睡眠時間を分単位で生成に使います。
+就寝・起床時刻と睡眠ステージの明細は端末内に留まります。
 
-## 予定している基本体験
-
-次の体験を計画・開発しています。現時点ですべて利用できるという意味では
-ありません。
-
-1. 睡眠状態を確認する
-2. 気分を記録する
-3. キャラクターを選ぶ
-4. 今日のアドバイスを確認する
-5. 必要に応じてテキスト会話を続ける
-6. 過去の記録を振り返る
-
-## AI Character Frameworkについて
-
-DRCは[AI Character Framework](https://github.com/murayan1982/ai-character-framework)
-を活用して開発しています。Frameworkは、AIキャラクター、会話、音声、
-リアルタイム処理、キャラクター表現などを構築するための開発基盤です。
-
-DRCはFrameworkの活用事例であると同時に、一般ユーザー向けの独立した
-アプリ体験を目指しています。Android一般配布では、利用者にFrameworkの
-開発環境構築を要求しない方針です。Frameworkの全機能が現在のproduction
-Androidアプリへ接続済みであるとは主張しません。
-
-## 安全なダウンロード
-
-- 公式配布元は、このリポジトリのGitHub Releasesのみです。
-- 公開時にはAPK filename、size、SHA-256、signing certificate情報を掲載する予定です。
-- fork、ミラー、第三者サイトのAPKは公式配布と見なしません。
-- Androidの外部配布では、端末側でインストール許可が必要になる場合があります。
-- インストール後は、不要になった許可を無効に戻すことを推奨します。
-
-APK のダウンロードリンクは Public Beta の Release 公開時に確定します。
-
-## Privacy and permissions
-
-Android ベータ版で扱うデータ、端末上のデータの削除方法、問い合わせ先は
-[プライバシーポリシー](PRIVACY.md)をご覧ください。
+開発版では「音声再生」を押すと読み上げが始まります。「会話を続ける」では、
+同じキャラクターとテキストで雑談でき、会話を終了するとアプリの会話履歴がリセットされます。
 
 ## 開発者向け情報
 
-- [GitHub Android Public Beta replan](docs/v410_github_android_public_beta_replan.md)
-- [v4.1.0 launch roadmap](docs/v410_google_play_launch_roadmap.md)
-- [v4.1.0 launch tasklist](docs/v410_google_play_launch_tasklist.md)
-- [GP-0 decision register](docs/v410_gp0_launch_decision_register.md)
 - [Flutter app README](app/README.md)
-- [License](LICENSE)
-
-Entrypoint境界は、`main_production.dart`がproduction graph、
-`main_non_product.dart`がdevelopment/demo graph、`main.dart`がnon-product
-compatibility shim、`main_rt2ec_operator.dart`がoperator-only entrypointです。
-このREADME再構成は、product source実装やPublic Beta完成の証拠ではありません。
+- [v4.1.0 開発ロードマップ](docs/v410_google_play_launch_roadmap.md)
 
 ## License
 
-このリポジトリは[MIT License](LICENSE)です。
+このリポジトリは [MIT License](LICENSE) です。
 
 <!-- DRC-V410-ANDROID-PUBLIC-BETA-README:END -->
 
