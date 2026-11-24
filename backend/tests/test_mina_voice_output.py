@@ -527,3 +527,78 @@ def test_ending_a_debug_conversation_discards_the_inflight_turn():
     with pytest.raises(ConversationUnavailable):
         store.reply(session, 1, "質問", generate)
     assert store.resolve_voice(session, "x" * 32) is None
+
+
+def test_invite_conversation_reuses_character_advice_and_free_topic_history(
+    generated_advice, monkeypatch
+):
+    store = DebugAdviceConversationStore(ttl=60, capacity=8, turn_limit=4)
+    monkeypatch.setattr(debug_advice, "conversations", store)
+    monkeypatch.setenv("VOICE_OUTPUT_DEMO_ENABLED", "0")
+    initial_advice = "焦らず始めましょう。"
+    monkeypatch.setattr(
+        app.state,
+        "public_advice_runtime",
+        PublicAdviceRuntime(
+            authenticate=LocalAdviceTokenVerifier({"test-token": "tester"}),
+            quota=InMemoryDailyAdviceQuota(per_user=1, total=1),
+            generate=lambda **selection: initial_advice,
+        ),
+        raising=False,
+    )
+    prompts = []
+
+    def reply(*, prompt):
+        prompts.append(prompt)
+        return SimpleNamespace(
+            status="responded",
+            reply_text=json.dumps({
+                "message": f"猫についての返信{len(prompts)}。",
+                "expression_tag": "idle",
+            }),
+        )
+
+    monkeypatch.setitem(
+        app.dependency_overrides,
+        debug_advice.get_debug_advice_provider,
+        lambda: SimpleNamespace(reply=reply),
+    )
+    path = "/debug/invite/conversation/advice"
+    client = TestClient(app)
+    selection = {"mood": "normal", "character_id": "cheerful_sora"}
+    assert client.post(path, json=selection).status_code == 401
+    issued = client.post(path, json=selection, headers={"Authorization": "Bearer test-token"})
+    assert issued.status_code == 200
+    assert issued.headers["cache-control"] == "no-store"
+    assert issued.json()["message"] == initial_advice
+    anchor = {"advice_ref": issued.json()["advice_ref"]}
+    session = client.post("/debug/conversation/start", json=anchor).json()["session_id"]
+    assert not prompts
+
+    def send(session_id, turn, message):
+        return client.post(
+            "/debug/conversation/turn",
+            json={"session_id": session_id, "turn": turn, "message": message},
+        )
+
+    first = send(session, 1, "好きな動物は？")
+    assert first.status_code == 200
+    assert send(session, 2, "どんな猫？").status_code == 200
+    latest = prompts[-1]
+    assert "ソラ (cheerful_sora)" in latest
+    assert "Casual conversation on topics unrelated to advice is welcome" in latest
+    context = json.loads(latest.splitlines()[1])
+    assert context == {
+        "advice": initial_advice,
+        "messages": [
+            {"role": "user", "content": "好きな動物は？"},
+            {"role": "assistant", "content": first.json()["message"]},
+            {"role": "user", "content": "どんな猫？"},
+        ],
+    }
+    assert client.post("/debug/conversation/end", json={"session_id": session}).status_code == 200
+    assert send(session, 3, "続きは？").status_code == 404
+    reopened = client.post("/debug/conversation/start", json=anchor).json()["session_id"]
+    assert reopened != session
+    assert send(reopened, 1, "映画も好き？").status_code == 200
+    assert "好きな動物は？" not in prompts[-1]

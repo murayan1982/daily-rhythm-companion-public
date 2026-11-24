@@ -5,7 +5,7 @@ import '../core/production_journey_step.dart';
 import '../core/production_local_advice.dart';
 import '../core/production_mood.dart';
 
-typedef ProductionGeneratedAdvice = ({String message, Widget? audioControls});
+typedef ProductionGeneratedAdvice = ({String message, Widget? resultControls});
 
 typedef ProductionAdviceGenerator =
     Future<ProductionGeneratedAdvice> Function(
@@ -46,7 +46,7 @@ class ProductionDailyAdvice extends StatefulWidget {
 class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
   int _requestId = 0;
   bool _generating = false;
-  ({String message, Widget? audioControls, bool isLocal, bool onlineFailed})?
+  ({String message, Widget? resultControls, bool isLocal, bool onlineFailed})?
   _result;
 
   @override
@@ -90,7 +90,7 @@ class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
       _generating = false;
       _result = (
         message: message,
-        audioControls: onlineResult?.audioControls,
+        resultControls: onlineResult?.resultControls,
         isLocal: onlineResult == null,
         onlineFailed: online != null && onlineResult == null,
       );
@@ -154,7 +154,7 @@ class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
                   style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
                 ),
               ),
-              if (result.audioControls case final controls?) controls,
+              if (result.resultControls case final controls?) controls,
               if (result.onlineFailed)
                 Text(ProductionDailyAdvice.fallbackNotice),
               const SizedBox(height: 10),

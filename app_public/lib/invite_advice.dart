@@ -19,18 +19,26 @@ typedef InviteAdviceTransport =
     );
 typedef InviteAdviceAudioControls =
     Widget Function(ProductionCharacter character, String voiceRef);
+typedef InviteAdviceConversationControls =
+    Widget Function(
+      ProductionCharacter character,
+      String adviceRef,
+      Widget? audioControls,
+    );
 
 class InviteAdviceClient {
   const InviteAdviceClient({
     required this.endpoint,
     this.transport,
     this.audioControls,
+    this.conversationControls,
     this.sleepEndpoint,
   });
 
   final Uri endpoint;
   final InviteAdviceTransport? transport;
   final InviteAdviceAudioControls? audioControls;
+  final InviteAdviceConversationControls? conversationControls;
   final Uri? sleepEndpoint;
   static final _voiceRefPattern = RegExp(r'^[A-Za-z0-9_-]{32}$');
 
@@ -42,7 +50,7 @@ class InviteAdviceClient {
   }) async {
     final useSleep = sleepEndpoint != null && totalSleepMinutes != null;
     final reply = await (transport ?? _post)(
-      useSleep ? sleepEndpoint! : endpoint,
+      useSleep && conversationControls == null ? sleepEndpoint! : endpoint,
       {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
@@ -59,20 +67,35 @@ class InviteAdviceClient {
 
     final value = jsonDecode(reply.body);
     final voice = audioControls;
-    final expectsVoiceRef = voice != null || useSleep;
+    final conversation = conversationControls;
+    final fields = conversation != null
+        ? 3
+        : voice != null || useSleep
+        ? 2
+        : 1;
     if (value is Map<String, dynamic> &&
-        value.length == (expectsVoiceRef ? 2 : 1) &&
+        value.length == fields &&
         value['message'] is String) {
       final message = (value['message'] as String).trim();
       final ref = value['voice_ref'];
+      final adviceRef = value['advice_ref'];
       final validReference =
-          !expectsVoiceRef ||
+          fields == 1 ||
           (value.containsKey('voice_ref') &&
               (ref == null || ref is String && _voiceRefPattern.hasMatch(ref)));
-      if (message.isNotEmpty && message.runes.length <= 240 && validReference) {
+      final validAdviceRef =
+          conversation == null ||
+          adviceRef is String && _voiceRefPattern.hasMatch(adviceRef);
+      if (message.isNotEmpty &&
+          message.runes.length <= 240 &&
+          validReference &&
+          validAdviceRef) {
+        final audio = ref is String ? voice?.call(character, ref) : null;
         return (
           message: message,
-          audioControls: ref is String ? voice?.call(character, ref) : null,
+          resultControls: conversation == null
+              ? audio
+              : conversation(character, adviceRef as String, audio),
         );
       }
     }

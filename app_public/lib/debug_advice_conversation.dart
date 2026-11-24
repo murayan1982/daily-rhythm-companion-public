@@ -15,19 +15,20 @@ typedef DebugChatReply = ({
 class DebugAdviceConversation extends StatefulWidget {
   const DebugAdviceConversation({
     required this.character,
-    required this.adviceTag,
-    required this.playback,
+    this.adviceTag = 'idle',
+    this.playback,
     required this.start,
     required this.send,
     required this.end,
-    required this.voice,
+    this.voice,
+    this.textOnly = false,
     required this.onClose,
     super.key,
-  });
+  }) : assert(textOnly || (playback != null && voice != null));
 
   final ProductionCharacter character;
   final String adviceTag;
-  final DebugAdvicePlayback playback;
+  final DebugAdvicePlayback? playback;
   final Future<DebugChatSession> Function() start;
   final Future<DebugChatReply> Function(
     String sessionId,
@@ -36,7 +37,8 @@ class DebugAdviceConversation extends StatefulWidget {
   )
   send;
   final Future<void> Function(String sessionId) end;
-  final DebugAdviceVoice Function(String sessionId) voice;
+  final DebugAdviceVoice Function(String sessionId)? voice;
+  final bool textOnly;
   final VoidCallback onClose;
 
   @override
@@ -50,22 +52,29 @@ class _DebugAdviceConversationState extends State<DebugAdviceConversation> {
   DebugChatSession? _session;
   String? _pendingQuestion;
   String? _error;
-  bool _busy = true;
+  late bool _busy;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_start());
+    _busy = !widget.textOnly;
+    if (_busy) unawaited(_start());
+  }
+
+  Future<DebugChatSession?> _openSession() async {
+    final end = widget.end;
+    final session = await widget.start();
+    if (!mounted) {
+      unawaited(_end(end, session.id));
+      return null;
+    }
+    return session;
   }
 
   Future<void> _start() async {
-    final end = widget.end;
     try {
-      final session = await widget.start();
-      if (!mounted) {
-        unawaited(_end(end, session.id));
-        return;
-      }
+      final session = await _openSession();
+      if (session == null || !mounted) return;
       setState(() {
         _session = session;
         _busy = false;
@@ -80,21 +89,24 @@ class _DebugAdviceConversationState extends State<DebugAdviceConversation> {
   }
 
   Future<void> _send() async {
-    final session = _session;
+    final current = _session;
     final question = _input.text.trim();
-    if (session == null ||
+    if ((current == null && !widget.textOnly) ||
         _busy ||
-        _turns.length >= session.turnLimit ||
+        (current != null && _turns.length >= current.turnLimit) ||
         question.isEmpty) {
       return;
     }
-    widget.playback.stop();
+    widget.playback?.stop();
     setState(() {
       _pendingQuestion = question;
       _busy = true;
       _error = null;
     });
     try {
+      final session = current ?? await _openSession();
+      if (session == null || !mounted) return;
+      if (current == null) setState(() => _session = session);
       final reply = await widget.send(session.id, _turns.length + 1, question);
       if (!mounted) return;
       setState(() {
@@ -140,10 +152,12 @@ class _DebugAdviceConversationState extends State<DebugAdviceConversation> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         OutlinedButton(onPressed: widget.onClose, child: const Text('会話を終了')),
-        DebugAdviceExpression(
-          widget.character,
-          latest?.expressionTag ?? widget.adviceTag,
-        ),
+        if (widget.textOnly) const Text('メッセージと直前のアドバイスを返信の生成に使います。'),
+        if (!widget.textOnly)
+          DebugAdviceExpression(
+            widget.character,
+            latest?.expressionTag ?? widget.adviceTag,
+          ),
         for (final turn in _turns) ...[
           Text('あなた：${turn.question}'),
           Semantics(
@@ -151,28 +165,36 @@ class _DebugAdviceConversationState extends State<DebugAdviceConversation> {
             child: Text('$name：${turn.reply.message}'),
           ),
         ],
-        if (session != null && latest != null && !_busy)
+        if (!widget.textOnly && session != null && latest != null && !_busy)
           if (latest.voiceRef case final ref?)
             DebugAdvicePlaybackControls(
-              playback: widget.playback,
-              voice: widget.voice(session.id),
+              playback: widget.playback!,
+              voice: widget.voice!(session.id),
               input: ref,
             )
           else
             Text('$nameの読み上げは利用できません。'),
-        if (session != null && !full) ...[
+        if ((session != null || widget.textOnly) && !full) ...[
           TextField(
             controller: _input,
             readOnly: _pendingQuestion != null,
             maxLength: 400,
             minLines: 1,
             maxLines: 3,
-            decoration: const InputDecoration(labelText: '質問'),
+            decoration: InputDecoration(
+              labelText: widget.textOnly ? 'メッセージ' : '質問',
+            ),
             onChanged: (_) => setState(() {}),
           ),
           TextButton(
             onPressed: !_busy && _input.text.trim().isNotEmpty ? _send : null,
-            child: Text(_error == null ? '質問を送る' : '質問を再試行'),
+            child: Text(
+              widget.textOnly
+                  ? '送信'
+                  : _error == null
+                  ? '質問を送る'
+                  : '質問を再試行',
+            ),
           ),
         ],
         if (full) const Text('この会話の上限に達しました。'),
@@ -183,7 +205,7 @@ class _DebugAdviceConversationState extends State<DebugAdviceConversation> {
           ),
         if (_error case final error?)
           Semantics(liveRegion: true, child: Text(error)),
-        if (_error != null && session == null)
+        if (_error != null && session == null && !widget.textOnly)
           TextButton(
             onPressed: () {
               setState(() {
