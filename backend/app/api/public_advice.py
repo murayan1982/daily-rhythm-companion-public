@@ -55,6 +55,17 @@ def create_public_advice(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
     runtime: Annotated[PublicAdviceRuntime | None, Depends(get_public_advice_runtime)],
 ) -> PublicAdviceResponse:
+    return generate_validated_advice(request, response, credentials, runtime)
+
+
+def generate_validated_advice(
+    request: PublicAdviceRequest,
+    response: Response,
+    credentials: HTTPAuthorizationCredentials | None,
+    runtime: PublicAdviceRuntime | None,
+    *,
+    total_sleep_minutes: int | None = None,
+) -> PublicAdviceResponse:
     if runtime is None:
         raise HTTPException(503, "advice_unavailable", headers=_NO_STORE)
 
@@ -67,6 +78,10 @@ def create_public_advice(
             401, "authentication_required", headers={**_NO_STORE, "WWW-Authenticate": "Bearer"}
         )
 
+    generate_with_sleep = runtime.generate_with_sleep
+    if total_sleep_minutes is not None and generate_with_sleep is None:
+        raise HTTPException(503, "advice_unavailable", headers=_NO_STORE)
+
     try:
         exceeded = runtime.quota.reserve(user_id)
     except Exception:
@@ -75,9 +90,15 @@ def create_public_advice(
         raise HTTPException(429, exceeded, headers=_NO_STORE)
 
     try:
-        reply = PublicAdviceResponse(
-            message=runtime.generate(mood=request.mood, character_id=request.character_id)
-        )
+        if total_sleep_minutes is not None and generate_with_sleep is not None:
+            message = generate_with_sleep(
+                mood=request.mood,
+                character_id=request.character_id,
+                total_sleep_minutes=total_sleep_minutes,
+            )
+        else:
+            message = runtime.generate(mood=request.mood, character_id=request.character_id)
+        reply = PublicAdviceResponse(message=message)
     except Exception:
         raise HTTPException(502, "upstream_failure", headers=_NO_STORE) from None
 

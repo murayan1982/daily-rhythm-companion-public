@@ -23,11 +23,18 @@ class AdviceGenerator(Protocol):
         ...
 
 
+class SleepAdviceGenerator(Protocol):
+    def __call__(
+        self, *, mood: AdviceMood, character_id: AdviceCharacterId, total_sleep_minutes: int
+    ) -> str: ...
+
+
 @dataclass(frozen=True)
 class PublicAdviceRuntime:
     authenticate: Callable[[str], str | None]
     quota: AdviceQuota
     generate: AdviceGenerator
+    generate_with_sleep: SleepAdviceGenerator | None = None
 
 
 class LocalAdviceTokenVerifier:

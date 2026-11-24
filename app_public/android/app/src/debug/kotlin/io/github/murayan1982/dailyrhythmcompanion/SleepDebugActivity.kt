@@ -5,6 +5,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.IOException
 
 class SleepDebugActivity : MainActivity() {
+    override val allowsSleepAdvice = true
     private var minaAudio: DebugMinaAudio? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

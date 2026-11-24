@@ -6,6 +6,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 open class MainActivity : FlutterActivity() {
+    protected open val allowsSleepAdvice = false
     private var sleepReader: HealthConnectSleepReader? = null
     private var sleepChannel: MethodChannel? = null
 
@@ -21,7 +22,11 @@ open class MainActivity : FlutterActivity() {
                 Build.VERSION.SDK_INT < 34 -> result.success(mapOf("status" to "unavailable"))
                 else -> {
                     val reader = sleepReader ?: HealthConnectSleepReader(this).also { sleepReader = it }
-                    reader.read(result)
+                    reader.read(
+                        result,
+                        includeActualSleep = allowsSleepAdvice &&
+                            call.argument<Boolean>("includeActualSleep") == true,
+                    )
                 }
             }
         }

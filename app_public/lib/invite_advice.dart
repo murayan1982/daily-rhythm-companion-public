@@ -17,20 +17,32 @@ typedef InviteAdviceTransport =
       Map<String, String> headers,
       String body,
     );
+typedef InviteAdviceAudioControls =
+    Widget Function(ProductionCharacter character, String voiceRef);
 
 class InviteAdviceClient {
-  const InviteAdviceClient({required this.endpoint, this.transport});
+  const InviteAdviceClient({
+    required this.endpoint,
+    this.transport,
+    this.audioControls,
+    this.sleepEndpoint,
+  });
 
   final Uri endpoint;
   final InviteAdviceTransport? transport;
+  final InviteAdviceAudioControls? audioControls;
+  final Uri? sleepEndpoint;
+  static final _voiceRefPattern = RegExp(r'^[A-Za-z0-9_-]{32}$');
 
-  Future<String> generate({
+  Future<ProductionGeneratedAdvice> generate({
     required ProductionMood mood,
     required ProductionCharacter character,
     required String token,
+    int? totalSleepMinutes,
   }) async {
+    final useSleep = sleepEndpoint != null && totalSleepMinutes != null;
     final reply = await (transport ?? _post)(
-      endpoint,
+      useSleep ? sleepEndpoint! : endpoint,
       {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
@@ -38,6 +50,7 @@ class InviteAdviceClient {
       jsonEncode({
         'mood': productionMoodOptionFor(mood).code,
         'character_id': productionCharacterOptionFor(character).characterId,
+        if (useSleep) 'total_sleep_minutes': totalSleepMinutes,
       }),
     );
     if (reply.status != 200) {
@@ -45,12 +58,22 @@ class InviteAdviceClient {
     }
 
     final value = jsonDecode(reply.body);
+    final voice = audioControls;
+    final expectsVoiceRef = voice != null || useSleep;
     if (value is Map<String, dynamic> &&
-        value.length == 1 &&
+        value.length == (expectsVoiceRef ? 2 : 1) &&
         value['message'] is String) {
       final message = (value['message'] as String).trim();
-      if (message.isNotEmpty && message.runes.length <= 240) {
-        return message;
+      final ref = value['voice_ref'];
+      final validReference =
+          !expectsVoiceRef ||
+          (value.containsKey('voice_ref') &&
+              (ref == null || ref is String && _voiceRefPattern.hasMatch(ref)));
+      if (message.isNotEmpty && message.runes.length <= 240 && validReference) {
+        return (
+          message: message,
+          audioControls: ref is String ? voice?.call(character, ref) : null,
+        );
       }
     }
     throw const FormatException('Invalid invite advice response');
@@ -119,6 +142,8 @@ class _InviteAdviceAppState extends State<InviteAdviceApp> {
   late bool _showToken = widget.initiallyShowToken;
   static final _tokenSyntax = RegExp(r'^[a-zA-Z0-9_-]{1,128}$');
   ProductionAdviceGenerator? _generateOnline;
+  int? _actualSleepMinutes;
+  bool _includeSleep = false;
 
   void _updateToken(String value) {
     final token = value.trim();
@@ -128,9 +153,16 @@ class _InviteAdviceAppState extends State<InviteAdviceApp> {
               mood: mood,
               character: character,
               token: token,
+              totalSleepMinutes: _includeSleep ? _actualSleepMinutes : null,
             )
           : null;
     });
+  }
+
+  void _updateSleepMinutes(int? minutes) {
+    if (_actualSleepMinutes == minutes) return;
+    _actualSleepMinutes = minutes;
+    if (_includeSleep) _updateToken(_token.text);
   }
 
   @override
@@ -142,7 +174,11 @@ class _InviteAdviceAppState extends State<InviteAdviceApp> {
   @override
   Widget build(BuildContext context) {
     return ProductionApp(
-      journeyHeader: const HealthConnectSleepCard(),
+      journeyHeader: HealthConnectSleepCard(
+        onActualSleepMinutesChanged: widget.client.sleepEndpoint == null
+            ? null
+            : _updateSleepMinutes,
+      ),
       characterPortrait: buildBundledCharacterPortrait,
       onlineAdvice: (
         generate: _generateOnline,
@@ -164,6 +200,17 @@ class _InviteAdviceAppState extends State<InviteAdviceApp> {
                 enableSuggestions: false,
                 enableIMEPersonalizedLearning: false,
                 onChanged: _updateToken,
+              ),
+            if (widget.client.sleepEndpoint != null)
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('睡眠時間をアドバイスに使う'),
+                subtitle: const Text('オンにすると、取得済みの実睡眠時間（分）をアドバイス生成先に送信します。'),
+                value: _includeSleep,
+                onChanged: (value) {
+                  _includeSleep = value;
+                  _updateToken(_token.text);
+                },
               ),
           ],
         ),

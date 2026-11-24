@@ -21,6 +21,11 @@ from app.services.debug_advice_conversation import (
     DebugAdviceConversationStore,
 )
 from app.services.framework_voice_output_adapter import FrameworkVoiceOutputResult
+from app.services.public_advice import (
+    InMemoryDailyAdviceQuota,
+    LocalAdviceTokenVerifier,
+    PublicAdviceRuntime,
+)
 from app.services.voice_output_artifact_store import VoiceOutputArtifactStore
 
 
@@ -40,6 +45,7 @@ _MINA_AUDIO = "/debug/mina/voice"
 _ADVICE_INPUT = {"mood": "tired", "character_id": "gentle_mina"}
 _CHARACTER_ADVICE = "/debug/character/ai-advice"
 _CHARACTER_AUDIO = "/debug/character/voice"
+_INVITE_ADVICE = "/debug/invite/advice"
 _CHARACTERS = {
     "gentle_mina": ("今日は短い休憩を入れましょう。", "thinking", "MINA", _VOICE),
     "cheerful_sora": ("元気に一歩ずつ進もう。", "happy", "SORA", "offline-sora"),
@@ -340,6 +346,106 @@ def test_missing_character_voice_keeps_advice_without_an_audio_reference(
     monkeypatch.delenv("DRC_DEBUG_SORA_ELEVENLABS_VOICE_ID")
     rejected = client.post(_CHARACTER_AUDIO, json={"character_id": "cheerful_sora", "voice_ref": issued})
     assert rejected.status_code == 200 and not rejected.json()["accepted"] and not calls
+
+
+@pytest.mark.parametrize("character_id", _CHARACTERS)
+def test_invite_voice_plays_the_validated_text_with_the_selected_voice(
+    local_voice, generated_advice, monkeypatch, character_id
+):
+    client, calls, _, _ = local_voice
+    text, _, voice_key, voice_id = _CHARACTERS[character_id]
+    monkeypatch.setenv(f"DRC_DEBUG_{voice_key}_ELEVENLABS_VOICE_ID", voice_id)
+    requests = []
+
+    def generate(**selection):
+        requests.append(selection)
+        return f"  {text}  "
+
+    monkeypatch.setattr(
+        app.state,
+        "public_advice_runtime",
+        PublicAdviceRuntime(
+            authenticate=LocalAdviceTokenVerifier({"test-token": "tester"}),
+            quota=InMemoryDailyAdviceQuota(per_user=1, total=1),
+            generate=generate,
+        ),
+        raising=False,
+    )
+    selection = {**_ADVICE_INPUT, "character_id": character_id}
+    headers = {"Authorization": "Bearer test-token"}
+    assert client.post(_INVITE_ADVICE, json=selection).status_code == 401
+    assert client.post(
+        _INVITE_ADVICE, json={**selection, "sleep_summary": {}}, headers=headers
+    ).status_code == 422
+    assert not requests
+
+    response = client.post(_INVITE_ADVICE, json=selection, headers=headers)
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    advice = response.json()
+    assert advice["message"] == text
+    assert requests == [selection]
+    assert client.post(_INVITE_ADVICE, json=selection, headers=headers).status_code == 429
+    other = next(other for other in _CHARACTERS if other != character_id)
+    voice = {"character_id": character_id, "voice_ref": advice["voice_ref"]}
+    assert client.post(_CHARACTER_AUDIO, json={**voice, "character_id": other}).status_code == 404
+    assert not calls
+
+    audio = client.post(_CHARACTER_AUDIO, json=voice)
+    assert audio.status_code == 200 and audio.json()["audio_ready"]
+    downloaded = client.get(audio.json()["audio_url"])
+    assert downloaded.status_code == 200 and downloaded.content == _MP3
+    assert [(call["text"], call["voice_id"]) for call in calls] == [(text, voice_id)]
+
+
+def test_invite_voice_route_is_disabled_by_default(local_voice, monkeypatch):
+    client, calls, _, _ = local_voice
+    monkeypatch.setattr(debug_advice, "config", AppConfig())
+    assert client.post(_INVITE_ADVICE, json=_ADVICE_INPUT).status_code == 503
+    assert not calls
+
+
+def test_invite_sleep_duration_reaches_only_the_development_generator(
+    local_voice, generated_advice, monkeypatch
+):
+    client, audio_calls, _, _ = local_voice
+    plain = []
+    with_sleep = []
+
+    def generate(**selection):
+        plain.append(selection)
+        return "気分に合わせてひと息つきましょう。"
+
+    def generate_with_sleep(**selection):
+        with_sleep.append(selection)
+        return "眠れた時間を踏まえてゆっくり始めましょう。"
+
+    monkeypatch.setattr(
+        app.state,
+        "public_advice_runtime",
+        PublicAdviceRuntime(
+            authenticate=LocalAdviceTokenVerifier({"test-token": "tester"}),
+            quota=InMemoryDailyAdviceQuota(per_user=2, total=2),
+            generate=generate,
+            generate_with_sleep=generate_with_sleep,
+        ),
+        raising=False,
+    )
+    headers = {"Authorization": "Bearer test-token"}
+    payload = {**_ADVICE_INPUT, "total_sleep_minutes": 367}
+    assert client.post("/v1/advice", json=payload, headers=headers).status_code == 422
+    for invalid in (0, -1, 1441, "367", True):
+        assert client.post(
+            _INVITE_ADVICE, json={**payload, "total_sleep_minutes": invalid}, headers=headers
+        ).status_code == 422
+    assert client.post(
+        _INVITE_ADVICE, json={**payload, "bedtime": "01:00"}, headers=headers
+    ).status_code == 422
+    assert client.post(_INVITE_ADVICE, json=payload, headers=headers).status_code == 200
+    assert client.post(_INVITE_ADVICE, json=_ADVICE_INPUT, headers=headers).status_code == 200
+    assert with_sleep == [payload]
+    assert plain == [_ADVICE_INPUT]
+    assert not audio_calls
 
 
 @pytest.mark.parametrize("character_id", _CHARACTERS)

@@ -128,6 +128,8 @@ class DebugAdvicePlaybackControls extends StatelessWidget {
     required this.voice,
     required this.input,
     this.unavailableMessage = 'ミナの開発用音声設定が必要です。',
+    this.playLabel = '再生',
+    this.replacePlayWithStop = false,
     super.key,
   });
 
@@ -135,6 +137,8 @@ class DebugAdvicePlaybackControls extends StatelessWidget {
   final DebugAdviceVoice? voice;
   final String input;
   final String unavailableMessage;
+  final String playLabel;
+  final bool replacePlayWithStop;
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
@@ -145,12 +149,13 @@ class DebugAdvicePlaybackControls extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (output == null) Text(unavailableMessage),
-          TextButton(
-            onPressed: output == null || playback.busy
-                ? null
-                : () => playback.play(output, input),
-            child: const Text('再生'),
-          ),
+          if (!playback.busy || !replacePlayWithStop)
+            TextButton(
+              onPressed: output == null || playback.busy
+                  ? null
+                  : () => playback.play(output, input),
+              child: Text(playLabel),
+            ),
           if (playback.busy)
             TextButton(onPressed: playback.stop, child: const Text('停止')),
           if (playback.status case final status?)

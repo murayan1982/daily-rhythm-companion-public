@@ -4,14 +4,18 @@ from threading import Lock
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
 
+from app.api import public_advice
 from app.config import load_config
 from app.models.advice import (
     AdviceCharacterId as DebugCharacterId,
     AdviceMessage,
     AdviceMood,
     AdviceRequest,
+    PublicAdviceRequest,
+    PublicAdviceResponse,
 )
 from app.models.character import CharacterContext
 from app.models.chat import ChatMessage
@@ -30,6 +34,7 @@ from app.services.framework_text_chat_drc_live_reply import (
     FrameworkTextChatDrcLiveReplyService,
 )
 from app.services.mina_voice_output import DebugVoiceSynthesisError, MINA_VOICE_OUTPUT_MODE
+from app.services.public_advice import PublicAdviceRuntime
 from app.services.voice_output_demo_service import VoiceOutputDemoService
 
 
@@ -64,6 +69,14 @@ class DebugMinaAdviceResponse(DebugAdviceResponse):
 
 class DebugCharacterAdviceResponse(DebugAdviceResponse):
     voice_ref: str | None
+
+
+class DebugInviteAdviceResponse(PublicAdviceResponse):
+    voice_ref: str | None
+
+
+class DebugInviteAdviceRequest(PublicAdviceRequest):
+    total_sleep_minutes: int | None = Field(default=None, strict=True, ge=1, le=1440)
 
 
 class DebugConversationAdviceResponse(DebugCharacterAdviceResponse):
@@ -110,6 +123,7 @@ class DebugMinaVoiceResponse(BaseModel):
 
 
 router = APIRouter(prefix="/debug")
+invite_router = APIRouter(prefix="/debug/invite", route_class=public_advice.PublicAdviceRoute)
 config = load_config()
 characters = {preset.character_id: preset for preset in CharacterService().list_presets()}
 provider_lock = Lock()
@@ -124,6 +138,28 @@ conversations = DebugAdviceConversationStore(
 def _require_debug_advice() -> None:
     if not config.debug_ai_advice_enabled:
         raise HTTPException(status_code=503, detail="Debug AI advice is disabled.")
+
+
+@invite_router.post("/advice", response_model=DebugInviteAdviceResponse)
+def create_debug_invite_advice(
+    request: DebugInviteAdviceRequest,
+    response: Response,
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None, Depends(public_advice.bearer)
+    ],
+    runtime: Annotated[
+        PublicAdviceRuntime | None, Depends(public_advice.get_public_advice_runtime)
+    ],
+) -> DebugInviteAdviceResponse:
+    _require_debug_advice()
+    advice = public_advice.generate_validated_advice(
+        request, response, credentials, runtime,
+        total_sleep_minutes=request.total_sleep_minutes,
+    )
+    return DebugInviteAdviceResponse(
+        message=advice.message,
+        voice_ref=_issue_character_voice_ref(request.character_id, advice.message),
+    )
 
 
 def get_debug_advice_provider() -> FrameworkTextChatDrcLiveReplyService:
@@ -217,16 +253,18 @@ def create_debug_character_advice(
     provider: Annotated[FrameworkTextChatDrcLiveReplyService, Depends(get_debug_advice_provider)],
 ) -> DebugCharacterAdviceResponse:
     advice = create_debug_advice(request, provider)
-    service = VoiceOutputDemoService(load_config())
-    voice_ref = (
-        advice_voice.issue(request.character_id, advice.message)
-        if service.generated_voice_available(request.character_id)
-        else None
-    )
     response.headers["Cache-Control"] = "no-store"
     return DebugCharacterAdviceResponse(
-        message=advice.message, expression_tag=advice.expression_tag, voice_ref=voice_ref
+        message=advice.message,
+        expression_tag=advice.expression_tag,
+        voice_ref=_issue_character_voice_ref(request.character_id, advice.message),
     )
+
+
+def _issue_character_voice_ref(character_id: str, message: str) -> str | None:
+    if not VoiceOutputDemoService(load_config()).generated_voice_available(character_id):
+        return None
+    return advice_voice.issue(character_id, message)
 
 
 @router.post("/conversation/advice", response_model=DebugConversationAdviceResponse)

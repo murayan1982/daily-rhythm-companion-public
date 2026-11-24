@@ -141,3 +141,10 @@ DRC の費用予約は各512マイクロドルで、今回の8件で合計4,096�
 - Gemini への送信は1回で再試行はなかった。入力は70トークン、回答は47トークンで、終了理由は `STOP` だった。
 - Gemini への送信前に512マイクロドルを予約し、応答後も保持した。思考・キャッシュのトークン数と実請求額は未確認。
 - 検証後、FastAPI、検証用 PostgreSQL、Flutter を停止し、今回設定した USB 転送を解除した。
+
+### Health Connect の睡眠時間を使った Gemini 実機確認
+
+- A301OP の招待制開発ビルドで「ふつう × ミナ」を選び、「睡眠時間をアドバイスに使う」をオンにして「アドバイス生成」を1回押した。
+- USB 転送経由の `POST /debug/invite/advice` で、`total_sleep_minutes` は睡眠カードの表示、Windows Backend の受信値、Gemini への送信値で一致した。
+- Backend と Gemini はともに HTTP 200。Gemini への送信は1回で再試行はなく、生成本文が端末に表示された。
+- 検証後、FastAPI、PostgreSQL、開発アプリを停止し、今回設定した USB 転送を解除した。

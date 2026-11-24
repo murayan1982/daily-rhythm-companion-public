@@ -1,6 +1,7 @@
 package io.github.murayan1982.dailyrhythmcompanion
 
 import android.app.Activity
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
@@ -8,6 +9,7 @@ import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
 import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.SleepSessionRecord.StageType
 import android.os.Bundle
 import android.os.OutcomeReceiver
 import android.widget.ScrollView
@@ -20,13 +22,15 @@ import java.time.ZoneId
 @android.annotation.TargetApi(34)
 internal class HealthConnectSleepReader(private val activity: Activity) {
     private var pending: MethodChannel.Result? = null
+    private var includeActualSleep = false
 
-    fun read(result: MethodChannel.Result) {
+    fun read(result: MethodChannel.Result, includeActualSleep: Boolean = false) {
         if (pending != null) {
             result.error("busy", null, null)
             return
         }
         pending = result
+        this.includeActualSleep = includeActualSleep
         try {
             when {
                 activity.getSystemService(HealthConnectManager::class.java) == null ->
@@ -100,11 +104,14 @@ internal class HealthConnectSleepReader(private val activity: Activity) {
                             } else if (best == null) {
                                 complete("empty")
                             } else {
-                                complete("ok", mapOf(
-                                    "start" to best.startTime.toEpochMilli(),
-                                    "end" to best.endTime.toEpochMilli(),
-                                    "minutes" to Duration.between(best.startTime, best.endTime).toMinutes(),
-                                ))
+                                complete("ok", buildMap {
+                                    put("start", best.startTime.toEpochMilli())
+                                    put("end", best.endTime.toEpochMilli())
+                                    put("minutes", Duration.between(best.startTime, best.endTime).toMinutes())
+                                    if (includeActualSleep) {
+                                        actualSleepMinutes(best)?.let { put("actualSleepMinutes", it) }
+                                    }
+                                })
                             }
                         }
 
@@ -129,6 +136,18 @@ internal class HealthConnectSleepReader(private val activity: Activity) {
         result?.success(data + ("status" to status))
     }
 
+    private fun actualSleepMinutes(session: SleepSessionRecord): Long? =
+        session.stages.fold(Duration.ZERO) { total, stage ->
+            when (stage.type) {
+                StageType.STAGE_TYPE_SLEEPING,
+                StageType.STAGE_TYPE_SLEEPING_LIGHT,
+                StageType.STAGE_TYPE_SLEEPING_DEEP,
+                StageType.STAGE_TYPE_SLEEPING_REM,
+                -> total.plus(Duration.between(stage.startTime, stage.endTime))
+                else -> total
+            }
+        }.toMinutes().takeIf { it in 1L..1440L }
+
     private companion object {
         const val READ_SLEEP = "android.permission.health.READ_SLEEP"
         const val SLEEP_REQUEST = 71
@@ -141,8 +160,14 @@ class SleepPermissionUsageActivity : Activity() {
         val padding = (24 * resources.displayMetrics.density).toInt()
         val description = TextView(this).apply {
             setPadding(padding, padding, padding, padding)
+            val sleepUse = if ((applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+                "開始・終了時刻と睡眠ステージの明細は保存・送信しません。" +
+                    "開発版で「睡眠時間をアドバイスに使う」をオンにして生成した場合のみ、集計した分数を生成先に送信します。"
+            } else {
+                "記録は保存・送信しません。"
+            }
             text = "昨夜の睡眠記録を端末内に表示するため、睡眠の読み取り許可を使います。" +
-                "記録は保存・送信しません。許可は Android の設定で取り消せます。"
+                sleepUse + "許可は Android の設定で取り消せます。"
         }
         setContentView(ScrollView(this).apply { addView(description) })
     }

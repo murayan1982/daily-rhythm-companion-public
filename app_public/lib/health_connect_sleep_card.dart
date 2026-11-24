@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class HealthConnectSleepCard extends StatefulWidget {
-  const HealthConnectSleepCard({super.key});
+  const HealthConnectSleepCard({super.key, this.onActualSleepMinutesChanged});
+
+  final ValueChanged<int?>? onActualSleepMinutesChanged;
 
   @override
   State<HealthConnectSleepCard> createState() => _HealthConnectSleepCardState();
@@ -38,6 +40,7 @@ class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
         _showingRecord = false;
         _message = _initial;
       });
+      widget.onActualSleepMinutesChanged?.call(null);
     }
   }
 
@@ -48,6 +51,8 @@ class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
 
   Future<void> _readSleep() async {
     if (_loading) return;
+    final onActualSleep = widget.onActualSleepMinutesChanged;
+    onActualSleep?.call(null);
     setState(() {
       _loading = true;
       _showingRecord = false;
@@ -55,9 +60,13 @@ class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
     });
 
     var showingRecord = false;
+    int? actualSleepMinutes;
     String message;
     try {
-      final result = await _channel.invokeMapMethod<String, Object?>('read');
+      final result = await _channel.invokeMapMethod<String, Object?>(
+        'read',
+        onActualSleep == null ? null : {'includeActualSleep': true},
+      );
       if (!mounted) return;
       message = switch (result?['status']) {
         'denied' => '睡眠の読み取りが許可されていません。',
@@ -77,6 +86,16 @@ class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
         message = showingRecord
             ? _formatSession(start, end, minutes)
             : _initial;
+        final actual = result['actualSleepMinutes'];
+        if (showingRecord &&
+            onActualSleep != null &&
+            actual is int &&
+            actual > 0 &&
+            actual <= minutes &&
+            actual <= 1440) {
+          actualSleepMinutes = actual;
+          message = '$message\n実睡眠時間 $actual 分';
+        }
       }
     } on PlatformException {
       message = _error;
@@ -90,6 +109,7 @@ class _HealthConnectSleepCardState extends State<HealthConnectSleepCard>
       _showingRecord = showingRecord;
       _loading = false;
     });
+    onActualSleep?.call(actualSleepMinutes);
   }
 
   String _formatSession(int start, int end, int minutes) {

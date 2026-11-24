@@ -353,6 +353,39 @@ def gemini_mock_reply(*, prompt_tokens=79, thoughts_tokens=15, finish_reason="ST
     })
 
 
+def test_gemini_development_prompt_includes_actual_minutes_within_input_limit():
+    sdk = pytest.importorskip("google.genai")
+    if sdk.__version__ != GEMINI_SDK_VERSION:
+        pytest.skip(f"This transport test requires google-genai {GEMINI_SDK_VERSION}.")
+    sent = []
+    counted = []
+
+    def handle(request):
+        prompt = json.loads(request.content)["contents"][0]["parts"][0]["text"]
+        sent.append(prompt)
+        return gemini_mock_reply()
+
+    def count(system, prompt):
+        assert system == SYSTEM_INSTRUCTION
+        counted.append(prompt)
+        return 513 if "999 minutes" in prompt else 80
+
+    with gemini_advice_runtime(
+        "unused", per_user=1, total=1, api_key="mock-only",
+        count_input_tokens=count, transport=httpx.MockTransport(handle),
+    ) as runtime:
+        generate = runtime.generate_with_sleep
+        assert generate is not None
+        assert generate(mood="normal", character_id="gentle_mina", total_sleep_minutes=367)
+        with pytest.raises(ValueError, match="outside the reviewed limit"):
+            generate(mood="normal", character_id="gentle_mina", total_sleep_minutes=999)
+
+    assert sent == [
+        "Actual sleep last night: 367 minutes.\n" + advice_prompt("normal", "gentle_mina")
+    ]
+    assert counted[-2] == sent[0]
+
+
 def test_gemini_candidate_sends_only_the_bounded_request(db, gemini_candidate):
     dsn, connect = db
     control = PostgresAdviceGenerationControl(dsn)

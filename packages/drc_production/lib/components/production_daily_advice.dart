@@ -5,8 +5,13 @@ import '../core/production_journey_step.dart';
 import '../core/production_local_advice.dart';
 import '../core/production_mood.dart';
 
+typedef ProductionGeneratedAdvice = ({String message, Widget? audioControls});
+
 typedef ProductionAdviceGenerator =
-    Future<String> Function(ProductionMood mood, ProductionCharacter character);
+    Future<ProductionGeneratedAdvice> Function(
+      ProductionMood mood,
+      ProductionCharacter character,
+    );
 
 typedef ProductionOnlineAdvice = ({
   Widget settings,
@@ -41,7 +46,8 @@ class ProductionDailyAdvice extends StatefulWidget {
 class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
   int _requestId = 0;
   bool _generating = false;
-  ({String message, bool isLocal, bool onlineFailed})? _result;
+  ({String message, Widget? audioControls, bool isLocal, bool onlineFailed})?
+  _result;
 
   @override
   void didUpdateWidget(ProductionDailyAdvice oldWidget) {
@@ -61,7 +67,7 @@ class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
     if (_generating || mood == null || character == null) return;
 
     final online = widget.onlineAdvice?.generate;
-    String? aiMessage;
+    ProductionGeneratedAdvice? onlineResult;
     if (online != null) {
       FocusScope.of(context).unfocus();
       final requestId = ++_requestId;
@@ -70,7 +76,7 @@ class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
         _result = null;
       });
       try {
-        aiMessage = await online(mood, character);
+        onlineResult = await online(mood, character);
       } on Exception {
         // A current request can fall back to the same selection below.
       }
@@ -78,14 +84,15 @@ class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
     }
 
     final message =
-        aiMessage ??
+        onlineResult?.message ??
         productionLocalAdviceFor(mood: mood, character: character).message;
     setState(() {
       _generating = false;
       _result = (
         message: message,
-        isLocal: aiMessage == null,
-        onlineFailed: online != null && aiMessage == null,
+        audioControls: onlineResult?.audioControls,
+        isLocal: onlineResult == null,
+        onlineFailed: online != null && onlineResult == null,
       );
     });
   }
@@ -147,6 +154,7 @@ class _ProductionDailyAdviceState extends State<ProductionDailyAdvice> {
                   style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
                 ),
               ),
+              if (result.audioControls case final controls?) controls,
               if (result.onlineFailed)
                 Text(ProductionDailyAdvice.fallbackNotice),
               const SizedBox(height: 10),

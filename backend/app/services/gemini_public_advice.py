@@ -72,9 +72,9 @@ def gemini_advice_runtime(
             httpx_client=http,
         )
         with genai.Client(vertexai=False, api_key=api_key, http_options=options) as client:
-            def generate(*, mood: AdviceMood, character_id: AdviceCharacterId) -> str:
+            def generate_prompt(prompt: str) -> str:
                 reply = client.models.generate_content(
-                    model=GEMINI_MODEL, contents=prompts[mood, character_id], config=config
+                    model=GEMINI_MODEL, contents=prompt, config=config
                 )
                 usage = reply.usage_metadata
                 if (
@@ -91,10 +91,26 @@ def gemini_advice_runtime(
                     raise ValueError("Gemini advice did not satisfy the reviewed response limits.")
                 return reply.text or ""
 
+            def generate(*, mood: AdviceMood, character_id: AdviceCharacterId) -> str:
+                return generate_prompt(prompts[mood, character_id])
+
+            def generate_with_sleep(
+                *, mood: AdviceMood, character_id: AdviceCharacterId, total_sleep_minutes: int
+            ) -> str:
+                prompt = (
+                    f"Actual sleep last night: {total_sleep_minutes} minutes.\n"
+                    + prompts[mood, character_id]
+                )
+                size = count_input_tokens(SYSTEM_INSTRUCTION, prompt)
+                if type(size) is not int or not 0 < size <= MAX_INPUT_TOKENS:
+                    raise ValueError("Gemini advice input token count is outside the reviewed limit.")
+                return generate_prompt(prompt)
+
             yield PublicAdviceRuntime(
                 authenticate=PostgresAdviceInvites(dsn).authenticate,
                 quota=PostgresDailyAdviceQuota(
                     dsn, per_user=per_user, total=total, maximum_cost=MAXIMUM_COST_MICRODOLLARS
                 ),
                 generate=generate,
+                generate_with_sleep=generate_with_sleep,
             )
