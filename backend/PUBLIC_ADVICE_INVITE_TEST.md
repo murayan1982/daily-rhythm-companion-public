@@ -89,6 +89,28 @@ Render に `test/invite-https` の `f846df7` を配置し、PC のブラウザ�
 
 復帰試験後の A301OP の通常版画面で、招待トークン欄がなく、ミナ・元気の選択に応じた端末内アドバイスが表示された。復帰用 APK の署名検証出力と上書きインストールのログは未採取。
 
+## Render の公開 HTTPS で Gemini を検証する
+
+固定応答用とは別の検証専用 PostgreSQL を、Web Service と同じリージョンに用意する。現在の Render のビルド・起動設定とデプロイ済みコミットを控える。Gemini 用 DB の External URL を運営者 CLI の `DRC_PUBLIC_ADVICE_POSTGRES_DSN` に設定し、`init-db`、`set-monthly-budget 512`、`issue device-gemini-https-check --ttl-hours 1`、`resume` を行う。この予算は検証用の1回分の予約額。実機で最初に使うため、発行した招待を PC からの成功試験に使わない。
+
+Render の同じ Web Service で、`backend` を Root Directory にして以下を設定する。固定応答へ戻す場合は控えておいた設定で再デプロイする。
+
+| 項目 | 値 |
+| --- | --- |
+| Build Command | `python -m pip install -r requirements.txt -r requirements-public-advice-gemini.txt && bash scripts/prepare_gemini_tokenizer.sh` |
+| Start Command | `python -m uvicorn app.public_main:app --host 0.0.0.0 --port "$PORT" --no-access-log` |
+| Health Check Path | `/health` |
+| `DRC_PUBLIC_ADVICE_GEMINI_ENABLED` | `1` |
+| `DRC_PUBLIC_ADVICE_GEMINI_POSTGRES_DSN` | Gemini 検証 DB の Internal URL |
+| `DRC_PUBLIC_ADVICE_GEMINI_API_KEY` | Gemini の検証用 API キー |
+| `DRC_PUBLIC_ADVICE_GEMINI_DAILY_PER_USER` | `1` |
+| `DRC_PUBLIC_ADVICE_GEMINI_DAILY_TOTAL` | `1` |
+| `DRC_GEMINI_TOKENIZER_DIR` | `.gemini-tokenizer` |
+
+ビルドでは固定リビジョンのトークナイザーを取得し、アプリと同じ SHA-256 検証を通す。デプロイ後は `/health` の200と、無効な招待で `POST /v1/advice` が401を返すことを確認する。503の場合は Gemini の起動設定・DB・予算・トークナイザーを確認する。
+
+A301OP の通常版が versionCode 8 の場合は、同じ HTTPS URL を指定して招待候補を versionCode 9 でビルドし、署名を確認して上書きする。有効な招待で生成を1回行い、実機表示と検証 DB に残った1回分の予約を照合する。試験後は招待を失効し、必要なら Gemini 側を停止して固定応答設定に戻す。
+
 ## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
 
 マイクロドル専用のローカル PostgreSQL データベース（例 `drc_advice_gemini_test`）を作成する。合成モデルの台帳や上記のテスト単位の予算は別の DB に置く。以下は `backend` で実行する検証用 PowerShell の例。全ワーカーに同じ DSN と回数上限を設定する。本番の回数上限と月額予算は未決定。
