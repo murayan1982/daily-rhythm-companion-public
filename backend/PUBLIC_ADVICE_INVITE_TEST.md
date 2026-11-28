@@ -125,6 +125,14 @@ A301OP の通常版が versionCode 8 の場合は、同じ HTTPS URL を指定�
 - Gemini 用 DB の当月予約額は512から1024マイクロドルに増え、追加1回分の予約額と一致した。
 - 実際の請求額と成功リクエストの HTTP ステータスは未採取。
 
+#### HTTPS 実機再試験に使用した APK
+
+- ファイル名は `drc-invite-https-vc9.apk`、サイズは47,497,969バイト。
+- アプリ ID は `io.github.murayan1982.dailyrhythmcompanion`、`versionName=4.1.0`、`versionCode=9`。
+- APK の SHA-256 は `A44863C107553B7410E6902D8642186A35350E951E9DAA032CA5F2A81CB6FEAC`。
+- A301OP から取得した単一 APK、ビルド出力、保存済み候補の SHA-256 は一致した。
+- `apksigner` の v2 署名検証に合格。署名証明書の SHA-256 は `271f75fe3b198baca94f31ae2b658c7bfc99881a2cc35c68fe89380bfecf8ce5`。
+
 ## A301OP での招待開発ビルドの音声出力確認（2026-11-28 JST）
 
 A301OP の招待開発ビルドで、睡眠時間の使用をオフにし、「ふつう・ミナ」で生成したアドバイスの音声出力を確認した。画面には生成済みアドバイスと「音声再生」ボタンが表示された。
