@@ -111,6 +111,13 @@ Render の同じ Web Service で、`backend` を Root Directory にして以下�
 
 A301OP の通常版が versionCode 8 の場合は、同じ HTTPS URL を指定して招待候補を versionCode 9 でビルドし、署名を確認して上書きする。有効な招待で生成を1回行い、実機表示と検証 DB に残った1回分の予約を照合する。試験後は招待を失効し、必要なら Gemini 側を停止して固定応答設定に戻す。
 
+### A301OP での Gemini 公開 HTTPS 検証（2026-11-28 JST）
+
+- Render のデプロイは `5276a61`。起動時に DB 名 `drc_gemini_https_test` を明示すると起動警告が消え、ダミーの招待で HTTP 401 `authentication_required` を確認した。
+- 21:34 JST 頃、A301OP の招待候補 APK（`versionCode=9`）で「ふつう・ミナ」を選び、公開 HTTPS 経由の Gemini 生成結果が画面に表示された。
+- Gemini 用 DB の当月予約額は512マイクロドルで、試験1回分の予約額と一致した。
+- 実際の請求額と、実機で生成結果が表示されたリクエストの HTTP ステータスは未採取。
+
 ## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
 
 マイクロドル専用のローカル PostgreSQL データベース（例 `drc_advice_gemini_test`）を作成する。合成モデルの台帳や上記のテスト単位の予算は別の DB に置く。以下は `backend` で実行する検証用 PowerShell の例。全ワーカーに同じ DSN と回数上限を設定する。本番の回数上限と月額予算は未決定。
