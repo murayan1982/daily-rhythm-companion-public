@@ -1,6 +1,6 @@
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager, ExitStack
-from hashlib import sha256
+from hashlib import file_digest, sha256
 import logging
 import os
 from pathlib import Path
@@ -28,7 +28,11 @@ def load_gemini_input_counter(directory: Path) -> Callable[[str, str], int]:
     from jinja2.sandbox import SandboxedEnvironment
     from tokenizers import Tokenizer
 
-    tokenizer = Tokenizer.from_str(_verified_text(directory / "tokenizer.json", _TOKENIZER_HASH))
+    tokenizer_path = directory / "tokenizer.json"
+    with tokenizer_path.open("rb") as artifact:
+        if file_digest(artifact, "sha256").hexdigest() != _TOKENIZER_HASH:
+            raise ValueError("Unexpected local tokenizer artifact.")
+    tokenizer = Tokenizer.from_file(str(tokenizer_path))
     template = SandboxedEnvironment().from_string(
         _verified_text(directory / "chat_template.jinja", _TEMPLATE_HASH)
     )
