@@ -71,6 +71,19 @@ python -m scripts.public_advice_invite resume
 
 `GET /health` の200と、無効トークンでの `POST /v1/advice` の401を HTTPS 経由で確認してから、同じホストの `/v1/advice` を APK のビルド引数に使う。無料 Web Service を利用する場合は、休止からの起動を待ち、`/health` の200を確認してから端末試験を始める。
 
+### A301OP での固定応答 HTTPS 検証（2026-11-28 JST）
+
+Render に `test/invite-https` の `f846df7` を配置し、PC のブラウザで HTTPS の `/health` が `{"status":"ok"}` を返すことを確認した。Android 側では `main_invite_release.dart` をターゲットに、Render の `/v1/advice` を指定した release APK をビルドし、A301OP に上書きインストールした。
+
+| 実機の操作 | 画面で確認した結果 |
+| --- | --- |
+| オンラインで有効な招待を使って生成 | 固定応答「今日は自分のペースでいこう。」を表示した。 |
+| 同じ招待で再生成 | 端末内アドバイスと取得失敗の案内を表示した。参加者別日次上限1回の設定での想定動作と一致した。 |
+| 機内モードで生成 | 端末内アドバイスと取得失敗の案内を表示した。 |
+| オンラインに戻し、無効な招待で生成 | 端末内アドバイスと取得失敗の案内を表示した。 |
+
+別途、作業環境から同じ公開 HTTPS の `POST /v1/advice` に無効な Bearer トークンと合成入力を送り、HTTP 401（`authentication_required`）を確認した。実機リクエストの HTTP ステータスは未採取で、公開 HTTPS での 429 は未確認。候補 APK の SHA-256、署名証明書、USB 切断状態、通常版への復帰、停止時の実機動作は別途確認する。
+
 ## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
 
 マイクロドル専用のローカル PostgreSQL データベース（例 `drc_advice_gemini_test`）を作成する。合成モデルの台帳や上記のテスト単位の予算は別の DB に置く。以下は `backend` で実行する検証用 PowerShell の例。全ワーカーに同じ DSN と回数上限を設定する。本番の回数上限と月額予算は未決定。
