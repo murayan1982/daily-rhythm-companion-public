@@ -83,7 +83,11 @@ Render に `test/invite-https` の `f846df7` を配置し、PC のブラウザ�
 | オンラインに戻し、無効な招待で生成 | 端末内アドバイスと取得失敗の案内を表示した。 |
 | 運営者による停止中に新規の検証用招待で生成 | 端末内アドバイスと取得失敗の案内を表示した。 |
 
-別途、作業環境から同じ公開 HTTPS の `POST /v1/advice` に無効な Bearer トークンと合成入力を送り、HTTP 401（`authentication_required`）を確認した。Windows PowerShell から同じ公開 HTTPS API に、日次枠を使用済みの参加者向けの招待と合成入力を送り、HTTP 429 を確認した。運営者 CLI で生成を停止し、Windows PowerShell から新規の検証用招待と合成入力を送ると HTTP 503 を返した。試験後は CLI での生成再開と検証用招待の失効を確認した。429・503 の応答本文と実機リクエストの HTTP ステータスは未採取。候補 APK の SHA-256、署名証明書、USB 切断状態、通常版への復帰は別途確認する。
+別途、作業環境から同じ公開 HTTPS の `POST /v1/advice` に無効な Bearer トークンと合成入力を送り、HTTP 401（`authentication_required`）を確認した。Windows PowerShell から同じ公開 HTTPS API に、日次枠を使用済みの参加者向けの招待と合成入力を送り、HTTP 429 を確認した。運営者 CLI で生成を停止し、Windows PowerShell から新規の検証用招待と合成入力を送ると HTTP 503 を返した。試験後は CLI での生成再開と検証用招待の失効を確認した。429・503 の応答本文と実機リクエストの HTTP ステータスは未採取。生成時の USB 切断状態は記録していない。
+
+候補 APK の SHA-256 は `90865A1407054FCA1ECB7CDCF92891EF1597CA867E4E2D722B4B6158E39EE5ED`。`apksigner verify --verbose --print-certs` は `Verifies` を返し、v2 署名が1件だった。署名証明書の SHA-256 は `271f75fe3b198baca94f31ae2b658c7bfc99881a2cc35c68fe89380bfecf8ce5`。
+
+復帰試験後の A301OP の通常版画面で、招待トークン欄がなく、ミナ・元気の選択に応じた端末内アドバイスが表示された。復帰用 APK の署名検証出力と上書きインストールのログは未採取。
 
 ## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
 
