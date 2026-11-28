@@ -82,7 +82,7 @@ Render に `test/invite-https` の `f846df7` を配置し、PC のブラウザ�
 | 機内モードで生成 | 端末内アドバイスと取得失敗の案内を表示した。 |
 | オンラインに戻し、無効な招待で生成 | 端末内アドバイスと取得失敗の案内を表示した。 |
 
-別途、作業環境から同じ公開 HTTPS の `POST /v1/advice` に無効な Bearer トークンと合成入力を送り、HTTP 401（`authentication_required`）を確認した。実機リクエストの HTTP ステータスは未採取で、公開 HTTPS での 429 は未確認。候補 APK の SHA-256、署名証明書、USB 切断状態、通常版への復帰、停止時の実機動作は別途確認する。
+別途、作業環境から同じ公開 HTTPS の `POST /v1/advice` に無効な Bearer トークンと合成入力を送り、HTTP 401（`authentication_required`）を確認した。Windows PowerShell から同じ公開 HTTPS API に、日次枠を使用済みの参加者向けの招待と合成入力を送り、HTTP 429 を確認した。429 の応答本文と実機リクエストの HTTP ステータスは未採取。候補 APK の SHA-256、署名証明書、USB 切断状態、通常版への復帰、停止時の実機動作は別途確認する。
 
 ## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
 
