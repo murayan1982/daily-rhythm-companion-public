@@ -25,6 +25,52 @@ python -m uvicorn scripts.public_advice_invite:create_local_app --factory --host
 
 失効は別の運営者用シェルに同じ DSN を設定し、`python -m scripts.public_advice_invite revoke <管理用のToken-ID>` を実行する。管理コマンドは HTTP API に公開されない。
 
+## 固定応答を使った HTTPS 配置の事前確認
+
+検証用ホストでは、上記の固定応答アプリを管理 TLS 終端の背後で起動する。検証専用 PostgreSQL と短命の招待を使う。URL にトークンを含めず、入口と監視の記録から Authorization と本文を除外する。
+
+- 外部 HTTPS 入口は `GET /health` と `POST /v1/advice` を許可する。`/health` は稼働確認用。DB と生成処理を含む確認には検証用の招待を使う。
+- HTTPS 側から旧 API・開発ルート・ドキュメントが開かず、TLS 終端を経由しない Backend への直接アクセスが閉じていることを確認する。
+- `app_public` から署名済み APK を作る。ホスト名は検証先に置き換える。
+
+  ```powershell
+  flutter build apk --release -t lib/main_invite_release.dart --dart-define=DRC_INVITE_ADVICE_URL=https://example.invalid/v1/advice
+  ```
+
+- 候補と復帰用の通常版のアプリ ID、署名証明書、versionCode を確認する。上書きで戻す場合は復帰用の通常版に候補より大きい versionCode を割り当てる。候補のコミット、ターゲット、APK の SHA-256 と署名証明書の SHA-256 を記録する。
+- A301OP で USB 転送なしの成功（200）、無効または失効済みトークン（401）、上限到達（429）、停止（503）、通信断を確認する。参加者別日次上限を1にすると、同じ検証参加者の2回目で上限を確認できる。停止は枠の残った有効な参加者で確認する。失敗の各ケースで端末内アドバイスが表示されることを確認する。
+- 合格後は同じ候補を使って Gemini 側を検証する。固定応答の検証台帳と Gemini のマイクロドル専用台帳は分ける。
+
+### ローカル TLS の事前検証
+
+公開 `main` の `0ca5d3f` を基準とする固定応答入口の変更で、検証専用 PostgreSQL とローカル証明書を使った HTTPS 疎通を確認した。`/health` は200、`/docs` は404。生成は有効な招待で200、無効・失効済みの招待で401、参加者の日次上限で429、運営者停止中は503だった。関連テストは72件合格し、ローカルの Gemma トークナイザーファイルが必要な1件はスキップした。公開ホストの TLS 終端と A301OP の署名済み候補は別途検証する。
+
+### Render での検証用設定案
+
+固定応答入口の変更を含む Git ブランチをデプロイ対象に指定し、Auto-Deploy を無効にする。Python Web Service と検証専用 PostgreSQL は同じリージョンに置く。検証にはサービスの `https://<service>.onrender.com` を使う。 [Web Service](https://render.com/docs/web-services) · [PostgreSQL](https://render.com/docs/postgresql-creating-connecting)
+
+| 設定 | 値 |
+| --- | --- |
+| Root Directory | `backend` |
+| Build Command | `python -m pip install -r requirements.txt -r requirements-public-advice-postgres.txt` |
+| Start Command | `python -m uvicorn scripts.public_advice_invite:create_local_app --factory --host 0.0.0.0 --port "$PORT" --no-access-log` |
+| Health Check Path | `/health` |
+| `DRC_PUBLIC_ADVICE_POSTGRES_DSN` | 検証 DB の Internal Database URL を秘密の環境変数に設定 |
+| `DRC_PUBLIC_ADVICE_TEST_MODEL` | `local-synthetic-v1` |
+| `DRC_PUBLIC_ADVICE_TEST_PER_USER` | `1` |
+| `DRC_PUBLIC_ADVICE_TEST_TOTAL` | `2` |
+
+サービスの管理シェルを使える場合は、`backend` を作業ディレクトリにして次を実行する。管理シェルを使えない場合は Windows の運営者シェルから同じ CLI を実行し、検証 DB の外部接続はその端末の送信元 IP に絞り、運営操作が終わったら閉じる。トークンは発行出力から直接 A301OP へ入力し、ビルドログや共有記録に残さない。 [無料インスタンスの制約](https://render.com/docs/free)
+
+```text
+python -m scripts.public_advice_invite init-db
+python -m scripts.public_advice_invite set-monthly-budget 788
+python -m scripts.public_advice_invite issue device-https-check --ttl-hours 1
+python -m scripts.public_advice_invite resume
+```
+
+`GET /health` の200と、無効トークンでの `POST /v1/advice` の401を HTTPS 経由で確認してから、同じホストの `/v1/advice` を APK のビルド引数に使う。無料 Web Service を利用する場合は、休止からの起動を待ち、`/health` の200を確認してから端末試験を始める。
+
 ## Windows の通常 FastAPI 起動で Gemini 招待制テストを有効にする
 
 マイクロドル専用のローカル PostgreSQL データベース（例 `drc_advice_gemini_test`）を作成する。合成モデルの台帳や上記のテスト単位の予算は別の DB に置く。以下は `backend` で実行する検証用 PowerShell の例。全ワーカーに同じ DSN と回数上限を設定する。本番の回数上限と月額予算は未決定。

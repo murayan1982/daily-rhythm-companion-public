@@ -7,7 +7,7 @@ from uuid import UUID
 
 from fastapi import FastAPI
 
-from app.api.public_advice import router
+from app.public_main import create_public_advice_app
 from app.services.advice_cost import LOCAL_TEST_MODEL
 from app.services.postgres_public_advice import (
     PostgresAdviceGenerationControl,
@@ -24,8 +24,7 @@ def _test_advice(*, model: str, prompt: str, max_input_tokens: int, max_output_t
 
 
 def create_local_app() -> FastAPI:
-    app = FastAPI(title="DRC local invite test")
-    app.include_router(router)
+    app = create_public_advice_app()
     dsn = os.getenv(_DSN_ENV)
     try:
         per_user = int(os.getenv("DRC_PUBLIC_ADVICE_TEST_PER_USER", ""))

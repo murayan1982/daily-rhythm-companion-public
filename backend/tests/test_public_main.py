@@ -1,7 +1,9 @@
 from fastapi.testclient import TestClient
+import pytest
 
 from app.main import app as normal_app
 from app.public_main import app
+from scripts.public_advice_invite import create_local_app
 
 
 def registered_operations(routes):
@@ -14,10 +16,13 @@ def registered_operations(routes):
             yield (route.path, sorted(route.methods))
 
 
-def test_public_app_exposes_only_advice_and_health(monkeypatch):
+@pytest.mark.parametrize("fixed_response", [False, True])
+def test_public_app_exposes_only_advice_and_health(monkeypatch, fixed_response):
     monkeypatch.delenv("DRC_PUBLIC_ADVICE_GEMINI_ENABLED", raising=False)
-    with TestClient(app, follow_redirects=False) as client:
-        assert sorted(registered_operations(app.routes)) == [
+    monkeypatch.delenv("DRC_PUBLIC_ADVICE_POSTGRES_DSN", raising=False)
+    candidate = create_local_app() if fixed_response else app
+    with TestClient(candidate, follow_redirects=False) as client:
+        assert sorted(registered_operations(candidate.routes)) == [
             ("/health", ["GET"]),
             ("/v1/advice", ["POST"]),
         ]
